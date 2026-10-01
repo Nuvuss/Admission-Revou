@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg: #FFFFFF;
+    --surface: #FFFFFF;
+    --surface-2: #F5F5F2;
+    --ink: #141412;
+    --ink-2: #4B4B46;
+    --ink-3: #8A8A84;
+    --line: #E8E8E4;
+    --line-2: #D9D9D4;
+    --yellow: #FFD84D;
+    --yellow-2: #FFCC1A;
+    --yellow-soft: #FFF6D1;
+    --on-yellow: #141412;
+    --ok: #1F7A4D;
+    --warn: #A15C00;
+    --err: #B42318;
+  }
+
+  body {
+    background-color: var(--bg);
+    color: var(--ink);
+    font-family: "Red Hat Text", system-ui, -apple-system, sans-serif;
+    font-size: 15px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: "Red Hat Display", system-ui, -apple-system, sans-serif;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #d9d9d4;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #8a8a84;
+}
