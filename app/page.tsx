@@ -435,46 +435,7 @@ export default function DashboardPage() {
                   </div>
                 </div>
 
-                {/* Target Audience & Prerequisites Check Card */}
-                {(responseResult.target_audience || responseResult.prerequisites || responseResult.eligibility_check) && (
-                  <div className="bg-[#FFFFFF] p-4 sm:p-5 rounded-xl border border-[#E8E8E4] space-y-2.5 shadow-2xs">
-                    <div className="flex items-center gap-2 font-display font-bold text-xs uppercase tracking-wider text-[#1F7A4D]">
-                      <ShieldCheck className="w-3.5 h-3.5 text-[#1F7A4D]" />
-                      <span>Target Audiens & Syarat Prasyarat Program (/knowledge/)</span>
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                      {responseResult.target_audience && (
-                        <div className="bg-[#F5F5F2] p-3 rounded-lg border border-[#E8E8E4]">
-                          <span className="font-mono text-[10.5px] font-bold uppercase tracking-wider text-[#8A8A84] block mb-1">
-                            🎯 Profil / Target Audiens:
-                          </span>
-                          <p className="text-[#141412] font-medium leading-relaxed">
-                            {responseResult.target_audience}
-                          </p>
-                        </div>
-                      )}
-
-                      {responseResult.prerequisites && (
-                        <div className="bg-[#F5F5F2] p-3 rounded-lg border border-[#E8E8E4]">
-                          <span className="font-mono text-[10.5px] font-bold uppercase tracking-wider text-[#8A8A84] block mb-1">
-                            📋 Syarat & Prasyarat (Prerequisites):
-                          </span>
-                          <p className="text-[#141412] font-medium leading-relaxed">
-                            {responseResult.prerequisites}
-                          </p>
-                        </div>
-                      )}
-                    </div>
-
-                    {responseResult.eligibility_check && (
-                      <div className="pt-1.5 flex items-start gap-2 text-xs text-[#4B4B46] border-t border-[#E8E8E4]">
-                        <span className="font-mono text-[11px] font-bold text-[#1F7A4D] shrink-0">Status Kelayakan:</span>
-                        <span className="italic">{responseResult.eligibility_check}</span>
-                      </div>
-                    )}
-                  </div>
-                )}
+                {/* Target Audience & Prerequisites — hidden per request */}
 
                 {/* Relevancy Statement Skill AI dengan Bidang Leads */}
                 {responseResult.ai_relevancy_statement && (
