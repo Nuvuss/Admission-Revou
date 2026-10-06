@@ -106,16 +106,16 @@ const MODES: Record<ModeKey, ModeConfig> = {
   },
   alumni: {
     title: "Checking Alumni",
-    lead: "Cari data alumni RevoU (kisah sukses, kenaikan gaji, switch karir, & perusahaan asal) untuk social proof saat menjawab keraguan leads.",
-    template: "Tulis: latar belakang/profesi/keraguan leads atau perusahaan yang dicari",
-    placeholder: "Contoh: Prospect seorang Barista/Guru yang ragu apakah bisa switch karir ke Digital Marketing/Data. Ada alumni relevan?",
+    lead: "Cari data alumni RevoU & generate summary perjalanan karir mereka (min. 250 kata) lengkap dengan hyperlink aktif ke kisah lengkap/profil LinkedIn sebagai bukti nyata.",
+    template: "Tulis: latar belakang/profesi/keraguan leads atau profil alumni yang dicari",
+    placeholder: "Contoh: Prospect seorang Dokter/Guru/Lulusan SMA yang ragu apakah bisa switch karir ke Tech/Data/Digital Marketing. Ada profil alumni relevan?",
     examples: [
-      "Prospect seorang Barista yang ragu apakah bisa switch karir ke Digital Marketing.",
-      "Cari alumni dari latar belakang Non-IT (Guru SD / Apoteker / Paramedis) yang berhasil switch ke Data Analytics.",
+      "Prospect seorang Dokter yang ingin switch karir ke Tech/Product Management.",
+      "Cari alumni mantan Atlet atau lulusan Non-IT yang sukses beralih ke Digital Marketing.",
+      "Alumni lulusan SMA tanpa pengalaman kerja yang sukses jadi Meta Ads Specialist.",
+      "Alumni ibu rumah tangga usia 30+ atau yang pernah career break dan sukses bekerja remote.",
       "Ada alumni atau peserta program dari perusahaan BUMN, Pertamina, atau Industri Migas?",
-      "Cari alumni dengan kenaikan gaji (salary increase) di atas 100% di bidang Digital Marketing.",
-      "Leads tanya apakah ada yang berhasil hired before graduation di program Data Analytics.",
-      "Peserta dari institusi pemerintahan atau perbankan (Bank Syariah/Permata/Kemenkeu).",
+      "Cari alumni dengan kenaikan gaji (salary increase) di atas 100% di bidang Data Analytics.",
     ],
   },
 };
@@ -237,6 +237,16 @@ export default function DashboardPage() {
         program_overview_short: responseResult.program_overview_short,
         whats_happening: responseResult.whats_happening,
         recommended_approach: responseResult.recommended_approach,
+        featured_alumni_summary: responseResult.featured_alumni_summary,
+        alumni_matches: responseResult.alumni_matches?.map((a: any) => ({
+          name: a.name,
+          program_batch: a.program_batch,
+          previous_role: a.previous_role,
+          current_role: a.current_role,
+          company: a.company,
+          achievement: a.achievement,
+          profile_url: a.profile_url,
+        })),
         scripts: responseResult.scripts?.map((s: any) => ({ badge: s.badge, text: s.text?.slice(0, 200) + "..." })),
       }, null, 2) : "";
 
@@ -246,7 +256,26 @@ export default function DashboardPage() {
         .map((msg) => `[${msg.role === "user" ? "Sales" : "AI"}]: ${msg.text}`)
         .join("\n");
 
-      const promptCombined = `Situasi Awal dari Tim Sales:\n"""\n${inputText}\n"""\n\n=== HASIL GENERATE PERTAMA (JADIKAN ACUAN UTAMA) ===\n${initialResultSummary}\n\n${chatHistoryContext ? `=== RIWAYAT PERCAKAPAN SEBELUMNYA ===\n${chatHistoryContext}\n\n` : ""}=== INSTRUKSI REVISI/KLARIFIKASI TERBARU DARI SALES ===\n"""\n${q}\n"""\n\nINSTRUKSI PENTING: Jawaban revisi WAJIB tetap selaras dan konsisten dengan hasil generate pertama di atas (persona, program_match, dan konteks yang sama). Jangan mengubah program atau persona kecuali Sales secara eksplisit meminta perubahan. Sesuaikan HANYA bagian yang diminta untuk direvisi, pertahankan sisanya.`;
+      const promptCombined = `Situasi Awal dari Tim Sales:
+"""
+${inputText}
+"""
+
+=== HASIL GENERATE PERTAMA (JADIKAN ACUAN UTAMA) ===
+${initialResultSummary}
+
+${chatHistoryContext ? `=== RIWAYAT PERCAKAPAN SEBELUMNYA ===
+${chatHistoryContext}
+
+` : ""}=== INSTRUKSI REVISI/KLARIFIKASI TERBARU DARI SALES ===
+"""
+${q}
+"""
+
+INSTRUKSI PENTING:
+1. Jika Sales mengklarifikasi atau mencari alumni bidang/program/profesi tertentu (misal: Software Engineering, Data Analytics, Digital Marketing, atau profil khusus), cari data alumni yang relevan dari knowledge base dan WAJIB sertakan 'featured_alumni_summary' dan 'alumni_matches' yang sesuai.
+2. Pada menu 'alumni': JANGAN buat pitch WhatsApp dan KOSONGKAN scripts ([]). Fokus tampilkan data alumni RevoU dengan ringkasan singkat serta rangkuman perjalanan karir minimal 250 kata + link validasi.
+3. Pada menu 'pitch': Sesuaikan draf script pesan sesuai masukan Sales.`;
       const res = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -563,6 +592,45 @@ export default function DashboardPage() {
                   </div>
                 </div>
 
+                {/* FEATURED ALUMNI SUMMARY (Single concise summary with hyperlink) */}
+                {responseResult.featured_alumni_summary && (
+                  <div className="bg-[#FFFFFF] p-4 sm:p-5 rounded-xl border border-[#FFD84D]/90 shadow-2xs space-y-2.5 bg-gradient-to-br from-[#FFFDF0] to-[#FFFFFF]">
+                    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#E8E8E4] pb-2">
+                      <div className="flex items-center gap-2 font-display font-bold text-xs uppercase tracking-wider text-[#A15C00]">
+                        <Sparkles className="w-3.5 h-3.5 text-[#A15C00]" />
+                        <span>Ringkasan Singkat Alumni Terpilih: {responseResult.featured_alumni_summary.name || "Alumni RevoU"}</span>
+                      </div>
+                      {responseResult.featured_alumni_summary.profile_url && (
+                        <a
+                          href={responseResult.featured_alumni_summary.profile_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-xs font-semibold text-[#0E62FE] hover:text-[#0043CE] inline-flex items-center gap-1 transition-colors"
+                        >
+                          <span>Buka Cerita / Profil Alumni</span>
+                          <ExternalLink className="w-3.5 h-3.5" />
+                        </a>
+                      )}
+                    </div>
+                    <div className="text-[14px] text-[#141412] leading-relaxed">
+                      {renderFormattedTextWithLinks(responseResult.featured_alumni_summary.summary)}
+                    </div>
+                    {responseResult.featured_alumni_summary.profile_url && (
+                      <div className="pt-1.5 text-xs text-[#8A8A84] border-t border-[#E8E8E4]/60">
+                        <span className="font-medium text-[#4B4B46]">🔗 Tautan Validasi: </span>
+                        <a
+                          href={responseResult.featured_alumni_summary.profile_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[#0E62FE] hover:underline font-semibold break-all"
+                        >
+                          {responseResult.featured_alumni_summary.profile_url}
+                        </a>
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 {/* ALUMNI MATCHES CARDS GRID (When in Checking Alumni mode or when alumni_matches present) */}
                 {responseResult.alumni_matches && responseResult.alumni_matches.length > 0 && (
                   <div className="space-y-3 pt-1">
@@ -582,16 +650,16 @@ export default function DashboardPage() {
                       </a>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 gap-4">
                       {responseResult.alumni_matches.map((alumni: any, i: number) => (
                         <div
                           key={i}
-                          className="bg-[#FFFFFF] p-4 rounded-xl border border-[#E8E8E4] space-y-2.5 shadow-2xs hover:border-[#D9D9D4] transition-all flex flex-col justify-between"
+                          className="bg-[#FFFFFF] p-4 sm:p-5 rounded-xl border border-[#E8E8E4] space-y-3.5 shadow-2xs hover:border-[#D9D9D4] transition-all flex flex-col justify-between"
                         >
-                          <div className="space-y-2">
-                            <div className="flex items-start justify-between gap-2">
+                          <div className="space-y-3">
+                            <div className="flex flex-wrap items-start justify-between gap-2 border-b border-[#E8E8E4] pb-2.5">
                               <div>
-                                <h4 className="font-bold text-[14.5px] text-[#141412] leading-tight">
+                                <h4 className="font-bold text-[15.5px] text-[#141412] leading-tight">
                                   {alumni.name}
                                 </h4>
                                 <p className="text-xs text-[#8A8A84] font-medium mt-0.5">
@@ -599,44 +667,58 @@ export default function DashboardPage() {
                                 </p>
                               </div>
                               {alumni.achievement && (
-                                <span className="font-mono text-[10.5px] px-2 py-0.5 rounded-full bg-[#EBF7EE] text-[#1F7A4D] font-bold shrink-0 border border-[#D4EDDA]">
+                                <span className="font-mono text-[11px] px-2.5 py-0.5 rounded-full bg-[#EBF7EE] text-[#1F7A4D] font-bold shrink-0 border border-[#D4EDDA]">
                                   {alumni.achievement}
                                 </span>
                               )}
                             </div>
 
-                            <div className="text-xs text-[#4B4B46] space-y-1.5 bg-[#F5F5F2] p-2.5 rounded-lg border border-[#E8E8E4]/70">
+                            <div className="text-xs text-[#4B4B46] space-y-1 bg-[#F5F5F2] p-3 rounded-lg border border-[#E8E8E4]/70">
                               {alumni.previous_role && (
                                 <div>
-                                  <span className="text-[#8A8A84] font-medium">Sebelum: </span>
+                                  <span className="text-[#8A8A84] font-medium">Latar Belakang / Profesi Sebelumnya: </span>
                                   <span className="font-semibold text-[#141412]">{alumni.previous_role}</span>
                                 </div>
                               )}
                               {alumni.current_role && (
                                 <div>
-                                  <span className="text-[#8A8A84] font-medium">Sekarang: </span>
+                                  <span className="text-[#8A8A84] font-medium">Posisi & Perusahaan Sekarang: </span>
                                   <span className="font-semibold text-[#1F7A4D]">{alumni.current_role}</span>
                                   {alumni.company && <span className="text-[#4B4B46]"> · {alumni.company}</span>}
                                 </div>
                               )}
                             </div>
 
+                            {/* Detailed Career Journey Summary (min 250 words) */}
+                            {alumni.career_journey_summary && (
+                              <div className="space-y-1.5 pt-1">
+                                <div className="font-mono text-[11px] uppercase tracking-wider text-[#1F7A4D] font-bold flex items-center gap-1.5">
+                                  <Sparkles className="w-3 h-3 text-[#1F7A4D]" />
+                                  <span>Summary Perjalanan Karir & Transformasi:</span>
+                                </div>
+                                <div className="text-[13.5px] text-[#141412] leading-relaxed whitespace-pre-line bg-[#FAFAF8] p-3.5 rounded-lg border border-[#E8E8E4]/80">
+                                  {renderFormattedTextWithLinks(alumni.career_journey_summary)}
+                                </div>
+                              </div>
+                            )}
+
                             {alumni.why_relevant && (
-                              <p className="text-xs text-[#4B4B46] leading-relaxed">
-                                💡 <span className="font-medium">{alumni.why_relevant}</span>
+                              <p className="text-xs text-[#4B4B46] leading-relaxed bg-[#FFF6D1]/40 p-2.5 rounded-md border border-[#FFD84D]/40">
+                                💡 <span className="text-[#8A8A84] font-semibold">Relevansi untuk Leads: </span>
+                                <span className="font-medium text-[#141412]">{alumni.why_relevant}</span>
                               </p>
                             )}
                           </div>
 
                           {alumni.profile_url && (
-                            <div className="pt-2 border-t border-[#E8E8E4]">
+                            <div className="pt-2.5 border-t border-[#E8E8E4] flex items-center justify-between">
                               <a
                                 href={alumni.profile_url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-xs font-semibold text-[#0E62FE] hover:text-[#0043CE] inline-flex items-center gap-1 transition-colors"
+                                className="text-xs font-semibold text-[#0E62FE] hover:text-[#0043CE] inline-flex items-center gap-1.5 transition-colors"
                               >
-                                <span>Lihat Profil LinkedIn / Bukti Alumni</span>
+                                <span>Lihat Profil LinkedIn / Cerita Lengkap Alumni</span>
                                 <ExternalLink className="w-3.5 h-3.5 inline" />
                               </a>
                             </div>
@@ -650,7 +732,7 @@ export default function DashboardPage() {
                 {/* Target Audience & Prerequisites — hidden per request */}
 
                 {/* Relevancy Statement Skill AI dengan Bidang Leads */}
-                {responseResult.ai_relevancy_statement && (
+                {mode === "pitch" && responseResult.ai_relevancy_statement && (
                   <div className="bg-[#FFFFFF] p-4 sm:p-5 rounded-xl border border-[#E8E8E4] space-y-1.5 shadow-2xs">
                     <div className="flex items-center gap-2 font-display font-bold text-xs uppercase tracking-wider text-[#141412]">
                       <Sparkles className="w-3.5 h-3.5 text-[#A15C00]" />
@@ -663,7 +745,7 @@ export default function DashboardPage() {
                 )}
 
                 {/* Penjelasan Komprehensif Program & Tujuan Pelatihan */}
-                {responseResult.program_overview_short && (
+                {mode === "pitch" && responseResult.program_overview_short && (
                   <div className="bg-[#F5F5F2] p-4 sm:p-5 rounded-xl border border-[#E8E8E4] space-y-1.5">
                     <div className="flex items-center gap-2 font-display font-bold text-xs uppercase tracking-wider text-[#1F7A4D]">
                       <BookOpen className="w-3.5 h-3.5 text-[#1F7A4D]" />
@@ -676,7 +758,7 @@ export default function DashboardPage() {
                 )}
 
                 {/* 2. Recommended approach */}
-                {responseResult.recommended_approach && (
+                {mode === "pitch" && responseResult.recommended_approach && (
                   <div className="bg-[#FFF6D1]/60 p-4 sm:p-5 rounded-xl border border-[#FFD84D]/60 space-y-1.5">
                     <div className="flex items-center gap-2 font-display font-bold text-xs uppercase tracking-wider text-[#A15C00]">
                       <Lightbulb className="w-3.5 h-3.5 text-[#A15C00]" />
@@ -689,8 +771,8 @@ export default function DashboardPage() {
                 )}
               </div>
 
-              {/* 3. SUGGESTED RESPONSE (TAB UI SYSTEM) */}
-              {responseResult.scripts && responseResult.scripts.length > 0 && (
+              {/* 3. SUGGESTED RESPONSE (TAB UI SYSTEM — HANYA UNTUK MENU PITCH) */}
+              {mode === "pitch" && responseResult.scripts && responseResult.scripts.length > 0 && (
                 <div className="space-y-3 pt-2">
                   <div className="flex items-center justify-between gap-2">
                     <span className="font-mono text-xs font-bold uppercase tracking-wider text-[#8A8A84] flex items-center gap-1.5">
@@ -941,8 +1023,8 @@ export default function DashboardPage() {
                             <p className="font-medium">{msg.text}</p>
                           </div>
 
-                          {/* Recommended Approach if available */}
-                          {msg.data?.recommended_approach && msg.data.recommended_approach !== msg.text && (
+                          {/* Recommended Approach if available and in pitch mode */}
+                          {mode === "pitch" && msg.data?.recommended_approach && msg.data.recommended_approach !== msg.text && (
                             <div className="p-3 bg-[#F5F5F2] rounded-xl border border-[#E8E8E4] text-xs leading-relaxed space-y-1">
                               <span className="font-mono text-[10.5px] font-bold uppercase tracking-wider text-[#8A8A84] block">
                                 🎯 Saran Pendekatan Revisi:
@@ -951,8 +1033,145 @@ export default function DashboardPage() {
                             </div>
                           )}
 
-                          {/* Revised Script Variations */}
-                          {scripts.length > 0 && (
+                          {/* FEATURED ALUMNI SUMMARY (From Clarification) */}
+                          {msg.data?.featured_alumni_summary && (
+                            <div className="bg-[#FFFFFF] p-4 sm:p-5 rounded-xl border border-[#FFD84D]/90 shadow-2xs space-y-2.5 bg-gradient-to-br from-[#FFFDF0] to-[#FFFFFF]">
+                              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#E8E8E4] pb-2">
+                                <div className="flex items-center gap-2 font-display font-bold text-xs uppercase tracking-wider text-[#A15C00]">
+                                  <Sparkles className="w-3.5 h-3.5 text-[#A15C00]" />
+                                  <span>Ringkasan Singkat Alumni Terpilih: {msg.data.featured_alumni_summary.name || "Alumni RevoU"}</span>
+                                </div>
+                                {msg.data.featured_alumni_summary.profile_url && (
+                                  <a
+                                    href={msg.data.featured_alumni_summary.profile_url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-xs font-semibold text-[#0E62FE] hover:text-[#0043CE] inline-flex items-center gap-1 transition-colors"
+                                  >
+                                    <span>Buka Cerita / Profil Alumni</span>
+                                    <ExternalLink className="w-3.5 h-3.5" />
+                                  </a>
+                                )}
+                              </div>
+                              <div className="text-[14px] text-[#141412] leading-relaxed">
+                                {renderFormattedTextWithLinks(msg.data.featured_alumni_summary.summary)}
+                              </div>
+                              {msg.data.featured_alumni_summary.profile_url && (
+                                <div className="pt-1.5 text-xs text-[#8A8A84] border-t border-[#E8E8E4]/60">
+                                  <span className="font-medium text-[#4B4B46]">🔗 Tautan Validasi: </span>
+                                  <a
+                                    href={msg.data.featured_alumni_summary.profile_url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-[#0E62FE] hover:underline font-semibold break-all"
+                                  >
+                                    {msg.data.featured_alumni_summary.profile_url}
+                                  </a>
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          {/* ALUMNI MATCHES CARDS GRID (From Clarification) */}
+                          {msg.data?.alumni_matches && msg.data.alumni_matches.length > 0 && (
+                            <div className="space-y-3 pt-1">
+                              <div className="flex items-center justify-between gap-2">
+                                <div className="flex items-center gap-2 font-display font-bold text-xs uppercase tracking-wider text-[#1F7A4D]">
+                                  <UserCheck className="w-3.5 h-3.5 text-[#1F7A4D]" />
+                                  <span>Data Alumni Hasil Klarifikasi ({msg.data.alumni_matches.length} Profil Ditemukan)</span>
+                                </div>
+                                <a
+                                  href="https://revou.co/alumni"
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="font-mono text-[11px] text-[#0E62FE] hover:underline inline-flex items-center gap-1 font-semibold"
+                                >
+                                  <span>Direktori Lengkap Alumni</span>
+                                  <ExternalLink className="w-3 h-3" />
+                                </a>
+                              </div>
+
+                              <div className="grid grid-cols-1 gap-4">
+                                {msg.data.alumni_matches.map((alumni: any, idx: number) => (
+                                  <div
+                                    key={idx}
+                                    className="bg-[#FFFFFF] p-4 sm:p-5 rounded-xl border border-[#E8E8E4] space-y-3.5 shadow-2xs hover:border-[#D9D9D4] transition-all flex flex-col justify-between"
+                                  >
+                                    <div className="space-y-3">
+                                      <div className="flex flex-wrap items-start justify-between gap-2 border-b border-[#E8E8E4] pb-2.5">
+                                        <div>
+                                          <h4 className="font-bold text-[15.5px] text-[#141412] leading-tight">
+                                            {alumni.name}
+                                          </h4>
+                                          <p className="text-xs text-[#8A8A84] font-medium mt-0.5">
+                                            {alumni.program_batch}
+                                          </p>
+                                        </div>
+                                        {alumni.achievement && (
+                                          <span className="font-mono text-[11px] px-2.5 py-0.5 rounded-full bg-[#EBF7EE] text-[#1F7A4D] font-bold shrink-0 border border-[#D4EDDA]">
+                                            {alumni.achievement}
+                                          </span>
+                                        )}
+                                      </div>
+
+                                      <div className="text-xs text-[#4B4B46] space-y-1 bg-[#F5F5F2] p-3 rounded-lg border border-[#E8E8E4]/70">
+                                        {alumni.previous_role && (
+                                          <div>
+                                            <span className="text-[#8A8A84] font-medium">Latar Belakang / Profesi Sebelumnya: </span>
+                                            <span className="font-semibold text-[#141412]">{alumni.previous_role}</span>
+                                          </div>
+                                        )}
+                                        {alumni.current_role && (
+                                          <div>
+                                            <span className="text-[#8A8A84] font-medium">Posisi & Perusahaan Sekarang: </span>
+                                            <span className="font-semibold text-[#1F7A4D]">{alumni.current_role}</span>
+                                            {alumni.company && <span className="text-[#4B4B46]"> · {alumni.company}</span>}
+                                          </div>
+                                        )}
+                                      </div>
+
+                                      {/* Detailed Career Journey Summary (min 250 words) */}
+                                      {alumni.career_journey_summary && (
+                                        <div className="space-y-1.5 pt-1">
+                                          <div className="font-mono text-[11px] uppercase tracking-wider text-[#1F7A4D] font-bold flex items-center gap-1.5">
+                                            <Sparkles className="w-3 h-3 text-[#1F7A4D]" />
+                                            <span>Summary Perjalanan Karir & Transformasi:</span>
+                                          </div>
+                                          <div className="text-[13.5px] text-[#141412] leading-relaxed whitespace-pre-line bg-[#FAFAF8] p-3.5 rounded-lg border border-[#E8E8E4]/80">
+                                            {renderFormattedTextWithLinks(alumni.career_journey_summary)}
+                                          </div>
+                                        </div>
+                                      )}
+
+                                      {alumni.why_relevant && (
+                                        <p className="text-xs text-[#4B4B46] leading-relaxed bg-[#FFF6D1]/40 p-2.5 rounded-md border border-[#FFD84D]/40">
+                                          💡 <span className="text-[#8A8A84] font-semibold">Relevansi untuk Leads: </span>
+                                          <span className="font-medium text-[#141412]">{alumni.why_relevant}</span>
+                                        </p>
+                                      )}
+                                    </div>
+
+                                    {alumni.profile_url && (
+                                      <div className="pt-2.5 border-t border-[#E8E8E4] flex items-center justify-between">
+                                        <a
+                                          href={alumni.profile_url}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                          className="text-xs font-semibold text-[#0E62FE] hover:text-[#0043CE] inline-flex items-center gap-1.5 transition-colors"
+                                        >
+                                          <span>Lihat Profil LinkedIn / Cerita Lengkap Alumni</span>
+                                          <ExternalLink className="w-3.5 h-3.5 inline" />
+                                        </a>
+                                      </div>
+                                    )}
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Revised Script Variations (ONLY for pitch mode) */}
+                          {mode === "pitch" && scripts.length > 0 && (
                             <div className="space-y-2.5 pt-1">
                               <div className="flex items-center justify-between gap-2">
                                 <span className="font-mono text-xs font-bold uppercase tracking-wider text-[#8A8A84] flex items-center gap-1.5">

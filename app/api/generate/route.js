@@ -119,27 +119,26 @@ Sebelum menyusun draf script, kamu WAJIB menganalisis dan menekankan data dari K
 Menu aktif saat ini: **${tab}**
 
 ### 1. JIKA MENU: "pitch" (Create a Pitch):
-- AI menghasilkan **3 variasi draf pesan WhatsApp**:
+- AI menghasilkan **3 variasi draf pesan WhatsApp persuasif** (ringkas 4–5 kalimat per variasi):
   - **Variasi 1 — [Angle Solutif & Relevansi]:** Fokus pada empati, relevansi skill AI dengan role prospect, dan gambaran tujuan program.
   - **Variasi 2 — [Angle Value & Dampak Karir/Kerja]:** Fokus pada manfaat langsung, efisiensi kerja, dan percepatan kompetensi.
   - **Variasi 3 — [Angle Praktikal & Portofolio]:** Fokus pada metode belajar hands-on, studi kasus nyata, dan capstone project.
 
-### 2. JIKA MENU: "alumni" (Checking Alumni) — ATURAN KHUSUS & STRICT GROUNDING (WAJIB DIIKUTI):
-- **Perhatikan dengan Cermat apa yang Disampaikan Leads:** Analisis secara mendalam latar belakang, bidang/profesi saat ini, ketakutan, atau keraguan yang disampaikan leads (misal: ragu bisa switch karir karena bukan anak IT/teknik, takut belajar sambil kerja, atau meragukan prospek karir). JANGAN MENGADA-NGADA dan jangan berasumsi tanpa fakta.
-- **Munculkan Nama Alumni yang Berhasil di Bidang yang Ditekuni:** Munculkan secara spesifik nama alumni nyata yang telah terbukti berhasil meraih kesuksesan di bidang yang ditekuni berkat mengikuti program RevoU yang relevan.
-- **Tampilkan Bukti Transformasi Nyata:** Cantumkan perjalanan transformasi karir alumni secara jujur dan akurat dari database knowledge base:
-  - Latar belakang / profesi awal sebelum ikut program (misal: Barista, Guru SD, Apoteker, Paramedis, Staff Gudang, Fresh Grad).
-  - Posisi / peran profesional setelah lulus dan perusahaan tempat bekerja saat ini.
-  - Hasil nyata terukur: persentase kenaikan gaji (misal: 100%–350% salary increase), status hired before graduation, atau promosi karir.
-- **Strict Grounding (DILARANG MENGARANG):** Seluruh nama alumni, data transisi peran, nama perusahaan, persentase gaji, dan tautan profil WAJIB 100% berasal dari dokumen \`knowledge_base_alumni_success_stories.md\`.
-- **Output:**
-  - Array \`alumni_matches\` (2–5 alumni yang paling relevan dengan situasi leads).
-  - **3 variasi draf pesan WhatsApp** yang membawakan kisah alumni tersebut secara natural sebagai social proof meyakinkan dan menyertakan link profil LinkedIn alumni / https://revou.co/alumni.
+### 2. JIKA MENU: "alumni" (Checking Alumni) — ATURAN MUTLAK (DILARANG MEMBUAT PITCH & HAPUS VARIASI):
+- **Tujuan Murni Informational Lookup (DILARANG MEMBUAT PITCH / CHAT SALES "Halo kaak..."):** Menu ini murni untuk mencari informasi data alumni, memverifikasi latar belakang, dan menyajikan bukti perjalanan karir nyata mereka. Jangan membuat pesan sapaan sales pitch atau CTA jualan.
+- **HAPUS SISTEM VARIASI (VARIASI 1, 2, 3 DILARANG):** Jangan buat array variasi pesan. Kolom \`scripts\` WAJIB dikosongkan (\`scripts: []\`).
+- **Ringkasan Singkat Salah Satu Alumni Terpilih (\`featured_alumni_summary\`):**
+  Pilih SATU alumni yang paling relevan, buat **ringkasan singkat yang padat dan objektif** (3–5 kalimat) tentang latar belakang asal, proses belajar di RevoU, dan karir barunya, serta **WAJIB sertakan tautan/hyperlink aktif** ke artikel cerita atau profil LinkedIn alumni tersebut (\`profile_url\`).
+- **Data Alumni Lengkap (\`alumni_matches\` — MINIMAL 250 KATA PER ALUMNI):**
+  Untuk setiap alumni di \`alumni_matches\`, susun **\`career_journey_summary\` minimal 250 kata** yang menguraikan titik awal/keraguan dari nol, proses belajar & ditempa di RevoU, peran Career Coach RevoU NEXT, hingga pencapaian karir di perusahaan saat ini dan link validasi.
+- **Wajib Tautan/Hyperlink Aktif:**
+  Setiap alumni story WAJIB menyertakan hyperlink aktif (Markdown format: \`[Nama Alumni / Judul Cerita](https://revou.co/...)\` atau link LinkedIn/Direktori \`https://revou.co/alumni\`).
 
 ## ATURAN PANJANG RESPONS (WAJIB DIIKUTI)
-- Penjelasan Program (program_overview_short) & Ringkasan Knowledge: WAJIB KOMPREHENSIF, LENGKAP, dan DETAIL agar leads mengerti tujuan dan nilai program secara tuntas.
-- Setiap variasi pesan WhatsApp (scripts) yang berisi penjelasan seputar program, knowledge, atau informasi umum: **maksimal 700 kata per variasi**, mengalir natural, terstruktur, dan tetap WhatsApp-friendly. Untuk script pitch biasa (non-penjelasan program): tetap ringkas 4–5 kalimat per variasi.
-- Gunakan maksimal 4-5 emoji per pesan WhatsApp.
+- Pada menu "alumni": \`career_journey_summary\` WAJIB MINIMAL 250 KATA per alumni di \`alumni_matches\`.
+- \`featured_alumni_summary\`: Ringkasan singkat 3-5 kalimat mengenai salah satu alumni paling relevan + hyperlink aktif.
+- Pada menu "alumni": \`scripts\` WAJIB KOSONG (\`[]\`).
+- Penjelasan Program (program_overview_short) & Ringkasan Knowledge: WAJIB KOMPREHENSIF, LENGKAP, dan DETAIL.
 - Kolom "whats_happening": Maksimal 2 kalimat ringkas.
 - Kolom "recommended_approach": Maksimal 2-3 kalimat strategis.
 - Jangan menambahkan teks di luar struktur JSON.
@@ -156,29 +155,35 @@ ${knowledgeBase}
   "persona": "Persona singkat yang teridentifikasi dari konteks",
   "program_match": "Nama program dari knowledge base yang paling relevan",
   "ai_relevancy_statement": "Pernyataan relevansi belajar skill AI spesifik dengan bidang/role prospect saat ini (1-2 kalimat)",
-  "program_overview_short": "Penjelasan komprehensif, lengkap, dan detail mengenai program terpilih dari knowledge base (menguraikan tujuan utama program, durasi, sertifikat/partner resmi, proses belajar praktikal, tools, capstone project, dan nilai bagi peserta agar leads paham seutuhnya)",
+  "program_overview_short": "Penjelasan komprehensif, lengkap, dan detail mengenai program terpilih dari knowledge base",
   "target_audience": "Target audiens resmi program sesuai dokumen knowledge base",
   "prerequisites": "Syarat & prasyarat masuk program sesuai dokumen knowledge base",
   "eligibility_check": "Penilaian kesiapan/kelayakan prospect terhadap prasyarat (max 2 kalimat)",
   "whats_happening": "Interpretasi underlying concern atau kebutuhan social proof (max 2 kalimat)",
-  "recommended_approach": "Saran pendekatan tim sales dalam menyampaikan pitch atau membawakan social proof alumni (max 2-3 kalimat)",
+  "recommended_approach": "Saran pendekatan tim sales dalam menyampaikan informasi alumni atau pitch (max 2-3 kalimat)",
   "revision_summary": "Jika ada instruksi revisi/klarifikasi dari Sales, jelaskan secara cerdas & natural dalam 2-3 kalimat bagaimana draf disesuaikan.",
+  "featured_alumni_summary": {
+    "name": "Nama salah satu alumni yang paling relevan",
+    "summary": "Ringkasan singkat (3-5 kalimat) tentang perjalanan karir dan transformasinya di RevoU",
+    "profile_url": "URL profil LinkedIn atau tautan artikel cerita alumni (misal: https://revou.co/alumni-stories-list/devina-dea)"
+  },
   "alumni_matches": [
     {
-      "name": "Nama Alumni / Role Peserta",
-      "program_batch": "Nama Program & Batch",
+      "name": "Nama Alumni",
+      "program_batch": "Nama Program & Batch (misal: Full-Stack Digital Marketing)",
       "previous_role": "Pekerjaan/Latar Belakang Sebelumnya",
       "current_role": "Pekerjaan/Posisi Sekarang",
       "company": "Nama Perusahaan / Organisasi",
       "achievement": "Kenaikan gaji / Hired before graduation / Promosi",
-      "profile_url": "URL profil LinkedIn alumni atau https://revou.co/alumni",
-      "why_relevant": "Alasan mengapa kisah alumni ini cocok dijadikan social proof untuk leads"
+      "profile_url": "URL profil LinkedIn alumni atau URL kisah alumni (misal: https://revou.co/alumni-stories-list/devina-dea)",
+      "career_journey_summary": "Summary mendalam mengenai perjalanan karir alumni minimal 250 kata (uraikan latar belakang asal, tantangan awal/keraguan, proses belajar di RevoU, peran portofolio & RevoU NEXT, hingga pencapaian karir di perusahaan saat ini dan pesan inspiratifnya) lengkap dengan hyperlink [Baca Kisah Lengkap](URL).",
+      "why_relevant": "Alasan spesifik mengapa kisah alumni ini sangat relevan untuk menjawab keraguan/kebutuhan leads"
     }
   ],
   "scripts": [
-    { "badge": "Variasi 1 — [Nama angle]", "text": "Pesan WA 4-5 kalimat" },
-    { "badge": "Variasi 2 — [Nama angle]", "text": "Pesan WA 4-5 kalimat" },
-    { "badge": "Variasi 3 — [Nama angle]", "text": "Pesan WA 4-5 kalimat" }
+    { "badge": "Variasi 1 — [Nama angle]", "text": "Pesan WA siap kirim (HANYA untuk menu pitch, KOSONGKAN [] jika menu alumni)" },
+    { "badge": "Variasi 2 — [Nama angle]", "text": "Pesan WA siap kirim (HANYA untuk menu pitch, KOSONGKAN [] jika menu alumni)" },
+    { "badge": "Variasi 3 — [Nama angle]", "text": "Pesan WA siap kirim (HANYA untuk menu pitch, KOSONGKAN [] jika menu alumni)" }
   ],
   "knowledge_details": {
     "summary": "Penjelasan komprehensif dan detail dari fakta relevan di knowledge base mengenai topik/program/alumni yang ditanyakan",
@@ -291,8 +296,9 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
                     prerequisites: parsed.prerequisites || "",
                     eligibility_check: parsed.eligibility_check || "",
                     revision_summary: parsed.revision_summary || "",
+                    featured_alumni_summary: parsed.featured_alumni_summary || null,
                     alumni_matches: Array.isArray(parsed.alumni_matches) ? parsed.alumni_matches : [],
-                    scripts: Array.isArray(parsed.scripts) ? parsed.scripts : [],
+                    scripts: tab === "alumni" ? [] : (Array.isArray(parsed.scripts) ? parsed.scripts : []),
                     knowledge_details: parsed.knowledge_details || null,
                   });
                 } catch (parseErr) {

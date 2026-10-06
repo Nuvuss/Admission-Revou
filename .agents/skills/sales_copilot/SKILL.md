@@ -188,41 +188,36 @@ Sebelum menghasilkan script sales:
 
 ---
 
-### 🎓 B. Checking Alumni (Social Proof Lookup)
+### 🎓 B. Checking Alumni (Social Proof & Career Journey Lookup)
 
-**Kapan diaktifkan:** Ketika tim sales mencari data alumni nyata, bukti hasil belajar, data kenaikan gaji, switch career non-IT, atau peserta dari institusi/perusahaan tertentu untuk dijadikan social proof saat menjawab pertanyaan/keraguan leads.
+**Kapan diaktifkan:** Ketika tim sales mencari informasi profil alumni nyata, memverifikasi latar belakang karir mereka, bukti hasil belajar, data kenaikan gaji, switch career non-IT, atau peserta dari institusi tertentu untuk dijadikan social proof faktual.
 
-**Aturan Kerja AI Sebelum Generate (Strict Grounding Rules):**
-1. **Perhatikan dengan Cermat apa yang Disampaikan Leads:** Analisis secara teliti latar belakang profesi, bidang yang diminati, ketakutan, atau keraguan yang diutarakan leads. **DILARANG KERAS MENGADA-NGADA**, berasumsi, atau membuat data rekaan yang tidak ada faktanya.
-2. **Munculkan Nama Alumni yang Berhasil Berkat Program yang Diikuti:** Pilih dan tampilkan secara spesifik nama alumni nyata yang terbukti berhasil dan sukses di bidang yang ditekuni berkat materi dan pelatihan RevoU yang dia ikuti.
-3. **Tampilkan Bukti Transformasi Nyata:**
-   - Profesi/latar belakang awal sebelum ikut program (misal: Barista, Guru SD, Apoteker, Paramedis, Admin Gudang, Fresh Grad).
-   - Posisi/pekerjaan baru setelah lulus dan perusahaan tempat bekerja.
-   - Hasil konkret: persentase kenaikan gaji (*salary increase* hingga 350%), status *hired before graduation*, atau promosi.
-4. **Validasi Tautan Nyata:** Sertakan tautan profil LinkedIn alumni atau tautan direktori resmi `https://revou.co/alumni`.
-5. **Generate 3 Variasi Script WhatsApp:** Susun 3 variasi script WhatsApp ramah chat (4–5 kalimat) yang membawakan kisah alumni tersebut secara luwes sebagai bukti nyata efektivitas program RevoU.
+**Aturan Kerja AI Sebelum Generate (Informational & Strict Grounding Rules):**
+1. **Tujuan Utama Murni Informational & Verifikasi Karir (Bukan Rule Pitch Jualan):** Bagian ini bertujuan mencari dan menyajikan informasi detail alumni beserta narasi perjalanan karir mereka, bukan sekadar menyusun template pitch jualan generik.
+2. **Wajib Menyusun Summary Perjalanan Karir (Minimal 250 Kata per Alumni):**
+   - Paparkan narasi perjalanan transformasi secara mendalam dan berbobot (titik awal dari nol/latar belakang non-IT/keraguan awal, proses belajar & jatuh bangun mengerjakan proyek di RevoU, peran bimbingan RevoU NEXT/Career Coach, hingga kesuksesan diterima kerja/promosi di perusahaan saat ini).
+3. **Wajib Menyertakan Hyperlink Aktif pada Setiap Kisah Alumni:**
+   - Setiap kisah alumni yang ditampilkan WAJIB memiliki tautan aktif yang bisa diklik (format Markdown `[Judul Kisah / Profil Alumni](URL)` atau URL resmi `https://revou.co/alumni-stories-list/...` / `https://revou.co/alumni`).
+4. **Hapus Sistem Variasi (Ganti dengan Ringkasan Singkat Salah Satu Alumni):**
+   - Hapus sistem 3 variasi script jualan. Ganti dengan satu **Ringkasan Singkat Salah Satu Alumni Terpilih (Featured Alumni Summary)** yang menceritakan intisari transformasi karirnya (3-5 kalimat) dan wajib menyertakan link/hyperlink aktif ke cerita/profil alumni bersangkutan.
 
 **Struktur Output Wajib (Checking Alumni):**
 ```markdown
-### 1. Alumni Matches & Social Proof Details
+### 1. Ringkasan Singkat Salah Satu Alumni Terpilih (Featured Alumni)
+- **Nama Alumni:** [Nama Alumni Terpilih]
+- **Ringkasan Singkat Perjalanan:** [Ringkasan 3-5 kalimat tentang transformasi karirnya dari latar belakang asal hingga sukses di industri]
+- **Tautan Validasi (Hyperlink Aktif):** [Link Cerita Alumni / LinkedIn / https://revou.co/alumni]
+
+### 2. Data Alumni Lengkap & Summary Perjalanan Karir (Min. 250 Kata per Alumni)
 - **Alumni 1:** [Nama Alumni] — [Program & Batch]
   - *Sebelum vs Sesudah:* [Role Lama] ➔ [Role Baru] di [Perusahaan]
   - *Prestasi Nyata:* [Salary Increase % / Hired Before Graduation / Promosi]
-  - *Tautan Validasi:* [Link LinkedIn / https://revou.co/alumni]
+  - *Summary Perjalanan Karir (Min. 250 Kata):* [Narasi lengkap perjalanan karir dari titik awal hingga sukses saat ini]
+  - *Tautan Validasi (Hyperlink Aktif):* [Link Cerita Alumni / LinkedIn / https://revou.co/alumni]
   - *Relevansi untuk Leads:* [Penjelasan kenapa kisah alumni ini relevan mematahkan keraguan leads]
 
-### 2. Strategic Approach for Sales
-[Saran cara membawa kisah alumni tanpa terkesan pamer/over-promising]
-
-### 3. Suggested WhatsApp Copy (Social Proof Driven) — 3 Variasi Wajib
-**Variasi 1 — [Angle Cerita Perjalanan Alumni Relevan]**
-> [Pesan WhatsApp 4-5 kalimat dengan kisah alumni + link validasi]
-
-**Variasi 2 — [Angle Bukti Kenaikan Gaji & Efisiensi Karir]**
-> [Pesan WhatsApp 4-5 kalimat + link validasi]
-
-**Variasi 3 — [Angle Portofolio Nyata & Hired Before Graduation]**
-> [Pesan WhatsApp 4-5 kalimat + link validasi]
+### 3. Strategic Consideration for Sales
+[Saran cara membawa data dan social proof alumni secara objektif, santai, dan non-intrusif]
 ```
 
 ---
