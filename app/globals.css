@@ -30,7 +30,10 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  h1, h2, h3, h4 {
+  h1,
+  h2,
+  h3,
+  h4 {
     font-family: "Red Hat Display", system-ui, -apple-system, sans-serif;
   }
 }
@@ -40,13 +43,89 @@
   width: 6px;
   height: 6px;
 }
+
 ::-webkit-scrollbar-track {
   background: transparent;
 }
+
 ::-webkit-scrollbar-thumb {
   background: #d9d9d4;
   border-radius: 9999px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: #8a8a84;
+}
+
+/* Tab animations and micro-interactions */
+@keyframes tabPop {
+  0% {
+    transform: scale(0.96);
+  }
+
+  50% {
+    transform: scale(1.04);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes iconWiggle {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+
+  25% {
+    transform: rotate(-12deg) scale(1.18);
+  }
+
+  50% {
+    transform: rotate(12deg) scale(1.15);
+  }
+
+  75% {
+    transform: rotate(-6deg) scale(1.08);
+  }
+
+  100% {
+    transform: rotate(0deg) scale(1);
+  }
+}
+
+@keyframes tabGlow {
+
+  0%,
+  100% {
+    box-shadow: 0 4px 14px -2px rgba(255, 216, 77, 0.45);
+  }
+
+  50% {
+    box-shadow: 0 6px 20px 0 rgba(255, 216, 77, 0.7);
+  }
+}
+
+@keyframes contentFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-tab-active {
+  animation: tabPop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), tabGlow 2.5s infinite ease-in-out;
+}
+
+.animate-icon-pop {
+  animation: iconWiggle 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.animate-tab-content {
+  animation: contentFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }

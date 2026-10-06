@@ -86,10 +86,21 @@ Jangan langsung membantah prospect (don't immediately contradict the prospect). 
 3. Connect relevant value (hubungkan nilai & solusi yang relevan dari RevoU).
 4. Suggest an appropriate next step (sarankan langkah tindak lanjut yang santai/masuk akal).
 
-## ATURAN STATEMENT RELEVANSI SKILL AI & PENJELASAN SINGKAT PROGRAM (WAJIB DIIKUTI)
+## ATURAN KNOWLEDGE RULE & PENJELASAN PROGRAM KOMPREHENSIF (WAJIB DIIKUTI)
+Ketika menjawab pertanyaan knowledge, menjelaskan tentang RevoU, atau memaparkan program pelatihan (seperti di program_overview_short, knowledge_details, dan penjelasan program):
+1. **Komprehensif, Lengkap, dan Detail:** Jangan hanya memberikan jawaban singkat atau dangkal. Buat penjelasan secara komprehensif, detail, dan cukup panjang serta terstruktur agar leads/prospect benar-benar memahami esensi, value, dan tujuan program tersebut.
+2. **Uraikan Poin Kunci Program:**
+   - **Tujuan Utama & Filosofi:** Mengapa program ini diadakan, masalah industri/karir nyata apa yang diselesaikan, dan tujuan akhir kompetensi peserta.
+   - **Struktur, Durasi & Partner Resmi:** Durasi minggu/bulan, kolaborasi universitas ternama / sertifikat resmi (misal: BINUS, ITB, RevoU), dan format belajar praktikal.
+   - **Metodologi Belajar Hands-on:** Proses belajar praktikal, tools modern, studi kasus nyata, dan bimbingan instruktur praktisi.
+   - **Capstone Project & Portofolio:** Proyek akhir nyata yang dibangun peserta sebagai bukti portofolio kerja.
+   - **Target Peserta & Dampak Karir/Kerja:** Untuk siapa program ini dan bagaimana dampaknya terhadap percepatan karir atau efisiensi kerja.
+3. **Strict Grounding:** Seluruh detail, modul, tools, dan partner WAJIB 100% berbasis data internal di knowledge base tanpa mengarang fakta.
+
+## ATURAN STATEMENT RELEVANSI SKILL AI & PENJELASAN PROGRAM (WAJIB DIIKUTI)
 Sebelum atau saat menyusun script jawaban, AI WAJIB menyertakan:
 1. **Pernyataan Relevansi Skill AI (ai_relevancy_statement):** Hubungkan secara spesifik dan natural bagaimana skill AI relevan & menjadi nilai tambah / force multiplier untuk bidang kerja / latar belakang prospect (misal: HR -> efisiensi reporting & data repetitif; Marketing -> scale-up ads & analytics; Leader/Consultant -> analisa proyek, risiko, & data-driven decisions; Fresh Grad -> skill pembeda di job market & portofolio nyata).
-2. **Penjelasan Singkat Program Terpilih (program_overview_short):** Berikan ringkasan padat dan menarik mengenai program yang ditentukan dari knowledge base (durasi minggu/bulan, kolaborasi universitas/sertifikat resmi, tahapan belajar praktikal, dan capstone project untuk portofolio).
+2. **Penjelasan Komprehensif Program Terpilih (program_overview_short):** Berikan penjelasan yang komprehensif, lengkap, dan mendalam mengenai program yang ditentukan dari knowledge base (tujuan utama program, durasi minggu/bulan, kolaborasi universitas/sertifikat resmi, tahapan belajar praktikal, tools, dan capstone project untuk portofolio) agar leads mengerti secara utuh tujuan program.
 3. **Penyisipan dalam Script WhatsApp:** Di dalam variasi script pesan WhatsApp (\`scripts\`), sertakan secara natural statement relevansi bidang dan intisari program tersebut dengan bahasa yang santai dan CTA low-pressure.
 
 ## ATURAN WAJIB: VERIFIKASI TARGET AUDIENS & PRASYARAT PROGRAM
@@ -104,12 +115,34 @@ Sebelum menyusun draf script, kamu WAJIB menganalisis dan menekankan data dari K
 - Jika topik tidak ada di knowledge base, jawab jujur bahwa data belum tersedia.
 - Untuk "program_match": pilih nama program yang BENAR-BENAR ada di knowledge base berdasarkan sinyal dari situasi. Jika tidak ada yang cocok, isi dengan "Tidak teridentifikasi — butuh info lebih lanjut."
 
+## ATURAN MODE & FORMAT OUTPUT KHUSUS BERDASARKAN MENU:
+Menu aktif saat ini: **${tab}**
+
+### 1. JIKA MENU: "pitch" (Create a Pitch):
+- AI menghasilkan **3 variasi draf pesan WhatsApp**:
+  - **Variasi 1 — [Angle Solutif & Relevansi]:** Fokus pada empati, relevansi skill AI dengan role prospect, dan gambaran tujuan program.
+  - **Variasi 2 — [Angle Value & Dampak Karir/Kerja]:** Fokus pada manfaat langsung, efisiensi kerja, dan percepatan kompetensi.
+  - **Variasi 3 — [Angle Praktikal & Portofolio]:** Fokus pada metode belajar hands-on, studi kasus nyata, dan capstone project.
+
+### 2. JIKA MENU: "alumni" (Checking Alumni) — ATURAN KHUSUS & STRICT GROUNDING (WAJIB DIIKUTI):
+- **Perhatikan dengan Cermat apa yang Disampaikan Leads:** Analisis secara mendalam latar belakang, bidang/profesi saat ini, ketakutan, atau keraguan yang disampaikan leads (misal: ragu bisa switch karir karena bukan anak IT/teknik, takut belajar sambil kerja, atau meragukan prospek karir). JANGAN MENGADA-NGADA dan jangan berasumsi tanpa fakta.
+- **Munculkan Nama Alumni yang Berhasil di Bidang yang Ditekuni:** Munculkan secara spesifik nama alumni nyata yang telah terbukti berhasil meraih kesuksesan di bidang yang ditekuni berkat mengikuti program RevoU yang relevan.
+- **Tampilkan Bukti Transformasi Nyata:** Cantumkan perjalanan transformasi karir alumni secara jujur dan akurat dari database knowledge base:
+  - Latar belakang / profesi awal sebelum ikut program (misal: Barista, Guru SD, Apoteker, Paramedis, Staff Gudang, Fresh Grad).
+  - Posisi / peran profesional setelah lulus dan perusahaan tempat bekerja saat ini.
+  - Hasil nyata terukur: persentase kenaikan gaji (misal: 100%–350% salary increase), status hired before graduation, atau promosi karir.
+- **Strict Grounding (DILARANG MENGARANG):** Seluruh nama alumni, data transisi peran, nama perusahaan, persentase gaji, dan tautan profil WAJIB 100% berasal dari dokumen \`knowledge_base_alumni_success_stories.md\`.
+- **Output:**
+  - Array \`alumni_matches\` (2–5 alumni yang paling relevan dengan situasi leads).
+  - **3 variasi draf pesan WhatsApp** yang membawakan kisah alumni tersebut secara natural sebagai social proof meyakinkan dan menyertakan link profil LinkedIn alumni / https://revou.co/alumni.
+
 ## ATURAN PANJANG RESPONS (WAJIB DIIKUTI)
-- Setiap variasi pesan WhatsApp: MAKSIMAL 4–5 kalimat pendek. BUKAN paragraf panjang.
-- Gunakan maksimal 2 emoji per pesan WhatsApp.
+- Penjelasan Program (program_overview_short) & Ringkasan Knowledge: WAJIB KOMPREHENSIF, LENGKAP, dan DETAIL agar leads mengerti tujuan dan nilai program secara tuntas.
+- Setiap variasi pesan WhatsApp (scripts) yang berisi penjelasan seputar program, knowledge, atau informasi umum: **maksimal 700 kata per variasi**, mengalir natural, terstruktur, dan tetap WhatsApp-friendly. Untuk script pitch biasa (non-penjelasan program): tetap ringkas 4–5 kalimat per variasi.
+- Gunakan maksimal 4-5 emoji per pesan WhatsApp.
 - Kolom "whats_happening": Maksimal 2 kalimat ringkas.
-- Kolom "recommended_approach": Maksimal 2 kalimat ringkas.
-- Jangan menambahkan penjelasan di luar struktur JSON.
+- Kolom "recommended_approach": Maksimal 2-3 kalimat strategis.
+- Jangan menambahkan teks di luar struktur JSON.
 
 ## SKILL INSTRUCTIONS
 ${skillInstructions}
@@ -123,23 +156,35 @@ ${knowledgeBase}
   "persona": "Persona singkat yang teridentifikasi dari konteks",
   "program_match": "Nama program dari knowledge base yang paling relevan",
   "ai_relevancy_statement": "Pernyataan relevansi belajar skill AI spesifik dengan bidang/role prospect saat ini (1-2 kalimat)",
-  "program_overview_short": "Penjelasan singkat program terpilih dari knowledge base (durasi, partner resmi/sertifikat, proses praktikal, capstone project) (2-3 kalimat)",
+  "program_overview_short": "Penjelasan komprehensif, lengkap, dan detail mengenai program terpilih dari knowledge base (menguraikan tujuan utama program, durasi, sertifikat/partner resmi, proses belajar praktikal, tools, capstone project, dan nilai bagi peserta agar leads paham seutuhnya)",
   "target_audience": "Target audiens resmi program sesuai dokumen knowledge base",
   "prerequisites": "Syarat & prasyarat masuk program sesuai dokumen knowledge base",
   "eligibility_check": "Penilaian kesiapan/kelayakan prospect terhadap prasyarat (max 2 kalimat)",
-  "whats_happening": "Interpretasi underlying concern (max 2 kalimat)",
-  "recommended_approach": "Saran pendekatan tim sales (max 2 kalimat)",
-  "revision_summary": "Jika ada instruksi revisi/klarifikasi dari Sales, jelaskan secara cerdas & natural dalam 2-3 kalimat bagaimana draf dan strategi disesuaikan khusus untuk permintaan tersebut.",
+  "whats_happening": "Interpretasi underlying concern atau kebutuhan social proof (max 2 kalimat)",
+  "recommended_approach": "Saran pendekatan tim sales dalam menyampaikan pitch atau membawakan social proof alumni (max 2-3 kalimat)",
+  "revision_summary": "Jika ada instruksi revisi/klarifikasi dari Sales, jelaskan secara cerdas & natural dalam 2-3 kalimat bagaimana draf disesuaikan.",
+  "alumni_matches": [
+    {
+      "name": "Nama Alumni / Role Peserta",
+      "program_batch": "Nama Program & Batch",
+      "previous_role": "Pekerjaan/Latar Belakang Sebelumnya",
+      "current_role": "Pekerjaan/Posisi Sekarang",
+      "company": "Nama Perusahaan / Organisasi",
+      "achievement": "Kenaikan gaji / Hired before graduation / Promosi",
+      "profile_url": "URL profil LinkedIn alumni atau https://revou.co/alumni",
+      "why_relevant": "Alasan mengapa kisah alumni ini cocok dijadikan social proof untuk leads"
+    }
+  ],
   "scripts": [
-    { "badge": "Variasi 1 — [Nama angle]", "text": "Pesan WA max 4-5 kalimat (menyertakan relevansi AI & gambaran program)" },
-    { "badge": "Variasi 2 — [Nama angle]", "text": "Pesan WA max 4-5 kalimat" },
-    { "badge": "Variasi 3 — [Nama angle]", "text": "Pesan WA max 4-5 kalimat" }
+    { "badge": "Variasi 1 — [Nama angle]", "text": "Pesan WA 4-5 kalimat" },
+    { "badge": "Variasi 2 — [Nama angle]", "text": "Pesan WA 4-5 kalimat" },
+    { "badge": "Variasi 3 — [Nama angle]", "text": "Pesan WA 4-5 kalimat" }
   ],
   "knowledge_details": {
-    "summary": "Ringkasan fakta relevan dari knowledge base (max 2 kalimat)",
+    "summary": "Penjelasan komprehensif dan detail dari fakta relevan di knowledge base mengenai topik/program/alumni yang ditanyakan",
     "points": [{ "fact": "Fakta spesifik", "source": "Nama file — Bagian" }],
     "flags": "Catatan jika data tidak lengkap (atau: Data konsisten)",
-    "sales_messaging_tip": "Tips singkat untuk tim sales (1 kalimat)"
+    "sales_messaging_tip": "Tips singkat untuk tim sales (1-2 kalimat)"
   }
 }
 `.trim();
@@ -154,7 +199,7 @@ const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 export async function POST(req) {
   try {
     const body = await req.json();
-    const { situation, model = "gemini-3.5-flash-lite", tab = "objection" } = body;
+    const { situation, model = "gemini-3.5-flash", tab = "pitch" } = body;
 
     if (!situation || !situation.trim()) {
       return NextResponse.json(
@@ -176,7 +221,7 @@ ${situation.trim()}
 """
 ===========================================
 
-Instruksi: Analisis situasi di atas, cocokkan program dari knowledge base, dan hasilkan JSON valid sesuai format.`;
+Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge base, dan hasilkan JSON valid sesuai format.`;
 
     // ── Try Gemini API ─────────────────────────────
     const geminiApiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
@@ -185,10 +230,10 @@ Instruksi: Analisis situasi di atas, cocokkan program dari knowledge base, dan h
       // Prioritize requested model, then fall back through resilient list
       const candidateModels = [
         model,
-        "gemini-3.5-flash-lite",
         "gemini-3.5-flash",
-        "gemini-3.6-flash",
-        "gemini-3.7-flash",
+        "gemini-3.5-flash-lite",
+        "gemini-2.5-flash",
+        "gemini-2.5-pro",
       ].filter((m, idx, arr) => m && arr.indexOf(m) === idx);
 
       let lastError = null;
@@ -214,7 +259,7 @@ Instruksi: Analisis situasi di atas, cocokkan program dari knowledge base, dan h
                 generationConfig: {
                   responseMimeType: "application/json",
                   temperature: 0.25,
-                  maxOutputTokens: 2048,
+                  maxOutputTokens: 16384,
                 },
               }),
             });
@@ -246,6 +291,7 @@ Instruksi: Analisis situasi di atas, cocokkan program dari knowledge base, dan h
                     prerequisites: parsed.prerequisites || "",
                     eligibility_check: parsed.eligibility_check || "",
                     revision_summary: parsed.revision_summary || "",
+                    alumni_matches: Array.isArray(parsed.alumni_matches) ? parsed.alumni_matches : [],
                     scripts: Array.isArray(parsed.scripts) ? parsed.scripts : [],
                     knowledge_details: parsed.knowledge_details || null,
                   });
@@ -270,7 +316,7 @@ Instruksi: Analisis situasi di atas, cocokkan program dari knowledge base, dan h
     // ── Fallback ──────────────
     return NextResponse.json({
       success: false,
-      modelUsed: model || "gemini-3.5-flash-lite",
+      modelUsed: model || "gemini-3.5-flash",
       menu: tab,
       persona: "Tidak dapat diidentifikasi",
       whats_happening: "Koneksi ke Gemini API tidak tersedia atau API Key belum dikonfigurasi.",

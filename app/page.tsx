@@ -18,10 +18,68 @@ import {
   UserCheck,
   ShieldCheck,
   Lightbulb,
-  AlertCircle
+  AlertCircle,
+  ExternalLink
 } from "lucide-react";
 
-type ModeKey = "pitch";
+// Helper to render text with clickable hyperlinks (supports markdown [text](url) and raw URLs)
+function renderFormattedTextWithLinks(text: string) {
+  if (!text) return null;
+
+  const regex = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)|(https?:\/\/[^\s<>"'{}|\\^`[\]()]+)/g;
+  const elements: React.ReactNode[] = [];
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+
+  while ((match = regex.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      elements.push(text.slice(lastIndex, match.index));
+    }
+
+    if (match[1] && match[2]) {
+      const label = match[1];
+      const url = match[2];
+      elements.push(
+        <a
+          key={match.index}
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[#0E62FE] hover:text-[#0043CE] underline font-semibold inline-flex items-center gap-0.5 transition-colors"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <span>{label}</span>
+          <ExternalLink className="w-3 h-3 inline shrink-0 opacity-80" />
+        </a>
+      );
+    } else if (match[3]) {
+      const url = match[3];
+      elements.push(
+        <a
+          key={match.index}
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[#0E62FE] hover:text-[#0043CE] underline font-semibold break-all inline-flex items-center gap-0.5 transition-colors"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <span>{url}</span>
+          <ExternalLink className="w-3 h-3 inline shrink-0 opacity-80" />
+        </a>
+      );
+    }
+
+    lastIndex = regex.lastIndex;
+  }
+
+  if (lastIndex < text.length) {
+    elements.push(text.slice(lastIndex));
+  }
+
+  return elements;
+}
+
+type ModeKey = "pitch" | "alumni";
 
 interface ModeConfig {
   title: string;
@@ -46,16 +104,31 @@ const MODES: Record<ModeKey, ModeConfig> = {
       "Akuntan lulusan Ilmu Komputer, mau career switch ke Data Analytics.",
     ],
   },
+  alumni: {
+    title: "Checking Alumni",
+    lead: "Cari data alumni RevoU (kisah sukses, kenaikan gaji, switch karir, & perusahaan asal) untuk social proof saat menjawab keraguan leads.",
+    template: "Tulis: latar belakang/profesi/keraguan leads atau perusahaan yang dicari",
+    placeholder: "Contoh: Prospect seorang Barista/Guru yang ragu apakah bisa switch karir ke Digital Marketing/Data. Ada alumni relevan?",
+    examples: [
+      "Prospect seorang Barista yang ragu apakah bisa switch karir ke Digital Marketing.",
+      "Cari alumni dari latar belakang Non-IT (Guru SD / Apoteker / Paramedis) yang berhasil switch ke Data Analytics.",
+      "Ada alumni atau peserta program dari perusahaan BUMN, Pertamina, atau Industri Migas?",
+      "Cari alumni dengan kenaikan gaji (salary increase) di atas 100% di bidang Digital Marketing.",
+      "Leads tanya apakah ada yang berhasil hired before graduation di program Data Analytics.",
+      "Peserta dari institusi pemerintahan atau perbankan (Bank Syariah/Permata/Kemenkeu).",
+    ],
+  },
 };
 
 const availableModels = [
-  { id: "gemini-3.5-flash", name: "Gemini 3.5 Flash (Fast & Stable - Default)" },
-  { id: "gemini-3.6-flash", name: "Gemini 3.6 Flash (High Performance)" },
-  { id: "gemini-3.7-flash", name: "Gemini 3.7 Flash (Ultra Fast)" },
+  { id: "gemini-3.5-flash", name: "Gemini 3.5 Flash (Fast & Capable - Default)" },
+  { id: "gemini-3.5-flash-lite", name: "Gemini 3.5 Flash Lite (Lightest)" },
+  { id: "gemini-2.5-flash", name: "Gemini 2.5 Flash (Stable)" },
+  { id: "gemini-2.5-pro", name: "Gemini 2.5 Pro (Most Capable)" },
 ];
 
 export default function DashboardPage() {
-  const [mode] = useState<ModeKey>("pitch");
+  const [mode, setMode] = useState<ModeKey>("pitch");
   const [selectedModel, setSelectedModel] = useState("gemini-3.5-flash");
   const [inputText, setInputText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -83,6 +156,17 @@ export default function DashboardPage() {
   const curConfig = MODES[mode];
 
   const handleClear = () => {
+    setInputText("");
+    setResponseResult(null);
+    setErrorMessage(null);
+    setChatThread([]);
+    setClarificationTabs({});
+    setActiveScriptTab(0);
+  };
+
+  const handleModeChange = (newMode: ModeKey) => {
+    if (newMode === mode) return;
+    setMode(newMode);
     setInputText("");
     setResponseResult(null);
     setErrorMessage(null);
@@ -145,8 +229,24 @@ export default function DashboardPage() {
     setIsChatLoading(true);
 
     try {
-      // Build conversation context without destroying initial prompt
-      const promptCombined = `Situasi Awal:\n"""\n${inputText}\n"""\n\nInstruksi Revisi/Klarifikasi dari AC:\n"""\n${q}\n"""`;
+      // Build full conversation context including initial result + chat history
+      const initialResultSummary = responseResult ? JSON.stringify({
+        persona: responseResult.persona,
+        program_match: responseResult.program_match,
+        ai_relevancy_statement: responseResult.ai_relevancy_statement,
+        program_overview_short: responseResult.program_overview_short,
+        whats_happening: responseResult.whats_happening,
+        recommended_approach: responseResult.recommended_approach,
+        scripts: responseResult.scripts?.map((s: any) => ({ badge: s.badge, text: s.text?.slice(0, 200) + "..." })),
+      }, null, 2) : "";
+
+      // Build chat history context
+      const chatHistoryContext = newThread
+        .filter((msg) => msg.id !== userMsgId) // exclude current message
+        .map((msg) => `[${msg.role === "user" ? "Sales" : "AI"}]: ${msg.text}`)
+        .join("\n");
+
+      const promptCombined = `Situasi Awal dari Tim Sales:\n"""\n${inputText}\n"""\n\n=== HASIL GENERATE PERTAMA (JADIKAN ACUAN UTAMA) ===\n${initialResultSummary}\n\n${chatHistoryContext ? `=== RIWAYAT PERCAKAPAN SEBELUMNYA ===\n${chatHistoryContext}\n\n` : ""}=== INSTRUKSI REVISI/KLARIFIKASI TERBARU DARI SALES ===\n"""\n${q}\n"""\n\nINSTRUKSI PENTING: Jawaban revisi WAJIB tetap selaras dan konsisten dengan hasil generate pertama di atas (persona, program_match, dan konteks yang sama). Jangan mengubah program atau persona kecuali Sales secara eksplisit meminta perubahan. Sesuaikan HANYA bagian yang diminta untuk direvisi, pertahankan sisanya.`;
       const res = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -263,6 +363,34 @@ export default function DashboardPage() {
         {/* 2. MAIN CARD WORKSPACE (.card.work)                       */}
         {/* ========================================================= */}
         <section className="bg-white border border-[#E8E8E4] rounded-[14px] p-5 sm:p-6 shadow-[0_1px_3px_rgba(20,20,18,0.05),0_4px_16px_rgba(20,20,18,0.04)] space-y-6">
+          {/* Start Menu Tabs (Create a Pitch vs Checking Alumni) */}
+          <div className="flex border-b border-[#E8E8E4] pb-px gap-2.5 overflow-x-auto">
+            <button
+              type="button"
+              onClick={() => handleModeChange("pitch")}
+              className={`group flex items-center gap-2 px-4 py-2.5 text-xs sm:text-sm font-bold rounded-t-xl transition-all duration-200 border-b-2 cursor-pointer shrink-0 active:scale-95 select-none ${
+                mode === "pitch"
+                  ? "bg-[#FFF6D1] text-[#141412] border-[#FFD84D] shadow-[0_2px_8px_rgba(255,216,77,0.35)] animate-tab-active"
+                  : "text-[#8A8A84] hover:text-[#141412] hover:bg-[#F5F5F2] hover:scale-[1.02] border-transparent"
+              }`}
+            >
+              <Sparkles className={`w-4 h-4 transition-transform duration-300 group-hover:rotate-12 ${mode === "pitch" ? "text-[#A15C00] animate-icon-pop" : "text-[#8A8A84]"}`} />
+              <span className="transition-colors">Create a Pitch</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => handleModeChange("alumni")}
+              className={`group flex items-center gap-2 px-4 py-2.5 text-xs sm:text-sm font-bold rounded-t-xl transition-all duration-200 border-b-2 cursor-pointer shrink-0 active:scale-95 select-none ${
+                mode === "alumni"
+                  ? "bg-[#FFF6D1] text-[#141412] border-[#FFD84D] shadow-[0_2px_8px_rgba(255,216,77,0.35)] animate-tab-active"
+                  : "text-[#8A8A84] hover:text-[#141412] hover:bg-[#F5F5F2] hover:scale-[1.02] border-transparent"
+              }`}
+            >
+              <UserCheck className={`w-4 h-4 transition-transform duration-300 group-hover:scale-110 ${mode === "alumni" ? "text-[#A15C00] animate-icon-pop" : "text-[#8A8A84]"}`} />
+              <span className="transition-colors">Checking Alumni</span>
+            </button>
+          </div>
+
           {/* Describe Your Situation Section */}
           <div>
             <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 mb-2">
@@ -270,7 +398,7 @@ export default function DashboardPage() {
                 htmlFor="situation-input"
                 className="font-bold text-[14.5px] text-[#141412] block"
               >
-                Describe your situation
+                {mode === "pitch" ? "Describe your situation" : "Cari data alumni / latar belakang leads"}
               </label>
 
               {/* Model Selector Pill */}
@@ -291,8 +419,8 @@ export default function DashboardPage() {
             </div>
 
             {/* Mode Line: Pill + Lead */}
-            <div className="flex flex-wrap gap-2 items-baseline mb-2">
-              <span className="font-mono text-[11px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#FFD84D] text-[#141412] font-semibold">
+            <div key={mode} className="flex flex-wrap gap-2 items-baseline mb-2 animate-tab-content">
+              <span className="font-mono text-[11px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#FFD84D] text-[#141412] font-semibold shadow-2xs">
                 {curConfig.title}
               </span>
               <span className="text-[13px] text-[#8A8A84] leading-relaxed">
@@ -435,6 +563,90 @@ export default function DashboardPage() {
                   </div>
                 </div>
 
+                {/* ALUMNI MATCHES CARDS GRID (When in Checking Alumni mode or when alumni_matches present) */}
+                {responseResult.alumni_matches && responseResult.alumni_matches.length > 0 && (
+                  <div className="space-y-3 pt-1">
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-2 font-display font-bold text-xs uppercase tracking-wider text-[#1F7A4D]">
+                        <UserCheck className="w-3.5 h-3.5 text-[#1F7A4D]" />
+                        <span>Data Alumni & Bukti Nyata ({responseResult.alumni_matches.length} Profil Ditemukan)</span>
+                      </div>
+                      <a
+                        href="https://revou.co/alumni"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-mono text-[11px] text-[#0E62FE] hover:underline inline-flex items-center gap-1 font-semibold"
+                      >
+                        <span>Direktori Lengkap Alumni</span>
+                        <ExternalLink className="w-3 h-3" />
+                      </a>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {responseResult.alumni_matches.map((alumni: any, i: number) => (
+                        <div
+                          key={i}
+                          className="bg-[#FFFFFF] p-4 rounded-xl border border-[#E8E8E4] space-y-2.5 shadow-2xs hover:border-[#D9D9D4] transition-all flex flex-col justify-between"
+                        >
+                          <div className="space-y-2">
+                            <div className="flex items-start justify-between gap-2">
+                              <div>
+                                <h4 className="font-bold text-[14.5px] text-[#141412] leading-tight">
+                                  {alumni.name}
+                                </h4>
+                                <p className="text-xs text-[#8A8A84] font-medium mt-0.5">
+                                  {alumni.program_batch}
+                                </p>
+                              </div>
+                              {alumni.achievement && (
+                                <span className="font-mono text-[10.5px] px-2 py-0.5 rounded-full bg-[#EBF7EE] text-[#1F7A4D] font-bold shrink-0 border border-[#D4EDDA]">
+                                  {alumni.achievement}
+                                </span>
+                              )}
+                            </div>
+
+                            <div className="text-xs text-[#4B4B46] space-y-1.5 bg-[#F5F5F2] p-2.5 rounded-lg border border-[#E8E8E4]/70">
+                              {alumni.previous_role && (
+                                <div>
+                                  <span className="text-[#8A8A84] font-medium">Sebelum: </span>
+                                  <span className="font-semibold text-[#141412]">{alumni.previous_role}</span>
+                                </div>
+                              )}
+                              {alumni.current_role && (
+                                <div>
+                                  <span className="text-[#8A8A84] font-medium">Sekarang: </span>
+                                  <span className="font-semibold text-[#1F7A4D]">{alumni.current_role}</span>
+                                  {alumni.company && <span className="text-[#4B4B46]"> · {alumni.company}</span>}
+                                </div>
+                              )}
+                            </div>
+
+                            {alumni.why_relevant && (
+                              <p className="text-xs text-[#4B4B46] leading-relaxed">
+                                💡 <span className="font-medium">{alumni.why_relevant}</span>
+                              </p>
+                            )}
+                          </div>
+
+                          {alumni.profile_url && (
+                            <div className="pt-2 border-t border-[#E8E8E4]">
+                              <a
+                                href={alumni.profile_url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-xs font-semibold text-[#0E62FE] hover:text-[#0043CE] inline-flex items-center gap-1 transition-colors"
+                              >
+                                <span>Lihat Profil LinkedIn / Bukti Alumni</span>
+                                <ExternalLink className="w-3.5 h-3.5 inline" />
+                              </a>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 {/* Target Audience & Prerequisites — hidden per request */}
 
                 {/* Relevancy Statement Skill AI dengan Bidang Leads */}
@@ -445,20 +657,20 @@ export default function DashboardPage() {
                       <span>Relevansi Skill AI dengan Bidang / Pekerjaan Prospect</span>
                     </div>
                     <p className="text-sm text-[#141412] leading-relaxed font-medium">
-                      {responseResult.ai_relevancy_statement}
+                      {renderFormattedTextWithLinks(responseResult.ai_relevancy_statement)}
                     </p>
                   </div>
                 )}
 
-                {/* Penjelasan Singkat Program Terpilih */}
+                {/* Penjelasan Komprehensif Program & Tujuan Pelatihan */}
                 {responseResult.program_overview_short && (
                   <div className="bg-[#F5F5F2] p-4 sm:p-5 rounded-xl border border-[#E8E8E4] space-y-1.5">
                     <div className="flex items-center gap-2 font-display font-bold text-xs uppercase tracking-wider text-[#1F7A4D]">
                       <BookOpen className="w-3.5 h-3.5 text-[#1F7A4D]" />
-                      <span>Penjelasan Singkat Program Terpilih: {responseResult.program_match || "RevoU Program"}</span>
+                      <span>Penjelasan Program & Tujuan Pelatihan: {responseResult.program_match || "RevoU Program"}</span>
                     </div>
                     <p className="text-sm text-[#4B4B46] leading-relaxed font-medium">
-                      {responseResult.program_overview_short}
+                      {renderFormattedTextWithLinks(responseResult.program_overview_short)}
                     </p>
                   </div>
                 )}
@@ -517,7 +729,7 @@ export default function DashboardPage() {
                       </div>
 
                       <blockquote className="whitespace-pre-line text-[#141412] font-normal leading-relaxed pb-8">
-                        {responseResult.scripts[activeScriptTab].text}
+                        {renderFormattedTextWithLinks(responseResult.scripts[activeScriptTab].text)}
                       </blockquote>
 
                       {/* Floating Copy Button */}
@@ -785,7 +997,7 @@ export default function DashboardPage() {
                                   </div>
 
                                   <blockquote className="whitespace-pre-line text-[#141412] font-normal leading-relaxed pb-8">
-                                    {scripts[currentTab].text}
+                                    {renderFormattedTextWithLinks(scripts[currentTab].text)}
                                   </blockquote>
 
                                   {/* Copy Button */}
