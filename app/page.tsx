@@ -110,7 +110,6 @@ const MODES: Record<ModeKey, ModeConfig> = {
     template: "Tulis: latar belakang/profesi/keraguan leads atau profil alumni yang dicari",
     placeholder: "Contoh: Prospect seorang Dokter/Guru/Lulusan SMA yang ragu apakah bisa switch karir ke Tech/Data/Digital Marketing. Ada profil alumni relevan?",
     examples: [
-      "Prospect seorang Dokter yang ingin switch karir ke Tech/Product Management.",
       "Cari alumni mantan Atlet atau lulusan Non-IT yang sukses beralih ke Digital Marketing.",
       "Alumni lulusan SMA tanpa pengalaman kerja yang sukses jadi Meta Ads Specialist.",
       "Alumni ibu rumah tangga usia 30+ atau yang pernah career break dan sukses bekerja remote.",
@@ -353,8 +352,12 @@ INSTRUKSI PENTING:
         {/* ========================================================= */}
         <header className="mb-6">
           <div className="flex items-center gap-3.5 mb-3.5">
-            <div className="w-14 h-14 rounded-full bg-[#FFD84D] flex items-center justify-center font-display font-black text-xl text-[#141412] shadow-sm shrink-0">
-              AI
+            <div className="w-14 h-14 rounded-full overflow-hidden shadow-sm shrink-0 border border-[#FFD84D] bg-[#FFD84D] flex items-center justify-center">
+              <img
+                src="/revou-logo.png"
+                alt="RevoU Logo"
+                className="w-full h-full object-cover"
+              />
             </div>
             <div>
               <p className="font-mono text-xs tracking-wider uppercase text-[#8A8A84] m-0">
@@ -376,13 +379,17 @@ INSTRUKSI PENTING:
 
           {/* Greeting Bubble Section */}
           <div className="flex gap-2.5 items-start mt-4 mb-5">
-            <div className="w-8 h-8 rounded-full bg-[#FFD84D] flex items-center justify-center font-display font-bold text-xs text-[#141412] shrink-0 mt-0.5">
-              👋
+            <div className="w-8 h-8 rounded-full overflow-hidden shadow-2xs shrink-0 mt-0.5 border border-[#FFD84D] bg-[#FFD84D] flex items-center justify-center">
+              <img
+                src="/revou-logo.png"
+                alt="RevoU Logo"
+                className="w-full h-full object-cover"
+              />
             </div>
             <div className="bg-[#FFF6D1] rounded-tr-[14px] rounded-br-[14px] rounded-bl-[14px] rounded-tl-[4px] p-3 sm:px-4 sm:py-2.5 max-w-[620px] text-sm text-[#141412] shadow-2xs">
               <p className="font-bold mb-0.5">Hi! Aku Admission Assistant 👋</p>
               <p className="leading-relaxed">
-                Aku siap bantu kamu menyusun <strong>pitch personal</strong> yang menghubungkan modul program RevoU ke kebutuhan riil dan konteks harian prospect.
+                Aku siap bantu kamu menyusun <strong>pitch personal</strong> yang menghubungkan modul program RevoU ke kebutuhan riil dan konteks harian prospect dan juga <strong>mencari data alumni</strong> RevoU untuk dijadikan social proof faktual.
               </p>
             </div>
           </div>
@@ -398,8 +405,8 @@ INSTRUKSI PENTING:
               type="button"
               onClick={() => handleModeChange("pitch")}
               className={`group flex items-center gap-2 px-4 py-2.5 text-xs sm:text-sm font-bold rounded-t-xl transition-all duration-200 border-b-2 cursor-pointer shrink-0 active:scale-95 select-none ${mode === "pitch"
-                  ? "bg-[#FFF6D1] text-[#141412] border-[#FFD84D] shadow-[0_2px_8px_rgba(255,216,77,0.35)] animate-tab-active"
-                  : "text-[#8A8A84] hover:text-[#141412] hover:bg-[#F5F5F2] hover:scale-[1.02] border-transparent"
+                ? "bg-[#FFF6D1] text-[#141412] border-[#FFD84D] shadow-[0_2px_8px_rgba(255,216,77,0.35)] animate-tab-active"
+                : "text-[#8A8A84] hover:text-[#141412] hover:bg-[#F5F5F2] hover:scale-[1.02] border-transparent"
                 }`}
             >
               <Sparkles className={`w-4 h-4 transition-transform duration-300 group-hover:rotate-12 ${mode === "pitch" ? "text-[#A15C00] animate-icon-pop" : "text-[#8A8A84]"}`} />
@@ -409,8 +416,8 @@ INSTRUKSI PENTING:
               type="button"
               onClick={() => handleModeChange("alumni")}
               className={`group flex items-center gap-2 px-4 py-2.5 text-xs sm:text-sm font-bold rounded-t-xl transition-all duration-200 border-b-2 cursor-pointer shrink-0 active:scale-95 select-none ${mode === "alumni"
-                  ? "bg-[#FFF6D1] text-[#141412] border-[#FFD84D] shadow-[0_2px_8px_rgba(255,216,77,0.35)] animate-tab-active"
-                  : "text-[#8A8A84] hover:text-[#141412] hover:bg-[#F5F5F2] hover:scale-[1.02] border-transparent"
+                ? "bg-[#FFF6D1] text-[#141412] border-[#FFD84D] shadow-[0_2px_8px_rgba(255,216,77,0.35)] animate-tab-active"
+                : "text-[#8A8A84] hover:text-[#141412] hover:bg-[#F5F5F2] hover:scale-[1.02] border-transparent"
                 }`}
             >
               <UserCheck className={`w-4 h-4 transition-transform duration-300 group-hover:scale-110 ${mode === "alumni" ? "text-[#A15C00] animate-icon-pop" : "text-[#8A8A84]"}`} />
@@ -486,8 +493,8 @@ INSTRUKSI PENTING:
               disabled={isLoading || !inputText.trim()}
               onClick={handleGenerate}
               className={`inline-flex items-center gap-2 font-display font-bold text-base px-5 py-3 rounded-[10px] transition-all cursor-pointer ${!inputText.trim() || isLoading
-                  ? "bg-[#FFD84D]/70 text-[#141412]/60 cursor-not-allowed border border-transparent"
-                  : "bg-[#FFD84D] hover:bg-[#FFCC1A] text-[#141412] border border-[#FFD84D] active:scale-98 shadow-sm"
+                ? "bg-[#FFD84D]/70 text-[#141412]/60 cursor-not-allowed border border-transparent"
+                : "bg-[#FFD84D] hover:bg-[#FFCC1A] text-[#141412] border border-[#FFD84D] active:scale-98 shadow-sm"
                 }`}
             >
               {isLoading ? (
@@ -727,8 +734,8 @@ INSTRUKSI PENTING:
                           type="button"
                           onClick={() => setActiveScriptTab(idx)}
                           className={`px-3.5 py-2 text-xs font-semibold rounded-t-lg transition-all border-b-2 whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${isActive
-                              ? "bg-[#F5F5F2] text-[#141412] border-[#FFD84D] font-bold"
-                              : "text-[#8A8A84] hover:text-[#141412] hover:bg-[#F5F5F2]/60 border-transparent"
+                            ? "bg-[#F5F5F2] text-[#141412] border-[#FFD84D] font-bold"
+                            : "text-[#8A8A84] hover:text-[#141412] hover:bg-[#F5F5F2]/60 border-transparent"
                             }`}
                         >
                           <span className={`w-2 h-2 rounded-full ${isActive ? "bg-[#FFCC1A]" : "bg-[#D9D9D4]"}`} />
@@ -922,8 +929,12 @@ INSTRUKSI PENTING:
                           {/* Header */}
                           <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#E8E8E4] pb-3">
                             <div className="flex items-center gap-2">
-                              <div className="w-6 h-6 rounded-full bg-[#FFD84D] flex items-center justify-center font-bold text-xs text-[#141412]">
-                                <Sparkles className="w-3.5 h-3.5" />
+                              <div className="w-6 h-6 rounded-full overflow-hidden border border-[#FFD84D] bg-[#FFD84D] shrink-0 flex items-center justify-center">
+                                <img
+                                  src="/revou-logo.png"
+                                  alt="RevoU AI"
+                                  className="w-full h-full object-cover"
+                                />
                               </div>
                               <span className="font-display font-bold text-sm text-[#141412]">
                                 Tanggapan & Penyesuaian AI
@@ -1090,8 +1101,8 @@ INSTRUKSI PENTING:
                                         setClarificationTabs((prev) => ({ ...prev, [msg.id]: idx }))
                                       }
                                       className={`px-3 py-1.5 text-xs font-semibold rounded-t-lg transition-all border-b-2 whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${isActive
-                                          ? "bg-[#F5F5F2] text-[#141412] border-[#FFD84D] font-bold"
-                                          : "text-[#8A8A84] hover:text-[#141412] hover:bg-[#F5F5F2]/60 border-transparent"
+                                        ? "bg-[#F5F5F2] text-[#141412] border-[#FFD84D] font-bold"
+                                        : "text-[#8A8A84] hover:text-[#141412] hover:bg-[#F5F5F2]/60 border-transparent"
                                         }`}
                                     >
                                       <span

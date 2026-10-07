@@ -4,6 +4,14 @@ import './globals.css';
 export const metadata: Metadata = {
   title: 'Admission Assistant · RevoU AI Sales Copilot',
   description: 'Turn prospect context into a better pitch. Grounded on RevoU Knowledge Base.',
+  icons: {
+    icon: [
+      { url: '/revou-logo.png', type: 'image/png' },
+      { url: '/favicon.ico' },
+    ],
+    shortcut: '/revou-logo.png',
+    apple: '/revou-logo.png',
+  },
 };
 
 export default function RootLayout({
@@ -14,6 +22,8 @@ export default function RootLayout({
   return (
     <html lang="id">
       <head>
+        <link rel="icon" href="/revou-logo.png" type="image/png" />
+        <link rel="apple-touch-icon" href="/revou-logo.png" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
