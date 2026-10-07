@@ -204,6 +204,7 @@ Saat menyusun pesan social proof alumni:
 1. **Cocokkan Profil:** Pilih cerita alumni yang memiliki kemiripan latar belakang atau ketakutan yang sama dengan leads (misal: leads takut karena bukan dari IT -> ceritakan Barista/Guru SD/Apoteker yang sukses beralih karir).
 2. **Sebutkan Fakta Spesifik & Link:** Cantumkan nama alumni atau transformasi role sebelumnya vs sesudahnya, persentase kenaikan gaji / status hired before graduation, dan **sertakan tautan artikel cerita resmi alumni ([https://www.revou.co/alumni-stories/...](https://www.revou.co/alumni)) atau direktori resmi [Direktori Alumni RevoU](https://www.revou.co/alumni)** di akhir pesan agar leads bisa langsung memvalidasi buktinya.
 3. **Format Chat Santai:** Jaga panjang pesan tetap 4–5 kalimat WhatsApp-friendly, hindari gaya over-promising, dan akhiri dengan low-pressure CTA ("Kalau kamu mau liat perjalanannya, bisa intip artikel cerita lengkapnya di [link cerita alumni] / direktori alumni kami di [https://www.revou.co/alumni](https://www.revou.co/alumni) yaa!").
+4. **Cetak Tebal (Bold) Pemicu Aksi & Poin Penting:** Pada summary perjalanan karir alumni, **WAJIB mencetak tebal (bold `**teks**`) pemicu aksi (action triggers)** dan titik balik penting (keputusan switch career, proses belajar capstone project, bimbingan Coach, hingga lolos kerja/kenaikan gaji) agar bukti nyata transformasi mudah dipindai dengan cepat.
 
 ---
 

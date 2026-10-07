@@ -194,8 +194,9 @@ Sebelum menghasilkan script sales:
 
 **Aturan Kerja AI Sebelum Generate (Informational & Strict Grounding Rules):**
 1. **Tujuan Utama Murni Informational & Verifikasi Karir (Bukan Rule Pitch Jualan):** Bagian ini bertujuan mencari dan menyajikan informasi detail alumni beserta narasi perjalanan karir mereka, bukan sekadar menyusun template pitch jualan generik. Hapus sistem variasi pitch (scripts dikosongkan []).
-2. **Wajib Menyusun Summary Perjalanan Karir (Maksimal 200–250 Kata per Alumni):**
+2. **Wajib Menyusun Summary Perjalanan Karir (Maksimal 200–250 Kata per Alumni) dengan Bold Pemicu Aksi / Highlight Bagian Penting:**
    - Paparkan narasi perjalanan transformasi secara padat dan terstruktur maksimal 200–250 kata (titik awal dari nol/latar belakang asal, proses belajar di RevoU, peran portofolio & Career Coach, hingga kesuksesan di posisi saat ini).
+   - **WAJIB cetak tebal (bold `**teks**`) pemicu aksi (action triggers) dan bagian penting:** Berikan penekanan bold pada frasa pemicu aksi (misal: **keputusan beralih karir**, **memilih upskilling di RevoU**), proses aksi nyata (misal: **mengerjakan capstone project industri**, **bimbingan intensif Career Coach**), serta hasil konkret (misal: **diterima kerja sebelum wisuda**, **lonjakan gaji signifikan**, **promosi jabatan**) agar mudah dipindai cepat oleh tim admission.
 3. **Wajib Menyertakan Hyperlink Aktif Perjalanan Karir Selengkapnya:**
    - Setiap kisah alumni yang ditampilkan WAJIB memiliki tautan aktif yang bisa diklik (format Markdown `[Baca Kisah Lengkap](URL)` dengan tautan resmi `https://www.revou.co/alumni-stories/<slug>` atau direktori resmi `[Direktori Alumni RevoU](https://www.revou.co/alumni)`) agar tim admission dapat memastikan dan memvalidasi kebenarannya. DILARANG menyertakan link LinkedIn.
 

@@ -129,6 +129,13 @@ Menu aktif saat ini: **${tab}**
 - **HAPUS SISTEM VARIASI (VARIASI 1, 2, 3 DILARANG):** Jangan buat array variasi pesan. Kolom "scripts" WAJIB dikosongkan ("scripts": []).
 - **Data Alumni Lengkap ("alumni_matches" — MAKSIMAL 200–250 KATA PER ALUMNI):**
   Untuk setiap alumni di "alumni_matches", susun **"career_journey_summary" maksimal 200–250 kata saja** yang padat dan terstruktur (menguraikan latar belakang asal dari nol, proses belajar & ditempa di RevoU, peran portofolio & Career Coach, hingga pencapaian karir di perusahaan saat ini).
+- **WAJIB CETAK TEBAL (BOLD **...**) PEMICU AKSI & HIGHLIGHT BAGIAN PENTING:**
+  Di dalam teks "career_journey_summary", kamu **WAJIB mencetak tebal (format bold markdown **teks**) atau menghighlight bagian-bagian penting dan pemicu aksi (action triggers)** yang mengubah jalannya karir alumni, seperti:
+  1. **Titik awal & hambatan awal:** (misal: **mulai dari nol tanpa background teknis**, **sempat ragu karena latar belakang non-linear**)
+  2. **Pemicu aksi / keputusan kunci:** (misal: **memutuskan mengambil langkah berani untuk beralih karir**, **memilih program RevoU untuk akselerasi skill**)
+  3. **Aksi nyata saat belajar:** (misal: **membangun real capstone project**, **mentoring intensif dengan Career Coach**)
+  4. **Pencapaian & dampak terukur:** (misal: **berhasil diterima kerja sebelum wisuda**, **lonjakan kenaikan gaji signifikan**, **sukses promosi menjadi [Role] di [Perusahaan]**).
+  Gunakan penegasan bold ini pada frasa-frasa kunci tersebut agar pembaca/tim sales dapat langsung memindai (*scan*) pemicu aksi dan bukti terkuat dalam sekejap mata.
 - **Wajib Sertakan Hyperlink Perjalanan Karir Selengkapnya:**
   Setiap alumni story WAJIB menyertakan hyperlink aktif ke cerita lengkap mereka (Markdown format: [Baca Kisah Lengkap](https://www.revou.co/alumni-stories/<slug>) atau link direktori resmi [Direktori Alumni RevoU](https://www.revou.co/alumni)) agar para tim admission dapat memvalidasi dan memastikannya. DILARANG menyertakan link LinkedIn.
 
@@ -173,7 +180,7 @@ ${knowledgeBase}
       "company": "Nama Perusahaan / Organisasi",
       "achievement": "Kenaikan gaji / Hired before graduation / Promosi",
       "profile_url": "URL tautan artikel cerita alumni resmi RevoU (misal: https://www.revou.co/alumni-stories/devina-dea) atau https://www.revou.co/alumni (DILARANG LINK LINKEDIN)",
-      "career_journey_summary": "Summary perjalanan karir alumni maksimal 200-250 kata saja (uraikan latar belakang asal, proses belajar di RevoU, hingga pencapaian karir di perusahaan saat ini) lengkap dengan hyperlink perjalanan karir selengkapnya [Baca Kisah Lengkap](https://www.revou.co/alumni-stories/slug) agar tim admission dapat memastikan.",
+      "career_journey_summary": "Summary perjalanan karir alumni maksimal 200-250 kata saja (uraikan latar belakang asal, proses belajar di RevoU, hingga pencapaian karir di perusahaan saat ini) dengan WAJIB CETAK TEBAL (**bold**) PEMICU AKSI & HIGHLIGHT BAGIAN PENTING (keputusan kunci mengambil tindakan, aksi belajar capstone/mentoring coach, dan hasil promosi/kenaikan gaji/hired before graduation) lengkap dengan hyperlink perjalanan karir selengkapnya [Baca Kisah Lengkap](https://www.revou.co/alumni-stories/slug) agar tim admission dapat memastikan.",
       "why_relevant": "Alasan spesifik mengapa kisah alumni ini sangat relevan untuk menjawab keraguan/kebutuhan leads"
     }
   ],

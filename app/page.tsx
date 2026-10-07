@@ -22,14 +22,27 @@ import {
   ExternalLink
 } from "lucide-react";
 
-// Helper to render text with clickable hyperlinks (supports markdown [text](url) and raw URLs)
-function renderFormattedTextWithLinks(text: string) {
+// Helper to render text with clickable hyperlinks, markdown bold, highlights, and italics
+function renderFormattedTextWithLinks(
+  text: string,
+  options?: { isSummary?: boolean }
+) {
   if (!text) return null;
 
-  const regex = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)|(https?:\/\/[^\s<>"'{}|\\^`[\]()]+)/g;
+  // Regex matching:
+  // 1 & 2: Markdown links [label](url)
+  // 3: Raw URLs https://...
+  // 4: Highlight ==text==
+  // 5: Highlight <mark>text</mark>
+  // 6: Bold **text**
+  // 7: Bold __text__
+  // 8: Italic *text*
+  const regex =
+    /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)|(https?:\/\/[^\s<>"'{}|\\^`[\]()]+)|==([^=]+)==|<mark>([\s\S]*?)<\/mark>|\*\*([^*]+)\*\*|__([^_]+)__|(?<!\*)\*([^*]+)\*(?!\*)/g;
   const elements: React.ReactNode[] = [];
   let lastIndex = 0;
   let match: RegExpExecArray | null;
+  let counter = 0;
 
   while ((match = regex.exec(text)) !== null) {
     if (match.index > lastIndex) {
@@ -37,18 +50,19 @@ function renderFormattedTextWithLinks(text: string) {
     }
 
     if (match[1] && match[2]) {
-      const label = match[1];
+      const rawLabel = match[1];
       const url = match[2];
+      const cleanLabel = rawLabel.replace(/\*\*/g, "").replace(/__/g, "");
       elements.push(
         <a
-          key={match.index}
+          key={`link-${counter++}-${match.index}`}
           href={url}
           target="_blank"
           rel="noopener noreferrer"
           className="text-[#0E62FE] hover:text-[#0043CE] underline font-semibold inline-flex items-center gap-0.5 transition-colors"
           onClick={(e) => e.stopPropagation()}
         >
-          <span>{label}</span>
+          <span>{cleanLabel}</span>
           <ExternalLink className="w-3 h-3 inline shrink-0 opacity-80" />
         </a>
       );
@@ -56,7 +70,7 @@ function renderFormattedTextWithLinks(text: string) {
       const url = match[3];
       elements.push(
         <a
-          key={match.index}
+          key={`rawurl-${counter++}-${match.index}`}
           href={url}
           target="_blank"
           rel="noopener noreferrer"
@@ -66,6 +80,33 @@ function renderFormattedTextWithLinks(text: string) {
           <span>{url}</span>
           <ExternalLink className="w-3 h-3 inline shrink-0 opacity-80" />
         </a>
+      );
+    } else if (match[4] || match[5]) {
+      const content = match[4] || match[5];
+      elements.push(
+        <mark
+          key={`mark-${counter++}-${match.index}`}
+          className="bg-[#FEF08A]/90 text-[#141412] font-semibold px-1 py-0.5 rounded"
+        >
+          {content}
+        </mark>
+      );
+    } else if (match[6] || match[7]) {
+      const content = match[6] || match[7];
+      elements.push(
+        <strong
+          key={`bold-${counter++}-${match.index}`}
+          className="font-bold text-[#141412]"
+        >
+          {content}
+        </strong>
+      );
+    } else if (match[8]) {
+      const content = match[8];
+      elements.push(
+        <em key={`em-${counter++}-${match.index}`} className="italic">
+          {content}
+        </em>
       );
     }
 
@@ -106,7 +147,7 @@ const MODES: Record<ModeKey, ModeConfig> = {
   },
   alumni: {
     title: "Checking Alumni",
-    lead: "Cari data alumni RevoU & generate summary perjalanan karir mereka (min. 250 kata) lengkap dengan hyperlink aktif ke kisah lengkap/profil LinkedIn sebagai bukti nyata.",
+    lead: "Cari data alumni RevoU & generate summary perjalanan karir mereka ke kisah lengkap sebagai bukti nyata.",
     template: "Tulis: latar belakang/profesi/keraguan leads atau profil alumni yang dicari",
     placeholder: "Contoh: Prospect seorang Dokter/Guru/Lulusan SMA yang ragu apakah bisa switch karir ke Tech/Data/Digital Marketing. Ada profil alumni relevan?",
     examples: [
@@ -273,7 +314,7 @@ ${q}
 
 INSTRUKSI PENTING:
 1. Jika Sales mengklarifikasi atau mencari alumni bidang/program/profesi tertentu (misal: Software Engineering, Data Analytics, Digital Marketing, atau profil khusus), cari data alumni yang relevan dari knowledge base dan WAJIB sertakan 'featured_alumni_summary' dan 'alumni_matches' yang sesuai.
-2. Pada menu 'alumni': JANGAN buat pitch WhatsApp dan KOSONGKAN scripts ([]). Fokus tampilkan data alumni RevoU dengan ringkasan singkat serta rangkuman perjalanan karir minimal 250 kata + link validasi.
+2. Pada menu 'alumni': JANGAN buat pitch WhatsApp dan KOSONGKAN scripts ([]). Fokus tampilkan data alumni RevoU dengan ringkasan singkat serta rangkuman perjalanan karirnya (WAJIB cetak tebal **bold** pemicu aksi dan highlight bagian penting perjalanan karir).
 3. Pada menu 'pitch': Sesuaikan draf script pesan sesuai masukan Sales.`;
       const res = await fetch("/api/generate", {
         method: "POST",
@@ -480,7 +521,7 @@ INSTRUKSI PENTING:
               />
               {inputText.length > 0 && (
                 <span className="absolute bottom-2.5 right-3 font-mono text-[11px] text-[#8A8A84] bg-white/90 px-1.5 py-0.5 rounded">
-                  {inputText.length} chars · ⌘+Enter
+                  {inputText.length} kata · ⌘+Enter
                 </span>
               )}
             </div>
@@ -640,7 +681,7 @@ INSTRUKSI PENTING:
                                   <span>Summary Perjalanan Karir & Transformasi:</span>
                                 </div>
                                 <div className="text-[13.5px] text-[#141412] leading-relaxed whitespace-pre-line bg-[#FAFAF8] p-3.5 rounded-lg border border-[#E8E8E4]/80">
-                                  {renderFormattedTextWithLinks(alumni.career_journey_summary)}
+                                  {renderFormattedTextWithLinks(alumni.career_journey_summary, { isSummary: true })}
                                 </div>
                               </div>
                             )}
@@ -1047,7 +1088,7 @@ INSTRUKSI PENTING:
                                             <span>Summary Perjalanan Karir & Transformasi:</span>
                                           </div>
                                           <div className="text-[13.5px] text-[#141412] leading-relaxed whitespace-pre-line bg-[#FAFAF8] p-3.5 rounded-lg border border-[#E8E8E4]/80">
-                                            {renderFormattedTextWithLinks(alumni.career_journey_summary)}
+                                            {renderFormattedTextWithLinks(alumni.career_journey_summary, { isSummary: true })}
                                           </div>
                                         </div>
                                       )}
@@ -1167,7 +1208,7 @@ INSTRUKSI PENTING:
         {/* 3. FOOTER                                                 */}
         {/* ========================================================= */}
         <footer className="mt-5 text-xs text-[#8A8A84] leading-relaxed text-center sm:text-left">
-          Jawaban AI adalah draf. Cek ulang harga dan tanggal batch terbaru sebelum dikirim ke prospect. Grounded strictly pada berkas internal <code className="font-mono text-[11px] bg-[#F5F5F2] px-1 py-0.5 rounded">/knowledge/</code>.
+          <strong>Jawaban AI adalah draf. Cek ulang harga dan tanggal batch terbaru sebelum dikirim ke prospect.</strong> grounded on<code className="font-mono text-[11px] bg-[#F5F5F2] px-1 py-0.5 rounded">/knowledge/</code>.
         </footer>
       </div>
     </div>
