@@ -12,9 +12,15 @@ Halaman Direktori Alumni Resmi: [Direktori Alumni RevoU](https://www.revou.co/al
 - **Multi-Latar Belakang (Career Switchers):** Terbukti berhasil mentransformasi individu dari latar belakang non-IT (Guru, Barista, Apoteker, Paramedis, Guru Piano, Admin Gudang, Jurnalis, Mahasiswa, hingga Pegawai Negeri/BUMN) menjadi praktisi teknologi, digital marketing, AI, dan data.
 - **Perusahaan Ternama Peserta & Alumni:** Termasuk Pertamina, Telkomsel, Shopee, Indosat, Bank Syariah Indonesia (BSI), Permata Bank, Kemenkeu, Kedutaan Besar RI Seoul, Kredivo, BYD Auto, PT Wijaya Karya, PT PP, PT Bukit Asam, PT ANTAM, PT Honda Prospect Motor, dan ratusan startup/agensi teknologi.
 
+### Definisi & Klasifikasi Tipe Profil Karir Alumni (Wajib Dipatuhi Saat Filter Data):
+- **Career Switcher:** Peserta yang berpindah dari fungsi/profesi/industri asal yang **BERBEDA NYATA** (misal: Paramedis ➔ Business Analyst, Barista ➔ Marketer, Guru ➔ Software Engineer, Finance/Akuntan/Audit ➔ Data Analyst, Process Engineer ➔ Data Analyst). Role lama dan role baru berada di domain/fungsi pekerjaan yang berbeda.
+- **Upskilling (BUKAN Career Switcher):** Peserta yang **SUDAH memiliki latar belakang atau bekerja di bidang/rumpun fungsi yang sama atau serumpun** (misal: Data Engineer ➔ ETL Developer, Junior Marketer ➔ Digital Marketing Lead, Software Engineer ➔ System Analyst, dsb.), mengikuti program untuk memperdalam skill, akselerasi kompetensi teknis, atau promosi jabatan di rumpun profesi yang sama.
+- **Fresh Graduate:** Peserta yang baru lulus kuliah dan belum memiliki riwayat pekerjaan profesional penuh waktu sebelumnya.
+
 ---
 
 ## 2. Alumni Profile: Applied AI, Analytics & Automation (Kolaborasi BINUS & RevoU)
+> **PENTING (CATATAN INTEGRITAS DATA):** Data profil alumni untuk program ini HANYA memuat **Job Title / Posisi** dan **Nama Perusahaan / Organisasi yang ditempati**, **TIDAK ADA NAMA INDIVIDU SIAPAPUN**. Saat menghasilkan jawaban, DILARANG KERAS mengarang/mengada-ada nama orang fiktif. Gunakan format `[Job Title] — [Perusahaan]` sebagai identitas profil.
 Program ini diikuti oleh profesional, manager, dan spesialis dari berbagai perusahaan papan atas untuk otomasi dan efisiensi kerja menggunakan AI:
 - **Asst Chief Digital Innovation** — PT Honda Prospect Motor (Automotive) | [Direktori Alumni RevoU](https://www.revou.co/alumni)
 - **Staff Data & Analytics** — detikcom (Media) | [Direktori Alumni RevoU](https://www.revou.co/alumni)
@@ -29,6 +35,7 @@ Program ini diikuti oleh profesional, manager, dan spesialis dari berbagai perus
 ---
 
 ## 3. Alumni Profile: Data-Driven Decision Making (Kolaborasi ITB & RevoU)
+> **PENTING (CATATAN INTEGRITAS DATA):** Data profil alumni untuk program eksekutif ini HANYA memuat **Job Title / Posisi** dan **Nama Perusahaan / Instansi yang ditempati**, **TIDAK ADA NAMA INDIVIDU SIAPAPUN**. Saat menghasilkan jawaban, DILARANG KERAS mengarang/mengada-ada nama orang fiktif. Gunakan format `[Job Title] — [Perusahaan]` sebagai identitas profil.
 Program kepemimpinan data & AI eksekutif yang diikuti oleh para Manager, Senior Manager, Direktur, dan C-Level untuk pengambilan keputusan berbasis data:
 - **Oil & Gas / Energy Leaders:**
   - Production Manager — PT Pertamina (Persero)

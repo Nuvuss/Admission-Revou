@@ -2,21 +2,39 @@ import fs from "fs";
 import path from "path";
 import { NextResponse } from "next/server";
 
+export const maxDuration = 60;
+export const dynamic = "force-dynamic";
+
 // ─────────────────────────────────────────────
-// Load all knowledge files from /knowledge/
+// Load knowledge files from /knowledge/ based on tab
 // ─────────────────────────────────────────────
-function loadKnowledgeBase() {
+function loadKnowledgeBase(tab = "pitch") {
   const knowledgeDir = path.join(process.cwd(), "knowledge");
   let knowledgeContent = "";
   try {
     if (fs.existsSync(knowledgeDir)) {
       const files = fs.readdirSync(knowledgeDir).sort();
       for (const file of files) {
-        if (file.endsWith(".md") || file.endsWith(".txt")) {
-          const filePath = path.join(knowledgeDir, file);
-          const content = fs.readFileSync(filePath, "utf-8");
-          knowledgeContent += `\n\n=== DOKUMEN: ${file} ===\n${content}\n`;
+        if (!file.endsWith(".md") && !file.endsWith(".txt")) continue;
+
+        // Smart Filtering per Tab:
+        // 1. Menu 'pitch': Exclude massive alumni stories (~119 KB) to keep latency low & sharp
+        if (tab === "pitch" && file.includes("alumni_success_stories")) {
+          continue;
         }
+
+        // 2. Menu 'alumni': Focus on alumni stories + program overviews; skip heavy syllabus & sales scripts
+        if (tab === "alumni" && (
+          file.includes("sales_script_benchmarks") ||
+          file.includes("syllabus_binus") ||
+          file.includes("syllabus_itb")
+        )) {
+          continue;
+        }
+
+        const filePath = path.join(knowledgeDir, file);
+        const content = fs.readFileSync(filePath, "utf-8");
+        knowledgeContent += `\n\n=== DOKUMEN: ${file} ===\n${content}\n`;
       }
     }
   } catch (err) {
@@ -115,6 +133,28 @@ Sebelum menyusun draf script, kamu WAJIB menganalisis dan menekankan data dari K
 - Jika topik tidak ada di knowledge base, jawab jujur bahwa data belum tersedia.
 - Untuk "program_match": pilih nama program yang BENAR-BENAR ada di knowledge base berdasarkan sinyal dari situasi. Jika tidak ada yang cocok, isi dengan "Tidak teridentifikasi — butuh info lebih lanjut."
 
+### ATURAN KHUSUS ALUMNI PROFILE APPLIED AI & DATA-DRIVEN DECISION MAKING (DILARANG MENGARANG NAMA):
+- **TIDAK ADA NAMA INDIVIDU DI KNOWLEDGE BASE:** Pada kedua program ini ("Applied AI, Analytics & Automation" kolaborasi BINUS & RevoU dan "Data-Driven Decision Making" kolaborasi ITB & RevoU), data alumni resmi di knowledge base **TIDAK memuat nama orang/individu siapapun**, melainkan HANYA mencantumkan **Job Title / Posisi** (misal: "Asst Chief Digital Innovation", "Staff Data & Analytics", "Production Manager", "Senior Manager", dll.) dan **Nama Perusahaan / Organisasi yang ditempati** (misal: "PT Honda Prospect Motor", "detikcom", "PT Pertamina (Persero)", dll.).
+- **DILARANG KERAS MENGADA-ADA / MENGARANG NAMA PRIBADI:** Ketika men-generate jawaban (baik pada menu alumni, pitch, maupun klarifikasi), DILARANG KERAS mengarang nama orang fiktif (seperti Budi, Rian, Sarah, dsb) atau membuat biodata pribadi fiktif untuk kedua program ini.
+- **FORMAT IDENTITAS PROFIL:**
+  - Pada field 'name' di 'alumni_matches' dan 'featured_alumni_summary', gunakan format: "[Job Title] — [Perusahaan]" (contoh: "Asst Chief Digital Innovation — PT Honda Prospect Motor" atau "Production Manager — PT Pertamina (Persero)"). JANGAN isi dengan nama orang buatan.
+  - Pada field 'current_role', isi dengan job title (misal: "Asst Chief Digital Innovation" atau "Production Manager").
+  - Pada field 'company', isi dengan nama perusahaan (misal: "PT Honda Prospect Motor" atau "PT Pertamina (Persero)").
+- **NARASI SUMMARY:** Fokuskan narasi pada peran profesional job title tersebut di perusahaannya, bagaimana program membekali mereka (misal: efisiensi & otomasi AI atau data-driven decision making level leader), dan dampak bagi perusahaannya. JANGAN mengarang cerita personal fiktif (seperti latar belakang kuliah fiktif atau transisi personal yang tidak tercatat di data).
+- **LINK VALIDASI:** Selalu gunakan link direktori resmi: https://www.revou.co/alumni.
+
+### ATURAN KETAT VALIDASI KRITERIA & KATEGORI ALUMNI (100% RELEVAN SESUAI PERMINTAAN):
+Ketika user/sales meminta profil alumni dengan kriteria spesifik (seperti: "Career Switcher", "Upskilling", "Fresh Graduate", background non-IT/tertentu, industri asal/tujuan tertentu, atau jumlah N alumni):
+1. **Verifikasi 100% Kriteria Setiap Profil (DILARANG MENYELIPKAN KATEGORI LAIN):**
+   AI WAJIB memvalidasi latar belakang setiap alumni sebelum dimasukkan ke 'alumni_matches' dan 'featured_alumni_summary'. SEMUA profil yang ditampilkan HARUS 100% murni memenuhi kriteria yang diminta!
+2. **Pahami Perbedaan Nyata Antara Kategori:**
+   - **Career Switcher:** Seseorang yang benar-benar berpindah dari profesi/bidang asal yang BERBEDA NYATA ke profesi baru (contoh: Paramedis -> Business Analyst, Barista -> Digital Marketer, Guru Musik -> Software Engineer, Finance/Akuntan/Audit -> Data Analyst, Process Engineer -> Data Analyst). Role lama vs role baru berada di domain/fungsi pekerjaan yang berbeda.
+   - **Upskilling (BUKAN Career Switcher):** Seseorang yang SUDAH bekerja atau memiliki latar belakang di bidang/rumpun fungsi yang sama atau serumpun (contoh: Data Engineer -> ETL Developer, Junior Marketer -> Digital Marketing Lead, Software Engineer -> System Analyst, IT Support -> Developer), mengambil program RevoU untuk memperdalam skill teknis atau promosi jabatan di rumpun profesi yang sama. DILARANG KERAS memasukkan profil Upskilling jika user meminta Career Switcher!
+   - **Fresh Graduate:** Lulusan baru yang belum memiliki riwayat kerja profesional penuh waktu sebelumnya.
+3. **Integritas Jumlah/Kuota yang Diminta:**
+   - Jika user meminta N orang (contoh: "3 orang career switcher"), maka SELURUHNYA (3 dari 3) WAJIB murni Career Switcher sejati. DILARANG menyelipkan 1 profil Upskilling atau Fresh Grad demi mengejar kuota angka 3!
+   - Jika data di knowledge base yang 100% memenuhi kriteria kurang dari N, tampilkan hanya profil yang benar-benar cocok tersebut dan jelaskan dengan jujur bahwa hanya profil tersebut yang murni memenuhi kriteria.
+
 ## ATURAN MODE & FORMAT OUTPUT KHUSUS BERDASARKAN MENU:
 Menu aktif saat ini: **${tab}**
 
@@ -129,6 +169,10 @@ Menu aktif saat ini: **${tab}**
 - **HAPUS SISTEM VARIASI (VARIASI 1, 2, 3 DILARANG):** Jangan buat array variasi pesan. Kolom "scripts" WAJIB dikosongkan ("scripts": []).
 - **Data Alumni Lengkap ("alumni_matches" — MAKSIMAL 200–250 KATA PER ALUMNI):**
   Untuk setiap alumni di "alumni_matches", susun **"career_journey_summary" maksimal 200–250 kata saja** yang padat dan terstruktur (menguraikan latar belakang asal dari nol, proses belajar & ditempa di RevoU, peran portofolio & Career Coach, hingga pencapaian karir di perusahaan saat ini).
+- **VALIDASI MUTLAK KRITERIA (CAREER SWITCHER VS UPSKILLING):**
+  Jika Sales meminta profil dengan tipe tertentu (misal: Career Switcher), pastikan 100% dari profil yang kamu tampilkan benar-benar berpindah profesi dari bidang yang berbeda nyata. JANGAN PERNAH mencampur atau menyelipkan alumni yang hanya Upskilling (sudah di bidang yang sama) ke dalam permintaan Career Switcher!
+- **KHUSUS ALUMNI PROFILE APPLIED AI & DATA-DRIVEN DECISION MAKING:**
+  Kedua program ini datanya **TIDAK MEMILIKI NAMA ORANG SIAPAPUN, HANYA JOB TITLE DAN PERUSAHAAN**. JANGAN MENGADA-ADA/MENGARANG NAMA ORANG. Field 'name' WAJIB diisi "[Job Title] — [Perusahaan]".
 - **WAJIB CETAK TEBAL (BOLD **...**) PEMICU AKSI & HIGHLIGHT BAGIAN PENTING:**
   Di dalam teks "career_journey_summary", kamu **WAJIB mencetak tebal (format bold markdown **teks**) atau menghighlight bagian-bagian penting dan pemicu aksi (action triggers)** yang mengubah jalannya karir alumni, seperti:
   1. **Titik awal & hambatan awal:** (misal: **mulai dari nol tanpa background teknis**, **sempat ragu karena latar belakang non-linear**)
@@ -167,20 +211,20 @@ ${knowledgeBase}
   "recommended_approach": "Saran pendekatan tim sales dalam menyampaikan informasi alumni atau pitch (max 2-3 kalimat)",
   "revision_summary": "Jika ada instruksi revisi/klarifikasi dari Sales, jelaskan secara cerdas & natural dalam 2-3 kalimat bagaimana draf disesuaikan.",
   "featured_alumni_summary": {
-    "name": "Nama salah satu alumni yang paling relevan",
-    "summary": "Ringkasan singkat (3-5 kalimat) tentang perjalanan karir dan transformasinya di RevoU",
+    "name": "Nama salah satu alumni yang paling relevan (PERHATIAN: Untuk program Applied AI & Data-Driven Decision Making, TIDAK ADA nama orang di data, isi format '[Job Title] — [Perusahaan]', DILARANG mengarang nama orang!)",
+    "summary": "Ringkasan singkat (3-5 kalimat) tentang perjalanan karir dan relevansi peran/program bagi posisi tersebut",
     "profile_url": "URL tautan artikel cerita alumni resmi RevoU (misal: https://www.revou.co/alumni-stories/devina-dea) atau https://www.revou.co/alumni (DILARANG LINK LINKEDIN)"
   },
   "alumni_matches": [
     {
-      "name": "Nama Alumni",
-      "program_batch": "Nama Program & Batch (misal: Full-Stack Digital Marketing)",
-      "previous_role": "Pekerjaan/Latar Belakang Sebelumnya",
-      "current_role": "Pekerjaan/Posisi Sekarang",
+      "name": "Nama Alumni (PERHATIAN: Untuk program Applied AI & Data-Driven Decision Making, isi format '[Job Title] — [Perusahaan]', DILARANG mengarang nama orang!)",
+      "program_batch": "Nama Program & Batch (misal: Full-Stack Digital Marketing, Applied AI, Analytics & Automation, atau Data-Driven Decision Making)",
+      "previous_role": "Pekerjaan/Latar Belakang Sebelumnya (jika tidak ada di data, isi '-' atau Job Title terkait)",
+      "current_role": "Pekerjaan/Posisi Sekarang (Job Title resmi dari dokumen)",
       "company": "Nama Perusahaan / Organisasi",
-      "achievement": "Kenaikan gaji / Hired before graduation / Promosi",
+      "achievement": "Kenaikan gaji / Hired before graduation / Promosi / Implementasi Proyek",
       "profile_url": "URL tautan artikel cerita alumni resmi RevoU (misal: https://www.revou.co/alumni-stories/devina-dea) atau https://www.revou.co/alumni (DILARANG LINK LINKEDIN)",
-      "career_journey_summary": "Summary perjalanan karir alumni maksimal 200-250 kata saja (uraikan latar belakang asal, proses belajar di RevoU, hingga pencapaian karir di perusahaan saat ini) dengan WAJIB CETAK TEBAL (**bold**) PEMICU AKSI & HIGHLIGHT BAGIAN PENTING (keputusan kunci mengambil tindakan, aksi belajar capstone/mentoring coach, dan hasil promosi/kenaikan gaji/hired before graduation) lengkap dengan hyperlink perjalanan karir selengkapnya [Baca Kisah Lengkap](https://www.revou.co/alumni-stories/slug) agar tim admission dapat memastikan.",
+      "career_journey_summary": "Summary perjalanan karir alumni maksimal 200-250 kata saja (uraikan konteks peran asal, proses belajar di RevoU, hingga implementasi/pencapaian karir di perusahaan saat ini tanpa mengarang biodata pribadi fiktif) dengan WAJIB CETAK TEBAL (**bold**) PEMICU AKSI & HIGHLIGHT BAGIAN PENTING (keputusan kunci mengambil tindakan, aksi belajar capstone/mentoring coach, dan hasil promosi/kenaikan gaji/hired before graduation) lengkap dengan hyperlink perjalanan karir selengkapnya [Baca Kisah Lengkap](https://www.revou.co/alumni-stories/slug) atau [Direktori Alumni RevoU](https://www.revou.co/alumni) agar tim admission dapat memastikan.",
       "why_relevant": "Alasan spesifik mengapa kisah alumni ini sangat relevan untuk menjawab keraguan/kebutuhan leads"
     }
   ],
@@ -431,7 +475,7 @@ export async function POST(req) {
     }
 
     const skillInstructions = loadSkillDefinition();
-    const knowledgeBase = loadKnowledgeBase();
+    const knowledgeBase = loadKnowledgeBase(tab);
     const systemPrompt = buildSystemPrompt(skillInstructions, knowledgeBase, tab);
 
     const fullPrompt = `${systemPrompt}
@@ -449,13 +493,11 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
     const geminiApiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
 
     if (geminiApiKey) {
-      // Prioritize requested model, then fall back through resilient list
+      // Prioritize requested model, then fall back through resilient active models
       const candidateModels = [
         model,
-        "gemini-3.5-flash",
         "gemini-3.5-flash-lite",
-        "gemini-2.5-flash",
-        "gemini-2.5-pro",
+        "gemini-3.5-flash",
       ].filter((m, idx, arr) => m && arr.indexOf(m) === idx);
 
       let lastError = null;
@@ -464,13 +506,14 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
         // Try up to 2 attempts per model (handles brief 503 spikes)
         for (let attempt = 0; attempt < 2; attempt++) {
           try {
-            if (attempt > 0) await wait(800);
+            if (attempt > 0) await wait(600);
 
             const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelId}:generateContent?key=${geminiApiKey}`;
 
             const response = await fetch(url, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
+              signal: AbortSignal.timeout(12000), // 12-second abort timeout prevents 504 Gateway Timeout
               body: JSON.stringify({
                 contents: [
                   {

@@ -161,15 +161,13 @@ const MODES: Record<ModeKey, ModeConfig> = {
 };
 
 const availableModels = [
-  { id: "gemini-3.5-flash", name: "Gemini 3.5 Flash (Fast & Capable - Default)" },
-  { id: "gemini-3.5-flash-lite", name: "Gemini 3.5 Flash Lite (Lightest)" },
-  { id: "gemini-2.5-flash", name: "Gemini 2.5 Flash (Stable)" },
-  { id: "gemini-2.5-pro", name: "Gemini 2.5 Pro (Most Capable)" },
+  { id: "gemini-3.5-flash-lite", name: "Gemini 3.5 Flash Lite (Super Cepat & Stabil - Rekomendasi)" },
+  { id: "gemini-3.5-flash", name: "Gemini 3.5 Flash (Standar)" },
 ];
 
 export default function DashboardPage() {
   const [mode, setMode] = useState<ModeKey>("pitch");
-  const [selectedModel, setSelectedModel] = useState("gemini-3.5-flash");
+  const [selectedModel, setSelectedModel] = useState("gemini-3.5-flash-lite");
   const [inputText, setInputText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [responseResult, setResponseResult] = useState<any | null>(null);
@@ -315,7 +313,9 @@ ${q}
 INSTRUKSI PENTING:
 1. Jika Sales mengklarifikasi atau mencari alumni bidang/program/profesi tertentu (misal: Software Engineering, Data Analytics, Digital Marketing, atau profil khusus), cari data alumni yang relevan dari knowledge base dan WAJIB sertakan 'featured_alumni_summary' dan 'alumni_matches' yang sesuai.
 2. Pada menu 'alumni': JANGAN buat pitch WhatsApp dan KOSONGKAN scripts ([]). Fokus tampilkan data alumni RevoU dengan ringkasan singkat serta rangkuman perjalanan karirnya (WAJIB cetak tebal **bold** pemicu aksi dan highlight bagian penting perjalanan karir).
-3. Pada menu 'pitch': Sesuaikan draf script pesan sesuai masukan Sales.`;
+3. Pada menu 'pitch': Sesuaikan draf script pesan sesuai masukan Sales.
+4. KHUSUS alumni profile pada 'Applied AI, Analytics & Automation' dan 'Data-Driven Decision Making': Datanya TIDAK memiliki nama orang siapapun di knowledge base, HANYA Job Title dan Perusahaan yang ditempati. JANGAN PERNAH mengada-ada/mengarang nama orang; gunakan format '[Job Title] — [Perusahaan]' sebagai nama profil alumni.
+5. VALIDASI MUTLAK KRITERIA (CAREER SWITCHER VS UPSKILLING — NO MISMATCH): Jika Sales meminta kriteria spesifik (misal: "3 orang career switcher"), seluruh profil yang ditampilkan WAJIB 100% murni Career Switcher sejati (terbukti beralih dari profesi/bidang yang berbeda nyata). DILARANG KERAS menyelipkan profil Upskilling (yang sebelumnya sudah di bidang serupa) ke dalam permintaan Career Switcher!`;
       const res = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
