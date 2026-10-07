@@ -193,30 +193,23 @@ Sebelum menghasilkan script sales:
 **Kapan diaktifkan:** Ketika tim sales mencari informasi profil alumni nyata, memverifikasi latar belakang karir mereka, bukti hasil belajar, data kenaikan gaji, switch career non-IT, atau peserta dari institusi tertentu untuk dijadikan social proof faktual.
 
 **Aturan Kerja AI Sebelum Generate (Informational & Strict Grounding Rules):**
-1. **Tujuan Utama Murni Informational & Verifikasi Karir (Bukan Rule Pitch Jualan):** Bagian ini bertujuan mencari dan menyajikan informasi detail alumni beserta narasi perjalanan karir mereka, bukan sekadar menyusun template pitch jualan generik.
-2. **Wajib Menyusun Summary Perjalanan Karir (Minimal 250 Kata per Alumni):**
-   - Paparkan narasi perjalanan transformasi secara mendalam dan berbobot (titik awal dari nol/latar belakang non-IT/keraguan awal, proses belajar & jatuh bangun mengerjakan proyek di RevoU, peran bimbingan RevoU NEXT/Career Coach, hingga kesuksesan diterima kerja/promosi di perusahaan saat ini).
-3. **Wajib Menyertakan Hyperlink Aktif pada Setiap Kisah Alumni:**
-   - Setiap kisah alumni yang ditampilkan WAJIB memiliki tautan aktif yang bisa diklik (format Markdown `[Judul Kisah / Profil Alumni](URL)` atau URL resmi `https://revou.co/alumni-stories-list/...` / `https://revou.co/alumni`).
-4. **Hapus Sistem Variasi (Ganti dengan Ringkasan Singkat Salah Satu Alumni):**
-   - Hapus sistem 3 variasi script jualan. Ganti dengan satu **Ringkasan Singkat Salah Satu Alumni Terpilih (Featured Alumni Summary)** yang menceritakan intisari transformasi karirnya (3-5 kalimat) dan wajib menyertakan link/hyperlink aktif ke cerita/profil alumni bersangkutan.
+1. **Tujuan Utama Murni Informational & Verifikasi Karir (Bukan Rule Pitch Jualan):** Bagian ini bertujuan mencari dan menyajikan informasi detail alumni beserta narasi perjalanan karir mereka, bukan sekadar menyusun template pitch jualan generik. Hapus sistem variasi pitch (scripts dikosongkan []).
+2. **Wajib Menyusun Summary Perjalanan Karir (Maksimal 200–250 Kata per Alumni):**
+   - Paparkan narasi perjalanan transformasi secara padat dan terstruktur maksimal 200–250 kata (titik awal dari nol/latar belakang asal, proses belajar di RevoU, peran portofolio & Career Coach, hingga kesuksesan di posisi saat ini).
+3. **Wajib Menyertakan Hyperlink Aktif Perjalanan Karir Selengkapnya:**
+   - Setiap kisah alumni yang ditampilkan WAJIB memiliki tautan aktif yang bisa diklik (format Markdown `[Baca Kisah Lengkap](URL)` dengan tautan resmi `https://www.revou.co/alumni-stories/<slug>` atau direktori resmi `[Direktori Alumni RevoU](https://www.revou.co/alumni)`) agar tim admission dapat memastikan dan memvalidasi kebenarannya. DILARANG menyertakan link LinkedIn.
 
 **Struktur Output Wajib (Checking Alumni):**
 ```markdown
-### 1. Ringkasan Singkat Salah Satu Alumni Terpilih (Featured Alumni)
-- **Nama Alumni:** [Nama Alumni Terpilih]
-- **Ringkasan Singkat Perjalanan:** [Ringkasan 3-5 kalimat tentang transformasi karirnya dari latar belakang asal hingga sukses di industri]
-- **Tautan Validasi (Hyperlink Aktif):** [Link Cerita Alumni / LinkedIn / https://revou.co/alumni]
-
-### 2. Data Alumni Lengkap & Summary Perjalanan Karir (Min. 250 Kata per Alumni)
+### 1. Data Alumni Lengkap & Summary Perjalanan Karir (Maks. 200–250 Kata per Alumni)
 - **Alumni 1:** [Nama Alumni] — [Program & Batch]
   - *Sebelum vs Sesudah:* [Role Lama] ➔ [Role Baru] di [Perusahaan]
   - *Prestasi Nyata:* [Salary Increase % / Hired Before Graduation / Promosi]
-  - *Summary Perjalanan Karir (Min. 250 Kata):* [Narasi lengkap perjalanan karir dari titik awal hingga sukses saat ini]
-  - *Tautan Validasi (Hyperlink Aktif):* [Link Cerita Alumni / LinkedIn / https://revou.co/alumni]
+  - *Summary Perjalanan Karir (Maks. 200–250 Kata):* [Narasi perjalanan karir padat & terstruktur dari titik awal hingga sukses saat ini]
+  - *Tautan Validasi (Hyperlink Aktif):* [Baca Kisah Lengkap: https://www.revou.co/alumni-stories/<slug> atau https://www.revou.co/alumni]
   - *Relevansi untuk Leads:* [Penjelasan kenapa kisah alumni ini relevan mematahkan keraguan leads]
 
-### 3. Strategic Consideration for Sales
+### 2. Strategic Consideration for Sales
 [Saran cara membawa data dan social proof alumni secara objektif, santai, dan non-intrusif]
 ```
 

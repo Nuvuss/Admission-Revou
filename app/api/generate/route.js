@@ -101,7 +101,7 @@ Ketika menjawab pertanyaan knowledge, menjelaskan tentang RevoU, atau memaparkan
 Sebelum atau saat menyusun script jawaban, AI WAJIB menyertakan:
 1. **Pernyataan Relevansi Skill AI (ai_relevancy_statement):** Hubungkan secara spesifik dan natural bagaimana skill AI relevan & menjadi nilai tambah / force multiplier untuk bidang kerja / latar belakang prospect (misal: HR -> efisiensi reporting & data repetitif; Marketing -> scale-up ads & analytics; Leader/Consultant -> analisa proyek, risiko, & data-driven decisions; Fresh Grad -> skill pembeda di job market & portofolio nyata).
 2. **Penjelasan Komprehensif Program Terpilih (program_overview_short):** Berikan penjelasan yang komprehensif, lengkap, dan mendalam mengenai program yang ditentukan dari knowledge base (tujuan utama program, durasi minggu/bulan, kolaborasi universitas/sertifikat resmi, tahapan belajar praktikal, tools, dan capstone project untuk portofolio) agar leads mengerti secara utuh tujuan program.
-3. **Penyisipan dalam Script WhatsApp:** Di dalam variasi script pesan WhatsApp (\`scripts\`), sertakan secara natural statement relevansi bidang dan intisari program tersebut dengan bahasa yang santai dan CTA low-pressure.
+3. **Penyisipan dalam Script WhatsApp:** Di dalam variasi script pesan WhatsApp (scripts), sertakan secara natural statement relevansi bidang dan intisari program tersebut dengan bahasa yang santai dan CTA low-pressure.
 
 ## ATURAN WAJIB: VERIFIKASI TARGET AUDIENS & PRASYARAT PROGRAM
 Sebelum menyusun draf script, kamu WAJIB menganalisis dan menekankan data dari Knowledge Base berikut:
@@ -126,18 +126,15 @@ Menu aktif saat ini: **${tab}**
 
 ### 2. JIKA MENU: "alumni" (Checking Alumni) — ATURAN MUTLAK (DILARANG MEMBUAT PITCH & HAPUS VARIASI):
 - **Tujuan Murni Informational Lookup (DILARANG MEMBUAT PITCH / CHAT SALES "Halo kaak..."):** Menu ini murni untuk mencari informasi data alumni, memverifikasi latar belakang, dan menyajikan bukti perjalanan karir nyata mereka. Jangan membuat pesan sapaan sales pitch atau CTA jualan.
-- **HAPUS SISTEM VARIASI (VARIASI 1, 2, 3 DILARANG):** Jangan buat array variasi pesan. Kolom \`scripts\` WAJIB dikosongkan (\`scripts: []\`).
-- **Ringkasan Singkat Salah Satu Alumni Terpilih (\`featured_alumni_summary\`):**
-  Pilih SATU alumni yang paling relevan, buat **ringkasan singkat yang padat dan objektif** (3–5 kalimat) tentang latar belakang asal, proses belajar di RevoU, dan karir barunya, serta **WAJIB sertakan tautan/hyperlink aktif** ke artikel cerita atau profil LinkedIn alumni tersebut (\`profile_url\`).
-- **Data Alumni Lengkap (\`alumni_matches\` — MINIMAL 250 KATA PER ALUMNI):**
-  Untuk setiap alumni di \`alumni_matches\`, susun **\`career_journey_summary\` minimal 250 kata** yang menguraikan titik awal/keraguan dari nol, proses belajar & ditempa di RevoU, peran Career Coach RevoU NEXT, hingga pencapaian karir di perusahaan saat ini dan link validasi.
-- **Wajib Tautan/Hyperlink Aktif:**
-  Setiap alumni story WAJIB menyertakan hyperlink aktif (Markdown format: \`[Nama Alumni / Judul Cerita](https://revou.co/...)\` atau link LinkedIn/Direktori \`https://revou.co/alumni\`).
+- **HAPUS SISTEM VARIASI (VARIASI 1, 2, 3 DILARANG):** Jangan buat array variasi pesan. Kolom "scripts" WAJIB dikosongkan ("scripts": []).
+- **Data Alumni Lengkap ("alumni_matches" — MAKSIMAL 200–250 KATA PER ALUMNI):**
+  Untuk setiap alumni di "alumni_matches", susun **"career_journey_summary" maksimal 200–250 kata saja** yang padat dan terstruktur (menguraikan latar belakang asal dari nol, proses belajar & ditempa di RevoU, peran portofolio & Career Coach, hingga pencapaian karir di perusahaan saat ini).
+- **Wajib Sertakan Hyperlink Perjalanan Karir Selengkapnya:**
+  Setiap alumni story WAJIB menyertakan hyperlink aktif ke cerita lengkap mereka (Markdown format: [Baca Kisah Lengkap](https://www.revou.co/alumni-stories/<slug>) atau link direktori resmi [Direktori Alumni RevoU](https://www.revou.co/alumni)) agar para tim admission dapat memvalidasi dan memastikannya. DILARANG menyertakan link LinkedIn.
 
 ## ATURAN PANJANG RESPONS (WAJIB DIIKUTI)
-- Pada menu "alumni": \`career_journey_summary\` WAJIB MINIMAL 250 KATA per alumni di \`alumni_matches\`.
-- \`featured_alumni_summary\`: Ringkasan singkat 3-5 kalimat mengenai salah satu alumni paling relevan + hyperlink aktif.
-- Pada menu "alumni": \`scripts\` WAJIB KOSONG (\`[]\`).
+- Pada menu "alumni": "career_journey_summary" dibuat padat MAKSIMAL 200–250 KATA per alumni di "alumni_matches" dengan menyertakan hyperlink lengkap.
+- Pada menu "alumni": "scripts" WAJIB KOSONG ([]).
 - Penjelasan Program (program_overview_short) & Ringkasan Knowledge: WAJIB KOMPREHENSIF, LENGKAP, dan DETAIL.
 - Kolom "whats_happening": Maksimal 2 kalimat ringkas.
 - Kolom "recommended_approach": Maksimal 2-3 kalimat strategis.
@@ -165,7 +162,7 @@ ${knowledgeBase}
   "featured_alumni_summary": {
     "name": "Nama salah satu alumni yang paling relevan",
     "summary": "Ringkasan singkat (3-5 kalimat) tentang perjalanan karir dan transformasinya di RevoU",
-    "profile_url": "URL profil LinkedIn atau tautan artikel cerita alumni (misal: https://revou.co/alumni-stories-list/devina-dea)"
+    "profile_url": "URL tautan artikel cerita alumni resmi RevoU (misal: https://www.revou.co/alumni-stories/devina-dea) atau https://www.revou.co/alumni (DILARANG LINK LINKEDIN)"
   },
   "alumni_matches": [
     {
@@ -175,8 +172,8 @@ ${knowledgeBase}
       "current_role": "Pekerjaan/Posisi Sekarang",
       "company": "Nama Perusahaan / Organisasi",
       "achievement": "Kenaikan gaji / Hired before graduation / Promosi",
-      "profile_url": "URL profil LinkedIn alumni atau URL kisah alumni (misal: https://revou.co/alumni-stories-list/devina-dea)",
-      "career_journey_summary": "Summary mendalam mengenai perjalanan karir alumni minimal 250 kata (uraikan latar belakang asal, tantangan awal/keraguan, proses belajar di RevoU, peran portofolio & RevoU NEXT, hingga pencapaian karir di perusahaan saat ini dan pesan inspiratifnya) lengkap dengan hyperlink [Baca Kisah Lengkap](URL).",
+      "profile_url": "URL tautan artikel cerita alumni resmi RevoU (misal: https://www.revou.co/alumni-stories/devina-dea) atau https://www.revou.co/alumni (DILARANG LINK LINKEDIN)",
+      "career_journey_summary": "Summary perjalanan karir alumni maksimal 200-250 kata saja (uraikan latar belakang asal, proses belajar di RevoU, hingga pencapaian karir di perusahaan saat ini) lengkap dengan hyperlink perjalanan karir selengkapnya [Baca Kisah Lengkap](https://www.revou.co/alumni-stories/slug) agar tim admission dapat memastikan.",
       "why_relevant": "Alasan spesifik mengapa kisah alumni ini sangat relevan untuk menjawab keraguan/kebutuhan leads"
     }
   ],
@@ -197,6 +194,219 @@ ${knowledgeBase}
 
 // Helper to delay
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+// ─────────────────────────────────────────────
+// Verified Alumni URL Resolver (Based on CSV Data)
+// ─────────────────────────────────────────────
+const VERIFIED_ALUMNI_MAP = {
+  "devina dea": "https://www.revou.co/alumni-stories/devina-dea",
+  "darryl jannatun fadhlin": "https://www.revou.co/alumni-stories/darryl-jannatun-fadhlin",
+  "rifky kurniawan putra": "https://www.revou.co/alumni-stories/rifky-kurniawan-putra",
+  "alexandra priscilia": "https://www.revou.co/alumni-stories/alexandra-priscilia",
+  "amin rouf": "https://www.revou.co/alumni-stories/amin-rouf",
+  "dony putra perkasa": "https://www.revou.co/alumni-stories/dony-putra-perkasa",
+  "ataka shafia": "https://www.revou.co/alumni-stories/ataka-shafia",
+  "muhammad deni saputro": "https://www.revou.co/alumni-stories/muhammad-deni-saputro",
+  "victor lie": "https://www.revou.co/alumni-stories/victor-lie",
+  "michael pradipta nawa aji": "https://www.revou.co/alumni-stories/michael-pradipta-nawa-aji",
+  "paolo m hernandez": "https://www.revou.co/alumni-stories/paolo-m-hernandez",
+  "prasakti tenri fanyiwi": "https://www.revou.co/alumni-stories/prasakti-tenri-fanyiwi",
+  "olivia gianetta": "https://www.revou.co/alumni-stories/olivia-gianetta",
+  "ryandi putra": "https://www.revou.co/alumni-stories/ryandi-putra",
+  "sri lestari": "https://www.revou.co/alumni-stories/sri-lestari",
+  "farah dina imtinan": "https://www.revou.co/alumni-stories/farah-dina-imtinan",
+  "jonathan": "https://www.revou.co/alumni-stories/jonathan",
+  "defi damayanti": "https://www.revou.co/alumni-stories/defi-damayanti",
+  "isma arifin": "https://www.revou.co/alumni-stories/isma-arifin",
+  "grissella angelina": "https://www.revou.co/alumni-stories/grissella-angelina",
+  "malvin hariyanto kurniawan": "https://www.revou.co/alumni-stories/malvin-hariyanto-kurniawan",
+  "malvin hariyanto": "https://www.revou.co/alumni-stories/malvin-hariyanto-kurniawan",
+  "cynthia": "https://www.revou.co/alumni-stories/cynthia",
+  "rafael jonathan": "https://www.revou.co/alumni-stories/rafael-jonathan",
+  "heri koesnadi": "https://www.revou.co/alumni-stories/heri",
+  "heri": "https://www.revou.co/alumni-stories/heri",
+  "yodito nugrahacky": "https://www.revou.co/alumni-stories/yodito-nugrahacky",
+  "kevin andelio": "https://www.revou.co/alumni-stories/kevin-andelio",
+  "eka pramudita purnomo": "https://www.revou.co/alumni-stories/eka-pramudita-purnomo",
+  "muhammad panji prakorsowibowo": "https://www.revou.co/alumni-stories/muhammad-panji-prakorsowibowo",
+  "maulidatuz zahroo": "https://www.revou.co/alumni-stories/maulidatuz-zahroo",
+  "ulima sahda": "https://www.revou.co/alumni-stories/ulima-sahda",
+  "sari bayu": "https://www.revou.co/alumni-stories/sari-bayu",
+  "farros": "https://www.revou.co/alumni-stories/farros",
+  "samuel alvian": "https://www.revou.co/alumni-stories/samuel-alvian",
+  "falah luthfi": "https://www.revou.co/alumni-stories/falah-luthfi",
+  "fikri ainul yaqin": "https://www.revou.co/alumni-stories/fikri-ainul-yaqin",
+  "yesaya abdi setyawan": "https://www.revou.co/alumni-stories/yesaya-abdi-setyawan",
+  "stephanie devina widjaja": "https://www.revou.co/alumni-stories/stephanie-devina-widjaja",
+  "priska julia kristianti": "https://www.revou.co/alumni-stories/priska-julia-kristianti",
+  "rachell vannessa christian": "https://www.revou.co/alumni-stories/rachell-vannessa-christian",
+  "denaneer abigail": "https://www.revou.co/alumni-stories/denaneer-abigail",
+  "iswatun hasanah": "https://www.revou.co/alumni-stories/iswatun-hasanah",
+  "humaira": "https://www.revou.co/alumni-stories/humaira",
+  "syafira fitria": "https://www.revou.co/alumni-stories/syafira-fitria",
+  "nina randang": "https://www.revou.co/alumni-stories/nina-randang",
+  "juhniarto roma tandipasau": "https://www.revou.co/alumni-stories/repod-episode-5-7-pelajaran-karir-dari-juhniarto-juno",
+  "juno": "https://www.revou.co/alumni-stories/alumni-catch-up-juno",
+  "soraya nur aina": "https://www.revou.co/alumni-stories/soraya-nur-aina",
+  "ronald gunawan": "https://www.revou.co/alumni-stories/ronald-gunawan",
+  "radinda dyah utari": "https://www.revou.co/alumni-stories/radinda-dyah-utari",
+  "m ismail": "https://www.revou.co/alumni-stories/m-ismail",
+  "wildan basit": "https://www.revou.co/alumni-stories/wildan-basit",
+  "aloysius brahmarsi": "https://www.revou.co/alumni-stories/aloysius-brahmarsi",
+  "syarifah suci armilia": "https://www.revou.co/alumni-stories/syarifah-suci-armilia",
+  "yosep andi setyawan": "https://www.revou.co/alumni-stories/yosep-andi-setyawan",
+  "adi purnomo": "https://www.revou.co/alumni-stories/adi-purnomo",
+  "yilana maika": "https://www.revou.co/alumni-stories/yilana-maika",
+  "fiva ersy": "https://www.revou.co/alumni-stories/fiva-ersy",
+  "era mulia pratama": "https://www.revou.co/alumni-stories/era-mulia-pratama",
+  "agoes hartawan": "https://www.revou.co/alumni-stories/agoes-hartawan",
+  "ellya kumalasari": "https://www.revou.co/alumni-stories/ellya-kumalasari",
+  "muhammad yusuf guci": "https://www.revou.co/alumni-stories/muhammad-yusuf-guci",
+  "erik makalew": "https://www.revou.co/alumni-stories/erik-makalew",
+  "abdullah mansyur": "https://www.revou.co/alumni-stories/abdullah-mansyur",
+  "fachreza yahya": "https://www.revou.co/alumni-stories/fachreza-yahya",
+  "maulana musthofa rasyiid gunawan": "https://www.revou.co/alumni-stories/maulana-musthofa-rasyiid-gunawan",
+  "muhammad abrian": "https://www.revou.co/alumni-stories/muhammad-abrian",
+  "lukman hakim": "https://www.revou.co/alumni-stories/lukman-hakim",
+  "yohanes willy agusta": "https://www.revou.co/alumni-stories/yohanes-willy-agusta",
+  "nicho alinton s": "https://www.revou.co/alumni-stories/nicho-alinton-s",
+  "nella gabrielle": "https://www.revou.co/alumni-stories/nella-gabrielle",
+  "praya mudya": "https://www.revou.co/alumni-stories/repod-episode-6-4-pelajaran-karir-dari-praya-mudya",
+  "giska adilah sharfina saputra": "https://www.revou.co/alumni-stories/giska-adilah-sharfina-saputra",
+  "metha kamelia surya": "https://www.revou.co/alumni-stories/metha-kamelia-surya",
+  "tesalonika lay": "https://www.revou.co/alumni-stories/tesalonika-l",
+  "clara angelina": "https://www.revou.co/alumni-stories/clara-angelina",
+  "grace stevanda": "https://www.revou.co/alumni-stories/grace-stevanda",
+  "nabila fadwa ariani": "https://www.revou.co/alumni-stories/nabila-fadwa-ariani",
+  "adiyoga pradana sakti": "https://www.revou.co/alumni-stories/adiyoga-pradana-sakti",
+  "amanda kartikasari": "https://www.revou.co/alumni-stories/amanda-k",
+  "angel": "https://www.revou.co/alumni-stories/angel",
+  "iqbal givary": "https://www.revou.co/alumni-stories/iqbal-givary",
+  "hang kesturi said": "https://www.revou.co/alumni-stories/hang-kesturi-said",
+  "aspar anggoro": "https://www.revou.co/alumni-stories/aspar-anggoro",
+  "stephanie elawitachya": "https://www.revou.co/alumni-stories/stephanie-elawitachya",
+  "tiara calista shandy": "https://www.revou.co/alumni-stories/tiara-calista-shandy",
+  "ihsan wanda": "https://www.revou.co/alumni-stories/ihsan-wanda",
+  "nisa irlanda": "https://www.revou.co/alumni-stories/nisa-irlanda",
+  "hafif": "https://www.revou.co/alumni-stories/hafif",
+  "achmad amri dharma": "https://www.revou.co/alumni-stories/achmad-amri-dharma-w",
+  "adytia putra pradana": "https://www.revou.co/alumni-stories/adytia-putra-pradana",
+  "jeanette": "https://www.revou.co/alumni-stories/jeanette",
+  "jeanette gracia": "https://www.revou.co/alumni-stories/jeanette",
+  "gilang praditya": "https://www.revou.co/alumni-stories/gilang-praditya",
+  "nugroho dwi widodo": "https://www.revou.co/alumni-stories/nugroho-dwi-widodo",
+  "farel adhitabima": "https://www.revou.co/alumni-stories/farel-adhitabima",
+  "abka zailani": "https://www.revou.co/alumni-stories/abka-zailani",
+  "ken sukmaning": "https://www.revou.co/alumni-stories/ken-sukmaning",
+  "anang hendro wibowo": "https://www.revou.co/alumni-stories/anang-hendro-wibowo",
+  "ridho agusliandi putra": "https://www.revou.co/alumni-stories/ridho-agusliandi-putra",
+  "aldiansyah dwi putra": "https://www.revou.co/alumni-stories/aldiansyah-dwi-putra",
+  "widia puspitasari": "https://www.revou.co/alumni-stories/widia-puspitasari",
+  "audi previo": "https://www.revou.co/alumni-stories/audi-previo",
+  "yanky hermawan": "https://www.revou.co/alumni-stories/yanky-hermawan",
+  "dandi rizky eko saputro": "https://www.revou.co/alumni-stories/dandi-rizky-eko-saputro",
+  "winona ivana wiroyo": "https://www.revou.co/alumni-stories/winona-ivana-wiroyo",
+  "gusti treshana herman": "https://www.revou.co/alumni-stories/gusti-treshana-herman",
+  "adri antori": "https://www.revou.co/alumni-stories/adri-antori",
+  "deffi": "https://www.revou.co/alumni-stories/deffi",
+  "angga meiki fradika": "https://www.revou.co/alumni-stories/angga-meiki-fradika",
+  "susan camelia": "https://www.revou.co/alumni-stories/susan-camelia",
+  "nadia fu": "https://www.revou.co/alumni-stories/nadia-fu",
+  "pengku awaludin": "https://www.revou.co/alumni-stories/pengku-awaludin",
+  "patricia samantha puteri": "https://www.revou.co/alumni-stories/patricia-samantha-puteri",
+  "michael pien william": "https://www.revou.co/alumni-stories/michael-pien-william",
+  "fionna benita": "https://www.revou.co/alumni-stories/fionna-benita",
+  "widyah astuti": "https://www.revou.co/alumni-stories/widyah-astuti",
+  "vito atmo": "https://www.revou.co/alumni-stories/bhadrika-evandito-atmomintarso-vito-atmo",
+  "rezki kiki fatimah": "https://www.revou.co/alumni-stories/rezki-kiki-fatimah",
+  "emir arifin": "https://www.revou.co/alumni-stories/emir-arifin",
+  "rakhmat satria wicaksono": "https://www.revou.co/alumni-stories/rakhmat-satria-wicaksono",
+  "andy prayitno": "https://www.revou.co/alumni-stories/andy-prayitno",
+  "faiz akbar abdurrahim": "https://www.revou.co/alumni-stories/faiz-akbar-abdurrahim",
+  "pingkan rarumangkay": "https://www.revou.co/alumni-stories/pingkan-rarumangkay",
+  "afrianto": "https://www.revou.co/alumni-stories/afrianto",
+  "inneke soetantyo": "https://www.revou.co/alumni-stories/inneke-soetantyo",
+  "nadzira azzahra": "https://www.revou.co/alumni-stories/nadzira-azzahra",
+  "dominika": "https://www.revou.co/alumni-stories/dominika",
+  "ryan lukito": "https://www.revou.co/alumni-stories/ryan-lukito",
+  "dimas arbrianto": "https://www.revou.co/alumni-stories/dimas-arbrianto",
+  "soeksmono boedi": "https://www.revou.co/alumni-stories/soeksmono-boedi",
+  "liliek darmawan": "https://www.revou.co/alumni-stories/liliek-darmawan"
+};
+
+function resolveAlumniStoryUrl(rawUrl, alumniName = "") {
+  let url = (rawUrl || "").trim();
+
+  // If already alumni story pattern, normalize to https://www.revou.co/alumni-stories/
+  if (url.includes("revou.co/id/alumni-stories-list/") || url.includes("revou.co/alumni-stories-list/") || url.includes("revou.co/alumni-stories/")) {
+    const slugMatch = url.match(/alumni-stories(?:-list)?\/([a-zA-Z0-9_-]+)/);
+    if (slugMatch && slugMatch[1]) {
+      return `https://www.revou.co/alumni-stories/${slugMatch[1]}`;
+    }
+  }
+
+  // If match by alumni name in verified map
+  if (alumniName) {
+    const cleanName = alumniName.toLowerCase().replace(/[^a-z0-9 ]/g, " ").replace(/\s+/g, " ").trim();
+    for (const [key, verifiedUrl] of Object.entries(VERIFIED_ALUMNI_MAP)) {
+      if (cleanName.includes(key) || key.includes(cleanName)) {
+        return verifiedUrl;
+      }
+    }
+  }
+
+  // If general directory or fallback
+  if (url.includes("revou.co/alumni") || url.includes("/alumni")) {
+    return "https://www.revou.co/alumni";
+  }
+
+  // If it's a linkedin URL or invalid/placeholder, check if name matches or fallback to directory
+  if (url.includes("linkedin.com") || !url.startsWith("http")) {
+    if (alumniName) {
+      const cleanName = alumniName.toLowerCase().replace(/[^a-z0-9 ]/g, " ").replace(/\s+/g, " ").trim();
+      for (const [key, verifiedUrl] of Object.entries(VERIFIED_ALUMNI_MAP)) {
+        if (cleanName.includes(key) || key.includes(cleanName)) {
+          return verifiedUrl;
+        }
+      }
+    }
+    return "https://www.revou.co/alumni";
+  }
+
+  // Ensure default revou link uses https://www.revou.co/alumni
+  return url.startsWith("https://www.revou.co") ? url : "https://www.revou.co/alumni";
+}
+
+function sanitizeFeaturedAlumni(feat) {
+  if (!feat || typeof feat !== "object") return null;
+  const name = feat.name || "";
+  const resolvedUrl = resolveAlumniStoryUrl(feat.profile_url, name);
+  let summary = (feat.summary || "").replace(/https?:\/\/(?:www\.)?linkedin\.com\/[^\s)\]]+/gi, resolvedUrl);
+  summary = summary.replace(/https?:\/\/(?:www\.)?revou\.co\/(?:id\/)?alumni-stories(?:-list)?\/([a-zA-Z0-9_-]+)/g, "https://www.revou.co/alumni-stories/$1");
+  return {
+    ...feat,
+    profile_url: resolvedUrl,
+    summary,
+  };
+}
+
+function sanitizeAlumniMatches(matches) {
+  if (!Array.isArray(matches)) return [];
+  return matches.map((m) => {
+    const name = m.name || "";
+    const resolvedUrl = resolveAlumniStoryUrl(m.profile_url, name);
+    let summary = (m.career_journey_summary || "").replace(/https?:\/\/(?:www\.)?linkedin\.com\/[^\s)\]]+/gi, resolvedUrl);
+    summary = summary.replace(/https?:\/\/(?:www\.)?revou\.co\/(?:id\/)?alumni-stories(?:-list)?\/([a-zA-Z0-9_-]+)/g, "https://www.revou.co/alumni-stories/$1");
+    if (!summary.includes("https://www.revou.co")) {
+      summary = `${summary.trim()}\n\n[Baca Kisah Lengkap](${resolvedUrl})`;
+    }
+    return {
+      ...m,
+      profile_url: resolvedUrl,
+      career_journey_summary: summary,
+    };
+  });
+}
 
 // ─────────────────────────────────────────────
 // POST handler
@@ -296,8 +506,8 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
                     prerequisites: parsed.prerequisites || "",
                     eligibility_check: parsed.eligibility_check || "",
                     revision_summary: parsed.revision_summary || "",
-                    featured_alumni_summary: parsed.featured_alumni_summary || null,
-                    alumni_matches: Array.isArray(parsed.alumni_matches) ? parsed.alumni_matches : [],
+                    featured_alumni_summary: sanitizeFeaturedAlumni(parsed.featured_alumni_summary),
+                    alumni_matches: sanitizeAlumniMatches(parsed.alumni_matches),
                     scripts: tab === "alumni" ? [] : (Array.isArray(parsed.scripts) ? parsed.scripts : []),
                     knowledge_details: parsed.knowledge_details || null,
                   });

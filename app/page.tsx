@@ -397,11 +397,10 @@ INSTRUKSI PENTING:
             <button
               type="button"
               onClick={() => handleModeChange("pitch")}
-              className={`group flex items-center gap-2 px-4 py-2.5 text-xs sm:text-sm font-bold rounded-t-xl transition-all duration-200 border-b-2 cursor-pointer shrink-0 active:scale-95 select-none ${
-                mode === "pitch"
+              className={`group flex items-center gap-2 px-4 py-2.5 text-xs sm:text-sm font-bold rounded-t-xl transition-all duration-200 border-b-2 cursor-pointer shrink-0 active:scale-95 select-none ${mode === "pitch"
                   ? "bg-[#FFF6D1] text-[#141412] border-[#FFD84D] shadow-[0_2px_8px_rgba(255,216,77,0.35)] animate-tab-active"
                   : "text-[#8A8A84] hover:text-[#141412] hover:bg-[#F5F5F2] hover:scale-[1.02] border-transparent"
-              }`}
+                }`}
             >
               <Sparkles className={`w-4 h-4 transition-transform duration-300 group-hover:rotate-12 ${mode === "pitch" ? "text-[#A15C00] animate-icon-pop" : "text-[#8A8A84]"}`} />
               <span className="transition-colors">Create a Pitch</span>
@@ -409,11 +408,10 @@ INSTRUKSI PENTING:
             <button
               type="button"
               onClick={() => handleModeChange("alumni")}
-              className={`group flex items-center gap-2 px-4 py-2.5 text-xs sm:text-sm font-bold rounded-t-xl transition-all duration-200 border-b-2 cursor-pointer shrink-0 active:scale-95 select-none ${
-                mode === "alumni"
+              className={`group flex items-center gap-2 px-4 py-2.5 text-xs sm:text-sm font-bold rounded-t-xl transition-all duration-200 border-b-2 cursor-pointer shrink-0 active:scale-95 select-none ${mode === "alumni"
                   ? "bg-[#FFF6D1] text-[#141412] border-[#FFD84D] shadow-[0_2px_8px_rgba(255,216,77,0.35)] animate-tab-active"
                   : "text-[#8A8A84] hover:text-[#141412] hover:bg-[#F5F5F2] hover:scale-[1.02] border-transparent"
-              }`}
+                }`}
             >
               <UserCheck className={`w-4 h-4 transition-transform duration-300 group-hover:scale-110 ${mode === "alumni" ? "text-[#A15C00] animate-icon-pop" : "text-[#8A8A84]"}`} />
               <span className="transition-colors">Checking Alumni</span>
@@ -487,11 +485,10 @@ INSTRUKSI PENTING:
               type="button"
               disabled={isLoading || !inputText.trim()}
               onClick={handleGenerate}
-              className={`inline-flex items-center gap-2 font-display font-bold text-base px-5 py-3 rounded-[10px] transition-all cursor-pointer ${
-                !inputText.trim() || isLoading
+              className={`inline-flex items-center gap-2 font-display font-bold text-base px-5 py-3 rounded-[10px] transition-all cursor-pointer ${!inputText.trim() || isLoading
                   ? "bg-[#FFD84D]/70 text-[#141412]/60 cursor-not-allowed border border-transparent"
                   : "bg-[#FFD84D] hover:bg-[#FFCC1A] text-[#141412] border border-[#FFD84D] active:scale-98 shadow-sm"
-              }`}
+                }`}
             >
               {isLoading ? (
                 <>
@@ -567,69 +564,8 @@ INSTRUKSI PENTING:
               {/* SPECIFIC STRUCTURE BY ACTIVE MENU                     */}
               {/* ===================================================== */}
 
-              {/* SECTION 1: WHAT'S HAPPENING, PREREQUISITES & RECOMMENDED APPROACH */}
+              {/* SECTION: OUTPUT CONTENT */}
               <div className="space-y-4">
-                {/* 1. What's happening & Persona */}
-                <div className="bg-[#F5F5F2] p-4 sm:p-5 rounded-xl border border-[#E8E8E4] space-y-2">
-                  <div className="flex items-center gap-2 font-display font-bold text-xs uppercase tracking-wider text-[#8A8A84]">
-                    <UserCheck className="w-3.5 h-3.5 text-[#141412]" />
-                    <span>What’s happening</span>
-                  </div>
-                  <p className="text-sm font-medium text-[#141412] leading-relaxed">
-                    {responseResult.whats_happening || "Prospect sedang menimbang kecocokan program dengan kebutuhan pribadinya."}
-                  </p>
-                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 pt-1.5 font-mono text-[11.5px] text-[#8A8A84] border-t border-[#E8E8E4]">
-                    {responseResult.persona && (
-                      <div>
-                        Persona: <strong className="text-[#141412] font-sans">{responseResult.persona}</strong>
-                      </div>
-                    )}
-                    {responseResult.program_match && (
-                      <div>
-                        Program Relevan: <strong className="text-[#1F7A4D] font-sans">✓ {responseResult.program_match}</strong>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* FEATURED ALUMNI SUMMARY (Single concise summary with hyperlink) */}
-                {responseResult.featured_alumni_summary && (
-                  <div className="bg-[#FFFFFF] p-4 sm:p-5 rounded-xl border border-[#FFD84D]/90 shadow-2xs space-y-2.5 bg-gradient-to-br from-[#FFFDF0] to-[#FFFFFF]">
-                    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#E8E8E4] pb-2">
-                      <div className="flex items-center gap-2 font-display font-bold text-xs uppercase tracking-wider text-[#A15C00]">
-                        <Sparkles className="w-3.5 h-3.5 text-[#A15C00]" />
-                        <span>Ringkasan Singkat Alumni Terpilih: {responseResult.featured_alumni_summary.name || "Alumni RevoU"}</span>
-                      </div>
-                      {responseResult.featured_alumni_summary.profile_url && (
-                        <a
-                          href={responseResult.featured_alumni_summary.profile_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-xs font-semibold text-[#0E62FE] hover:text-[#0043CE] inline-flex items-center gap-1 transition-colors"
-                        >
-                          <span>Buka Cerita / Profil Alumni</span>
-                          <ExternalLink className="w-3.5 h-3.5" />
-                        </a>
-                      )}
-                    </div>
-                    <div className="text-[14px] text-[#141412] leading-relaxed">
-                      {renderFormattedTextWithLinks(responseResult.featured_alumni_summary.summary)}
-                    </div>
-                    {responseResult.featured_alumni_summary.profile_url && (
-                      <div className="pt-1.5 text-xs text-[#8A8A84] border-t border-[#E8E8E4]/60">
-                        <span className="font-medium text-[#4B4B46]">🔗 Tautan Validasi: </span>
-                        <a
-                          href={responseResult.featured_alumni_summary.profile_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-[#0E62FE] hover:underline font-semibold break-all"
-                        >
-                          {responseResult.featured_alumni_summary.profile_url}
-                        </a>
-                      </div>
-                    )}
-                  </div>
-                )}
 
                 {/* ALUMNI MATCHES CARDS GRID (When in Checking Alumni mode or when alumni_matches present) */}
                 {responseResult.alumni_matches && responseResult.alumni_matches.length > 0 && (
@@ -640,7 +576,7 @@ INSTRUKSI PENTING:
                         <span>Data Alumni & Bukti Nyata ({responseResult.alumni_matches.length} Profil Ditemukan)</span>
                       </div>
                       <a
-                        href="https://revou.co/alumni"
+                        href="https://www.revou.co/alumni"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="font-mono text-[11px] text-[#0E62FE] hover:underline inline-flex items-center gap-1 font-semibold"
@@ -718,7 +654,7 @@ INSTRUKSI PENTING:
                                 rel="noopener noreferrer"
                                 className="text-xs font-semibold text-[#0E62FE] hover:text-[#0043CE] inline-flex items-center gap-1.5 transition-colors"
                               >
-                                <span>Lihat Profil LinkedIn / Cerita Lengkap Alumni</span>
+                                <span>Baca Kisah & Bukti Nyata Alumni di RevoU</span>
                                 <ExternalLink className="w-3.5 h-3.5 inline" />
                               </a>
                             </div>
@@ -790,11 +726,10 @@ INSTRUKSI PENTING:
                           key={idx}
                           type="button"
                           onClick={() => setActiveScriptTab(idx)}
-                          className={`px-3.5 py-2 text-xs font-semibold rounded-t-lg transition-all border-b-2 whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${
-                            isActive
+                          className={`px-3.5 py-2 text-xs font-semibold rounded-t-lg transition-all border-b-2 whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${isActive
                               ? "bg-[#F5F5F2] text-[#141412] border-[#FFD84D] font-bold"
                               : "text-[#8A8A84] hover:text-[#141412] hover:bg-[#F5F5F2]/60 border-transparent"
-                          }`}
+                            }`}
                         >
                           <span className={`w-2 h-2 rounded-full ${isActive ? "bg-[#FFCC1A]" : "bg-[#D9D9D4]"}`} />
                           <span>{s.badge.split("—")[0].trim() || `Variasi ${idx + 1}`}</span>
@@ -1033,44 +968,7 @@ INSTRUKSI PENTING:
                             </div>
                           )}
 
-                          {/* FEATURED ALUMNI SUMMARY (From Clarification) */}
-                          {msg.data?.featured_alumni_summary && (
-                            <div className="bg-[#FFFFFF] p-4 sm:p-5 rounded-xl border border-[#FFD84D]/90 shadow-2xs space-y-2.5 bg-gradient-to-br from-[#FFFDF0] to-[#FFFFFF]">
-                              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#E8E8E4] pb-2">
-                                <div className="flex items-center gap-2 font-display font-bold text-xs uppercase tracking-wider text-[#A15C00]">
-                                  <Sparkles className="w-3.5 h-3.5 text-[#A15C00]" />
-                                  <span>Ringkasan Singkat Alumni Terpilih: {msg.data.featured_alumni_summary.name || "Alumni RevoU"}</span>
-                                </div>
-                                {msg.data.featured_alumni_summary.profile_url && (
-                                  <a
-                                    href={msg.data.featured_alumni_summary.profile_url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-xs font-semibold text-[#0E62FE] hover:text-[#0043CE] inline-flex items-center gap-1 transition-colors"
-                                  >
-                                    <span>Buka Cerita / Profil Alumni</span>
-                                    <ExternalLink className="w-3.5 h-3.5" />
-                                  </a>
-                                )}
-                              </div>
-                              <div className="text-[14px] text-[#141412] leading-relaxed">
-                                {renderFormattedTextWithLinks(msg.data.featured_alumni_summary.summary)}
-                              </div>
-                              {msg.data.featured_alumni_summary.profile_url && (
-                                <div className="pt-1.5 text-xs text-[#8A8A84] border-t border-[#E8E8E4]/60">
-                                  <span className="font-medium text-[#4B4B46]">🔗 Tautan Validasi: </span>
-                                  <a
-                                    href={msg.data.featured_alumni_summary.profile_url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-[#0E62FE] hover:underline font-semibold break-all"
-                                  >
-                                    {msg.data.featured_alumni_summary.profile_url}
-                                  </a>
-                                </div>
-                              )}
-                            </div>
-                          )}
+
 
                           {/* ALUMNI MATCHES CARDS GRID (From Clarification) */}
                           {msg.data?.alumni_matches && msg.data.alumni_matches.length > 0 && (
@@ -1081,7 +979,7 @@ INSTRUKSI PENTING:
                                   <span>Data Alumni Hasil Klarifikasi ({msg.data.alumni_matches.length} Profil Ditemukan)</span>
                                 </div>
                                 <a
-                                  href="https://revou.co/alumni"
+                                  href="https://www.revou.co/alumni"
                                   target="_blank"
                                   rel="noopener noreferrer"
                                   className="font-mono text-[11px] text-[#0E62FE] hover:underline inline-flex items-center gap-1 font-semibold"
@@ -1159,7 +1057,7 @@ INSTRUKSI PENTING:
                                           rel="noopener noreferrer"
                                           className="text-xs font-semibold text-[#0E62FE] hover:text-[#0043CE] inline-flex items-center gap-1.5 transition-colors"
                                         >
-                                          <span>Lihat Profil LinkedIn / Cerita Lengkap Alumni</span>
+                                          <span>Baca Kisah & Bukti Nyata Alumni di RevoU</span>
                                           <ExternalLink className="w-3.5 h-3.5 inline" />
                                         </a>
                                       </div>
@@ -1191,16 +1089,14 @@ INSTRUKSI PENTING:
                                       onClick={() =>
                                         setClarificationTabs((prev) => ({ ...prev, [msg.id]: idx }))
                                       }
-                                      className={`px-3 py-1.5 text-xs font-semibold rounded-t-lg transition-all border-b-2 whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${
-                                        isActive
+                                      className={`px-3 py-1.5 text-xs font-semibold rounded-t-lg transition-all border-b-2 whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${isActive
                                           ? "bg-[#F5F5F2] text-[#141412] border-[#FFD84D] font-bold"
                                           : "text-[#8A8A84] hover:text-[#141412] hover:bg-[#F5F5F2]/60 border-transparent"
-                                      }`}
+                                        }`}
                                     >
                                       <span
-                                        className={`w-2 h-2 rounded-full ${
-                                          isActive ? "bg-[#FFCC1A]" : "bg-[#D9D9D4]"
-                                        }`}
+                                        className={`w-2 h-2 rounded-full ${isActive ? "bg-[#FFCC1A]" : "bg-[#D9D9D4]"
+                                          }`}
                                       />
                                       <span>{s.badge?.split("—")[0]?.trim() || `Variasi ${idx + 1}`}</span>
                                     </button>
