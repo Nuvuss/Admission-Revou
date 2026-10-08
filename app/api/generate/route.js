@@ -133,14 +133,21 @@ Sebelum menyusun draf script, kamu WAJIB menganalisis dan menekankan data dari K
 - Jika topik tidak ada di knowledge base, jawab jujur bahwa data belum tersedia.
 - Untuk "program_match": pilih nama program yang BENAR-BENAR ada di knowledge base berdasarkan sinyal dari situasi. Jika tidak ada yang cocok, isi dengan "Tidak teridentifikasi — butuh info lebih lanjut."
 
-### ATURAN KHUSUS ALUMNI PROFILE APPLIED AI & DATA-DRIVEN DECISION MAKING (DILARANG MENGARANG NAMA):
-- **TIDAK ADA NAMA INDIVIDU DI KNOWLEDGE BASE:** Pada kedua program ini ("Applied AI, Analytics & Automation" kolaborasi BINUS & RevoU dan "Data-Driven Decision Making" kolaborasi ITB & RevoU), data alumni resmi di knowledge base **TIDAK memuat nama orang/individu siapapun**, melainkan HANYA mencantumkan **Job Title / Posisi** (misal: "Asst Chief Digital Innovation", "Staff Data & Analytics", "Production Manager", "Senior Manager", dll.) dan **Nama Perusahaan / Organisasi yang ditempati** (misal: "PT Honda Prospect Motor", "detikcom", "PT Pertamina (Persero)", dll.).
-- **DILARANG KERAS MENGADA-ADA / MENGARANG NAMA PRIBADI:** Ketika men-generate jawaban (baik pada menu alumni, pitch, maupun klarifikasi), DILARANG KERAS mengarang nama orang fiktif (seperti Budi, Rian, Sarah, dsb) atau membuat biodata pribadi fiktif untuk kedua program ini.
+### ATURAN KHUSUS ALUMNI PROFILE APPLIED AI & DATA-DRIVEN DECISION MAKING (DILARANG MENGARANG NAMA & POSISI SEBELUMNYA):
+- **TIDAK ADA NAMA INDIVIDU & TIDAK ADA INFORMASI POSISI SEBELUMNYA:** Pada kedua program ini ("Applied AI, Analytics & Automation" kolaborasi BINUS & RevoU dan "Data-Driven Decision Making" kolaborasi ITB & RevoU), data alumni resmi di knowledge base **TIDAK memuat nama orang/individu siapapun** dan **TIDAK ADA informasi mengenai posisi sebelumnya (previous role)**. Data resmi HANYA mencatat:
+  1. **Posisi (Job Title / Role)** (misal: "Asst Chief Digital Innovation", "Staff Data & Analytics", "Production Manager", "Senior Manager", dll.)
+  2. **Nama Perusahaan / Organisasi yang ditempati** (misal: "PT Honda Prospect Motor", "detikcom", "PT Pertamina (Persero)", dll.)
+  3. **Industri / Kategori** (misal: "Automotive", "Media & Digital Publishing", "Oil & Gas / Energy", "BUMN & Construction Engineering", "Mining & Resources", "Banking", "Government / Public Sector", dll.)
+- **DILARANG KERAS MENGADA-ADA / MENGARANG NAMA PRIBADI ATAU POSISI SEBELUMNYA:** Ketika men-generate jawaban (baik pada menu alumni, pitch, maupun klarifikasi), DILARANG KERAS mengarang nama orang fiktif (seperti Budi, Rian, Sarah, dsb) atau mengarang riwayat posisi masa lalu / switch karir fiktif untuk kedua program ini.
 - **FORMAT IDENTITAS PROFIL:**
   - Pada field 'name' di 'alumni_matches' dan 'featured_alumni_summary', gunakan format: "[Job Title] — [Perusahaan]" (contoh: "Asst Chief Digital Innovation — PT Honda Prospect Motor" atau "Production Manager — PT Pertamina (Persero)"). JANGAN isi dengan nama orang buatan.
-  - Pada field 'current_role', isi dengan job title (misal: "Asst Chief Digital Innovation" atau "Production Manager").
-  - Pada field 'company', isi dengan nama perusahaan (misal: "PT Honda Prospect Motor" atau "PT Pertamina (Persero)").
-- **NARASI SUMMARY:** Fokuskan narasi pada peran profesional job title tersebut di perusahaannya, bagaimana program membekali mereka (misal: efisiensi & otomasi AI atau data-driven decision making level leader), dan dampak bagi perusahaannya. JANGAN mengarang cerita personal fiktif (seperti latar belakang kuliah fiktif atau transisi personal yang tidak tercatat di data).
+  - Pada field 'previous_role', WAJIB isi "-" atau null (karena tidak ada riwayat posisi sebelumnya). JANGAN mengarang posisi sebelumnya!
+  - Pada field 'current_role', isi dengan Job Title resmi (misal: "Asst Chief Digital Innovation" atau "Production Manager").
+  - Pada field 'company', isi dengan nama perusahaan resmi (misal: "PT Honda Prospect Motor" atau "PT Pertamina (Persero)").
+  - Pada field 'industry', isi dengan industri atau kategori resmi (misal: "Automotive", "Oil & Gas / Energy", "Mining & Resources", "Banking", dll.).
+- **ATURAN GENERATE SUMMARY BERDASARKAN INFORMASI YANG ADA & KATEGORI YANG ADA:**
+  Ketika menyusun ringkasan perjalanan karir ('career_journey_summary' dan 'featured_alumni_summary.summary'):
+  Tampilkan ringkasan murni **berdasarkan informasi yang ada (Posisi & Perusahaan) dan kategori/industri yang ada**. Fokuskan narasi pada peran fungsional posisi tersebut di industrinya (misal: *"Sebagai [Posisi] di [Perusahaan] pada industri [Industri/Kategori], ..."*), bagaimana program membekali mereka (misal: otomasi AI, efisiensi operasional berbasis analitik data, atau kepemimpinan pengambilan keputusan berbasis data), serta dampak nyata bagi operasional/organisasi mereka. DILARANG mengarang cerita personal fiktif (seperti transisi karir personal dari pekerjaan lain yang tidak tercatat di data).
 
 
 ### ATURAN KETAT VALIDASI KRITERIA & KATEGORI ALUMNI (100% RELEVAN SESUAI PERMINTAAN):
@@ -172,7 +179,7 @@ Menu aktif saat ini: **${tab}**
 - **VALIDASI MUTLAK KRITERIA (CAREER SWITCHER VS UPSKILLING):**
   Jika Sales meminta profil dengan tipe tertentu (misal: Career Switcher), pastikan 100% dari profil yang kamu tampilkan benar-benar berpindah profesi dari bidang yang berbeda nyata. JANGAN PERNAH mencampur atau menyelipkan alumni yang hanya Upskilling (sudah di bidang yang sama) ke dalam permintaan Career Switcher!
 - **KHUSUS ALUMNI PROFILE APPLIED AI & DATA-DRIVEN DECISION MAKING:**
-  Kedua program ini datanya **TIDAK MEMILIKI NAMA ORANG SIAPAPUN, HANYA JOB TITLE DAN PERUSAHAAN**. JANGAN MENGADA-ADA/MENGARANG NAMA ORANG. Field 'name' WAJIB diisi "[Job Title] — [Perusahaan]".
+  Kedua program ini datanya **TIDAK MEMILIKI NAMA ORANG SIAPAPUN DAN TIDAK ADA INFORMASI POSISI SEBELUMNYA**. JANGAN MENGADA-ADA/MENGARANG NAMA ORANG ATAU POSISI SEBELUMNYA. Field 'name' WAJIB diisi "[Job Title] — [Perusahaan]". Field 'previous_role' dikosongkan/diisi "-" atau null. Field 'industry' diisi industri/kategori yang tercatat. Summary WAJIB ditampilkan murni berdasarkan informasi yang ada (Posisi & Perusahaan) dan kategori/industri yang ada.
 - **WAJIB CETAK TEBAL (BOLD **...**) PEMICU AKSI & HIGHLIGHT BAGIAN PENTING:**
   Di dalam teks "career_journey_summary", kamu **WAJIB mencetak tebal (format bold markdown **teks**) atau menghighlight bagian-bagian penting dan pemicu aksi (action triggers)** yang mengubah jalannya karir alumni, seperti:
   1. **Titik awal & hambatan awal:** (misal: **mulai dari nol tanpa background teknis**, **sempat ragu karena latar belakang non-linear**)
@@ -212,19 +219,20 @@ ${knowledgeBase}
   "revision_summary": "Jika ada instruksi revisi/klarifikasi dari Sales, jelaskan secara cerdas & natural dalam 2-3 kalimat bagaimana draf disesuaikan.",
   "featured_alumni_summary": {
     "name": "Nama salah satu alumni yang paling relevan (PERHATIAN: Untuk program Applied AI & Data-Driven Decision Making, TIDAK ADA nama orang di data, isi format '[Job Title] — [Perusahaan]', DILARANG mengarang nama orang!)",
-    "summary": "Ringkasan singkat (3-5 kalimat) tentang perjalanan karir dan relevansi peran/program bagi posisi tersebut",
+    "summary": "Ringkasan singkat (3-5 kalimat) tentang peran dan relevansi program bagi posisi dan industri tersebut berdasarkan informasi yang ada dan kategori yang ada (DILARANG mengarang posisi masa lalu/personal fiktif)",
     "profile_url": "URL tautan artikel cerita alumni resmi RevoU (misal: https://www.revou.co/alumni-stories/devina-dea) atau https://www.revou.co/alumni (DILARANG LINK LINKEDIN)"
   },
   "alumni_matches": [
     {
       "name": "Nama Alumni (PERHATIAN: Untuk program Applied AI & Data-Driven Decision Making, isi format '[Job Title] — [Perusahaan]', DILARANG mengarang nama orang!)",
       "program_batch": "Nama Program & Batch (misal: Full-Stack Digital Marketing, Applied AI, Analytics & Automation, atau Data-Driven Decision Making)",
-      "previous_role": "Pekerjaan/Latar Belakang Sebelumnya (jika tidak ada di data, isi '-' atau Job Title terkait)",
+      "previous_role": "Pekerjaan/Latar Belakang Sebelumnya (PERHATIAN: Untuk Applied AI & Data-Driven Decision Making, TIDAK ADA data posisi sebelumnya, WAJIB ISI '-' ATAU null, DILARANG MENGARANG POSISI SEBELUMNYA!)",
       "current_role": "Pekerjaan/Posisi Sekarang (Job Title resmi dari dokumen)",
       "company": "Nama Perusahaan / Organisasi",
+      "industry": "Kategori / Industri resmi (misal: Automotive, Banking, Oil & Gas / Energy, Mining & Resources, Government, FMCG, Telecommunications, dll)",
       "achievement": "Kenaikan gaji / Hired before graduation / Promosi / Implementasi Proyek",
       "profile_url": "URL tautan artikel cerita alumni resmi RevoU (misal: https://www.revou.co/alumni-stories/devina-dea) atau https://www.revou.co/alumni (DILARANG LINK LINKEDIN)",
-      "career_journey_summary": "Summary perjalanan karir alumni maksimal 200-250 kata saja (uraikan konteks peran asal, proses belajar di RevoU, hingga implementasi/pencapaian karir di perusahaan saat ini tanpa mengarang biodata pribadi fiktif) dengan WAJIB CETAK TEBAL (**bold**) PEMICU AKSI & HIGHLIGHT BAGIAN PENTING (keputusan kunci mengambil tindakan, aksi belajar capstone/mentoring coach, dan hasil promosi/kenaikan gaji/hired before graduation) lengkap dengan hyperlink perjalanan karir selengkapnya [Baca Kisah Lengkap](https://www.revou.co/alumni-stories/slug) atau [Direktori Alumni RevoU](https://www.revou.co/alumni) agar tim admission dapat memastikan.",
+      "career_journey_summary": "Summary perjalanan karir alumni maksimal 200-250 kata saja (Untuk Applied AI & Data-Driven: tampilkan narasi murni berdasarkan informasi yang ada yaitu Posisi & Perusahaan serta Kategori/Industri yang ada, tanpa mengarang riwayat posisi sebelumnya!) dengan WAJIB CETAK TEBAL (**bold**) PEMICU AKSI & HIGHLIGHT BAGIAN PENTING (keputusan kunci mengambil tindakan, aksi belajar capstone/mentoring coach, dan hasil promosi/kenaikan gaji/hired before graduation) lengkap dengan hyperlink perjalanan karir selengkapnya [Baca Kisah Lengkap](https://www.revou.co/alumni-stories/slug) atau [Direktori Alumni RevoU](https://www.revou.co/alumni) agar tim admission dapat memastikan.",
       "why_relevant": "Alasan spesifik mengapa kisah alumni ini sangat relevan untuk menjawab keraguan/kebutuhan leads"
     }
   ],
@@ -451,8 +459,17 @@ function sanitizeAlumniMatches(matches) {
     if (!summary.includes("https://www.revou.co")) {
       summary = `${summary.trim()}\n\n[Baca Kisah Lengkap](${resolvedUrl})`;
     }
+    const isExecutiveOrApplied =
+      (m.program_batch && (m.program_batch.toLowerCase().includes("applied ai") || m.program_batch.toLowerCase().includes("data-driven"))) ||
+      (m.name && m.name.includes("—"));
+    let prevRole = m.previous_role;
+    if (isExecutiveOrApplied || !prevRole || prevRole === "-" || prevRole.toLowerCase() === "tidak ada" || prevRole.toLowerCase() === "null" || prevRole === m.current_role) {
+      prevRole = null;
+    }
     return {
       ...m,
+      previous_role: prevRole,
+      industry: m.industry || null,
       profile_url: resolvedUrl,
       career_journey_summary: summary,
     };

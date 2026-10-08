@@ -314,7 +314,7 @@ INSTRUKSI PENTING:
 1. Jika Sales mengklarifikasi atau mencari alumni bidang/program/profesi tertentu (misal: Software Engineering, Data Analytics, Digital Marketing, atau profil khusus), cari data alumni yang relevan dari knowledge base dan WAJIB sertakan 'featured_alumni_summary' dan 'alumni_matches' yang sesuai.
 2. Pada menu 'alumni': JANGAN buat pitch WhatsApp dan KOSONGKAN scripts ([]). Fokus tampilkan data alumni RevoU dengan ringkasan singkat serta rangkuman perjalanan karirnya (WAJIB cetak tebal **bold** pemicu aksi dan highlight bagian penting perjalanan karir).
 3. Pada menu 'pitch': Sesuaikan draf script pesan sesuai masukan Sales.
-4. KHUSUS alumni profile pada 'Applied AI, Analytics & Automation' dan 'Data-Driven Decision Making': Datanya TIDAK memiliki nama orang siapapun di knowledge base, HANYA Job Title dan Perusahaan yang ditempati. JANGAN PERNAH mengada-ada/mengarang nama orang; gunakan format '[Job Title] — [Perusahaan]' sebagai nama profil alumni.
+4. KHUSUS alumni profile pada 'Applied AI, Analytics & Automation' dan 'Data-Driven Decision Making': Datanya TIDAK memiliki nama orang siapapun dan TIDAK ADA informasi posisi sebelumnya di knowledge base (HANYA Posisi/Job Title, Perusahaan, dan Industri/Kategori). JANGAN PERNAH mengada-ada/mengarang nama orang atau posisi sebelumnya; gunakan format '[Job Title] — [Perusahaan]' dan tampilkan informasi summary murni berdasarkan posisi, perusahaan, dan kategori industri yang ada.
 5. VALIDASI MUTLAK KRITERIA (CAREER SWITCHER VS UPSKILLING — NO MISMATCH): Jika Sales meminta kriteria spesifik (misal: "3 orang career switcher"), seluruh profil yang ditampilkan WAJIB 100% murni Career Switcher sejati (terbukti beralih dari profesi/bidang yang berbeda nyata). DILARANG KERAS menyelipkan profil Upskilling (yang sebelumnya sudah di bidang serupa) ke dalam permintaan Career Switcher!`;
       const res = await fetch("/api/generate", {
         method: "POST",
@@ -658,7 +658,7 @@ INSTRUKSI PENTING:
                             </div>
 
                             <div className="text-xs text-[#4B4B46] space-y-1 bg-[#F5F5F2] p-3 rounded-lg border border-[#E8E8E4]/70">
-                              {alumni.previous_role && (
+                              {alumni.previous_role && alumni.previous_role !== "-" && alumni.previous_role.toLowerCase() !== "tidak ada" && (
                                 <div>
                                   <span className="text-[#8A8A84] font-medium">Latar Belakang / Profesi Sebelumnya: </span>
                                   <span className="font-semibold text-[#141412]">{alumni.previous_role}</span>
@@ -669,6 +669,12 @@ INSTRUKSI PENTING:
                                   <span className="text-[#8A8A84] font-medium">Posisi & Perusahaan Sekarang: </span>
                                   <span className="font-semibold text-[#1F7A4D]">{alumni.current_role}</span>
                                   {alumni.company && <span className="text-[#4B4B46]"> · {alumni.company}</span>}
+                                </div>
+                              )}
+                              {alumni.industry && (
+                                <div>
+                                  <span className="text-[#8A8A84] font-medium">Kategori / Industri: </span>
+                                  <span className="font-semibold text-[#141412]">{alumni.industry}</span>
                                 </div>
                               )}
                             </div>
@@ -1037,7 +1043,7 @@ INSTRUKSI PENTING:
                                       </div>
 
                                       <div className="text-xs text-[#4B4B46] space-y-1 bg-[#F5F5F2] p-3 rounded-lg border border-[#E8E8E4]/70">
-                                        {alumni.previous_role && (
+                                        {alumni.previous_role && alumni.previous_role !== "-" && alumni.previous_role.toLowerCase() !== "tidak ada" && (
                                           <div>
                                             <span className="text-[#8A8A84] font-medium">Latar Belakang / Profesi Sebelumnya: </span>
                                             <span className="font-semibold text-[#141412]">{alumni.previous_role}</span>
@@ -1048,6 +1054,12 @@ INSTRUKSI PENTING:
                                             <span className="text-[#8A8A84] font-medium">Posisi & Perusahaan Sekarang: </span>
                                             <span className="font-semibold text-[#1F7A4D]">{alumni.current_role}</span>
                                             {alumni.company && <span className="text-[#4B4B46]"> · {alumni.company}</span>}
+                                          </div>
+                                        )}
+                                        {alumni.industry && (
+                                          <div>
+                                            <span className="text-[#8A8A84] font-medium">Kategori / Industri: </span>
+                                            <span className="font-semibold text-[#141412]">{alumni.industry}</span>
                                           </div>
                                         )}
                                       </div>

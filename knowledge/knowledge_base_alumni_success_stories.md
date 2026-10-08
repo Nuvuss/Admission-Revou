@@ -20,57 +20,106 @@ Halaman Direktori Alumni Resmi: [Direktori Alumni RevoU](https://www.revou.co/al
 ---
 
 ## 2. Alumni Profile: Applied AI, Analytics & Automation (Kolaborasi BINUS & RevoU)
-> **PENTING (CATATAN INTEGRITAS DATA):** Data profil alumni untuk program ini HANYA memuat **Job Title / Posisi** dan **Nama Perusahaan / Organisasi yang ditempati**, **TIDAK ADA NAMA INDIVIDU SIAPAPUN**. Saat menghasilkan jawaban, DILARANG KERAS mengarang/mengada-ada nama orang fiktif. Gunakan format `[Job Title] — [Perusahaan]` sebagai identitas profil.
-Program ini diikuti oleh profesional, manager, dan spesialis dari berbagai perusahaan papan atas untuk otomasi dan efisiensi kerja menggunakan AI:
-- **Asst Chief Digital Innovation** — PT Honda Prospect Motor (Automotive) 
-- **Staff Data & Analytics** — detikcom (Media) 
-- **Staff Fintech** — Kredivo (Financial Services) 
-- **System Developer** — PT XLSMART Telecom Sejahtera Tbk (Telecommunications) 
-- **IT Solutions Specialist** — Hostinger & Enablr.id (IT Solutions) 
-- **Government Official / Staff** — Kementerian Keuangan RI (Government) 
-- **Automotive Specialist** — BYD Auto Indonesia (Automotive) 
-- **Banking Professional** — Bank Syariah Indonesia / BSI (Banking) 
-- **Supervisor & Leads** — PT Borneo Indobara (Mining), KPBS Pangalengan (FMCG), PT Trias Sentosa Tbk, Sinar Mas (Property), PT Karcher (Manufacture), PT Abhimata Persada, FKS Group. 
+> **PENTING (CATATAN INTEGRITAS DATA & ATURAN SUMMARY):** 
+> - **TIDAK ADA INFORMASI POSISI SEBELUMNYA:** Pada program ini, data alumni **TIDAK MEMILIKI riwayat posisi sebelumnya (previous role)**. Data resmi HANYA mencatat **Posisi (Job Title / Role)**, **Nama Perusahaan / Organisasi**, dan **Industri / Kategori**.
+> - **TIDAK ADA NAMA INDIVIDU:** Tidak ada nama orang/individu siapapun di data. DILARANG KERAS mengarang/mengada-ada nama orang fiktif maupun posisi masa lalu fiktif. Gunakan format identitas `[Job Title] — [Perusahaan]`.
+> - **ATURAN GENERATE SUMMARY:** Ketika men-generate ringkasan perjalanan/profil (summary), **tampilkan informasi murni berdasarkan informasi yang ada (Posisi & Perusahaan) dan kategori/industri yang ada**. Fokuskan narasi pada peran fungsional posisi tersebut di industrinya, bagaimana program membekali efisiensi otomasi AI dan data analytics dalam operasional kerja mereka, tanpa mengarang cerita switch career dari pekerjaan lama.
+
+Program ini diikuti oleh profesional, manager, dan spesialis dari berbagai perusahaan papan atas untuk otomasi dan efisiensi kerja menggunakan AI, terbagi berdasarkan Kategori / Industri berikut:
+
+### Kategori: Marketing Agency
+- **Non-IT role** — Agency | *Industri: Marketing Agency*
+- **Staff** — Involve Asia | *Industri: Marketing Agency*
+- **Staff** — Shopcomm | *Industri: Marketing Agency*
+- **C-Level/VP** — Greenpark Digital | *Industri: Marketing Agency*
+
+### Kategori: Automotive & Mobility
+- **Asst Chief Digital Innovation** — PT Honda Prospect Motor | *Industri: Automotive*
+- **Automotive Specialist** — BYD Auto Indonesia | *Industri: Automotive / Electric Vehicle*
+
+### Kategori: Media, Digital Publishing & Telecommunications
+- **Staff Data & Analytics** — detikcom | *Industri: Media & Digital Publishing*
+- **System Developer** — PT XLSMART Telecom Sejahtera Tbk | *Industri: Telecommunications*
+
+### Kategori: Financial Services, Fintech & Banking
+- **Staff Fintech** — Kredivo | *Industri: Financial Services / Fintech*
+- **Banking Professional** — Bank Syariah Indonesia / BSI | *Industri: Banking & Financial Institution*
+
+### Kategori: IT Solutions, Technology & E-commerce
+- **IT Solutions Specialist** — Hostinger & Enablr.id | *Industri: IT Solutions & E-commerce Enabler*
+- **Supervisor & Leads** — PT Abhimata Persada | *Industri: IT & Telecommunication Systems*
+
+### Kategori: Government & Public Sector
+- **Government Official / Staff** — Kementerian Keuangan RI | *Industri: Government / Public Sector*
+
+### Kategori: Mining, FMCG, Manufacture & Conglomerate
+- **Supervisor & Leads** — PT Borneo Indobara | *Industri: Mining & Natural Resources*
+- **Supervisor & Leads** — KPBS Pangalengan | *Industri: FMCG & Agribusiness*
+- **Supervisor & Leads** — PT Trias Sentosa Tbk | *Industri: Manufacture & Flexible Packaging*
+- **Supervisor & Leads** — Sinar Mas | *Industri: Property & Conglomerate*
+- **Supervisor & Leads** — PT Karcher | *Industri: Manufacture & Cleaning Technology*
+- **Supervisor & Leads** — FKS Group | *Industri: Food & Agribusiness*
+
+### Implementasi & Relevansi Nyata Otomasi AI untuk Industri Marketing Agency:
+- **Automated Client Reporting (Multi-Channel):** Menghubungkan metrik performa kampanye dari Meta Ads, Google Ads, dan TikTok Ads langsung ke spreadsheet atau dashboard laporan klien secara otomatis via n8n tanpa rekap manual berjam-jam.
+- **AI-Powered Copywriting & Ideation at Scale:** Menggunakan Custom AI Assistant untuk mengeksplorasi puluhan variasi ad copy, angle konten visual, dan draft pitching deck proposal klien dalam hitungan menit.
+- **Competitor Ad & Trend Intelligence:** Membangun workflow AI agent untuk memantau benchmarking tren konten dan sudut pesan kompetitor di industri klien.
+- **Peningkatan Kapasitas Akun Klien:** Memangkas waktu kerja repetitif operasional sehingga tim account manager dan media buyer agensi mampu mengelola lebih banyak brand/klien dengan akurasi dan kecepatan tinggi.
 
 ---
 
 ## 3. Alumni Profile: Data-Driven Decision Making (Kolaborasi ITB & RevoU)
-> **PENTING (CATATAN INTEGRITAS DATA):** Data profil alumni untuk program eksekutif ini HANYA memuat **Job Title / Posisi** dan **Nama Perusahaan / Instansi yang ditempati**, **TIDAK ADA NAMA INDIVIDU SIAPAPUN**. Saat menghasilkan jawaban, DILARANG KERAS mengarang/mengada-ada nama orang fiktif. Gunakan format `[Job Title] — [Perusahaan]` sebagai identitas profil.
-Program kepemimpinan data & AI eksekutif yang diikuti oleh para Manager, Senior Manager, Direktur, dan C-Level untuk pengambilan keputusan berbasis data:
-- **Oil & Gas / Energy Leaders:**
-  - Production Manager — PT Pertamina (Persero)
-  - Senior Manager & Team Lead — Pertamina Hulu Rokan & Pertamina Hulu Mahakam
-  - Team Lead / Supervisor — PT PLN (Persero)
-  - C-Level / VP — PT Triyasa Pirsa Utama
-- **BUMN & Construction Engineering:**
-  - Project Managers, Construction Manager, Deputi Pimpinan Proyek — PT PP (Persero) Tbk
-  - Project Control & Commercial Manager, Manager L&D — PT Wijaya Karya (Persero) Tbk (WIKA)
-  - Direktur Operasi — PT Krakatau Sarana Properti
-  - Manager — PT Jasa Marga (Persero) Tbk
-- **Mining & Resources Leaders:**
-  - Manager — PT ANTAM Tbk
-  - Team Lead / Supervisor — PT Bukit Asam Tbk
-  - Operational Lead — PT Bumi Resources Minerals Tbk
-  - Team Lead — PT Pamapersada Nusantara
-- **Banking, Financial Services & Insurance:**
-  - Senior Manager — Permata Bank
-  - C-Level / VP — PT Bank Perekonomian Rakyat Pandanaran Jaya
-  - Actuary — IFG Life (Insurance)
-  - Manager — FIFGROUP (Astra Financial)
-  - Senior Analyst — PT Inclusive Finance Group (Danacita)
-- **Government & Public Sector Leaders:**
-  - Tim Ahli / Supervisor — Kedutaan Besar Republik Indonesia (KBRI) di Seoul, Republik Korea
-  - Senior Manager — Kementerian Perindustrian RI
-  - Manager — Badan Keahlian DPR RI
-  - Team Lead / Supervisor (ASN) — Pemprov Jawa Barat
-  - C-Level / Kepala — Dinas Kependudukan dan Pencatatan Sipil
-- **Telecommunications & Tech Leaders:**
-  - Senior Manager — Indosat
-  - Head of IT Digital Platform, IT Strategy & Planning — PT XLSMART Telecom
-  - Manager — Telkom Indonesia & PGAS International
-- **Healthcare & Others:**
-  - C-Level / VP / Head — PT Siloam International Hospitals Tbk
-  - Manager & Senior Manager — Wings Group (FMCG), Komatsu Remanufacturing Asia, NIQ, Hukumonline.com, Dove Chemical.
+> **PENTING (CATATAN INTEGRITAS DATA & ATURAN SUMMARY):** 
+> - **TIDAK ADA INFORMASI POSISI SEBELUMNYA:** Pada program kepemimpinan eksekutif ini, data alumni **TIDAK MEMILIKI riwayat posisi sebelumnya (previous role)**. Data resmi HANYA mencatat **Posisi (Job Title / Level Pemimpin)**, **Nama Perusahaan / Instansi**, dan **Kategori / Industri**.
+> - **TIDAK ADA NAMA INDIVIDU:** Tidak ada nama orang/individu siapapun di data. DILARANG KERAS mengarang/mengada-ada nama orang fiktif maupun posisi masa lalu fiktif. Gunakan format identitas `[Job Title] — [Perusahaan]`.
+> - **ATURAN GENERATE SUMMARY:** Ketika men-generate ringkasan/profil (summary), **tampilkan informasi murni berdasarkan informasi yang ada (Posisi & Perusahaan) dan kategori/industri yang ada**. Fokuskan narasi pada peran strategis kepemimpinan posisi tersebut di perusahaannya, bagaimana program ITB x RevoU memperkuat kapabilitas pengambilan keputusan berbasis data (data-driven decision making) dan tata kelola bisnis, tanpa mengarang riwayat karir sebelumnya.
+
+Program kepemimpinan data & AI eksekutif yang diikuti oleh para Manager, Senior Manager, Direktur, dan C-Level untuk pengambilan keputusan berbasis data, terbagi berdasarkan Kategori / Industri berikut:
+
+### Kategori: Oil & Gas / Energy Leaders
+- **Production Manager** — PT Pertamina (Persero) | *Industri: Oil & Gas / Energy*
+- **Senior Manager & Team Lead** — Pertamina Hulu Rokan & Pertamina Hulu Mahakam | *Industri: Oil & Gas / Energy*
+- **Team Lead / Supervisor** — PT PLN (Persero) | *Industri: Energy & Utility*
+- **C-Level / VP** — PT Triyasa Pirsa Utama | *Industri: Energy & Engineering*
+
+### Kategori: BUMN & Construction Engineering Leaders
+- **Project Managers, Construction Manager, Deputi Pimpinan Proyek** — PT PP (Persero) Tbk | *Industri: BUMN & Construction Engineering*
+- **Project Control & Commercial Manager, Manager L&D** — PT Wijaya Karya (Persero) Tbk (WIKA) | *Industri: BUMN & Construction Engineering*
+- **Direktur Operasi** — PT Krakatau Sarana Properti | *Industri: Property & Industrial Estate*
+- **Manager** — PT Jasa Marga (Persero) Tbk | *Industri: Infrastructure & BUMN*
+
+### Kategori: Mining & Resources Leaders
+- **Manager** — PT ANTAM Tbk | *Industri: Mining & Metals*
+- **Team Lead / Supervisor** — PT Bukit Asam Tbk | *Industri: Mining & Energy*
+- **Operational Lead** — PT Bumi Resources Minerals Tbk | *Industri: Mining & Resources*
+- **Team Lead** — PT Pamapersada Nusantara | *Industri: Mining Contracting*
+
+### Kategori: Banking, Financial Services & Insurance Leaders
+- **Senior Manager** — Permata Bank | *Industri: Banking*
+- **C-Level / VP** — PT Bank Perekonomian Rakyat Pandanaran Jaya | *Industri: Banking*
+- **Actuary** — IFG Life | *Industri: Insurance*
+- **Manager** — FIFGROUP (Astra Financial) | *Industri: Financial Services*
+- **Senior Analyst** — PT Inclusive Finance Group (Danacita) | *Industri: Fintech & Financial Services*
+
+### Kategori: Government & Public Sector Leaders
+- **Tim Ahli / Supervisor** — Kedutaan Besar Republik Indonesia (KBRI) di Seoul, Republik Korea | *Industri: Government & Diplomatic*
+- **Senior Manager** — Kementerian Perindustrian RI | *Industri: Government & Public Sector*
+- **Manager** — Badan Keahlian DPR RI | *Industri: Public Policy & Government*
+- **Team Lead / Supervisor (ASN)** — Pemprov Jawa Barat | *Industri: Regional Government & Public Sector*
+- **C-Level / Kepala** — Dinas Kependudukan dan Pencatatan Sipil | *Industri: Public Administration*
+
+### Kategori: Telecommunications & Tech Leaders
+- **Senior Manager** — Indosat | *Industri: Telecommunications*
+- **Head of IT Digital Platform, IT Strategy & Planning** — PT XLSMART Telecom | *Industri: Telecommunications & Tech*
+- **Manager** — Telkom Indonesia & PGAS International | *Industri: Telecommunications & IT*
+
+### Kategori: Healthcare, FMCG & Industrial Manufacture Leaders
+- **C-Level / VP / Head** — PT Siloam International Hospitals Tbk | *Industri: Healthcare & Hospital Services*
+- **Manager & Senior Manager** — Wings Group | *Industri: FMCG*
+- **Manager & Senior Manager** — Komatsu Remanufacturing Asia | *Industri: Heavy Equipment & Manufacture*
+- **Manager & Senior Manager** — NIQ (NielsenIQ) | *Industri: Market Research & Consumer Intelligence*
+- **Manager & Senior Manager** — Hukumonline.com | *Industri: Legal Tech & Media*
+- **Manager & Senior Manager** — Dove Chemical | *Industri: Chemical & Manufacture*
 
 ---
 
