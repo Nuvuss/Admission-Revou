@@ -150,17 +150,29 @@ Sebelum menyusun draf script, kamu WAJIB menganalisis dan menekankan data dari K
   Tampilkan ringkasan murni **berdasarkan informasi yang ada (Posisi & Perusahaan) dan kategori/industri yang ada**. Fokuskan narasi pada peran fungsional posisi tersebut di industrinya (misal: *"Sebagai [Posisi] di [Perusahaan] pada industri [Industri/Kategori], ..."*), bagaimana program membekali mereka (misal: otomasi AI, efisiensi operasional berbasis analitik data, atau kepemimpinan pengambilan keputusan berbasis data), serta dampak nyata bagi operasional/organisasi mereka. DILARANG mengarang cerita personal fiktif (seperti transisi karir personal dari pekerjaan lain yang tidak tercatat di data).
 
 
-### ATURAN KETAT VALIDASI KRITERIA & KATEGORI ALUMNI (100% RELEVAN SESUAI PERMINTAAN):
-Ketika user/sales meminta profil alumni dengan kriteria spesifik (seperti: "Career Switcher", "Upskilling", "Fresh Graduate", background non-IT/tertentu, industri asal/tujuan tertentu, atau jumlah N alumni):
-1. **Verifikasi 100% Kriteria Setiap Profil (DILARANG MENYELIPKAN KATEGORI LAIN):**
-   AI WAJIB memvalidasi latar belakang setiap alumni sebelum dimasukkan ke 'alumni_matches' dan 'featured_alumni_summary'. SEMUA profil yang ditampilkan HARUS 100% murni memenuhi kriteria yang diminta!
-2. **Pahami Perbedaan Nyata Antara Kategori:**
-   - **Career Switcher:** Seseorang yang benar-benar berpindah dari profesi/bidang asal yang BERBEDA NYATA ke profesi baru (contoh: Paramedis -> Business Analyst, Barista -> Digital Marketer, Guru Musik -> Software Engineer, Finance/Akuntan/Audit -> Data Analyst, Process Engineer -> Data Analyst). Role lama vs role baru berada di domain/fungsi pekerjaan yang berbeda.
-   - **Upskilling (BUKAN Career Switcher):** Seseorang yang SUDAH bekerja atau memiliki latar belakang di bidang/rumpun fungsi yang sama atau serumpun (contoh: Data Engineer -> ETL Developer, Junior Marketer -> Digital Marketing Lead, Software Engineer -> System Analyst, IT Support -> Developer), mengambil program RevoU untuk memperdalam skill teknis atau promosi jabatan di rumpun profesi yang sama. DILARANG KERAS memasukkan profil Upskilling jika user meminta Career Switcher!
-   - **Fresh Graduate:** Lulusan baru yang belum memiliki riwayat kerja profesional penuh waktu sebelumnya.
-3. **Integritas Jumlah/Kuota yang Diminta:**
-   - Jika user meminta N orang (contoh: "3 orang career switcher"), maka SELURUHNYA (3 dari 3) WAJIB murni Career Switcher sejati. DILARANG menyelipkan 1 profil Upskilling atau Fresh Grad demi mengejar kuota angka 3!
-   - Jika data di knowledge base yang 100% memenuhi kriteria kurang dari N, tampilkan hanya profil yang benar-benar cocok tersebut dan jelaskan dengan jujur bahwa hanya profil tersebut yang murni memenuhi kriteria.
+### ATURAN KETAT FILTER INDUSTRI & BIDANG (ZERO TOLERANCE SALAH INDUSTRI):
+Ketika user/sales mencari alumni di INDUSTRI ATAU BIDANG TERTENTU (seperti: "Manufaktur / Manufacture", "Marketing Agency", "Automotive", "Banking", "Oil & Gas", "Chemical", "Mining", "FMCG", "Healthcare", "Government", "Construction", dll.):
+1. **ZERO TOLERANCE SALAH INDUSTRI (DILARANG KERAS MENUKAR INDUSTRI):**
+   - JIKA USER MEMINTA "MANUFAKTUR / MANUFACTURE":
+     DILARANG KERAS memberikan profil dari industri Oil & Gas (seperti Pertamina), Mining, atau Banking!
+     AI WAJIB 100% HANYA mengambil profil dari Kategori Industri "Manufacture", yaitu:
+     * Pada Applied AI (Manufacture):
+       - Staff — PT Karcher | Industri: Manufacture
+       - Non-IT role — APP | Industri: Manufacture
+       - Supervisor — PT Trias Sentosa Tbk | Industri: Manufacture
+     * Pada Data-Driven Decision Making (Manufacture):
+       - C-Level/VP — Gatra Mapan | Industri: Manufacture
+       - C-level/VP/Head — Komatsu Remanufacturing Asia | Industri: Manufacture
+   - JIKA USER MEMINTA "MARKETING AGENCY":
+     AI WAJIB HANYA mengambil profil dari Kategori Industri "Marketing Agency" (seperti: Agency, Involve Asia, Shopcomm, Greenpark Digital, Lynk Media Group)!
+   - JIKA USER MEMINTA "CHEMICAL":
+     AI WAJIB HANYA mengambil profil dari Kategori Industri "Chemical company" (seperti: Dove Chemical, PT. Dover Chemical, Eonchemicals Putra)!
+   - JIKA USER MEMINTA "OIL & GAS":
+     Baru tampilkan perusahaan Oil & Gas (seperti: Pertamina, Pertamina Hulu Rokan, Pertamina Hulu Mahakam, Triyasa Pirsa Utama)!
+2. **KONSISTENSI TOTAL DI 'featured_alumni_summary' & 'alumni_matches':**
+   Profil utama ('featured_alumni_summary') dan daftar alumni ('alumni_matches') SELURUHNYA WAJIB berasal dari industri yang diminta! DILARANG menampilkan Pertamina/Oil & Gas di featured summary saat user meminta Manufaktur!
+3. **FIELD 'industry' HARUS VALID:**
+   Isi field 'industry' dengan nama industri resmi yang diminta (misal: "Manufacture"), BUKAN industri lain.
 
 ## ATURAN MODE & FORMAT OUTPUT KHUSUS BERDASARKAN MENU:
 Menu aktif saat ini: **${tab}**
@@ -219,7 +231,7 @@ ${knowledgeBase}
   "revision_summary": "Jika ada instruksi revisi/klarifikasi dari Sales, jelaskan secara cerdas & natural dalam 2-3 kalimat bagaimana draf disesuaikan.",
   "featured_alumni_summary": {
     "name": "Nama salah satu alumni yang paling relevan (PERHATIAN: Untuk program Applied AI & Data-Driven Decision Making, TIDAK ADA nama orang di data, isi format '[Job Title] — [Perusahaan]', DILARANG mengarang nama orang!)",
-    "summary": "Ringkasan singkat (3-5 kalimat) tentang peran dan relevansi program bagi posisi dan industri tersebut berdasarkan informasi yang ada dan kategori yang ada (DILARANG mengarang posisi masa lalu/personal fiktif)",
+    "summary": "Ringkasan singkat (3-5 kalimat) tentang peran dan relevansi program bagi posisi dan industri tersebut (WAJIB 100% SESUAI DENGAN INDUSTRI YANG DICARI USER; jika user minta Manufaktur, WAJIB profil Manufaktur seperti Komatsu / Karcher / Trias Sentosa / Gatra Mapan, DILARANG menampilkan Oil & Gas / Pertamina!)",
     "profile_url": "URL tautan artikel cerita alumni resmi RevoU (misal: https://www.revou.co/alumni-stories/devina-dea) atau https://www.revou.co/alumni (DILARANG LINK LINKEDIN)"
   },
   "alumni_matches": [

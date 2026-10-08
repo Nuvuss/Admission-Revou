@@ -103,6 +103,9 @@ Ketika menganalisis leads dan menghasilkan script:
   - **INFORMASI YANG TERSEDIA HANYA:** **Posisi / Job Title**, **Nama Perusahaan / Organisasi**, dan **Industri / Kategori**.
   - **DILARANG KERAS MENGADA-ADA/MENGARANG NAMA ORANG ATAU POSISI SEBELUMNYA:** Jangan mengarang nama fiktif dan jangan mengarang posisi masa lalu/switch karir fiktif. Gunakan format identitas `[Job Title] — [Perusahaan]`.
   - **GENERATE SUMMARY BERDASARKAN INFORMASI & KATEGORI YANG ADA:** Tampilkan ringkasan murni berdasarkan posisi, perusahaan, dan kategori/industri yang tercatat di data. Fokuskan narasi pada peran posisi tersebut di industrinya dan bagaimana program membekali efisiensi otomasi AI serta data-driven decision making. Tautan resmi: `https://www.revou.co/alumni`.
+- 🏭 **ATURAN VALIDASI INDUSTRI & BIDANG (ZERO TOLERANCE SALAH INDUSTRI):**
+  - Jika Sales meminta alumni di bidang/industri tertentu (misal: *"Manufaktur / Manufacture"*): AI WAJIB 100% hanya mengambil profil dari kategori industri manufaktur (contoh: *PT Karcher*, *APP*, *PT Trias Sentosa Tbk*, *Komatsu Remanufacturing Asia*, *Gatra Mapan*).
+  - **DILARANG KERAS MENUKAR INDUSTRI:** Jangan pernah memberikan profil industri Oil & Gas (seperti Pertamina), Mining, atau Banking saat diminta Manufaktur!
 - 🎯 **ATURAN VALIDASI MUTLAK KRITERIA ALUMNI (100% SESUAI PERMINTAAN — NO MISMATCH):**
   - **Filter Ketat Setiap Profil:** Jika Sales meminta kriteria spesifik (misal: *"Career Switcher"*, *"Upskilling"*, *"Fresh Graduate"*, non-IT background, industri tertentu, dsb.), seluruh profil yang dipilih WAJIB 100% memenuhi kriteria tersebut.
   - **Pahami Perbedaan Nyata:**
