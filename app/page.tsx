@@ -533,9 +533,9 @@ INSTRUKSI PENTING:
               type="button"
               disabled={isLoading || !inputText.trim()}
               onClick={handleGenerate}
-              className={`inline-flex items-center gap-2 font-display font-bold text-base px-5 py-3 rounded-[10px] transition-all cursor-pointer ${!inputText.trim() || isLoading
-                ? "bg-[#FFD84D]/70 text-[#141412]/60 cursor-not-allowed border border-transparent"
-                : "bg-[#FFD84D] hover:bg-[#FFCC1A] text-[#141412] border border-[#FFD84D] active:scale-98 shadow-sm"
+              className={`inline-flex items-center gap-2 font-display font-bold text-base px-5 py-3 rounded-[10px] select-none transition-all duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFD84D] focus-visible:ring-offset-2 ${!inputText.trim() || isLoading
+                ? "bg-[#FFD84D]/70 text-[#141412]/60 cursor-not-allowed border border-transparent shadow-none"
+                : "bg-[#FFD84D] hover:bg-[#FFD84D] hover:brightness-105 hover:border-[#FFE27A] hover:shadow-[0_0_22px_rgba(255,216,77,0.8),0_0_45px_rgba(255,204,26,0.45)] hover:-translate-y-0.5 active:translate-y-0.5 active:scale-[0.97] active:bg-[#E5B500] active:border-[#D4A300] active:shadow-inner text-[#141412] border border-[#FFD84D] shadow-sm cursor-pointer"
                 }`}
             >
               {isLoading ? (
@@ -554,7 +554,7 @@ INSTRUKSI PENTING:
             <button
               type="button"
               onClick={handleClear}
-              className="inline-flex items-center font-display font-bold text-base px-4 py-3 rounded-[10px] border border-[#D9D9D4] bg-white text-[#141412] hover:border-[#8A8A84] hover:bg-[#F5F5F2] transition-all cursor-pointer"
+              className="inline-flex items-center font-display font-bold text-base px-4 py-3 rounded-[10px] border border-[#D9D9D4] bg-white text-[#141412] hover:border-[#141412] hover:bg-white hover:shadow-[0_0_20px_rgba(20,20,18,0.18),0_0_35px_rgba(255,216,77,0.38)] hover:-translate-y-0.5 active:translate-y-0.5 active:scale-[0.97] active:bg-[#E5E5DF] active:border-[#666660] active:shadow-inner select-none transition-all duration-200 ease-out cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D9D9D4] focus-visible:ring-offset-2"
             >
               Clear
             </button>
@@ -615,8 +615,8 @@ INSTRUKSI PENTING:
               {/* SECTION: OUTPUT CONTENT */}
               <div className="space-y-4">
 
-                {/* ALUMNI MATCHES CARDS GRID (When in Checking Alumni mode or when alumni_matches present) */}
-                {responseResult.alumni_matches && responseResult.alumni_matches.length > 0 && (
+                {/* ALUMNI MATCHES CARDS GRID (Hanya untuk menu alumni) */}
+                {mode === "alumni" && responseResult.alumni_matches && responseResult.alumni_matches.length > 0 && (
                   <div className="space-y-3 pt-1">
                     <div className="flex items-center justify-between gap-2">
                       <div className="flex items-center gap-2 font-display font-bold text-xs uppercase tracking-wider text-[#1F7A4D]">
@@ -710,34 +710,6 @@ INSTRUKSI PENTING:
                         </div>
                       ))}
                     </div>
-                  </div>
-                )}
-
-                {/* Target Audience & Prerequisites — hidden per request */}
-
-                {/* Relevancy Statement Skill AI dengan Bidang Leads */}
-                {mode === "pitch" && responseResult.ai_relevancy_statement && (
-                  <div className="bg-[#FFFFFF] p-4 sm:p-5 rounded-xl border border-[#E8E8E4] space-y-1.5 shadow-2xs">
-                    <div className="flex items-center gap-2 font-display font-bold text-xs uppercase tracking-wider text-[#141412]">
-                      <Sparkles className="w-3.5 h-3.5 text-[#A15C00]" />
-                      <span>Relevansi Skill AI dengan Bidang / Pekerjaan Prospect</span>
-                    </div>
-                    <p className="text-sm text-[#141412] leading-relaxed font-medium">
-                      {renderFormattedTextWithLinks(responseResult.ai_relevancy_statement)}
-                    </p>
-                  </div>
-                )}
-
-                {/* Penjelasan Komprehensif Program & Tujuan Pelatihan */}
-                {mode === "pitch" && responseResult.program_overview_short && (
-                  <div className="bg-[#F5F5F2] p-4 sm:p-5 rounded-xl border border-[#E8E8E4] space-y-1.5">
-                    <div className="flex items-center gap-2 font-display font-bold text-xs uppercase tracking-wider text-[#1F7A4D]">
-                      <BookOpen className="w-3.5 h-3.5 text-[#1F7A4D]" />
-                      <span>Penjelasan Program & Tujuan Pelatihan: {responseResult.program_match || "RevoU Program"}</span>
-                    </div>
-                    <p className="text-sm text-[#4B4B46] leading-relaxed font-medium">
-                      {renderFormattedTextWithLinks(responseResult.program_overview_short)}
-                    </p>
                   </div>
                 )}
 
@@ -871,7 +843,7 @@ INSTRUKSI PENTING:
                     type="button"
                     disabled={isChatLoading || !chatInput.trim()}
                     onClick={() => handleSendClarification()}
-                    className="font-display font-bold text-sm px-4 py-2.5 rounded-[10px] bg-[#FFD84D] hover:bg-[#FFCC1A] text-[#141412] border border-[#FFD84D] transition-all cursor-pointer shrink-0 disabled:opacity-50"
+                    className="font-display font-bold text-sm px-4 py-2.5 rounded-[10px] bg-[#FFD84D] hover:bg-[#FFCC1A] hover:shadow-xs hover:-translate-y-0.5 active:translate-y-0.5 active:scale-95 active:bg-[#E5B500] text-[#141412] border border-[#FFD84D] transition-all duration-150 cursor-pointer shrink-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none select-none"
                   >
                     {isChatLoading ? "..." : "Kirim"}
                   </button>
@@ -882,42 +854,42 @@ INSTRUKSI PENTING:
                   <button
                     type="button"
                     onClick={() => handleSendClarification("Buat use case konkret pemetaan AI framework")}
-                    className="font-mono text-xs px-2.5 py-1 rounded-full bg-[#FFD84D] text-[#141412] font-semibold cursor-pointer hover:bg-[#FFCC1A] transition-all"
+                    className="font-mono text-xs px-2.5 py-1 rounded-full bg-[#FFD84D] text-[#141412] font-semibold cursor-pointer hover:bg-[#FFCC1A] active:scale-95 active:bg-[#E5B500] transition-all select-none"
                   >
                     Buat use case
                   </button>
                   <button
                     type="button"
                     onClick={() => handleSendClarification("Program yang direkomendasikan kurang tepat. Tolong beri alternatif program lain.")}
-                    className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] bg-white transition-all cursor-pointer"
+                    className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] hover:bg-[#F5F5F2] active:scale-95 active:bg-[#E8E8E4] bg-white transition-all cursor-pointer select-none"
                   >
                     Program kurang tepat
                   </button>
                   <button
                     type="button"
                     onClick={() => handleSendClarification("Persona yang kamu tebak salah. Tolong sesuaikan.")}
-                    className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] bg-white transition-all cursor-pointer"
+                    className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] hover:bg-[#F5F5F2] active:scale-95 active:bg-[#E8E8E4] bg-white transition-all cursor-pointer select-none"
                   >
                     Persona salah
                   </button>
                   <button
                     type="button"
                     onClick={() => handleSendClarification("Buat script-nya lebih singkat dan to the point.")}
-                    className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] bg-white transition-all cursor-pointer"
+                    className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] hover:bg-[#F5F5F2] active:scale-95 active:bg-[#E8E8E4] bg-white transition-all cursor-pointer select-none"
                   >
                     Lebih singkat
                   </button>
                   <button
                     type="button"
                     onClick={() => handleSendClarification("Buat nadanya lebih formal dan sopan.")}
-                    className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] bg-white transition-all cursor-pointer"
+                    className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] hover:bg-[#F5F5F2] active:scale-95 active:bg-[#E8E8E4] bg-white transition-all cursor-pointer select-none"
                   >
                     Lebih formal
                   </button>
                   <button
                     type="button"
                     onClick={() => handleSendClarification("Buat 2 variasi baru dengan angle yang berbeda.")}
-                    className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] bg-white transition-all cursor-pointer"
+                    className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] hover:bg-[#F5F5F2] active:scale-95 active:bg-[#E8E8E4] bg-white transition-all cursor-pointer select-none"
                   >
                     Variasi lain
                   </button>
@@ -1022,8 +994,8 @@ INSTRUKSI PENTING:
 
 
 
-                          {/* ALUMNI MATCHES CARDS GRID (From Clarification) */}
-                          {msg.data?.alumni_matches && msg.data.alumni_matches.length > 0 && (
+                          {/* ALUMNI MATCHES CARDS GRID (From Clarification - Hanya untuk menu alumni) */}
+                          {mode === "alumni" && msg.data?.alumni_matches && msg.data.alumni_matches.length > 0 && (
                             <div className="space-y-3 pt-1">
                               <div className="flex items-center justify-between gap-2">
                                 <div className="flex items-center gap-2 font-display font-bold text-xs uppercase tracking-wider text-[#1F7A4D]">

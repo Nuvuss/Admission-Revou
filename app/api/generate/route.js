@@ -141,7 +141,7 @@ Sebelum menyusun draf script, kamu WAJIB menganalisis dan menekankan data dari K
   - Pada field 'current_role', isi dengan job title (misal: "Asst Chief Digital Innovation" atau "Production Manager").
   - Pada field 'company', isi dengan nama perusahaan (misal: "PT Honda Prospect Motor" atau "PT Pertamina (Persero)").
 - **NARASI SUMMARY:** Fokuskan narasi pada peran profesional job title tersebut di perusahaannya, bagaimana program membekali mereka (misal: efisiensi & otomasi AI atau data-driven decision making level leader), dan dampak bagi perusahaannya. JANGAN mengarang cerita personal fiktif (seperti latar belakang kuliah fiktif atau transisi personal yang tidak tercatat di data).
-- **LINK VALIDASI:** Selalu gunakan link direktori resmi: https://www.revou.co/alumni.
+
 
 ### ATURAN KETAT VALIDASI KRITERIA & KATEGORI ALUMNI (100% RELEVAN SESUAI PERMINTAAN):
 Ketika user/sales meminta profil alumni dengan kriteria spesifik (seperti: "Career Switcher", "Upskilling", "Fresh Graduate", background non-IT/tertentu, industri asal/tujuan tertentu, atau jumlah N alumni):

@@ -22,15 +22,15 @@ Halaman Direktori Alumni Resmi: [Direktori Alumni RevoU](https://www.revou.co/al
 ## 2. Alumni Profile: Applied AI, Analytics & Automation (Kolaborasi BINUS & RevoU)
 > **PENTING (CATATAN INTEGRITAS DATA):** Data profil alumni untuk program ini HANYA memuat **Job Title / Posisi** dan **Nama Perusahaan / Organisasi yang ditempati**, **TIDAK ADA NAMA INDIVIDU SIAPAPUN**. Saat menghasilkan jawaban, DILARANG KERAS mengarang/mengada-ada nama orang fiktif. Gunakan format `[Job Title] — [Perusahaan]` sebagai identitas profil.
 Program ini diikuti oleh profesional, manager, dan spesialis dari berbagai perusahaan papan atas untuk otomasi dan efisiensi kerja menggunakan AI:
-- **Asst Chief Digital Innovation** — PT Honda Prospect Motor (Automotive) | [Direktori Alumni RevoU](https://www.revou.co/alumni)
-- **Staff Data & Analytics** — detikcom (Media) | [Direktori Alumni RevoU](https://www.revou.co/alumni)
-- **Staff Fintech** — Kredivo (Financial Services) | [Direktori Alumni RevoU](https://www.revou.co/alumni)
-- **System Developer** — PT XLSMART Telecom Sejahtera Tbk (Telecommunications) | [Direktori Alumni RevoU](https://www.revou.co/alumni)
-- **IT Solutions Specialist** — Hostinger & Enablr.id (IT Solutions) | [Direktori Alumni RevoU](https://www.revou.co/alumni)
-- **Government Official / Staff** — Kementerian Keuangan RI (Government) | [Direktori Alumni RevoU](https://www.revou.co/alumni)
-- **Automotive Specialist** — BYD Auto Indonesia (Automotive) | [Direktori Alumni RevoU](https://www.revou.co/alumni)
-- **Banking Professional** — Bank Syariah Indonesia / BSI (Banking) | [Direktori Alumni RevoU](https://www.revou.co/alumni)
-- **Supervisor & Leads** — PT Borneo Indobara (Mining), KPBS Pangalengan (FMCG), PT Trias Sentosa Tbk, Sinar Mas (Property), PT Karcher (Manufacture), PT Abhimata Persada, FKS Group. | [Direktori Alumni RevoU](https://www.revou.co/alumni)
+- **Asst Chief Digital Innovation** — PT Honda Prospect Motor (Automotive) 
+- **Staff Data & Analytics** — detikcom (Media) 
+- **Staff Fintech** — Kredivo (Financial Services) 
+- **System Developer** — PT XLSMART Telecom Sejahtera Tbk (Telecommunications) 
+- **IT Solutions Specialist** — Hostinger & Enablr.id (IT Solutions) 
+- **Government Official / Staff** — Kementerian Keuangan RI (Government) 
+- **Automotive Specialist** — BYD Auto Indonesia (Automotive) 
+- **Banking Professional** — Bank Syariah Indonesia / BSI (Banking) 
+- **Supervisor & Leads** — PT Borneo Indobara (Mining), KPBS Pangalengan (FMCG), PT Trias Sentosa Tbk, Sinar Mas (Property), PT Karcher (Manufacture), PT Abhimata Persada, FKS Group. 
 
 ---
 
