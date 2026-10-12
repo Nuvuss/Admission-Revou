@@ -267,6 +267,34 @@ export default function DashboardPage() {
     setIsChatLoading(true);
 
     try {
+      // Collect all previously shown alumni names across the session
+      const previouslyShownAlumni: string[] = [];
+      const addAlumniName = (name?: string) => {
+        if (!name) return;
+        const trimmed = name.trim();
+        if (trimmed && !previouslyShownAlumni.some((existing) => existing.toLowerCase() === trimmed.toLowerCase())) {
+          previouslyShownAlumni.push(trimmed);
+        }
+      };
+
+      if (responseResult?.featured_alumni_summary?.name) {
+        addAlumniName(responseResult.featured_alumni_summary.name);
+      }
+      if (Array.isArray(responseResult?.alumni_matches)) {
+        responseResult.alumni_matches.forEach((a: any) => addAlumniName(a?.name));
+      }
+
+      chatThread.forEach((msg) => {
+        if (msg.role === "ai" && msg.data) {
+          if (msg.data.featured_alumni_summary?.name) {
+            addAlumniName(msg.data.featured_alumni_summary.name);
+          }
+          if (Array.isArray(msg.data.alumni_matches)) {
+            msg.data.alumni_matches.forEach((a: any) => addAlumniName(a?.name));
+          }
+        }
+      });
+
       // Build full conversation context including initial result + chat history
       const initialResultSummary = responseResult ? JSON.stringify({
         persona: responseResult.persona,
@@ -288,10 +316,17 @@ export default function DashboardPage() {
         scripts: responseResult.scripts?.map((s: any) => ({ badge: s.badge, text: s.text?.slice(0, 200) + "..." })),
       }, null, 2) : "";
 
-      // Build chat history context
+      // Build chat history context with details of what was previously discussed and shown
       const chatHistoryContext = newThread
         .filter((msg) => msg.id !== userMsgId) // exclude current message
-        .map((msg) => `[${msg.role === "user" ? "Sales" : "AI"}]: ${msg.text}`)
+        .map((msg) => {
+          if (msg.role === "user") {
+            return `[Sales]: ${msg.text}`;
+          }
+          const shownAlumni = msg.data?.alumni_matches?.map((a: any) => a.name).filter(Boolean).join(", ");
+          const alumniNote = shownAlumni ? ` (Alumni yang telah ditampilkan: ${shownAlumni})` : "";
+          return `[AI]: ${msg.text}${alumniNote}`;
+        })
         .join("\n");
 
       const promptCombined = `Situasi Awal dari Tim Sales:
@@ -299,11 +334,22 @@ export default function DashboardPage() {
 ${inputText}
 """
 
-=== HASIL GENERATE PERTAMA (JADIKAN ACUAN UTAMA) ===
+=== HASIL GENERATE SEBELUMNYA (REFERENSI KONTEKS) ===
 ${initialResultSummary}
 
 ${chatHistoryContext ? `=== RIWAYAT PERCAKAPAN SEBELUMNYA ===
 ${chatHistoryContext}
+
+` : ""}${previouslyShownAlumni.length > 0 ? `=== DAFTAR ALUMNI YANG SUDAH PERNAH DITAMPILKAN (DILARANG DIULANG KEMBALI) ===
+Berikut adalah nama/profil alumni yang SUDAH ditampilkan pada sesi ini:
+${previouslyShownAlumni.map((name) => `- ${name}`).join("\n")}
+
+⚠️ ATURAN MUTLAK ANTI-DUPLIKASI ALUMNI:
+Jika tim Sales meminta contoh alumni lainnya / alumni baru / profil berbeda / nama lain (seperti "contoh alumni lainnya", "ada alumni lain?", "profil lain", "siapa lagi?", dsb.):
+1. DILARANG KERAS menampilkan kembali nama/profil alumni yang sudah terdaftar di atas!
+2. AI WAJIB menggali database knowledge base untuk mencari profil alumni BARU & BERBEDA dari yang sudah pernah ditampilkan.
+3. Seluruh 'alumni_matches' dan 'featured_alumni_summary' WAJIB diisi dengan nama alumni baru yang belum pernah muncul sebelumnya.
+4. Tuliskan di 'revision_summary' secara jelas nama-nama alumni baru yang disajikan ini untuk memperkaya referensi tim Sales.
 
 ` : ""}=== INSTRUKSI REVISI/KLARIFIKASI TERBARU DARI SALES ===
 """
@@ -313,10 +359,11 @@ ${q}
 INSTRUKSI PENTING:
 1. Jika Sales mengklarifikasi atau mencari alumni bidang/program/profesi tertentu (misal: Software Engineering, Data Analytics, Digital Marketing, atau profil khusus), cari data alumni yang relevan dari knowledge base dan WAJIB sertakan 'featured_alumni_summary' dan 'alumni_matches' yang sesuai.
 2. Pada menu 'alumni': JANGAN buat pitch WhatsApp dan KOSONGKAN scripts ([]). Fokus tampilkan data alumni RevoU dengan ringkasan singkat serta rangkuman perjalanan karirnya (WAJIB cetak tebal **bold** pemicu aksi dan highlight bagian penting perjalanan karir).
-3. Pada menu 'pitch': Sesuaikan draf script pesan sesuai masukan Sales.
-4. KHUSUS alumni profile pada 'Applied AI, Analytics & Automation' dan 'Data-Driven Decision Making': Datanya TIDAK memiliki nama orang siapapun dan TIDAK ADA informasi posisi sebelumnya di knowledge base (HANYA Posisi/Job Title, Perusahaan, dan Industri/Kategori). JANGAN PERNAH mengada-ada/mengarang nama orang atau posisi sebelumnya; gunakan format '[Job Title] — [Perusahaan]' dan tampilkan informasi summary murni berdasarkan posisi, perusahaan, dan kategori industri yang ada.
-5. VALIDASI MUTLAK KRITERIA (CAREER SWITCHER VS UPSKILLING — NO MISMATCH): Jika Sales meminta kriteria spesifik (misal: "3 orang career switcher"), seluruh profil yang ditampilkan WAJIB 100% murni Career Switcher sejati (terbukti beralih dari profesi/bidang yang berbeda nyata). DILARANG KERAS menyelipkan profil Upskilling (yang sebelumnya sudah di bidang serupa) ke dalam permintaan Career Switcher!
-6. ATURAN FILTER BIDANG & INDUSTRI (ZERO TOLERANCE SALAH INDUSTRI): Jika Sales mencari bidang/industri tertentu (misal: "Manufaktur / Manufacture"): Seluruh alumni yang ditampilkan WAJIB 100% murni berasal dari industri tersebut (contoh Manufaktur: PT Karcher, APP, PT Trias Sentosa Tbk, Komatsu Remanufacturing Asia, Gatra Mapan). DILARANG KERAS memberikan profil dari industri lain seperti Oil & Gas (Pertamina) saat diminta Manufaktur!`;
+3. Jika Sales meminta contoh alumni lainnya atau profil berbeda, pastikan 100% profil yang ditampilkan adalah figur BARU yang belum pernah ditampilkan di giliran sebelumnya.
+4. Pada menu 'pitch': Sesuaikan draf script pesan sesuai masukan Sales.
+5. KHUSUS alumni profile pada 'Applied AI, Analytics & Automation' dan 'Data-Driven Decision Making': Datanya TIDAK memiliki nama orang siapapun dan TIDAK ADA informasi posisi sebelumnya di knowledge base (HANYA Posisi/Job Title, Perusahaan, dan Industri/Kategori). JANGAN PERNAH mengada-ada/mengarang nama orang atau posisi sebelumnya; gunakan format '[Job Title] — [Perusahaan]' dan tampilkan informasi summary murni berdasarkan posisi, perusahaan, dan kategori industri yang ada.
+6. VALIDASI MUTLAK KRITERIA (CAREER SWITCHER VS UPSKILLING — NO MISMATCH): Jika Sales meminta kriteria spesifik (misal: "3 orang career switcher"), seluruh profil yang ditampilkan WAJIB 100% murni Career Switcher sejati (terbukti beralih dari profesi/bidang yang berbeda nyata). DILARANG KERAS menyelipkan profil Upskilling (yang sebelumnya sudah di bidang serupa) ke dalam permintaan Career Switcher!
+7. ATURAN FILTER BIDANG & INDUSTRI (ZERO TOLERANCE SALAH INDUSTRI): Jika Sales mencari bidang/industri tertentu (misal: "Manufaktur / Manufacture"): Seluruh alumni yang ditampilkan WAJIB 100% murni berasal dari industri tersebut (contoh Manufaktur: PT Karcher, APP, PT Trias Sentosa Tbk, Komatsu Remanufacturing Asia, Gatra Mapan). DILARANG KERAS memberikan profil dari industri lain seperti Oil & Gas (Pertamina) saat diminta Manufaktur!`;
       const res = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -324,6 +371,7 @@ INSTRUKSI PENTING:
           situation: promptCombined,
           model: selectedModel,
           tab: mode,
+          excluded_alumni: previouslyShownAlumni,
         }),
       });
 
@@ -843,7 +891,11 @@ INSTRUKSI PENTING:
                         handleSendClarification();
                       }
                     }}
-                    placeholder="Contoh: prospect ini sebenarnya sudah kerja 5 tahun, bukan fresh grad. Tolong sesuaikan scriptnya."
+                    placeholder={
+                      mode === "alumni"
+                        ? "Contoh: Ada contoh alumni lainnya? / Berikan profil alumni yang berbeda dari sebelumnya..."
+                        : "Contoh: prospect ini sebenarnya sudah kerja 5 tahun, bukan fresh grad. Tolong sesuaikan scriptnya."
+                    }
                     className="flex-1 text-sm text-[#141412] bg-white border border-[#D9D9D4] rounded-[10px] p-2.5 focus:outline-none focus:border-[#141412] focus:ring-2 focus:ring-[#FFF6D1] resize-none"
                   />
                   <button
@@ -858,48 +910,91 @@ INSTRUKSI PENTING:
 
                 {/* Quick clarification chips */}
                 <div className="flex flex-wrap gap-1.5">
-                  <button
-                    type="button"
-                    onClick={() => handleSendClarification("Buat use case konkret pemetaan AI framework")}
-                    className="font-mono text-xs px-2.5 py-1 rounded-full bg-[#FFD84D] text-[#141412] font-semibold cursor-pointer hover:bg-[#FFCC1A] active:scale-95 active:bg-[#E5B500] transition-all select-none"
-                  >
-                    Buat use case
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleSendClarification("Program yang direkomendasikan kurang tepat. Tolong beri alternatif program lain.")}
-                    className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] hover:bg-[#F5F5F2] active:scale-95 active:bg-[#E8E8E4] bg-white transition-all cursor-pointer select-none"
-                  >
-                    Program kurang tepat
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleSendClarification("Persona yang kamu tebak salah. Tolong sesuaikan.")}
-                    className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] hover:bg-[#F5F5F2] active:scale-95 active:bg-[#E8E8E4] bg-white transition-all cursor-pointer select-none"
-                  >
-                    Persona salah
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleSendClarification("Buat script-nya lebih singkat dan to the point.")}
-                    className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] hover:bg-[#F5F5F2] active:scale-95 active:bg-[#E8E8E4] bg-white transition-all cursor-pointer select-none"
-                  >
-                    Lebih singkat
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleSendClarification("Buat nadanya lebih formal dan sopan.")}
-                    className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] hover:bg-[#F5F5F2] active:scale-95 active:bg-[#E8E8E4] bg-white transition-all cursor-pointer select-none"
-                  >
-                    Lebih formal
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleSendClarification("Buat 2 variasi baru dengan angle yang berbeda.")}
-                    className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] hover:bg-[#F5F5F2] active:scale-95 active:bg-[#E8E8E4] bg-white transition-all cursor-pointer select-none"
-                  >
-                    Variasi lain
-                  </button>
+                  {mode === "alumni" ? (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => handleSendClarification("Berikan contoh alumni lainnya yang berbeda dari yang sudah ditampilkan sebelumnya.")}
+                        className="font-mono text-xs px-2.5 py-1 rounded-full bg-[#FFD84D] text-[#141412] font-semibold cursor-pointer hover:bg-[#FFCC1A] active:scale-95 active:bg-[#E5B500] transition-all select-none flex items-center gap-1.5 shadow-2xs"
+                      >
+                        <UserCheck className="w-3.5 h-3.5 text-[#141412]" />
+                        <span>Contoh alumni lainnya</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleSendClarification("Cari contoh alumni yang murni Career Switcher dari latar belakang non-IT.")}
+                        className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] hover:bg-[#F5F5F2] active:scale-95 active:bg-[#E8E8E4] bg-white transition-all cursor-pointer select-none"
+                      >
+                        Career Switcher non-IT
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleSendClarification("Cari alumni yang mendapatkan kenaikan gaji (salary increase) tinggi.")}
+                        className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] hover:bg-[#F5F5F2] active:scale-95 active:bg-[#E8E8E4] bg-white transition-all cursor-pointer select-none"
+                      >
+                        Kenaikan gaji tinggi
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleSendClarification("Cari alumni yang Hired Before Graduation (diterima kerja sebelum lulus).")}
+                        className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] hover:bg-[#F5F5F2] active:scale-95 active:bg-[#E8E8E4] bg-white transition-all cursor-pointer select-none"
+                      >
+                        Hired Before Graduation
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleSendClarification("Cari alumni dari industri Manufaktur, BUMN, atau Korporasi besar.")}
+                        className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] hover:bg-[#F5F5F2] active:scale-95 active:bg-[#E8E8E4] bg-white transition-all cursor-pointer select-none"
+                      >
+                        Manufaktur / BUMN
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => handleSendClarification("Buat use case konkret pemetaan AI framework")}
+                        className="font-mono text-xs px-2.5 py-1 rounded-full bg-[#FFD84D] text-[#141412] font-semibold cursor-pointer hover:bg-[#FFCC1A] active:scale-95 active:bg-[#E5B500] transition-all select-none"
+                      >
+                        Buat use case
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleSendClarification("Program yang direkomendasikan kurang tepat. Tolong beri alternatif program lain.")}
+                        className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] hover:bg-[#F5F5F2] active:scale-95 active:bg-[#E8E8E4] bg-white transition-all cursor-pointer select-none"
+                      >
+                        Program kurang tepat
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleSendClarification("Persona yang kamu tebak salah. Tolong sesuaikan.")}
+                        className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] hover:bg-[#F5F5F2] active:scale-95 active:bg-[#E8E8E4] bg-white transition-all cursor-pointer select-none"
+                      >
+                        Persona salah
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleSendClarification("Buat script-nya lebih singkat dan to the point.")}
+                        className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] hover:bg-[#F5F5F2] active:scale-95 active:bg-[#E8E8E4] bg-white transition-all cursor-pointer select-none"
+                      >
+                        Lebih singkat
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleSendClarification("Buat nadanya lebih formal dan sopan.")}
+                        className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] hover:bg-[#F5F5F2] active:scale-95 active:bg-[#E8E8E4] bg-white transition-all cursor-pointer select-none"
+                      >
+                        Lebih formal
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleSendClarification("Buat 2 variasi baru dengan angle yang berbeda.")}
+                        className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] hover:bg-[#F5F5F2] active:scale-95 active:bg-[#E8E8E4] bg-white transition-all cursor-pointer select-none"
+                      >
+                        Variasi lain
+                      </button>
+                    </>
+                  )}
                 </div>
 
                 {/* Loading indicator while waiting for clarification response */}

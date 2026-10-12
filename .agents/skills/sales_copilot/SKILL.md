@@ -231,6 +231,11 @@ Sebelum menghasilkan script sales:
 5. **Validasi Mutlak Kriteria Permintaan (Career Switcher vs Upskilling — NO MISMATCH):**
    - Jika Sales meminta alumni dengan kriteria spesifik (contoh: *"Career Switcher sebanyak 3 orang"*), pastikan 100% dari profil yang ditampilkan benar-benar beralih profesi dari bidang/fungsi yang berbeda nyata.
    - **JANGAN PERNAH** mencampur atau menyelipkan profil Upskilling (yang sebelumnya sudah di bidang yang sama) ke dalam permintaan Career Switcher. Seluruh kuota profil yang diminta wajib murni sesuai kriteria!
+6. **Aturan Mutlak Anti-Duplikasi & Rotasi Contoh Alumni Lainnya:**
+   - Ketika Sales menanyakan *"contoh alumni lainnya"*, *"ada alumni lain?"*, *"siapa lagi?"*, atau meminta profil alternatif/tambahan:
+   - **DILARANG KERAS** mengulang nama alumni atau profil yang sudah pernah dimunculkan di respons awal atau di riwayat sesi sebelumnya.
+   - AI **WAJIB** menelusuri knowledge base untuk mengambil profil alumni **BARU dan BERBEDA** yang tetap memenuhi kriteria (industri, latar belakang, kenaikan gaji, atau program) sehingga tim Sales memiliki variasi social proof yang kaya.
+   - Di bagian penjelasan/catatan revisi, sampaikan secara transparan bahwa profil baru yang berbeda telah disediakan.
 
 **Struktur Output Wajib (Checking Alumni):**
 ```markdown

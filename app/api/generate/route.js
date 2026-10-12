@@ -199,6 +199,12 @@ Menu aktif saat ini: **${tab}**
   3. **Aksi nyata saat belajar:** (misal: **membangun real capstone project**, **mentoring intensif dengan Career Coach**)
   4. **Pencapaian & dampak terukur:** (misal: **berhasil diterima kerja sebelum wisuda**, **lonjakan kenaikan gaji signifikan**, **sukses promosi menjadi [Role] di [Perusahaan]**).
   Gunakan penegasan bold ini pada frasa-frasa kunci tersebut agar pembaca/tim sales dapat langsung memindai (*scan*) pemicu aksi dan bukti terkuat dalam sekejap mata.
+- **ATURAN MUTLAK ANTI-DUPLIKASI & ROTASI CONTOH ALUMNI LAINNYA:**
+  Ketika Sales meminta "contoh alumni lainnya", "ada alumni lain?", "profil lain", "siapa lagi?", atau meminta profil alternatif/tambahan:
+  1. **DILARANG KERAS MENGULANG ALUMNI YANG SUDAH PERNAH DITAMPILKAN:** AI TIDAK BOLEH memunculkan kembali nama atau profil alumni yang sudah pernah disajikan pada respons awal maupun riwayat percakapan sebelumnya.
+  2. **WAJIB AMBIL PROFIL BARU DAN BERBEDA DARI KNOWLEDGE BASE:** AI WAJIB menggali database knowledge base untuk menyajikan profil alumni BARU dan BERBEDA yang tetap relevan dengan kriteria (program, industri, latar belakang karir, atau gaji).
+  3. **VARIASI SEGAR:** Seluruh entri di 'alumni_matches' dan 'featured_alumni_summary' WAJIB menampilkan figur baru yang belum pernah disebut di giliran sebelumnya.
+  4. **PENEGASAN DI 'revision_summary':** Tuliskan secara eksplisit dalam 2-3 kalimat bahwa kamu menyajikan contoh profil alumni baru yang berbeda dari yang sudah ditampilkan untuk memperkaya referensi social proof bagi tim Sales.
 - **Wajib Sertakan Hyperlink Perjalanan Karir Selengkapnya:**
   Setiap alumni story WAJIB menyertakan hyperlink aktif ke cerita lengkap mereka (Markdown format: [Baca Kisah Lengkap](https://www.revou.co/alumni-stories/<slug>) atau link direktori resmi [Direktori Alumni RevoU](https://www.revou.co/alumni)) agar para tim admission dapat memvalidasi dan memastikannya. DILARANG menyertakan link LinkedIn.
 
@@ -463,9 +469,20 @@ function sanitizeFeaturedAlumni(feat) {
 
 function sanitizeAlumniMatches(matches) {
   if (!Array.isArray(matches)) return [];
-  return matches.map((m) => {
-    const name = m.name || "";
-    const resolvedUrl = resolveAlumniStoryUrl(m.profile_url, name);
+  const seenNames = new Set();
+  const uniqueMatches = [];
+
+  for (const m of matches) {
+    const rawName = (m?.name || "").trim();
+    const normalizedName = rawName.toLowerCase();
+    if (normalizedName && seenNames.has(normalizedName)) {
+      continue; // Skip duplicate alumni within same response
+    }
+    if (normalizedName) {
+      seenNames.add(normalizedName);
+    }
+
+    const resolvedUrl = resolveAlumniStoryUrl(m.profile_url, rawName);
     let summary = (m.career_journey_summary || "").replace(/https?:\/\/(?:www\.)?linkedin\.com\/[^\s)\]]+/gi, resolvedUrl);
     summary = summary.replace(/https?:\/\/(?:www\.)?revou\.co\/(?:id\/)?alumni-stories(?:-list)?\/([a-zA-Z0-9_-]+)/g, "https://www.revou.co/alumni-stories/$1");
     if (!summary.includes("https://www.revou.co")) {
@@ -478,14 +495,16 @@ function sanitizeAlumniMatches(matches) {
     if (isExecutiveOrApplied || !prevRole || prevRole === "-" || prevRole.toLowerCase() === "tidak ada" || prevRole.toLowerCase() === "null" || prevRole === m.current_role) {
       prevRole = null;
     }
-    return {
+    uniqueMatches.push({
       ...m,
       previous_role: prevRole,
       industry: m.industry || null,
       profile_url: resolvedUrl,
       career_journey_summary: summary,
-    };
-  });
+    });
+  }
+
+  return uniqueMatches;
 }
 
 // ─────────────────────────────────────────────
@@ -494,7 +513,7 @@ function sanitizeAlumniMatches(matches) {
 export async function POST(req) {
   try {
     const body = await req.json();
-    const { situation, model = "gemini-3.5-flash", tab = "pitch" } = body;
+    const { situation, model = "gemini-3.5-flash", tab = "pitch", excluded_alumni = [] } = body;
 
     if (!situation || !situation.trim()) {
       return NextResponse.json(
@@ -507,6 +526,18 @@ export async function POST(req) {
     const knowledgeBase = loadKnowledgeBase(tab);
     const systemPrompt = buildSystemPrompt(skillInstructions, knowledgeBase, tab);
 
+    let exclusionDirective = "";
+    if (Array.isArray(excluded_alumni) && excluded_alumni.length > 0) {
+      exclusionDirective = `\n\n===========================================
+DAFTAR ALUMNI YANG SUDAH PERNAH DITAMPILKAN SEBELUMNYA (DILARANG DIMUNCULKAN LAGI):
+${excluded_alumni.map((name) => `- ${name}`).join("\n")}
+
+PERINGATAN SANGAT PENTING (ZERO DUPLICATE / MANDATORY FRESH PROFILES):
+Jika tim Sales meminta contoh alumni lainnya / berbeda / baru: DILARANG KERAS memunculkan kembali nama-nama alumni di atas!
+Kamu WAJIB memilih profil alumni BARU dan BERBEDA dari database knowledge base!
+===========================================`;
+    }
+
     const fullPrompt = `${systemPrompt}
 
 ===========================================
@@ -514,7 +545,7 @@ SITUASI DARI TIM SALES (Menu Aktif: ${tab}):
 """
 ${situation.trim()}
 """
-===========================================
+===========================================${exclusionDirective}
 
 Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge base, dan hasilkan JSON valid sesuai format.`;
 
