@@ -93,6 +93,54 @@
 ---
 ---
 
+# PROGRAM 3: RevoU x UI — AI-Enabled Strategic Finance
+
+## 1. RINGKASAN PROGRAM & MITRA UNIVERSITAS
+* **Nama Program:** AI-Enabled Strategic Finance Professional Certificate
+* **University Partner:** Universitas Indonesia (FEB UI - Akuntansi & FIA UI - Administrasi Fiskal)
+* **Sertifikasi:** *AI-Enabled Strategic Finance Professional Certificate* resmi diterbitkan bersama oleh Universitas Indonesia dan RevoU.
+* **Fokus Utama:** Transformasi profesional keuangan dan akuntansi dari eksekutor teknis menjadi strategic finance leader yang menguasai analisis multi-entitas, permodalan, kepatuhan pajak DJP, dan pemodelan keuangan dengan mengintegrasikan AI tanpa coding.
+
+---
+
+## 2. DURASI, JADWAL & FORMAT BELAJAR
+* **Durasi Total:** 13 Minggu (Termasuk Capstone Defense & Graduation).
+* **Format Belajar (Hybrid Session):**
+  * **Online (via Zoom):** 2x pertemuan per minggu (LIVE interaktif & diskusi studi kasus):
+    * **Hari:** Selasa & Kamis
+    * **Waktu:** 19.30 – 21.30 WIB
+  * **Offline (Kampus Universitas Indonesia):** Sesi Capstone Defense terpilih dan seremoni kelulusan/wisuda di kampus UI pada Minggu ke-13 (tersedia opsi online bagi yang berhalangan).
+
+---
+
+## 3. SKILLS, TOPIK & TOOLS
+* **Kurikulum & Topik Utama:**
+  * Financial literacy & business storytelling.
+  * Corporate finance & capital decisions (NPV, IRR, Debt vs Equity, DER > 4:1).
+  * Tax as a business variable (PPh Badan, PPN, Withholding tax, praktik pemeriksaan DJP, Transfer Pricing).
+  * Working with AI on finance tasks (prompting, audit trails, error checking).
+  * 3-Statement financial modelling & forecasting.
+  * Intercompany transactions & group decisions (transaksi multi-entitas, management fees, konsolidasi holding).
+* **Tools yang Digunakan:**
+  * **AI Assistants:** Claude Pro (disediakan mulai fase pemodelan), ChatGPT.
+  * **Custom AI Assistants (No Coding):** Capital Structure Analyst, Tax Regulation Assistant, Monthly Reporting Workflow, Deal Check Assistant.
+
+---
+
+## 4. KEY SELLING POINTS (UI)
+1. **Kolaborasi Universitas #1 di Indonesia:** Sertifikat bersama dan pengajaran langsung dari Guru Besar & Dosen FEB UI & FIA UI serta praktisi eks GoTo, Deloitte, PwC, McKinsey.
+2. **Keahlian Transaksi Multi-Entitas yang Langka:** Modul mendalam mengenai transaksi antar-anak perusahaan, transfer pricing, dan konsolidasi grup usaha.
+3. **Membangun Tim AI Mandiri (No Code):** Peserta lulus dengan asisten AI teruji untuk analisis modal, riset regulasi pajak terkutip pasal, dan tinjauan transaksi intercompany.
+4. **Biaya & Opsi:** Rp 15.000.000 (Reguler), Rp 12.500.000 (Khusus Alumni RevoU atau UI), opsi cicilan 0% dan company sponsorship.
+
+---
+
+## 5. WHO THE PROGRAM IS BEST FOR
+* Ditujukan untuk **profesional keuangan & akuntansi** (pengalaman kerja minimal 2 tahun) di fungsi AP, AR, Treasury, Tax, FP&A, atau Audit yang ingin akselerasi menuju posisi **Finance Manager, Head of FP&A, Financial Controller, atau Head of Finance**.
+
+---
+---
+
 # 🌐 EKOSISTEM KOMUNITAS ALUMNI REVOU (LIFETIME ACCESS)
 
 Seluruh peserta program kemitraan universitas mendapatkan akses jaringan alumni seumur hidup:

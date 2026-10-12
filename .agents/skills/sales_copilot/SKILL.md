@@ -81,6 +81,17 @@ Ketika menganalisis leads dan menghasilkan script:
 - **Penanganan Tidak Sesuai Target (Career Switch ke Data/IT + Butuh Career Support):**
   - Jika lead (misal Akuntan lulusan Ilkom) ingin **career switch total ke Data/IT dan membutuhkan career support/bantuan cari kerja**, **JANGAN dipaksakan ke program 3 bulan**, melainkan **WAJIB direkomendasikan ke Full Stack Data Analytics RevoU (4 bulan atau 7 bulan + NEXT)**.
 
+### 3. Program RevoU x UI AI-Enabled Strategic Finance
+- **Target Profil:** Profesional Keuangan & Akuntansi (minimal 2 tahun pengalaman di AP, AR, Treasury, Tax, FP&A, Accounting, atau Audit) yang menargetkan posisi manajerial (Finance Manager, Head of FP&A, Controller, Head of Finance).
+- **Contoh Sesuai Target (Gold Standard):**
+  - *Lead:* Spesialis Keuangan / Akuntan di korporasi atau grup usaha yang ingin naik ke peran strategis.  
+    *Sales Angle:* Tekankan bahwa AI mengambil alih kalkulasi rutin; nilai pembeda untuk promosi adalah pemahaman bisnis menyeluruh (akuntansi, permodalan, pajak DJP, dan hukum transaksi intercompany) serta kemampuan mengaudit output AI tanpa coding.
+  - *Lead:* Tim Keuangan Perusahaan / Finance Lead yang menghadapi kompleksitas multi-entitas (transfer pricing, management fee, konsolidasi holding).  
+    *Sales Angle:* Hubungkan ke modul transaksi multi-entitas (Minggu 8–10) dan 4 asisten AI no-code yang langsung dapat diimplementasikan di tempat kerja.
+- **Penanganan Tidak Sesuai Target (Redirection):**
+  - *Non-Finance Background / Fresh Graduate tanpa pengalaman keuangan:* Arahkan ke program foundational seperti RevoU x BINUS Applied AI, Analytics & Automation atau Full Stack Data Analytics.
+  - *Leader Non-Keuangan (Product, Tech, Marketing, HR):* Arahkan ke RevoU x ITB Data-Driven Decision Making for Leaders.
+
 ---
 
 ## ⚠️ ATURAN MUTLAK GROUNDING DATA & KNOWLEDGE RULES
