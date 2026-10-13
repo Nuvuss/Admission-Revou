@@ -1,6 +1,13 @@
 import fs from "fs";
 import path from "path";
 import { NextResponse } from "next/server";
+import {
+  resolveApiKeys,
+  getNextRoundRobinKey,
+  recordKeyExecution,
+  maskApiKey,
+  getApiKeysStatus,
+} from "../../../lib/apiKeyManager";
 
 export const maxDuration = 60;
 export const dynamic = "force-dynamic";
@@ -513,7 +520,13 @@ function sanitizeAlumniMatches(matches) {
 export async function POST(req) {
   try {
     const body = await req.json();
-    const { situation, model = "gemini-3.5-flash", tab = "pitch", excluded_alumni = [] } = body;
+    const {
+      situation,
+      model = "gemini-3.5-flash",
+      tab = "pitch",
+      excluded_alumni = [],
+      customKeys = null,
+    } = body;
 
     if (!situation || !situation.trim()) {
       return NextResponse.json(
@@ -549,93 +562,185 @@ ${situation.trim()}
 
 Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge base, dan hasilkan JSON valid sesuai format.`;
 
-    // ── Try Gemini API ─────────────────────────────
-    const geminiApiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
+    // ── Round Robin API Key Management ─────────────
+    const availableKeys = resolveApiKeys(customKeys);
 
-    if (geminiApiKey) {
-      // Prioritize requested model, then fall back through resilient active models
-      const candidateModels = [
-        model,
-        "gemini-3.5-flash-lite",
-        "gemini-3.5-flash",
-      ].filter((m, idx, arr) => m && arr.indexOf(m) === idx);
+    if (availableKeys.length > 0) {
+      // Dapatkan key urutan Round Robin saat ini
+      const primaryKeyInfo = getNextRoundRobinKey(customKeys);
+      const startIndex = (primaryKeyInfo.index - 1 + availableKeys.length) % availableKeys.length;
 
+      // Susun urutan percobaan key (mulai dari giliran Round Robin, melingkar ke key lainnya jika kuota habis)
+      const keyQueue = [];
+      for (let i = 0; i < availableKeys.length; i++) {
+        const idx = (startIndex + i) % availableKeys.length;
+        keyQueue.push({
+          key: availableKeys[idx],
+          keyIndex: idx + 1,
+          masked: maskApiKey(availableKeys[idx]),
+          isInitialTurn: i === 0,
+        });
+      }
+
+      const quotaNotifications = [];
       let lastError = null;
 
-      for (const modelId of candidateModels) {
-        // Try up to 2 attempts per model (handles brief 503 spikes)
-        for (let attempt = 0; attempt < 2; attempt++) {
-          try {
-            if (attempt > 0) await wait(600);
+      // Coba setiap key dalam antrian Round Robin jika terjadi rate-limit (429)
+      for (let keyAttempt = 0; keyAttempt < keyQueue.length; keyAttempt++) {
+        const currentCandidate = keyQueue[keyAttempt];
+        const nextCandidate = keyQueue[keyAttempt + 1] || null;
 
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelId}:generateContent?key=${geminiApiKey}`;
+        // Prioritize requested model, then fall back through resilient active models
+        const candidateModels = [
+          model,
+          "gemini-3.5-flash-lite",
+          "gemini-3.5-flash",
+        ].filter((m, idx, arr) => m && arr.indexOf(m) === idx);
 
-            const response = await fetch(url, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              signal: AbortSignal.timeout(12000), // 12-second abort timeout prevents 504 Gateway Timeout
-              body: JSON.stringify({
-                contents: [
-                  {
-                    role: "user",
-                    parts: [{ text: fullPrompt }],
+        let keyEncounteredQuota = false;
+        let keyEncounteredInvalid = false;
+
+        for (const modelId of candidateModels) {
+          if (keyEncounteredQuota || keyEncounteredInvalid) break;
+
+          // Try up to 2 attempts per model (handles brief 503 spikes)
+          for (let attempt = 0; attempt < 2; attempt++) {
+            try {
+              if (attempt > 0) await wait(600);
+
+              const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelId}:generateContent?key=${currentCandidate.key}`;
+
+              const response = await fetch(url, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                signal: AbortSignal.timeout(12000), // 12-second abort timeout prevents 504 Gateway Timeout
+                body: JSON.stringify({
+                  contents: [
+                    {
+                      role: "user",
+                      parts: [{ text: fullPrompt }],
+                    },
+                  ],
+                  generationConfig: {
+                    responseMimeType: "application/json",
+                    temperature: 0.25,
+                    maxOutputTokens: 16384,
                   },
-                ],
-                generationConfig: {
-                  responseMimeType: "application/json",
-                  temperature: 0.25,
-                  maxOutputTokens: 16384,
-                },
-              }),
-            });
+                }),
+              });
 
-            if (response.ok) {
-              const data = await response.json();
-              const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+              if (response.ok) {
+                const data = await response.json();
+                const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
 
-              if (rawText) {
-                try {
-                  const cleanedText = rawText
-                    .replace(/^```json\s*/i, "")
-                    .replace(/^```\s*/i, "")
-                    .replace(/\s*```$/i, "")
-                    .trim();
-                  const parsed = JSON.parse(cleanedText);
+                if (rawText) {
+                  try {
+                    const cleanedText = rawText
+                      .replace(/^```json\s*/i, "")
+                      .replace(/^```\s*/i, "")
+                      .replace(/\s*```$/i, "")
+                      .trim();
+                    const parsed = JSON.parse(cleanedText);
 
-                  return NextResponse.json({
-                    success: true,
-                    modelUsed: modelId,
-                    menu: parsed.menu || tab,
-                    persona: parsed.persona || "Prospective Student",
-                    whats_happening: parsed.whats_happening || "",
-                    recommended_approach: parsed.recommended_approach || "",
-                    program_match: parsed.program_match || "",
-                    ai_relevancy_statement: parsed.ai_relevancy_statement || "",
-                    program_overview_short: parsed.program_overview_short || "",
-                    target_audience: parsed.target_audience || "",
-                    prerequisites: parsed.prerequisites || "",
-                    eligibility_check: parsed.eligibility_check || "",
-                    revision_summary: parsed.revision_summary || "",
-                    featured_alumni_summary: sanitizeFeaturedAlumni(parsed.featured_alumni_summary),
-                    alumni_matches: sanitizeAlumniMatches(parsed.alumni_matches),
-                    scripts: tab === "alumni" ? [] : (Array.isArray(parsed.scripts) ? parsed.scripts : []),
-                    knowledge_details: parsed.knowledge_details || null,
-                  });
-                } catch (parseErr) {
-                  console.error("JSON parse error for model", modelId, parseErr.message, rawText?.slice(0, 300));
+                    // Catat keberhasilan penggunaan key ini
+                    recordKeyExecution(currentCandidate.key, currentCandidate.keyIndex, "success", 200);
+
+                    return NextResponse.json({
+                      success: true,
+                      modelUsed: modelId,
+                      apiKeyInfo: {
+                        activeKeyIndex: currentCandidate.keyIndex,
+                        totalKeys: availableKeys.length,
+                        wasRotatedDueToQuota: !currentCandidate.isInitialTurn,
+                        quotaNotifications: quotaNotifications,
+                        poolStatus: getApiKeysStatus(customKeys),
+                      },
+                      menu: parsed.menu || tab,
+                      persona: parsed.persona || "Prospective Student",
+                      whats_happening: parsed.whats_happening || "",
+                      recommended_approach: parsed.recommended_approach || "",
+                      program_match: parsed.program_match || "",
+                      ai_relevancy_statement: parsed.ai_relevancy_statement || "",
+                      program_overview_short: parsed.program_overview_short || "",
+                      target_audience: parsed.target_audience || "",
+                      prerequisites: parsed.prerequisites || "",
+                      eligibility_check: parsed.eligibility_check || "",
+                      revision_summary: parsed.revision_summary || "",
+                      featured_alumni_summary: sanitizeFeaturedAlumni(parsed.featured_alumni_summary),
+                      alumni_matches: sanitizeAlumniMatches(parsed.alumni_matches),
+                      scripts: tab === "alumni" ? [] : (Array.isArray(parsed.scripts) ? parsed.scripts : []),
+                      knowledge_details: parsed.knowledge_details || null,
+                    });
+                  } catch (parseErr) {
+                    console.error("JSON parse error for model", modelId, parseErr.message, rawText?.slice(0, 300));
+                  }
                 }
+              } else if (response.status === 429) {
+                // Rate limit / Quota exceeded terdeteksi pada key ini!
+                const errText = await response.text();
+                console.warn(`[RoundRobin] Key #${currentCandidate.keyIndex} hit 429 quota:`, errText.slice(0, 120));
+                
+                recordKeyExecution(currentCandidate.key, currentCandidate.keyIndex, "rate_limited", 429, "Rate limit terlampaui");
+                
+                const rotationMsg = nextCandidate
+                  ? `API ${currentCandidate.keyIndex} mencapai limit kuota (429 Rate Limit). Otomatis dialihkan ke API ${nextCandidate.keyIndex} via Round Robin.`
+                  : `API ${currentCandidate.keyIndex} mencapai limit kuota (429 Rate Limit).`;
+                quotaNotifications.push(rotationMsg);
+
+                keyEncounteredQuota = true;
+                break; // Segera keluar dari loop model untuk pindah ke key berikutnya!
+              } else if (response.status === 400 || response.status === 403) {
+                // Key tidak valid atau dinonaktifkan
+                const errText = await response.text();
+                console.warn(`[RoundRobin] Key #${currentCandidate.keyIndex} invalid (${response.status}):`, errText.slice(0, 120));
+                
+                recordKeyExecution(currentCandidate.key, currentCandidate.keyIndex, "invalid", response.status, "API tidak valid");
+                
+                const rotationMsg = nextCandidate
+                  ? `API ${currentCandidate.keyIndex} tidak valid (${response.status}). Otomatis dialihkan ke API ${nextCandidate.keyIndex} via Round Robin.`
+                  : `API ${currentCandidate.keyIndex} tidak valid (${response.status}).`;
+                quotaNotifications.push(rotationMsg);
+
+                keyEncounteredInvalid = true;
+                break; // Keluar untuk mencoba key berikutnya
+              } else {
+                const errText = await response.text();
+                console.warn(`Gemini API warning on ${modelId} attempt ${attempt + 1} (${response.status}):`, errText.slice(0, 150));
+                lastError = `Model ${modelId} (${response.status}): ${errText.slice(0, 100)}`;
+                if (response.status !== 503) break; // Don't retry non-503s on same model
               }
-            } else {
-              const errText = await response.text();
-              console.warn(`Gemini API warning on ${modelId} attempt ${attempt + 1} (${response.status}):`, errText.slice(0, 150));
-              lastError = `Model ${modelId} (${response.status}): ${errText.slice(0, 100)}`;
-              if (response.status !== 503) break; // Don't retry non-503s on same model
+            } catch (apiErr) {
+              console.warn(`Gemini API call exception for ${modelId}:`, apiErr.message);
+              lastError = apiErr.message;
             }
-          } catch (apiErr) {
-            console.warn(`Gemini API call exception for ${modelId}:`, apiErr.message);
-            lastError = apiErr.message;
           }
         }
+      }
+
+      // Jika semua key telah dicoba dan semuanya gagal (misal seluruh 5 key kuotanya habis)
+      if (quotaNotifications.length > 0) {
+        return NextResponse.json({
+          success: false,
+          modelUsed: model || "gemini-3.5-flash",
+          menu: tab,
+          quotaExhausted: true,
+          apiKeyInfo: {
+            totalKeys: availableKeys.length,
+            quotaNotifications: quotaNotifications,
+            poolStatus: getApiKeysStatus(customKeys),
+          },
+          persona: "Semua Kuota API Habis",
+          whats_happening: `Seluruh (${availableKeys.length}) API Key saat ini telah mencapai limit kuota (HTTP 429) atau sedang cooldown.`,
+          recommended_approach: "Silakan tunggu 1-2 menit agar batas kuota per menit mereda, atau tambahkan API Key baru pada panel Manajemen API Key.",
+          program_match: "",
+          scripts: [
+            {
+              badge: "⚠️ Pemberitahuan Kuota API",
+              text: `Semua API Key dalam pool Round Robin telah mencapai batas laju (Rate Limit). Riwayat rotasi:\n${quotaNotifications.map((n) => `• ${n}`).join("\n")}`,
+            },
+          ],
+          knowledge_details: null,
+        });
       }
     }
 
@@ -646,12 +751,12 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
       menu: tab,
       persona: "Tidak dapat diidentifikasi",
       whats_happening: "Koneksi ke Gemini API tidak tersedia atau API Key belum dikonfigurasi.",
-      recommended_approach: "Pastikan GEMINI_API_KEY valid di .env.local dan restart server.",
+      recommended_approach: "Pastikan minimal 1 hingga 5 GEMINI_API_KEY valid di .env.local atau diisi di panel API Key.",
       program_match: "",
       scripts: [
         {
           badge: "⚠️ Konfigurasi Diperlukan",
-          text: "Pastikan GEMINI_API_KEY valid di .env.local dan restart server untuk mengaktifkan AI yang grounded pada knowledge base.",
+          text: "Pastikan minimal 1 sampai 5 GEMINI_API_KEY valid di .env.local atau di panel Manajemen API Key untuk mengaktifkan AI.",
         },
       ],
       knowledge_details: null,

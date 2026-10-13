@@ -25,7 +25,12 @@ import {
   Clock,
   Trash2,
   Search,
-  X
+  X,
+  Key,
+  RefreshCw,
+  Eye,
+  EyeOff,
+  Activity
 } from "lucide-react";
 
 // Helper to render text with clickable hyperlinks, markdown bold, highlights, and italics
@@ -212,12 +217,21 @@ export default function DashboardPage() {
   const [copiedHistoryId, setCopiedHistoryId] = useState<string | null>(null);
   const [historyToast, setHistoryToast] = useState<string | null>(null);
 
-  // Load history from localStorage on client mount
+  // ── 5 API Keys Round Robin & Quota Management State ──
+  const [customApiKeys, setCustomApiKeys] = useState<string[]>(["", "", "", "", ""]);
+  const [showKeySecret, setShowKeySecret] = useState<boolean[]>([false, false, false, false, false]);
+  const [isKeyModalOpen, setIsKeyModalOpen] = useState(false);
+  const [apiPoolStatus, setApiPoolStatus] = useState<any | null>(null);
+  const [isTestingKeys, setIsTestingKeys] = useState(false);
+  const [testResults, setTestResults] = useState<any[] | null>(null);
+  const [quotaAlertBanner, setQuotaAlertBanner] = useState<string | null>(null);
+
+  // Load history & API keys from localStorage and fetch server pool status
   useEffect(() => {
     try {
-      const saved = localStorage.getItem("revou_admission_history_v1");
-      if (saved) {
-        const parsed = JSON.parse(saved);
+      const savedHistory = localStorage.getItem("revou_admission_history_v1");
+      if (savedHistory) {
+        const parsed = JSON.parse(savedHistory);
         if (Array.isArray(parsed)) {
           setHistoryList(parsed);
         }
@@ -225,18 +239,112 @@ export default function DashboardPage() {
     } catch (e) {
       console.error("Failed to load history from localStorage:", e);
     }
+
+    try {
+      const savedKeys = localStorage.getItem("revou_admission_custom_api_keys_v2");
+      if (savedKeys) {
+        const parsedKeys = JSON.parse(savedKeys);
+        if (Array.isArray(parsedKeys)) {
+          // ensure 5 slots
+          const normalized = [...parsedKeys, "", "", "", "", ""].slice(0, 5);
+          setCustomApiKeys(normalized);
+        }
+      }
+    } catch (e) {
+      console.error("Failed to load custom keys from localStorage:", e);
+    }
+
+    // Fetch initial API pool status
+    fetchApiPoolStatus();
   }, []);
 
-  // Listen to Escape key to close drawer
+  const fetchApiPoolStatus = async () => {
+    try {
+      const res = await fetch("/api/keys");
+      if (res.ok) {
+        const data = await res.json();
+        setApiPoolStatus(data);
+      }
+    } catch (err) {
+      console.error("Failed to fetch API keys status:", err);
+    }
+  };
+
+  const handleTestKeys = async () => {
+    setIsTestingKeys(true);
+    setTestResults(null);
+    try {
+      const activeCustom = customApiKeys.filter((k) => k && k.trim().length > 10);
+      const res = await fetch("/api/keys", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "test",
+          customKeys: activeCustom.length > 0 ? activeCustom : null,
+        }),
+      });
+      const data = await res.json();
+      if (data.results) {
+        setTestResults(data.results);
+        showToast(`Uji kuota selesai: ${data.availableKeys}/${data.totalTested} Key aktif!`);
+      } else {
+        showToast(data.message || "Gagal menguji API Keys.");
+      }
+      fetchApiPoolStatus();
+    } catch (err: any) {
+      console.error("Test keys error:", err);
+      showToast("Gagal melakukan ping uji ke Google AI Studio.");
+    } finally {
+      setIsTestingKeys(false);
+    }
+  };
+
+  const handleSaveCustomKeys = async () => {
+    try {
+      localStorage.setItem("revou_admission_custom_api_keys_v2", JSON.stringify(customApiKeys));
+      const activeCustom = customApiKeys.filter((k) => k && k.trim().length > 10);
+      const res = await fetch("/api/keys", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "status",
+          customKeys: activeCustom.length > 0 ? activeCustom : null,
+        }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setApiPoolStatus(data);
+      }
+      showToast("Konfigurasi 5 API Key berhasil disimpan & siap digunakan!");
+    } catch (err) {
+      console.error("Failed to save custom keys:", err);
+      showToast("Gagal menyimpan API Keys ke penyimpanan lokal.");
+    }
+  };
+
+  const handleResetKeysToDefault = async () => {
+    try {
+      localStorage.removeItem("revou_admission_custom_api_keys_v2");
+      setCustomApiKeys(["", "", "", "", ""]);
+      setTestResults(null);
+      await fetchApiPoolStatus();
+      showToast("Berhasil direset ke default API Keys server (.env.local).");
+    } catch (err) {
+      console.error("Failed to reset keys:", err);
+    }
+  };
+
+  // Listen to Escape key to close drawer or modal
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && isHistoryDrawerOpen) {
-        setIsHistoryDrawerOpen(false);
+      if (e.key === "Escape") {
+        if (isKeyModalOpen) setIsKeyModalOpen(false);
+        if (isHistoryDrawerOpen) setIsHistoryDrawerOpen(false);
       }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isHistoryDrawerOpen]);
+  }, [isHistoryDrawerOpen, isKeyModalOpen]);
 
   const showToast = (msg: string) => {
     setHistoryToast(msg);
@@ -302,6 +410,7 @@ export default function DashboardPage() {
     setClarificationTabs({});
 
     try {
+      const activeCustom = customApiKeys.filter((k) => k && k.trim().length > 10);
       const res = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -309,6 +418,7 @@ export default function DashboardPage() {
           situation: inputText,
           model: selectedModel,
           tab: mode,
+          customKeys: activeCustom.length > 0 ? activeCustom : null,
         }),
       });
 
@@ -318,6 +428,18 @@ export default function DashboardPage() {
 
       const data = await res.json();
       setResponseResult(data);
+
+      // Handle Round Robin key quota info & notifications
+      if (data.apiKeyInfo) {
+        if (data.apiKeyInfo.poolStatus) {
+          setApiPoolStatus(data.apiKeyInfo.poolStatus);
+        }
+        if (Array.isArray(data.apiKeyInfo.quotaNotifications) && data.apiKeyInfo.quotaNotifications.length > 0) {
+          setQuotaAlertBanner(data.apiKeyInfo.quotaNotifications.join(" • "));
+        } else if (data.apiKeyInfo.wasRotatedDueToQuota) {
+          setQuotaAlertBanner(`Rotasi Kuota: API Key berhasil dialihkan ke Key #${data.apiKeyInfo.activeKeyIndex} via Round Robin.`);
+        }
+      }
 
       // Auto-save to History in LocalStorage
       const newSessionId = `hist-${Date.now()}`;
@@ -467,6 +589,7 @@ INSTRUKSI PENTING:
 5. KHUSUS alumni profile pada 'Applied AI, Analytics & Automation' dan 'Data-Driven Decision Making': Datanya TIDAK memiliki nama orang siapapun dan TIDAK ADA informasi posisi sebelumnya di knowledge base (HANYA Posisi/Job Title, Perusahaan, dan Industri/Kategori). JANGAN PERNAH mengada-ada/mengarang nama orang atau posisi sebelumnya; gunakan format '[Job Title] — [Perusahaan]' dan tampilkan informasi summary murni berdasarkan posisi, perusahaan, dan kategori industri yang ada.
 6. VALIDASI MUTLAK KRITERIA (CAREER SWITCHER VS UPSKILLING — NO MISMATCH): Jika Sales meminta kriteria spesifik (misal: "3 orang career switcher"), seluruh profil yang ditampilkan WAJIB 100% murni Career Switcher sejati (terbukti beralih dari profesi/bidang yang berbeda nyata). DILARANG KERAS menyelipkan profil Upskilling (yang sebelumnya sudah di bidang serupa) ke dalam permintaan Career Switcher!
 7. ATURAN FILTER BIDANG & INDUSTRI (ZERO TOLERANCE SALAH INDUSTRI): Jika Sales mencari bidang/industri tertentu (misal: "Manufaktur / Manufacture"): Seluruh alumni yang ditampilkan WAJIB 100% murni berasal dari industri tersebut (contoh Manufaktur: PT Karcher, APP, PT Trias Sentosa Tbk, Komatsu Remanufacturing Asia, Gatra Mapan). DILARANG KERAS memberikan profil dari industri lain seperti Oil & Gas (Pertamina) saat diminta Manufaktur!`;
+      const activeCustom = customApiKeys.filter((k) => k && k.trim().length > 10);
       const res = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -475,11 +598,23 @@ INSTRUKSI PENTING:
           model: selectedModel,
           tab: mode,
           excluded_alumni: previouslyShownAlumni,
+          customKeys: activeCustom.length > 0 ? activeCustom : null,
         }),
       });
 
       if (res.ok) {
         const data = await res.json();
+
+        // Handle Round Robin key quota info & notifications
+        if (data.apiKeyInfo) {
+          if (data.apiKeyInfo.poolStatus) {
+            setApiPoolStatus(data.apiKeyInfo.poolStatus);
+          }
+          if (Array.isArray(data.apiKeyInfo.quotaNotifications) && data.apiKeyInfo.quotaNotifications.length > 0) {
+            setQuotaAlertBanner(data.apiKeyInfo.quotaNotifications.join(" • "));
+          }
+        }
+
         const aiMsgId = `ai-${Date.now()}`;
         const aiMessageText =
           data.revision_summary ||
@@ -690,28 +825,59 @@ INSTRUKSI PENTING:
               </div>
             </div>
 
-            {/* Favorit & Riwayat Button */}
-            <button
-              type="button"
-              onClick={() => {
-                setDrawerTab("favorites");
-                setIsHistoryDrawerOpen(true);
-              }}
-              className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-[#D9D9D4] bg-white hover:bg-[#F5F5F2] hover:border-[#141412] text-xs font-bold text-[#141412] transition-all cursor-pointer shadow-2xs hover:shadow-xs active:scale-95 select-none"
-              title="Lihat riwayat percakapan dan skrip tersimpan"
-            >
-              <Bookmark className="w-3.5 h-3.5 text-[#A15C00]" />
-              <span>Favorit & Riwayat</span>
-              {favoritesCount > 0 ? (
-                <span className="flex items-center gap-0.5 px-1.5 py-0.5 text-[10.5px] font-mono font-bold rounded-full bg-[#FFD84D] text-[#141412]">
-                  ★ {favoritesCount}
+            <div className="flex items-center gap-2 flex-wrap">
+              {/* 5 API Keys Round Robin Button */}
+              <button
+                type="button"
+                onClick={() => setIsKeyModalOpen(true)}
+                className="inline-flex items-center gap-2 px-3 py-2 rounded-xl border border-[#D9D9D4] bg-white hover:bg-[#F5F5F2] hover:border-[#141412] text-xs font-bold text-[#141412] transition-all cursor-pointer shadow-2xs hover:shadow-xs active:scale-95 select-none"
+                title="Kelola 5 API Keys & Pantau Status Kuota (Round Robin)"
+              >
+                <Key className="w-3.5 h-3.5 text-[#0E62FE]" />
+                <span className="hidden sm:inline">5 API Keys</span>
+                <span className="flex items-center gap-1 font-mono text-[11px] px-1.5 py-0.5 rounded-md bg-[#F5F5F2] text-[#4B4B46] border border-[#E8E8E4]">
+                  <span
+                    className={`w-2 h-2 rounded-full ${
+                      apiPoolStatus?.quotaHealth === "optimal"
+                        ? "bg-[#1F7A4D]"
+                        : apiPoolStatus?.quotaHealth === "partial_warning"
+                        ? "bg-[#D97706] animate-pulse"
+                        : apiPoolStatus?.quotaHealth === "all_exhausted"
+                        ? "bg-[#DA1E28] animate-pulse"
+                        : "bg-[#1F7A4D]"
+                    }`}
+                  />
+                  <span>
+                    {apiPoolStatus?.activeRoundRobinIndex
+                      ? `API ${apiPoolStatus.activeRoundRobinIndex}/${apiPoolStatus.totalKeys || 5}`
+                      : "Round Robin"}
+                  </span>
                 </span>
-              ) : historyList.length > 0 ? (
-                <span className="flex items-center px-1.5 py-0.5 text-[10px] font-mono rounded-full bg-[#F5F5F2] text-[#8A8A84] border border-[#E8E8E4]">
-                  {historyList.length}
-                </span>
-              ) : null}
-            </button>
+              </button>
+
+              {/* Favorit & Riwayat Button */}
+              <button
+                type="button"
+                onClick={() => {
+                  setDrawerTab("favorites");
+                  setIsHistoryDrawerOpen(true);
+                }}
+                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-[#D9D9D4] bg-white hover:bg-[#F5F5F2] hover:border-[#141412] text-xs font-bold text-[#141412] transition-all cursor-pointer shadow-2xs hover:shadow-xs active:scale-95 select-none"
+                title="Lihat riwayat percakapan dan skrip tersimpan"
+              >
+                <Bookmark className="w-3.5 h-3.5 text-[#A15C00]" />
+                <span>Favorit & Riwayat</span>
+                {favoritesCount > 0 ? (
+                  <span className="flex items-center gap-0.5 px-1.5 py-0.5 text-[10.5px] font-mono font-bold rounded-full bg-[#FFD84D] text-[#141412]">
+                    ★ {favoritesCount}
+                  </span>
+                ) : historyList.length > 0 ? (
+                  <span className="flex items-center px-1.5 py-0.5 text-[10px] font-mono rounded-full bg-[#F5F5F2] text-[#8A8A84] border border-[#E8E8E4]">
+                    {historyList.length}
+                  </span>
+                ) : null}
+              </button>
+            </div>
           </div>
 
           <h1 className="font-display font-bold text-2xl sm:text-3xl md:text-[34px] tracking-tight leading-[1.15] text-[#141412] mb-2">
@@ -738,6 +904,29 @@ INSTRUKSI PENTING:
             </div>
           </div>
         </header>
+
+        {/* Real-time Quota Notification Banner */}
+        {quotaAlertBanner && (
+          <div className="mb-4 p-3.5 bg-[#FFF6D1] border border-[#FFD84D] rounded-xl flex items-start justify-between gap-3 text-xs sm:text-sm text-[#141412] shadow-2xs animate-in fade-in duration-200">
+            <div className="flex items-start gap-2.5">
+              <AlertCircle className="w-4 h-4 text-[#A15C00] shrink-0 mt-0.5" />
+              <div>
+                <p className="font-bold text-[#A15C00] text-xs uppercase tracking-wider mb-0.5">
+                  Pemberitahuan Kuota & Rotasi API Key (Round Robin)
+                </p>
+                <p className="text-[#4B4B46] leading-relaxed">{quotaAlertBanner}</p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setQuotaAlertBanner(null)}
+              className="text-[#8A8A84] hover:text-[#141412] p-1 rounded-md hover:bg-[#FFD84D]/40 transition-colors cursor-pointer shrink-0"
+              title="Tutup pemberitahuan"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        )}
 
         {/* ========================================================= */}
         {/* 2. MAIN CARD WORKSPACE (.card.work)                       */}
@@ -886,9 +1075,27 @@ INSTRUKSI PENTING:
             <div className="border-t border-[#E8E8E4] pt-5 mt-6 space-y-6 animate-in fade-in duration-300">
               {/* Output Header */}
               <div className="flex flex-wrap justify-between items-center gap-2.5 pb-2">
-                <span className="font-mono text-[11px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#F5F5F2] text-[#4B4B46] font-semibold">
-                  {curConfig.title}
-                </span>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="font-mono text-[11px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#F5F5F2] text-[#4B4B46] font-semibold">
+                    {curConfig.title}
+                  </span>
+                  {responseResult.apiKeyInfo && (
+                    <span
+                      className="font-mono text-[11px] px-2.5 py-0.5 rounded-full bg-[#EFF6FF] text-[#1D4ED8] border border-[#BFDBFE] font-medium flex items-center gap-1.5"
+                      title="API Key yang memproses jawaban ini dalam pool Round Robin"
+                    >
+                      <Key className="w-3 h-3 text-[#2563EB]" />
+                      <span>
+                        API {responseResult.apiKeyInfo.activeKeyIndex || 1}/{responseResult.apiKeyInfo.totalKeys || 5}
+                      </span>
+                      {responseResult.apiKeyInfo.wasRotatedDueToQuota && (
+                        <span className="text-[10px] bg-[#FEF3C7] text-[#92400E] px-1 rounded font-bold">
+                          Auto-Rotated (429)
+                        </span>
+                      )}
+                    </span>
+                  )}
+                </div>
 
                 <div className="flex gap-2 flex-wrap items-center">
                   <button
@@ -1845,6 +2052,276 @@ INSTRUKSI PENTING:
                   </button>
                 </div>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================= */}
+      {/* 5. MODAL MANAJEMEN 5 API KEYS & MONITOR KUOTA             */}
+      {/* ========================================================= */}
+      {isKeyModalOpen && (
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-xs flex items-center justify-center p-3 sm:p-5 animate-in fade-in duration-200">
+          <div
+            className="fixed inset-0 cursor-pointer"
+            onClick={() => setIsKeyModalOpen(false)}
+          />
+
+          <div className="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl border border-[#E8E8E4] overflow-hidden my-6 z-10 flex flex-col max-h-[90vh]">
+            {/* Modal Header */}
+            <div className="p-4 sm:p-5 border-b border-[#E8E8E4] flex items-center justify-between bg-[#FAFAF8] shrink-0">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-[#FFF6D1] border border-[#FFD84D] flex items-center justify-center text-[#A15C00] shadow-2xs shrink-0">
+                  <Key className="w-5 h-5 text-[#A15C00]" />
+                </div>
+                <div>
+                  <h3 className="font-display font-bold text-base sm:text-lg text-[#141412] leading-tight flex items-center gap-2">
+                    <span>Pool 5 API Key · Rotasi Round Robin</span>
+                    <span className="font-mono text-[11px] px-2 py-0.5 rounded-full bg-[#1F7A4D]/10 text-[#1F7A4D] font-bold">
+                      Otomatis
+                    </span>
+                  </h3>
+                  <p className="text-xs text-[#8A8A84] mt-0.5">
+                    Merotasi 5 API Key secara bergiliran dan otomatis failover jika kuota habis (429 Rate Limit)
+                  </p>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setIsKeyModalOpen(false)}
+                className="w-8 h-8 rounded-lg border border-[#E8E8E4] hover:bg-[#F5F5F2] hover:border-[#D9D9D4] flex items-center justify-center text-[#8A8A84] hover:text-[#141412] transition-all cursor-pointer shrink-0"
+                title="Tutup (Esc)"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Modal Body (Scrollable) */}
+            <div className="p-4 sm:p-5 space-y-4 overflow-y-auto">
+
+
+              {/* Status Overview Card */}
+              {apiPoolStatus && (
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                  <div className="p-3 rounded-xl bg-[#F5F5F2] border border-[#E8E8E4] text-center">
+                    <p className="text-[11px] text-[#8A8A84] font-medium">Total Key di Pool</p>
+                    <p className="font-mono font-bold text-lg text-[#141412]">
+                      {apiPoolStatus.totalKeys || 0}
+                    </p>
+                  </div>
+                  <div className="p-3 rounded-xl bg-[#F5F5F2] border border-[#E8E8E4] text-center">
+                    <p className="text-[11px] text-[#8A8A84] font-medium">Giliran Saat Ini</p>
+                    <p className="font-mono font-bold text-lg text-[#0E62FE]">
+                      API {apiPoolStatus.activeRoundRobinIndex || 1}
+                    </p>
+                  </div>
+                  <div className="p-3 rounded-xl bg-[#F5F5F2] border border-[#E8E8E4] text-center">
+                    <p className="text-[11px] text-[#8A8A84] font-medium">Key Sehat / Siap</p>
+                    <p className="font-mono font-bold text-lg text-[#1F7A4D]">
+                      {apiPoolStatus.summary?.healthy ?? apiPoolStatus.totalKeys}
+                    </p>
+                  </div>
+                  <div className="p-3 rounded-xl bg-[#F5F5F2] border border-[#E8E8E4] text-center">
+                    <p className="text-[11px] text-[#8A8A84] font-medium">Status Kuota</p>
+                    <p className="font-mono font-bold text-xs mt-1 text-[#A15C00] uppercase tracking-wider">
+                      {apiPoolStatus.quotaHealth === "optimal"
+                        ? "🟢 Optimal"
+                        : apiPoolStatus.quotaHealth === "partial_warning"
+                        ? "🟡 Sebagian Cooldown"
+                        : "🔴 Habis"}
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* 5 API Key Slots Form */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <h4 className="font-bold text-sm text-[#141412] flex items-center gap-1.5">
+                    <span>Daftar 5 API Key</span>
+                  </h4>
+                  <span className="text-[11px] font-mono text-[#8A8A84]">
+                    Tersimpan aman di browser &amp; .env.local
+                  </span>
+                </div>
+
+                {[0, 1, 2, 3, 4].map((idx) => {
+                  const keyNumber = idx + 1;
+                  const testRes = testResults?.find((t) => t.index === keyNumber);
+                  const poolRec = apiPoolStatus?.keys?.[idx];
+                  const hasCustom = Boolean(customApiKeys[idx] && customApiKeys[idx].trim().length > 10);
+                  const isCurrentActive = apiPoolStatus?.activeRoundRobinIndex === keyNumber;
+
+                  return (
+                    <div
+                      key={idx}
+                      className={`border rounded-xl p-3 sm:p-3.5 transition-all ${
+                        isCurrentActive
+                          ? "border-[#FFD84D] bg-[#FFF6D1]/20 shadow-2xs"
+                          : "border-[#E8E8E4] bg-[#FAFAF8]"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between gap-2 mb-1.5">
+                        <div className="flex items-center gap-2">
+                          <span className="font-mono text-xs font-bold text-[#141412] px-2.5 py-0.5 rounded-md bg-white border border-[#D9D9D4] shadow-2xs">
+                            API {keyNumber}
+                          </span>
+                          {isCurrentActive && (
+                            <span className="text-[10px] font-mono font-semibold px-1.5 py-0.5 rounded-full bg-[#FFD84D] text-[#141412]">
+                              ⚡ Giliran Berikutnya
+                            </span>
+                          )}
+                        </div>
+
+                        {/* Status Badges */}
+                        <div className="flex items-center gap-1.5">
+                          {testRes ? (
+                            testRes.quotaAvailable ? (
+                              <span className="text-[11px] font-mono font-semibold px-2 py-0.5 rounded-md bg-[#1F7A4D]/10 text-[#1F7A4D] border border-[#1F7A4D]/20">
+                                🟢 Siap ({testRes.latencyMs}ms)
+                              </span>
+                            ) : testRes.statusCode === 429 ? (
+                              <span className="text-[11px] font-mono font-semibold px-2 py-0.5 rounded-md bg-[#D97706]/10 text-[#D97706] border border-[#D97706]/20">
+                                🟡 Kuota Habis (429)
+                              </span>
+                            ) : (
+                              <span className="text-[11px] font-mono font-semibold px-2 py-0.5 rounded-md bg-[#DA1E28]/10 text-[#DA1E28] border border-[#DA1E28]/20">
+                                🔴 Tidak Valid
+                              </span>
+                            )
+                          ) : poolRec?.status === "rate_limited" ? (
+                            <span className="text-[11px] font-mono font-semibold px-2 py-0.5 rounded-md bg-[#D97706]/10 text-[#D97706] border border-[#D97706]/20">
+                              🟡 Cooldown ({poolRec.cooldownSeconds}s)
+                            </span>
+                          ) : poolRec?.usageCount ? (
+                            <span className="text-[11px] font-mono text-[#4B4B46] px-2 py-0.5 rounded-md bg-white border border-[#E8E8E4]">
+                              {poolRec.usageCount} request diproses
+                            </span>
+                          ) : hasCustom ? (
+                            <span className="text-[11px] font-mono text-[#1F7A4D] px-2 py-0.5 rounded-md bg-[#1F7A4D]/10">
+                              Siap Digunakan
+                            </span>
+                          ) : poolRec?.isConfigured ? (
+                            <span className="text-[11px] font-mono text-[#4B4B46] px-2 py-0.5 rounded-md bg-white border border-[#E8E8E4]">
+                              Server Terkonfigurasi
+                            </span>
+                          ) : (
+                            <span className="text-[11px] font-mono text-[#8A8A84]">
+                              Belum Diisi
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Input Box */}
+                      <div className="relative flex items-center">
+                        <input
+                          type={showKeySecret[idx] ? "text" : "password"}
+                          value={customApiKeys[idx]}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            setCustomApiKeys((prev) => {
+                              const updated = [...prev];
+                              updated[idx] = val;
+                              return updated;
+                            });
+                          }}
+                          placeholder={
+                            hasCustom
+                              ? "••••••••••••••••••••••••••••••••••••"
+                              : poolRec?.isConfigured
+                              ? "Terkonfigurasi di server (Ketik untuk mengganti)"
+                              : `Masukkan API ${keyNumber}...`
+                          }
+                          className="w-full text-xs font-mono px-3 py-2 pr-16 bg-white border border-[#D9D9D4] rounded-lg text-[#141412] focus:outline-none focus:border-[#0E62FE] focus:ring-1 focus:ring-[#0E62FE] placeholder:text-[#A8A8A2]"
+                        />
+
+                        <div className="absolute right-1.5 flex items-center gap-1">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setShowKeySecret((prev) => {
+                                const updated = [...prev];
+                                updated[idx] = !updated[idx];
+                                return updated;
+                              });
+                            }}
+                            className="p-1 text-[#8A8A84] hover:text-[#141412] transition-colors cursor-pointer"
+                            title={showKeySecret[idx] ? "Sembunyikan" : "Tampilkan API Key"}
+                          >
+                            {showKeySecret[idx] ? (
+                              <EyeOff className="w-3.5 h-3.5" />
+                            ) : (
+                              <Eye className="w-3.5 h-3.5" />
+                            )}
+                          </button>
+
+                          {customApiKeys[idx] && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setCustomApiKeys((prev) => {
+                                  const updated = [...prev];
+                                  updated[idx] = "";
+                                  return updated;
+                                });
+                              }}
+                              className="p-1 text-[#8A8A84] hover:text-[#B42318] transition-colors cursor-pointer"
+                              title="Hapus key ini"
+                            >
+                              <X className="w-3.5 h-3.5" />
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+
+            </div>
+
+            {/* Modal Actions Footer */}
+            <div className="p-3.5 sm:px-5 sm:py-3.5 border-t border-[#E8E8E4] bg-[#FAFAF8] flex flex-wrap items-center justify-between gap-2.5 shrink-0">
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={handleTestKeys}
+                  disabled={isTestingKeys}
+                  className="font-sans text-xs font-semibold px-3 py-2 rounded-xl border border-[#D9D9D4] bg-white hover:bg-[#F5F5F2] text-[#141412] transition-all cursor-pointer flex items-center gap-1.5 active:scale-95 disabled:opacity-50"
+                  title="Ping dan periksa sisa kuota ke-5 API Key di Google AI Studio"
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 text-[#0E62FE] ${isTestingKeys ? "animate-spin" : ""}`} />
+                  <span>{isTestingKeys ? "Menguji Kuota..." : "Test & Cek Kuota Semua Key"}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleResetKeysToDefault}
+                  className="font-sans text-xs text-[#8A8A84] hover:text-[#141412] px-2 py-2 hover:underline cursor-pointer"
+                >
+                  Reset ke Server
+                </button>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setIsKeyModalOpen(false)}
+                  className="font-sans text-xs font-semibold px-3 py-2 rounded-xl border border-[#D9D9D4] bg-white hover:bg-[#F5F5F2] text-[#4B4B46] cursor-pointer"
+                >
+                  Tutup
+                </button>
+                <button
+                  type="button"
+                  onClick={handleSaveCustomKeys}
+                  className="font-sans text-xs font-bold px-4 py-2 rounded-xl bg-[#FFD84D] hover:bg-[#FFCC1A] text-[#141412] shadow-2xs transition-all cursor-pointer active:scale-95"
+                >
+                  Simpan Konfigurasi
+                </button>
+              </div>
             </div>
           </div>
         </div>
