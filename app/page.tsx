@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Sparkles,
   Copy,
@@ -19,7 +19,13 @@ import {
   ShieldCheck,
   Lightbulb,
   AlertCircle,
-  ExternalLink
+  ExternalLink,
+  Bookmark,
+  Star,
+  Clock,
+  Trash2,
+  Search,
+  X
 } from "lucide-react";
 
 // Helper to render text with clickable hyperlinks, markdown bold, highlights, and italics
@@ -185,6 +191,76 @@ export default function DashboardPage() {
     timestamp?: string;
   }
 
+  // History & Favorites State
+  interface HistoryItem {
+    id: string;
+    timestamp: number;
+    dateFormatted: string;
+    mode: ModeKey;
+    inputText: string;
+    model: string;
+    responseResult: any;
+    chatThread?: ClarificationItem[];
+    isFavorite: boolean;
+  }
+
+  const [historyList, setHistoryList] = useState<HistoryItem[]>([]);
+  const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
+  const [isHistoryDrawerOpen, setIsHistoryDrawerOpen] = useState(false);
+  const [drawerTab, setDrawerTab] = useState<"favorites" | "all">("favorites");
+  const [searchHistoryQuery, setSearchHistoryQuery] = useState("");
+  const [copiedHistoryId, setCopiedHistoryId] = useState<string | null>(null);
+  const [historyToast, setHistoryToast] = useState<string | null>(null);
+
+  // Load history from localStorage on client mount
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("revou_admission_history_v1");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          setHistoryList(parsed);
+        }
+      }
+    } catch (e) {
+      console.error("Failed to load history from localStorage:", e);
+    }
+  }, []);
+
+  // Listen to Escape key to close drawer
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isHistoryDrawerOpen) {
+        setIsHistoryDrawerOpen(false);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isHistoryDrawerOpen]);
+
+  const showToast = (msg: string) => {
+    setHistoryToast(msg);
+    setTimeout(() => setHistoryToast(null), 2500);
+  };
+
+  const saveHistoryToStorage = (newList: HistoryItem[]) => {
+    setHistoryList(newList);
+    try {
+      localStorage.setItem("revou_admission_history_v1", JSON.stringify(newList));
+    } catch (e) {
+      console.error("Failed to save history to localStorage:", e);
+    }
+  };
+
+  const formatDate = (date: Date) => {
+    return date.toLocaleDateString("id-ID", {
+      day: "numeric",
+      month: "short",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
   const [chatInput, setChatInput] = useState("");
   const [chatThread, setChatThread] = useState<ClarificationItem[]>([]);
   const [isChatLoading, setIsChatLoading] = useState(false);
@@ -196,6 +272,7 @@ export default function DashboardPage() {
   const handleClear = () => {
     setInputText("");
     setResponseResult(null);
+    setCurrentSessionId(null);
     setErrorMessage(null);
     setChatThread([]);
     setClarificationTabs({});
@@ -207,6 +284,7 @@ export default function DashboardPage() {
     setMode(newMode);
     setInputText("");
     setResponseResult(null);
+    setCurrentSessionId(null);
     setErrorMessage(null);
     setChatThread([]);
     setClarificationTabs({});
@@ -240,6 +318,31 @@ export default function DashboardPage() {
 
       const data = await res.json();
       setResponseResult(data);
+
+      // Auto-save to History in LocalStorage
+      const newSessionId = `hist-${Date.now()}`;
+      setCurrentSessionId(newSessionId);
+      const newItem: HistoryItem = {
+        id: newSessionId,
+        timestamp: Date.now(),
+        dateFormatted: formatDate(new Date()),
+        mode,
+        inputText,
+        model: selectedModel,
+        responseResult: data,
+        chatThread: [],
+        isFavorite: false,
+      };
+
+      setHistoryList((prev) => {
+        const updated = [newItem, ...prev.filter((i) => i.id !== newSessionId)].slice(0, 30);
+        try {
+          localStorage.setItem("revou_admission_history_v1", JSON.stringify(updated));
+        } catch (e) {
+          console.error("Failed to save history:", e);
+        }
+        return updated;
+      });
     } catch (err: any) {
       console.error("Generate error:", err);
       setErrorMessage(err.message || "Gagal memanggil AI. Silakan coba kembali.");
@@ -394,8 +497,25 @@ INSTRUKSI PENTING:
 
         // Initialize active script tab for this clarification response
         setClarificationTabs((prev) => ({ ...prev, [aiMsgId]: 0 }));
-        setChatThread([...newThread, aiMsg]);
+        const updatedChatThread = [...newThread, aiMsg];
+        setChatThread(updatedChatThread);
         // NOTE: setResponseResult(data) is intentionally NOT called to keep initial answer intact!
+
+        // Save updated chatThread to history item in localStorage
+        if (currentSessionId) {
+          setHistoryList((prev) => {
+            const updated = prev.map((item) => {
+              if (item.id === currentSessionId) {
+                return { ...item, chatThread: updatedChatThread };
+              }
+              return item;
+            });
+            try {
+              localStorage.setItem("revou_admission_history_v1", JSON.stringify(updated));
+            } catch (e) {}
+            return updated;
+          });
+        }
       }
     } catch (err) {
       console.error("Clarification error:", err);
@@ -434,6 +554,115 @@ INSTRUKSI PENTING:
     setTimeout(() => setCopiedClarificationKey(null), 2000);
   };
 
+  // History & Favorites Action Handlers
+  const toggleFavorite = (itemId: string, e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    let isNowFav = false;
+    const updated = historyList.map((item) => {
+      if (item.id === itemId) {
+        isNowFav = !item.isFavorite;
+        return { ...item, isFavorite: isNowFav };
+      }
+      return item;
+    });
+    saveHistoryToStorage(updated);
+    showToast(isNowFav ? "Ditambahkan ke Favorit ⭐" : "Dihapus dari Favorit");
+  };
+
+  const isCurrentFavorite = Boolean(
+    currentSessionId && historyList.find((h) => h.id === currentSessionId)?.isFavorite
+  );
+
+  const toggleCurrentSessionFavorite = () => {
+    if (!responseResult) return;
+    if (currentSessionId) {
+      toggleFavorite(currentSessionId);
+    } else {
+      const newId = `hist-${Date.now()}`;
+      setCurrentSessionId(newId);
+      const newItem: HistoryItem = {
+        id: newId,
+        timestamp: Date.now(),
+        dateFormatted: formatDate(new Date()),
+        mode,
+        inputText,
+        model: selectedModel,
+        responseResult,
+        chatThread,
+        isFavorite: true,
+      };
+      saveHistoryToStorage([newItem, ...historyList].slice(0, 30));
+      showToast("Ditambahkan ke Favorit ⭐");
+    }
+  };
+
+  const handleLoadSession = (item: HistoryItem) => {
+    setMode(item.mode);
+    setInputText(item.inputText);
+    setSelectedModel(item.model || "gemini-3.5-flash-lite");
+    setResponseResult(item.responseResult);
+    setChatThread(item.chatThread || []);
+    setActiveScriptTab(0);
+    setCurrentSessionId(item.id);
+    setIsHistoryDrawerOpen(false);
+    showToast(`Sesi "${item.mode === "pitch" ? "Pitch" : "Alumni"}" berhasil dimuat!`);
+  };
+
+  const handleDeleteItem = (itemId: string, e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    const updated = historyList.filter((item) => item.id !== itemId);
+    saveHistoryToStorage(updated);
+    if (currentSessionId === itemId) {
+      setCurrentSessionId(null);
+    }
+    showToast("Item riwayat dihapus");
+  };
+
+  const handleClearHistory = () => {
+    if (window.confirm("Hapus semua riwayat yang tidak difavoritkan?")) {
+      const updated = historyList.filter((item) => item.isFavorite);
+      saveHistoryToStorage(updated);
+      showToast("Riwayat dibersihkan (Favorit tetap tersimpan)");
+    }
+  };
+
+  const handleQuickCopyHistory = (item: HistoryItem, e: React.MouseEvent) => {
+    e.stopPropagation();
+    let textToCopy = "";
+    if (item.responseResult?.scripts && item.responseResult.scripts.length > 0) {
+      textToCopy = item.responseResult.scripts
+        .map((s: any) => `${s.badge}\n${s.text}`)
+        .join("\n\n---\n\n");
+    } else if (item.responseResult?.featured_alumni_summary?.career_journey_summary) {
+      textToCopy = `${item.responseResult.featured_alumni_summary.name}\n${item.responseResult.featured_alumni_summary.career_journey_summary}`;
+    } else if (item.responseResult?.alumni_matches && item.responseResult.alumni_matches.length > 0) {
+      textToCopy = item.responseResult.alumni_matches
+        .map((a: any) => `${a.name} (${a.current_role})\n${a.career_journey_summary || a.why_relevant || ""}`)
+        .join("\n\n---\n\n");
+    } else {
+      textToCopy = item.inputText;
+    }
+    navigator.clipboard.writeText(textToCopy);
+    setCopiedHistoryId(item.id);
+    setTimeout(() => setCopiedHistoryId(null), 2000);
+    showToast("Tersalin ke clipboard!");
+  };
+
+  const favoritesCount = historyList.filter((i) => i.isFavorite).length;
+  const filteredHistory = historyList.filter((item) => {
+    const matchesTab = drawerTab === "favorites" ? item.isFavorite : true;
+    if (!matchesTab) return false;
+    if (!searchHistoryQuery.trim()) return true;
+    const q = searchHistoryQuery.toLowerCase();
+    const matchInput = item.inputText?.toLowerCase().includes(q);
+    const matchPersona = item.responseResult?.persona?.toLowerCase().includes(q);
+    const matchAlumni = item.responseResult?.alumni_matches?.some((a: any) =>
+      a?.name?.toLowerCase().includes(q) || a?.current_role?.toLowerCase().includes(q)
+    );
+    const matchApproach = item.responseResult?.recommended_approach?.toLowerCase().includes(q);
+    return Boolean(matchInput || matchPersona || matchAlumni || matchApproach);
+  });
+
   return (
     <div className="min-h-screen bg-[#FFFFFF] text-[#141412] font-sans antialiased px-4 sm:px-6 py-6 sm:py-10">
       <div className="max-w-[820px] mx-auto">
@@ -441,23 +670,48 @@ INSTRUKSI PENTING:
         {/* 1. TOPBAR & HEADER                                        */}
         {/* ========================================================= */}
         <header className="mb-6">
-          <div className="flex items-center gap-3.5 mb-3.5">
-            <div className="w-14 h-14 rounded-full overflow-hidden shadow-sm shrink-0 border border-[#FFD84D] bg-[#FFD84D] flex items-center justify-center">
-              <img
-                src="/revou-logo.png"
-                alt="RevoU Logo"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div>
-              <p className="font-mono text-xs tracking-wider uppercase text-[#8A8A84] m-0">
-                RevoU Admission Team · AI Sales Assistant
-              </p>
-              <div className="flex items-center gap-2 mt-0.5">
-                <span className="w-2 h-2 rounded-full bg-[#1F7A4D]" />
-                <span className="text-xs font-mono text-[#8A8A84]">Grounded on /knowledge/</span>
+          <div className="flex items-center justify-between flex-wrap gap-3 mb-3.5">
+            <div className="flex items-center gap-3.5">
+              <div className="w-14 h-14 rounded-full overflow-hidden shadow-sm shrink-0 border border-[#FFD84D] bg-[#FFD84D] flex items-center justify-center">
+                <img
+                  src="/revou-logo.png"
+                  alt="RevoU Logo"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div>
+                <p className="font-mono text-xs tracking-wider uppercase text-[#8A8A84] m-0">
+                  RevoU Admission Team · AI Sales Assistant
+                </p>
+                <div className="flex items-center gap-2 mt-0.5">
+                  <span className="w-2 h-2 rounded-full bg-[#1F7A4D]" />
+                  <span className="text-xs font-mono text-[#8A8A84]">Grounded on /knowledge/</span>
+                </div>
               </div>
             </div>
+
+            {/* Favorit & Riwayat Button */}
+            <button
+              type="button"
+              onClick={() => {
+                setDrawerTab("favorites");
+                setIsHistoryDrawerOpen(true);
+              }}
+              className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-[#D9D9D4] bg-white hover:bg-[#F5F5F2] hover:border-[#141412] text-xs font-bold text-[#141412] transition-all cursor-pointer shadow-2xs hover:shadow-xs active:scale-95 select-none"
+              title="Lihat riwayat percakapan dan skrip tersimpan"
+            >
+              <Bookmark className="w-3.5 h-3.5 text-[#A15C00]" />
+              <span>Favorit & Riwayat</span>
+              {favoritesCount > 0 ? (
+                <span className="flex items-center gap-0.5 px-1.5 py-0.5 text-[10.5px] font-mono font-bold rounded-full bg-[#FFD84D] text-[#141412]">
+                  ★ {favoritesCount}
+                </span>
+              ) : historyList.length > 0 ? (
+                <span className="flex items-center px-1.5 py-0.5 text-[10px] font-mono rounded-full bg-[#F5F5F2] text-[#8A8A84] border border-[#E8E8E4]">
+                  {historyList.length}
+                </span>
+              ) : null}
+            </button>
           </div>
 
           <h1 className="font-display font-bold text-2xl sm:text-3xl md:text-[34px] tracking-tight leading-[1.15] text-[#141412] mb-2">
@@ -636,7 +890,25 @@ INSTRUKSI PENTING:
                   {curConfig.title}
                 </span>
 
-                <div className="flex gap-2 flex-wrap">
+                <div className="flex gap-2 flex-wrap items-center">
+                  <button
+                    type="button"
+                    onClick={toggleCurrentSessionFavorite}
+                    className={`font-sans text-xs font-semibold px-3 py-1.5 rounded-lg border transition-all cursor-pointer flex items-center gap-1.5 select-none active:scale-95 ${
+                      isCurrentFavorite
+                        ? "bg-[#FFF6D1] text-[#A15C00] border-[#FFD84D] shadow-2xs font-bold"
+                        : "bg-white text-[#141412] border-[#D9D9D4] hover:bg-[#F5F5F2]"
+                    }`}
+                    title={isCurrentFavorite ? "Hapus dari Favorit" : "Simpan draf ini ke koleksi Favorit"}
+                  >
+                    <Star
+                      className={`w-3.5 h-3.5 transition-colors ${
+                        isCurrentFavorite ? "fill-[#FFCC1A] text-[#A15C00]" : "text-[#8A8A84]"
+                      }`}
+                    />
+                    <span>{isCurrentFavorite ? "Tersimpan di Favorit" : "Simpan ke Favorit"}</span>
+                  </button>
+
                   {responseResult.scripts && responseResult.scripts.length > 0 && (
                     <button
                       type="button"
@@ -1291,6 +1563,300 @@ INSTRUKSI PENTING:
           <strong>Jawaban AI adalah draf. Cek ulang harga dan tanggal batch terbaru sebelum dikirim ke prospect.</strong> grounded on<code className="font-mono text-[11px] bg-[#F5F5F2] px-1 py-0.5 rounded">/knowledge/</code>.
         </footer>
       </div>
+
+      {/* ========================================================= */}
+      {/* 4. HISTORY & FAVORITES DRAWER                             */}
+      {/* ========================================================= */}
+      {isHistoryDrawerOpen && (
+        <div className="fixed inset-0 z-50 overflow-hidden">
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0 bg-black/40 backdrop-blur-xs transition-opacity animate-in fade-in duration-200 cursor-pointer"
+            onClick={() => setIsHistoryDrawerOpen(false)}
+          />
+
+          {/* Slide-over panel */}
+          <div className="fixed inset-y-0 right-0 max-w-full flex pl-6 sm:pl-10">
+            <div className="w-screen max-w-md sm:max-w-lg bg-white shadow-2xl flex flex-col border-l border-[#E8E8E4] animate-in slide-in-from-right duration-300">
+              {/* Drawer Header */}
+              <div className="p-4 sm:p-5 border-b border-[#E8E8E4] flex items-center justify-between bg-[#FAFAF8]">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-[#FFF6D1] border border-[#FFD84D] flex items-center justify-center text-[#A15C00] shadow-2xs">
+                    <Bookmark className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h3 className="font-display font-bold text-base text-[#141412] leading-tight">
+                      Favorit & Riwayat
+                    </h3>
+                    <p className="text-xs text-[#8A8A84] mt-0.5">
+                      Tersimpan di perangkat lokal (LocalStorage)
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setIsHistoryDrawerOpen(false)}
+                  className="w-8 h-8 rounded-lg border border-[#E8E8E4] hover:bg-[#F5F5F2] hover:border-[#D9D9D4] flex items-center justify-center text-[#8A8A84] hover:text-[#141412] transition-all cursor-pointer"
+                  title="Tutup (Esc)"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* Sub-Tabs: Favorit vs Semua Riwayat */}
+              <div className="px-4 sm:px-5 pt-3 border-b border-[#E8E8E4] flex gap-2 bg-white">
+                <button
+                  type="button"
+                  onClick={() => setDrawerTab("favorites")}
+                  className={`flex items-center gap-2 px-3.5 py-2 text-xs sm:text-sm font-bold border-b-2 transition-all cursor-pointer select-none ${
+                    drawerTab === "favorites"
+                      ? "border-[#FFD84D] text-[#141412] bg-[#FFF6D1]/60 rounded-t-lg font-bold"
+                      : "border-transparent text-[#8A8A84] hover:text-[#141412] hover:bg-[#F5F5F2] rounded-t-lg"
+                  }`}
+                >
+                  <Star
+                    className={`w-3.5 h-3.5 ${
+                      drawerTab === "favorites" ? "fill-[#FFCC1A] text-[#A15C00]" : "text-[#8A8A84]"
+                    }`}
+                  />
+                  <span>Favorit</span>
+                  <span className="px-1.5 py-0.2 rounded-full text-[10.5px] font-mono bg-[#E8E8E4] text-[#4B4B46]">
+                    {favoritesCount}
+                  </span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setDrawerTab("all")}
+                  className={`flex items-center gap-2 px-3.5 py-2 text-xs sm:text-sm font-bold border-b-2 transition-all cursor-pointer select-none ${
+                    drawerTab === "all"
+                      ? "border-[#FFD84D] text-[#141412] bg-[#FFF6D1]/60 rounded-t-lg font-bold"
+                      : "border-transparent text-[#8A8A84] hover:text-[#141412] hover:bg-[#F5F5F2] rounded-t-lg"
+                  }`}
+                >
+                  <Clock className="w-3.5 h-3.5 text-[#8A8A84]" />
+                  <span>Semua Riwayat</span>
+                  <span className="px-1.5 py-0.2 rounded-full text-[10.5px] font-mono bg-[#E8E8E4] text-[#4B4B46]">
+                    {historyList.length}
+                  </span>
+                </button>
+              </div>
+
+              {/* Search bar inside drawer */}
+              <div className="p-3 sm:px-5 sm:py-3 border-b border-[#E8E8E4] bg-white">
+                <div className="relative">
+                  <Search className="w-3.5 h-3.5 text-[#8A8A84] absolute left-3 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="text"
+                    value={searchHistoryQuery}
+                    onChange={(e) => setSearchHistoryQuery(e.target.value)}
+                    placeholder="Cari situasi, persona, nama alumni..."
+                    className="w-full text-xs text-[#141412] bg-[#F5F5F2] border border-[#E8E8E4] rounded-lg pl-8 pr-7 py-2 focus:outline-none focus:border-[#141412] focus:bg-white transition-all placeholder:text-[#8A8A84]"
+                  />
+                  {searchHistoryQuery && (
+                    <button
+                      type="button"
+                      onClick={() => setSearchHistoryQuery("")}
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#8A8A84] hover:text-[#141412]"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Cards List */}
+              <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-3">
+                {filteredHistory.length === 0 ? (
+                  <div className="text-center py-12 px-4 space-y-3">
+                    <div className="w-12 h-12 rounded-full bg-[#F5F5F2] border border-[#E8E8E4] flex items-center justify-center mx-auto text-[#8A8A84]">
+                      {drawerTab === "favorites" ? (
+                        <Star className="w-5 h-5 text-[#8A8A84]" />
+                      ) : (
+                        <Clock className="w-5 h-5 text-[#8A8A84]" />
+                      )}
+                    </div>
+                    <p className="font-bold text-sm text-[#141412]">
+                      {drawerTab === "favorites"
+                        ? "Belum ada skrip yang difavoritkan"
+                        : "Belum ada riwayat tercatat"}
+                    </p>
+                    <p className="text-xs text-[#8A8A84] max-w-xs mx-auto leading-relaxed">
+                      {drawerTab === "favorites"
+                        ? "Klik tombol ⭐ Simpan ke Favorit pada hasil draf atau di daftar riwayat untuk menyimpannya di sini."
+                        : "Setiap draf respon yang kamu buat akan otomatis tersimpan di sini."}
+                    </p>
+                  </div>
+                ) : (
+                  filteredHistory.map((item) => {
+                    const isSelectedCurrent = currentSessionId === item.id;
+                    const hasClarifications = item.chatThread && item.chatThread.length > 0;
+                    const scriptCount = item.responseResult?.scripts?.length || 0;
+                    const alumniMatchesCount = item.responseResult?.alumni_matches?.length || 0;
+
+                    return (
+                      <div
+                        key={item.id}
+                        className={`p-3.5 sm:p-4 rounded-xl border transition-all space-y-2.5 bg-white hover:border-[#D9D9D4] hover:shadow-2xs ${
+                          isSelectedCurrent
+                            ? "border-[#FFD84D] bg-[#FFF6D1]/20 ring-1 ring-[#FFD84D]"
+                            : "border-[#E8E8E4]"
+                        }`}
+                      >
+                        {/* Item Top: Mode Badge, Date, Star & Trash */}
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            <span
+                              className={`font-mono text-[10.5px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-full ${
+                                item.mode === "pitch"
+                                  ? "bg-[#FFF6D1] text-[#A15C00] border border-[#FFD84D]/60"
+                                  : "bg-[#EBF7EE] text-[#1F7A4D] border border-[#D4EDDA]"
+                              }`}
+                            >
+                              {item.mode === "pitch" ? "Pitch" : "Alumni"}
+                            </span>
+                            <span className="text-[11px] font-mono text-[#8A8A84]">
+                              {item.dateFormatted}
+                            </span>
+                            {hasClarifications && (
+                              <span className="text-[10.5px] font-mono px-1.5 py-0.5 rounded bg-[#F5F5F2] text-[#4B4B46] border border-[#E8E8E4]">
+                                +klarifikasi
+                              </span>
+                            )}
+                          </div>
+
+                          <div className="flex items-center gap-0.5">
+                            <button
+                              type="button"
+                              onClick={(e) => toggleFavorite(item.id, e)}
+                              className={`w-7 h-7 rounded-lg flex items-center justify-center transition-all cursor-pointer ${
+                                item.isFavorite
+                                  ? "text-[#A15C00] hover:bg-[#FFF6D1]"
+                                  : "text-[#8A8A84] hover:text-[#141412] hover:bg-[#F5F5F2]"
+                              }`}
+                              title={item.isFavorite ? "Hapus dari Favorit" : "Tandai sebagai Favorit"}
+                            >
+                              <Star
+                                className={`w-4 h-4 ${
+                                  item.isFavorite ? "fill-[#FFCC1A] text-[#A15C00]" : ""
+                                }`}
+                              />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={(e) => handleDeleteItem(item.id, e)}
+                              className="w-7 h-7 rounded-lg flex items-center justify-center text-[#8A8A84] hover:text-[#B42318] hover:bg-red-50 transition-all cursor-pointer"
+                              title="Hapus dari riwayat"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Situation Input Snippet */}
+                        <div>
+                          <p className="text-[13px] font-semibold text-[#141412] line-clamp-2 leading-snug">
+                            "{item.inputText}"
+                          </p>
+                        </div>
+
+                        {/* Result Context summary */}
+                        <div className="text-xs text-[#4B4B46] bg-[#FAFAF8] p-2.5 rounded-lg border border-[#E8E8E4]/80 space-y-1">
+                          {item.mode === "pitch" && item.responseResult?.persona && (
+                            <div className="line-clamp-1">
+                              <span className="text-[#8A8A84] font-medium">Persona: </span>
+                              <span className="font-semibold text-[#141412]">
+                                {item.responseResult.persona}
+                              </span>
+                            </div>
+                          )}
+                          {item.mode === "alumni" && item.responseResult?.alumni_matches?.[0] && (
+                            <div className="line-clamp-1">
+                              <span className="text-[#8A8A84] font-medium">Alumni: </span>
+                              <span className="font-semibold text-[#1F7A4D]">
+                                {item.responseResult.alumni_matches[0].name} (
+                                {item.responseResult.alumni_matches[0].current_role})
+                              </span>
+                            </div>
+                          )}
+                          <div className="text-[11px] text-[#8A8A84] font-mono flex items-center gap-2">
+                            {scriptCount > 0 && <span>{scriptCount} variasi script</span>}
+                            {alumniMatchesCount > 0 && (
+                              <span>{alumniMatchesCount} profil alumni</span>
+                            )}
+                            <span>·</span>
+                            <span>{item.model?.includes("lite") ? "Flash Lite" : "Flash"}</span>
+                          </div>
+                        </div>
+
+                        {/* Action Buttons row */}
+                        <div className="flex items-center justify-between gap-2 pt-1">
+                          <button
+                            type="button"
+                            onClick={() => handleLoadSession(item)}
+                            className={`flex-1 text-xs font-bold py-2 px-3 rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer select-none ${
+                              isSelectedCurrent
+                                ? "bg-[#141412] text-white"
+                                : "bg-[#FFD84D] hover:bg-[#FFCC1A] text-[#141412] active:scale-97 shadow-2xs"
+                            }`}
+                          >
+                            <RotateCcw className="w-3.5 h-3.5" />
+                            <span>{isSelectedCurrent ? "Sedang Dibuka" : "Muat Sesi Ini"}</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={(e) => handleQuickCopyHistory(item, e)}
+                            className="text-xs font-semibold py-2 px-3 rounded-lg border border-[#D9D9D4] bg-white hover:bg-[#F5F5F2] text-[#141412] flex items-center gap-1.5 transition-all cursor-pointer active:scale-97"
+                            title="Salin isi script langsung ke clipboard"
+                          >
+                            {copiedHistoryId === item.id ? (
+                              <>
+                                <Check className="w-3.5 h-3.5 text-[#1F7A4D]" />
+                                <span className="text-[#1F7A4D]">Tersalin</span>
+                              </>
+                            ) : (
+                              <>
+                                <Copy className="w-3.5 h-3.5 text-[#8A8A84]" />
+                                <span>Salin</span>
+                              </>
+                            )}
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+
+              {/* Drawer Footer */}
+              {historyList.length > 0 && (
+                <div className="p-3.5 sm:px-5 sm:py-3.5 border-t border-[#E8E8E4] bg-[#FAFAF8] flex items-center justify-between text-xs">
+                  <span className="text-[#8A8A84] font-mono text-[11px]">
+                    Total: {historyList.length} sesi ({favoritesCount} favorit)
+                  </span>
+                  <button
+                    type="button"
+                    onClick={handleClearHistory}
+                    className="text-[#8A8A84] hover:text-[#B42318] hover:underline font-mono text-[11.5px] transition-all cursor-pointer"
+                  >
+                    Bersihkan non-favorit
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* FLOATING TOAST NOTIFICATION */}
+      {historyToast && (
+        <div className="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-50 bg-[#141412] text-white px-4 py-2.5 rounded-xl shadow-xl border border-[#2B2B28] flex items-center gap-2.5 text-xs sm:text-sm font-medium animate-in fade-in slide-in-from-bottom-3 duration-200">
+          <span className="w-2 h-2 rounded-full bg-[#FFD84D]" />
+          <span>{historyToast}</span>
+        </div>
+      )}
     </div>
   );
 }
