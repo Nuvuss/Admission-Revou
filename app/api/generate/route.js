@@ -590,9 +590,9 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
         const currentCandidate = keyQueue[keyAttempt];
         const nextCandidate = keyQueue[keyAttempt + 1] || null;
 
-        // Prioritize requested model, then fall back through resilient active models
+        // Prioritize fast and resilient models
         const candidateModels = [
-          model,
+          model || "gemini-3.5-flash-lite",
           "gemini-3.5-flash-lite",
           "gemini-3.5-flash",
         ].filter((m, idx, arr) => m && arr.indexOf(m) === idx);
@@ -603,31 +603,27 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
         for (const modelId of candidateModels) {
           if (keyEncounteredQuota || keyEncounteredInvalid) break;
 
-          // Try up to 2 attempts per model (handles brief 503 spikes)
-          for (let attempt = 0; attempt < 2; attempt++) {
-            try {
-              if (attempt > 0) await wait(600);
+          try {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelId}:generateContent?key=${currentCandidate.key}`;
 
-              const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelId}:generateContent?key=${currentCandidate.key}`;
-
-              const response = await fetch(url, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                signal: AbortSignal.timeout(12000), // 12-second abort timeout prevents 504 Gateway Timeout
-                body: JSON.stringify({
-                  contents: [
-                    {
-                      role: "user",
-                      parts: [{ text: fullPrompt }],
-                    },
-                  ],
-                  generationConfig: {
-                    responseMimeType: "application/json",
-                    temperature: 0.25,
-                    maxOutputTokens: 16384,
+            const response = await fetch(url, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              signal: AbortSignal.timeout(8500), // 8.5s timeout prevents hitting Vercel's 10s Serverless hard limit
+              body: JSON.stringify({
+                contents: [
+                  {
+                    role: "user",
+                    parts: [{ text: fullPrompt }],
                   },
-                }),
-              });
+                ],
+                generationConfig: {
+                  responseMimeType: "application/json",
+                  temperature: 0.25,
+                  maxOutputTokens: 4096, // Optimal size: fast generation without exceeding Vercel timeout
+                },
+              }),
+            });
 
               if (response.ok) {
                 const data = await response.json();
@@ -705,16 +701,14 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
                 break; // Keluar untuk mencoba key berikutnya
               } else {
                 const errText = await response.text();
-                console.warn(`Gemini API warning on ${modelId} attempt ${attempt + 1} (${response.status}):`, errText.slice(0, 150));
+                console.warn(`Gemini API warning on ${modelId} (${response.status}):`, errText.slice(0, 150));
                 lastError = `Model ${modelId} (${response.status}): ${errText.slice(0, 100)}`;
-                if (response.status !== 503) break; // Don't retry non-503s on same model
               }
             } catch (apiErr) {
               console.warn(`Gemini API call exception for ${modelId}:`, apiErr.message);
               lastError = apiErr.message;
             }
           }
-        }
       }
 
       // Jika semua key telah dicoba dan semuanya gagal (misal seluruh 5 key kuotanya habis)
