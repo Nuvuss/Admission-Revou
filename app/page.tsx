@@ -30,8 +30,11 @@ import {
   RefreshCw,
   Eye,
   EyeOff,
-  Activity
+  Activity,
+  Scale,
+  Award
 } from "lucide-react";
+import ComparisonView from "./components/ComparisonView";
 
 // Helper to render text with clickable hyperlinks, markdown bold, highlights, and italics
 function renderFormattedTextWithLinks(
@@ -131,7 +134,7 @@ function renderFormattedTextWithLinks(
   return elements;
 }
 
-type ModeKey = "pitch" | "alumni";
+type ModeKey = "pitch" | "alumni" | "comparison";
 
 interface ModeConfig {
   title: string;
@@ -169,16 +172,30 @@ const MODES: Record<ModeKey, ModeConfig> = {
       "Cari alumni dengan kenaikan gaji (salary increase) di atas 100% di bidang Data Analytics.",
     ],
   },
+  comparison: {
+    title: "Comparison Table",
+    lead: "Battlecards kompetitor (Hacktiv8, Purwadhika, Dibimbing, IT Lab) & tabel komparasi general & bootcamp untuk menjawab keraguan prospect secara elegan tanpa menjelekkan kompetitor.",
+    template: "Tulis: nama kompetitor (Hacktiv8 / Purwadhika / Dibimbing / IT Lab) & apa yang membuat leads tertarik atau ragu",
+    placeholder: "Contoh: Lead bilang tertarik daftar Dibimbing karena harganya lebih murah dan ada program cicilan, tapi masih bingung kualitas karir dan mentornya...",
+    examples: [
+      "Lead tertarik Purwadhika karena ada opsi kelas offline tatap muka di BSD/Jakarta.",
+      "Lead membandingkan RevoU dengan Hacktiv8 karena tertarik opsi ISA (Income Share Agreement).",
+      "Lead bilang Dibimbing Digital Marketing lebih terjangkau, apakah worth it ambil RevoU?",
+      "Lead ragu apakah RevoU punya jaminan kerja refund dan sertifikasi resmi seperti kompetitor.",
+      "Lead membandingkan kurikulum Data Analytics RevoU dengan bootcamp lain yang lebih singkat (3 bulan)."
+    ],
+  },
 };
 
 const availableModels = [
-  { id: "gemini-3.5-flash-lite", name: "Gemini 3.5 Flash Lite (Super Cepat & Stabil - Rekomendasi)" },
-  { id: "gemini-3.5-flash", name: "Gemini 3.5 Flash (Standar)" },
+  { id: "gemini-3.8-flash", name: "Gemini 3.8 Flash (Paling Cepat & Stabil - Rekomendasi)" },
+  { id: "gemini-3.5-flash-lite", name: "Gemini 3.5 Flash Lite" },
+  { id: "gemini-3.5-flash", name: "Gemini 3.5 Flash" },
 ];
 
 export default function DashboardPage() {
   const [mode, setMode] = useState<ModeKey>("pitch");
-  const [selectedModel, setSelectedModel] = useState("gemini-3.5-flash-lite");
+  const [selectedModel, setSelectedModel] = useState("gemini-3.8-flash");
   const [inputText, setInputText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [responseResult, setResponseResult] = useState<any | null>(null);
@@ -585,7 +602,7 @@ INSTRUKSI PENTING:
 1. Jika Sales mengklarifikasi atau mencari alumni bidang/program/profesi tertentu (misal: Software Engineering, Data Analytics, Digital Marketing, atau profil khusus), cari data alumni yang relevan dari knowledge base dan WAJIB sertakan 'featured_alumni_summary' dan 'alumni_matches' yang sesuai.
 2. Pada menu 'alumni': JANGAN buat pitch WhatsApp dan KOSONGKAN scripts ([]). Fokus tampilkan data alumni RevoU dengan ringkasan singkat serta rangkuman perjalanan karirnya (WAJIB cetak tebal **bold** pemicu aksi dan highlight bagian penting perjalanan karir).
 3. Jika Sales meminta contoh alumni lainnya atau profil berbeda, pastikan 100% profil yang ditampilkan adalah figur BARU yang belum pernah ditampilkan di giliran sebelumnya.
-4. Pada menu 'pitch': Sesuaikan draf script pesan sesuai masukan Sales.
+4. Pada menu 'pitch': Sesuaikan draf script pesan sesuai masukan Sales dengan tetap mengikuti aturan wajib minimal 120 kata (rentang 120–300 kata per variasi draf), empati spesifik, penyambungan USP + kurikulum konkret + framing AI force multiplier, pilihan 1 CTA ajakan, gaya chat WhatsApp santai (boleh singkatan: utk, yg, sdh, bgt, krn), 1 emoji per paragraf (maks 3 per pesan), dan tanpa placeholder nama.
 5. KHUSUS alumni profile pada 'Applied AI, Analytics & Automation' dan 'Data-Driven Decision Making': Datanya TIDAK memiliki nama orang siapapun dan TIDAK ADA informasi posisi sebelumnya di knowledge base (HANYA Posisi/Job Title, Perusahaan, dan Industri/Kategori). JANGAN PERNAH mengada-ada/mengarang nama orang atau posisi sebelumnya; gunakan format '[Job Title] — [Perusahaan]' dan tampilkan informasi summary murni berdasarkan posisi, perusahaan, dan kategori industri yang ada.
 6. VALIDASI MUTLAK KRITERIA (CAREER SWITCHER VS UPSKILLING — NO MISMATCH): Jika Sales meminta kriteria spesifik (misal: "3 orang career switcher"), seluruh profil yang ditampilkan WAJIB 100% murni Career Switcher sejati (terbukti beralih dari profesi/bidang yang berbeda nyata). DILARANG KERAS menyelipkan profil Upskilling (yang sebelumnya sudah di bidang serupa) ke dalam permintaan Career Switcher!
 7. ATURAN FILTER BIDANG & INDUSTRI (ZERO TOLERANCE SALAH INDUSTRI): Jika Sales mencari bidang/industri tertentu (misal: "Manufaktur / Manufacture"): Seluruh alumni yang ditampilkan WAJIB 100% murni berasal dari industri tersebut (contoh Manufaktur: PT Karcher, APP, PT Trias Sentosa Tbk, Komatsu Remanufacturing Asia, Gatra Mapan). DILARANG KERAS memberikan profil dari industri lain seperti Oil & Gas (Pertamina) saat diminta Manufaktur!`;
@@ -647,7 +664,7 @@ INSTRUKSI PENTING:
             });
             try {
               localStorage.setItem("revou_admission_history_v1", JSON.stringify(updated));
-            } catch (e) {}
+            } catch (e) { }
             return updated;
           });
         }
@@ -740,7 +757,7 @@ INSTRUKSI PENTING:
     setActiveScriptTab(0);
     setCurrentSessionId(item.id);
     setIsHistoryDrawerOpen(false);
-    showToast(`Sesi "${item.mode === "pitch" ? "Pitch" : "Alumni"}" berhasil dimuat!`);
+    showToast(`Sesi "${item.mode === "pitch" ? "Pitch" : item.mode === "alumni" ? "Alumni" : "Comparison"}" berhasil dimuat!`);
   };
 
   const handleDeleteItem = (itemId: string, e?: React.MouseEvent) => {
@@ -837,15 +854,14 @@ INSTRUKSI PENTING:
                 <span className="hidden sm:inline">5 API Keys</span>
                 <span className="flex items-center gap-1 font-mono text-[11px] px-1.5 py-0.5 rounded-md bg-[#F5F5F2] text-[#4B4B46] border border-[#E8E8E4]">
                   <span
-                    className={`w-2 h-2 rounded-full ${
-                      apiPoolStatus?.quotaHealth === "optimal"
+                    className={`w-2 h-2 rounded-full ${apiPoolStatus?.quotaHealth === "optimal"
                         ? "bg-[#1F7A4D]"
                         : apiPoolStatus?.quotaHealth === "partial_warning"
-                        ? "bg-[#D97706] animate-pulse"
-                        : apiPoolStatus?.quotaHealth === "all_exhausted"
-                        ? "bg-[#DA1E28] animate-pulse"
-                        : "bg-[#1F7A4D]"
-                    }`}
+                          ? "bg-[#D97706] animate-pulse"
+                          : apiPoolStatus?.quotaHealth === "all_exhausted"
+                            ? "bg-[#DA1E28] animate-pulse"
+                            : "bg-[#1F7A4D]"
+                      }`}
                   />
                   <span>
                     {apiPoolStatus?.activeRoundRobinIndex
@@ -932,7 +948,7 @@ INSTRUKSI PENTING:
         {/* 2. MAIN CARD WORKSPACE (.card.work)                       */}
         {/* ========================================================= */}
         <section className="bg-white border border-[#E8E8E4] rounded-[14px] p-5 sm:p-6 shadow-[0_1px_3px_rgba(20,20,18,0.05),0_4px_16px_rgba(20,20,18,0.04)] space-y-6">
-          {/* Start Menu Tabs (Create a Pitch vs Checking Alumni) */}
+          {/* Start Menu Tabs (Create a Pitch vs Checking Alumni vs Comparison Table) */}
           <div className="flex border-b border-[#E8E8E4] pb-px gap-2.5 overflow-x-auto">
             <button
               type="button"
@@ -956,21 +972,44 @@ INSTRUKSI PENTING:
               <UserCheck className={`w-4 h-4 transition-transform duration-300 group-hover:scale-110 ${mode === "alumni" ? "text-[#A15C00] animate-icon-pop" : "text-[#8A8A84]"}`} />
               <span className="transition-colors">Checking Alumni</span>
             </button>
+            <button
+              type="button"
+              onClick={() => handleModeChange("comparison")}
+              className={`group flex items-center gap-2 px-4 py-2.5 text-xs sm:text-sm font-bold rounded-t-xl transition-all duration-200 border-b-2 cursor-pointer shrink-0 active:scale-95 select-none ${mode === "comparison"
+                ? "bg-[#FFF6D1] text-[#141412] border-[#FFD84D] shadow-[0_2px_8px_rgba(255,216,77,0.35)] animate-tab-active"
+                : "text-[#8A8A84] hover:text-[#141412] hover:bg-[#F5F5F2] hover:scale-[1.02] border-transparent"
+                }`}
+            >
+              <Scale className={`w-4 h-4 transition-transform duration-300 group-hover:scale-110 ${mode === "comparison" ? "text-[#A15C00] animate-icon-pop" : "text-[#8A8A84]"}`} />
+              <span className="transition-colors">Comparison Table</span>
+            </button>
           </div>
 
-          {/* Describe Your Situation Section */}
-          <div>
-            <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 mb-2">
-              <label
-                htmlFor="situation-input"
-                className="font-bold text-[14.5px] text-[#141412] block"
-              >
-                {mode === "pitch" ? "Describe your situation" : "Cari data alumni / latar belakang leads"}
-              </label>
+          {/* Dedicated Comparison Table Explorer (Battlecards, General Table, Bootcamp Table) */}
+          {mode === "comparison" && (
+            <div className="pt-1">
+              <ComparisonView />
+            </div>
+          )}
 
-              {/* Model Selector Pill */}
-              <div className="inline-flex items-center gap-1.5 bg-[#F5F5F2] px-2.5 py-1 rounded-full border border-[#E8E8E4] self-start sm:self-auto">
-                <Cpu className="w-3.5 h-3.5 text-[#8A8A84]" />
+          {/* Form and AI Copilot - only rendered for Pitch and Alumni */}
+          {mode !== "comparison" && (
+            <>
+              {/* Describe Your Situation Section */}
+              <div>
+                <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 mb-2">
+                  <label
+                    htmlFor="situation-input"
+                    className="font-bold text-[14.5px] text-[#141412] block"
+                  >
+                    {mode === "pitch"
+                      ? "Describe your situation"
+                      : "Cari data alumni / latar belakang leads"}
+                  </label>
+
+                  {/* Model Selector Pill */}
+                  <div className="inline-flex items-center gap-1.5 bg-[#F5F5F2] px-2.5 py-1 rounded-full border border-[#E8E8E4] self-start sm:self-auto">
+                    <Cpu className="w-3.5 h-3.5 text-[#8A8A84]" />
                 <select
                   value={selectedModel}
                   onChange={(e) => setSelectedModel(e.target.value)}
@@ -1013,7 +1052,7 @@ INSTRUKSI PENTING:
               />
               {inputText.length > 0 && (
                 <span className="absolute bottom-2.5 right-3 font-mono text-[11px] text-[#8A8A84] bg-white/90 px-1.5 py-0.5 rounded">
-                  {inputText.length} kata · ⌘+Enter
+                  {inputText.trim() ? inputText.trim().split(/\s+/).length : 0} kata · ⌘+Enter
                 </span>
               )}
             </div>
@@ -1101,17 +1140,15 @@ INSTRUKSI PENTING:
                   <button
                     type="button"
                     onClick={toggleCurrentSessionFavorite}
-                    className={`font-sans text-xs font-semibold px-3 py-1.5 rounded-lg border transition-all cursor-pointer flex items-center gap-1.5 select-none active:scale-95 ${
-                      isCurrentFavorite
+                    className={`font-sans text-xs font-semibold px-3 py-1.5 rounded-lg border transition-all cursor-pointer flex items-center gap-1.5 select-none active:scale-95 ${isCurrentFavorite
                         ? "bg-[#FFF6D1] text-[#A15C00] border-[#FFD84D] shadow-2xs font-bold"
                         : "bg-white text-[#141412] border-[#D9D9D4] hover:bg-[#F5F5F2]"
-                    }`}
+                      }`}
                     title={isCurrentFavorite ? "Hapus dari Favorit" : "Simpan draf ini ke koleksi Favorit"}
                   >
                     <Star
-                      className={`w-3.5 h-3.5 transition-colors ${
-                        isCurrentFavorite ? "fill-[#FFCC1A] text-[#A15C00]" : "text-[#8A8A84]"
-                      }`}
+                      className={`w-3.5 h-3.5 transition-colors ${isCurrentFavorite ? "fill-[#FFCC1A] text-[#A15C00]" : "text-[#8A8A84]"
+                        }`}
                     />
                     <span>{isCurrentFavorite ? "Tersimpan di Favorit" : "Simpan ke Favorit"}</span>
                   </button>
@@ -1261,7 +1298,7 @@ INSTRUKSI PENTING:
                 )}
               </div>
 
-              {/* 3. SUGGESTED RESPONSE (TAB UI SYSTEM — HANYA UNTUK MENU PITCH) */}
+              {/* 3. SUGGESTED RESPONSE (TAB UI SYSTEM — UNTUK MENU PITCH) */}
               {mode === "pitch" && responseResult.scripts && responseResult.scripts.length > 0 && (
                 <div className="space-y-3 pt-2">
                   <div className="flex items-center justify-between gap-2">
@@ -1295,8 +1332,13 @@ INSTRUKSI PENTING:
                   {/* Active Script Blockquote Card */}
                   {responseResult.scripts[activeScriptTab] && (
                     <div className="relative rounded-[12px] bg-[#F5F5F2] border border-[#E8E8E4] p-4 sm:p-5 text-[15px] leading-relaxed">
-                      <div className="font-mono text-[11px] uppercase tracking-wider text-[#8A8A84] mb-2 font-semibold">
-                        {responseResult.scripts[activeScriptTab].badge}
+                      <div className="font-mono text-[11px] uppercase tracking-wider text-[#8A8A84] mb-2 font-semibold flex items-center justify-between">
+                        <span>{responseResult.scripts[activeScriptTab].badge}</span>
+                        {responseResult.scripts[activeScriptTab]?.text && (
+                          <span className="bg-white/80 px-2 py-0.5 rounded border border-[#E8E8E4] text-[#4B4B46] font-medium">
+                            {responseResult.scripts[activeScriptTab].text.trim().split(/\s+/).length} kata
+                          </span>
+                        )}
                       </div>
 
                       <blockquote className="whitespace-pre-line text-[#141412] font-normal leading-relaxed pb-8">
@@ -1679,7 +1721,7 @@ INSTRUKSI PENTING:
                             </div>
                           )}
 
-                          {/* Revised Script Variations (ONLY for pitch mode) */}
+                          {/* Revised Script Variations (for pitch mode) */}
                           {mode === "pitch" && scripts.length > 0 && (
                             <div className="space-y-2.5 pt-1">
                               <div className="flex items-center justify-between gap-2">
@@ -1718,8 +1760,13 @@ INSTRUKSI PENTING:
                               {/* Active Script Content */}
                               {scripts[currentTab] && (
                                 <div className="relative rounded-[12px] bg-[#F5F5F2] border border-[#E8E8E4] p-4 text-[14.5px] leading-relaxed">
-                                  <div className="font-mono text-[11px] uppercase tracking-wider text-[#8A8A84] mb-2 font-semibold">
-                                    {scripts[currentTab].badge}
+                                  <div className="font-mono text-[11px] uppercase tracking-wider text-[#8A8A84] mb-2 font-semibold flex items-center justify-between">
+                                    <span>{scripts[currentTab].badge}</span>
+                                    {scripts[currentTab]?.text && (
+                                      <span className="bg-white/80 px-2 py-0.5 rounded border border-[#E8E8E4] text-[#4B4B46] font-medium">
+                                        {scripts[currentTab].text.trim().split(/\s+/).length} kata
+                                      </span>
+                                    )}
                                   </div>
 
                                   <blockquote className="whitespace-pre-line text-[#141412] font-normal leading-relaxed pb-8">
@@ -1761,7 +1808,9 @@ INSTRUKSI PENTING:
               </div>
             </div>
           )}
-        </section>
+        </>
+      )}
+    </section>
 
         {/* ========================================================= */}
         {/* 3. FOOTER                                                 */}
@@ -1816,16 +1865,14 @@ INSTRUKSI PENTING:
                 <button
                   type="button"
                   onClick={() => setDrawerTab("favorites")}
-                  className={`flex items-center gap-2 px-3.5 py-2 text-xs sm:text-sm font-bold border-b-2 transition-all cursor-pointer select-none ${
-                    drawerTab === "favorites"
+                  className={`flex items-center gap-2 px-3.5 py-2 text-xs sm:text-sm font-bold border-b-2 transition-all cursor-pointer select-none ${drawerTab === "favorites"
                       ? "border-[#FFD84D] text-[#141412] bg-[#FFF6D1]/60 rounded-t-lg font-bold"
                       : "border-transparent text-[#8A8A84] hover:text-[#141412] hover:bg-[#F5F5F2] rounded-t-lg"
-                  }`}
+                    }`}
                 >
                   <Star
-                    className={`w-3.5 h-3.5 ${
-                      drawerTab === "favorites" ? "fill-[#FFCC1A] text-[#A15C00]" : "text-[#8A8A84]"
-                    }`}
+                    className={`w-3.5 h-3.5 ${drawerTab === "favorites" ? "fill-[#FFCC1A] text-[#A15C00]" : "text-[#8A8A84]"
+                      }`}
                   />
                   <span>Favorit</span>
                   <span className="px-1.5 py-0.2 rounded-full text-[10.5px] font-mono bg-[#E8E8E4] text-[#4B4B46]">
@@ -1836,11 +1883,10 @@ INSTRUKSI PENTING:
                 <button
                   type="button"
                   onClick={() => setDrawerTab("all")}
-                  className={`flex items-center gap-2 px-3.5 py-2 text-xs sm:text-sm font-bold border-b-2 transition-all cursor-pointer select-none ${
-                    drawerTab === "all"
+                  className={`flex items-center gap-2 px-3.5 py-2 text-xs sm:text-sm font-bold border-b-2 transition-all cursor-pointer select-none ${drawerTab === "all"
                       ? "border-[#FFD84D] text-[#141412] bg-[#FFF6D1]/60 rounded-t-lg font-bold"
                       : "border-transparent text-[#8A8A84] hover:text-[#141412] hover:bg-[#F5F5F2] rounded-t-lg"
-                  }`}
+                    }`}
                 >
                   <Clock className="w-3.5 h-3.5 text-[#8A8A84]" />
                   <span>Semua Riwayat</span>
@@ -1905,11 +1951,10 @@ INSTRUKSI PENTING:
                     return (
                       <div
                         key={item.id}
-                        className={`p-3.5 sm:p-4 rounded-xl border transition-all space-y-2.5 bg-white hover:border-[#D9D9D4] hover:shadow-2xs ${
-                          isSelectedCurrent
+                        className={`p-3.5 sm:p-4 rounded-xl border transition-all space-y-2.5 bg-white hover:border-[#D9D9D4] hover:shadow-2xs ${isSelectedCurrent
                             ? "border-[#FFD84D] bg-[#FFF6D1]/20 ring-1 ring-[#FFD84D]"
                             : "border-[#E8E8E4]"
-                        }`}
+                          }`}
                       >
                         {/* Item Top: Mode Badge, Date, Star & Trash */}
                         <div className="flex items-start justify-between gap-2">
@@ -1918,10 +1963,12 @@ INSTRUKSI PENTING:
                               className={`font-mono text-[10.5px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-full ${
                                 item.mode === "pitch"
                                   ? "bg-[#FFF6D1] text-[#A15C00] border border-[#FFD84D]/60"
-                                  : "bg-[#EBF7EE] text-[#1F7A4D] border border-[#D4EDDA]"
+                                  : item.mode === "alumni"
+                                  ? "bg-[#EBF7EE] text-[#1F7A4D] border border-[#D4EDDA]"
+                                  : "bg-[#EDF5FF] text-[#0E62FE] border border-[#B3D4FF]"
                               }`}
                             >
-                              {item.mode === "pitch" ? "Pitch" : "Alumni"}
+                              {item.mode === "pitch" ? "Pitch" : item.mode === "alumni" ? "Alumni" : "Comparison"}
                             </span>
                             <span className="text-[11px] font-mono text-[#8A8A84]">
                               {item.dateFormatted}
@@ -1937,17 +1984,15 @@ INSTRUKSI PENTING:
                             <button
                               type="button"
                               onClick={(e) => toggleFavorite(item.id, e)}
-                              className={`w-7 h-7 rounded-lg flex items-center justify-center transition-all cursor-pointer ${
-                                item.isFavorite
+                              className={`w-7 h-7 rounded-lg flex items-center justify-center transition-all cursor-pointer ${item.isFavorite
                                   ? "text-[#A15C00] hover:bg-[#FFF6D1]"
                                   : "text-[#8A8A84] hover:text-[#141412] hover:bg-[#F5F5F2]"
-                              }`}
+                                }`}
                               title={item.isFavorite ? "Hapus dari Favorit" : "Tandai sebagai Favorit"}
                             >
                               <Star
-                                className={`w-4 h-4 ${
-                                  item.isFavorite ? "fill-[#FFCC1A] text-[#A15C00]" : ""
-                                }`}
+                                className={`w-4 h-4 ${item.isFavorite ? "fill-[#FFCC1A] text-[#A15C00]" : ""
+                                  }`}
                               />
                             </button>
                             <button
@@ -1987,6 +2032,14 @@ INSTRUKSI PENTING:
                               </span>
                             </div>
                           )}
+                          {item.mode === "comparison" && item.responseResult?.competitor_analysis?.competitor_name && (
+                            <div className="line-clamp-1">
+                              <span className="text-[#8A8A84] font-medium">Kompetitor: </span>
+                              <span className="font-semibold text-[#0E62FE]">
+                                {item.responseResult.competitor_analysis.competitor_name}
+                              </span>
+                            </div>
+                          )}
                           <div className="text-[11px] text-[#8A8A84] font-mono flex items-center gap-2">
                             {scriptCount > 0 && <span>{scriptCount} variasi script</span>}
                             {alumniMatchesCount > 0 && (
@@ -2002,11 +2055,10 @@ INSTRUKSI PENTING:
                           <button
                             type="button"
                             onClick={() => handleLoadSession(item)}
-                            className={`flex-1 text-xs font-bold py-2 px-3 rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer select-none ${
-                              isSelectedCurrent
+                            className={`flex-1 text-xs font-bold py-2 px-3 rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer select-none ${isSelectedCurrent
                                 ? "bg-[#141412] text-white"
                                 : "bg-[#FFD84D] hover:bg-[#FFCC1A] text-[#141412] active:scale-97 shadow-2xs"
-                            }`}
+                              }`}
                           >
                             <RotateCcw className="w-3.5 h-3.5" />
                             <span>{isSelectedCurrent ? "Sedang Dibuka" : "Muat Sesi Ini"}</span>
@@ -2128,8 +2180,8 @@ INSTRUKSI PENTING:
                       {apiPoolStatus.quotaHealth === "optimal"
                         ? "🟢 Optimal"
                         : apiPoolStatus.quotaHealth === "partial_warning"
-                        ? "🟡 Sebagian Cooldown"
-                        : "🔴 Habis"}
+                          ? "🟡 Sebagian Cooldown"
+                          : "🔴 Habis"}
                     </p>
                   </div>
                 </div>
@@ -2156,11 +2208,10 @@ INSTRUKSI PENTING:
                   return (
                     <div
                       key={idx}
-                      className={`border rounded-xl p-3 sm:p-3.5 transition-all ${
-                        isCurrentActive
+                      className={`border rounded-xl p-3 sm:p-3.5 transition-all ${isCurrentActive
                           ? "border-[#FFD84D] bg-[#FFF6D1]/20 shadow-2xs"
                           : "border-[#E8E8E4] bg-[#FAFAF8]"
-                      }`}
+                        }`}
                     >
                       <div className="flex items-center justify-between gap-2 mb-1.5">
                         <div className="flex items-center gap-2">
@@ -2231,8 +2282,8 @@ INSTRUKSI PENTING:
                             hasCustom
                               ? "••••••••••••••••••••••••••••••••••••"
                               : poolRec?.isConfigured
-                              ? "Terkonfigurasi di server (Ketik untuk mengganti)"
-                              : `Masukkan API ${keyNumber}...`
+                                ? "Terkonfigurasi di server (Ketik untuk mengganti)"
+                                : `Masukkan API ${keyNumber}...`
                           }
                           className="w-full text-xs font-mono px-3 py-2 pr-16 bg-white border border-[#D9D9D4] rounded-lg text-[#141412] focus:outline-none focus:border-[#0E62FE] focus:ring-1 focus:ring-[#0E62FE] placeholder:text-[#A8A8A2]"
                         />

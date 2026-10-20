@@ -30,12 +30,18 @@ function loadKnowledgeBase(tab = "pitch") {
           continue;
         }
 
-        // 2. Menu 'alumni': Focus on alumni stories + program overviews; skip heavy syllabus & sales scripts
+        // 2. Menu 'alumni': Focus on alumni stories + program overviews; skip heavy syllabus, sales scripts & competitor comparison
         if (tab === "alumni" && (
           file.includes("sales_script_benchmarks") ||
           file.includes("syllabus_binus") ||
-          file.includes("syllabus_itb")
+          file.includes("syllabus_itb") ||
+          file.includes("competitor_comparison")
         )) {
+          continue;
+        }
+
+        // 3. Menu 'comparison': Include competitor comparison KB, exclude heavy alumni stories
+        if (tab === "comparison" && file.includes("alumni_success_stories")) {
           continue;
         }
 
@@ -184,11 +190,33 @@ Ketika user/sales mencari alumni di INDUSTRI ATAU BIDANG TERTENTU (seperti: "Man
 ## ATURAN MODE & FORMAT OUTPUT KHUSUS BERDASARKAN MENU:
 Menu aktif saat ini: **${tab}**
 
-### 1. JIKA MENU: "pitch" (Create a Pitch):
-- AI menghasilkan **3 variasi draf pesan WhatsApp persuasif** (ringkas 4–5 kalimat per variasi):
-  - **Variasi 1 — [Angle Solutif & Relevansi]:** Fokus pada empati, relevansi skill AI dengan role prospect, dan gambaran tujuan program.
-  - **Variasi 2 — [Angle Value & Dampak Karir/Kerja]:** Fokus pada manfaat langsung, efisiensi kerja, dan percepatan kompetensi.
-  - **Variasi 3 — [Angle Praktikal & Portofolio]:** Fokus pada metode belajar hands-on, studi kasus nyata, dan capstone project.
+### 1. JIKA MENU: "pitch" (Create a Pitch) — ATURAN MUTLAK GENERATE PITCH:
+- AI menghasilkan **3 variasi draf pesan WhatsApp persuasif** (tiap variasi wajib memakai sudut penyambungan berbeda, misal satu lewat hambatan waktu/fleksibilitas, satu lewat tujuan karier/leveling, satu lewat kasus nyata di pekerjaan/capstone).
+- **ATURAN PANJANG KATA (WAJIB MINIMAL 120 KATA, RENTANG 120–300 KATA):**
+  * Setiap variasi draf pesan WhatsApp **WAJIB MEMILIKI PANJANG MINIMAL 120 KATA** dengan rentang **120 sampai 300 kata**.
+  * **DILARANG KERAS menghasilkan pesan yang terlalu pendek atau di bawah 120 kata!** Pastikan penjelasan empati, kurikulum/USP, dan studi kasus dielaborasi secara kaya, mendalam, dan relevan agar memenuhi standar minimal 120 kata.
+- **STRUKTUR PESAN TIAP VARIASI (2 sampai 3 paragraf, mengalir alami & mendalam):**
+  * **Paragraf 1 — Empati Spesifik & Validasi Profil (~35–70 kata):**
+    - Buka dengan sapaan ramah: "Halo kak 😊", "Kak,", "Halo kak!", "Hai kak [Nama],", atau "Halo kak [Nama], salam kenal 😊 Aku [Nama AC] dari RevoU." (Gunakan nama hanya jika ada di data leads; jika tidak ada, sapa "Halo kak").
+    - Sebut fakta nyata dari profil lead (durasi pengalaman, peran saat ini, latar belakang pendidikan, atau kondisi transisi).
+    - Validasi beban, kompleksitas, atau tanggung jawabnya secara mendalam dengan kalimat apresiatif yang tulus dan hanya cocok untuk profil itu (hindari pujian klise generik).
+    - Jika profil menyiratkan hal sensitif (jeda karier / career break, mengurus rumah tangga di luar negeri, banting setir, tekanan kerja berat), validasi dengan penuh hormat dan tunjukkan sisi tersebut sebagai modal/aset besar yang bernilai.
+  * **Paragraf 2 — Penyambungan Profil ke USP Program, Kurikulum Konkret & Framing AI (~70–180 kata):**
+    - Hubungkan eksplisit hambatan & tujuan lead ke USP program di knowledge base memakai kalimat seperti "karena kakak..." atau "jadi kakak bisa...".
+    - Paparkan detail konkret dari knowledge base: nama program, minggu materi (misal W1-2), modul spesifik (misal Compensation & Benefits, regression/classification/forecasting/clustering), tools/stack industri (HTML/CSS/JS, TypeScript, Tailwind, React/Next.js, AWS), alur belajar praktikal, dan bentuk capstone project nyata berbasis real case lead.
+    - **WAJIB FRAMING AI SEBAGAI FORCE MULTIPLIER:** Posisikan AI secara jelas sebagai penguat keahlian, bukan pengganti manusia: "Nah, AI itu bukan pengganti, tapi 'force multiplier' buat keahlian kakak 🚀" atau "Di era sekarang AI itu 'force multiplier', bukan pengganti: kerjaan repetitif dibantu AI, kakak fokus ke [strategi / problem solving / analisis]."
+  * **Paragraf 3 — Ajakan Penutup / CTA (~15–50 kata, PILIH SATU OPSI CTA):**
+    - Opsi Konsultasi Gratis / Real Case: "Tujuannya jadi profesional 'Top 1%' di bidang HR 💪 Boleh kita ngobrol singkat via konsultasi gratis, kak? Biar kita bisa bedah bareng real case kakak utk capstone nanti."
+    - Opsi Bertahap: "Mau aku bantu jelasin gambaran kurikulum materinya dulu, atau langsung atur sesi konsultasi gratis kak? Siapa tau kakak bisa jadi profesional Top 1% di bidangnya ✨"
+    - Opsi Tanya Menjelaskan Lebih Lanjut: "Boleh aku bantu jelaskan lebih lanjut kak tentang kurikulum dan jadwal belajarnya?"
+    - Opsi Ngobrol 1:1: "Mau ngobrol santai 1:1 sama program advisor kami minggu ini? 😊"
+    (Frasa aspirasional seperti "profesional Top 1% di bidangnya" boleh dipakai di 1-2 variasi saja, jangan di semua pesan).
+- **GAYA BAHASA & FORMAT:**
+  * Santai seperti chat WhatsApp sesama profesional, sapaan konsisten "kak".
+  * Gunakan singkatan chat lazim WhatsApp: utk, yg, sdh, bgt, krn, dgn, jd, spt, lho.
+  * Tepat 1 emoji per paragraf (maksimal 3 per pesan): 😊, 🚀, 💪, 🙏, ✨, 🙌.
+  * JANGAN gunakan tanda pisah panjang (em dash —) dan titik koma (;).
+  * Output HANYA teks isi pesan WhatsApp siap kirim, tanpa penjelasan meta tambahan.
 
 ### 2. JIKA MENU: "alumni" (Checking Alumni) — ATURAN MUTLAK (DILARANG MEMBUAT PITCH & HAPUS VARIASI):
 - **Tujuan Murni Informational Lookup (DILARANG MEMBUAT PITCH / CHAT SALES "Halo kaak..."):** Menu ini murni untuk mencari informasi data alumni, memverifikasi latar belakang, dan menyajikan bukti perjalanan karir nyata mereka. Jangan membuat pesan sapaan sales pitch atau CTA jualan.
@@ -215,7 +243,26 @@ Menu aktif saat ini: **${tab}**
 - **Wajib Sertakan Hyperlink Perjalanan Karir Selengkapnya:**
   Setiap alumni story WAJIB menyertakan hyperlink aktif ke cerita lengkap mereka (Markdown format: [Baca Kisah Lengkap](https://www.revou.co/alumni-stories/<slug>) atau link direktori resmi [Direktori Alumni RevoU](https://www.revou.co/alumni)) agar para tim admission dapat memvalidasi dan memastikannya. DILARANG menyertakan link LinkedIn.
 
+### 3. JIKA MENU: "comparison" (Comparison Table & Competitor Battlecards) — ATURAN MUTLAK (NOTES FOR PITA):
+- **Tujuan:** Membantu tim Admission Counselor (AC) menjawab perbandingan program dan keberatan (*objections*) terkait kompetitor (Hacktiv8, Purwadhika, Dibimbing, IT Lab, dll) secara profesional, elegan, dan berbasis data verified.
+- **SHARED ANSWER PATTERN UNTUK AC (NOTES FOR PITA) — WAJIB DIIKUTI:**
+  1. **Tanya Apa yang Menarik (Discovery & Validation):** Mulai pesan dengan menanyakan apa hal spesifik yang membuat lead tertarik dengan kompetitor tersebut (*"Apa yang bikin tertarik sama [X]?"*).
+  2. **Bandingkan HANYA pada Poin Tersebut:** Jangan membombardir dengan seluruh isi brosur. Fokuskan perbandingan secara objektif pada hal yang dipertimbangkan lead (misal: harga/cicilan, jadwal kelas malam, portofolio nyata, atau jaminan kerja).
+  3. **Dukung dengan 1 Bukti Nyata (One Concrete Proof Point):** Sertakan minimal 1 bukti terverifikasi (Kredensial resmi ITB/BINUS/UI, tingkat penyerapan kerja 93%, rentang kenaikan gaji alumni up to 120%, atau portofolio riil 3 bulan RevoU Labs).
+  4. **Dua Pantangan Mutlak:**
+     - ❌ **DILARANG KERAS MENJELEKKAN ATAU MENGKRITISI KOMPETITOR (Never criticise the competitor).** Akui kelebihan mereka secara jujur. Sikap elegan dan profesional meningkatkan respek leads kepada RevoU.
+     - ❌ **DILARANG KERAS MENJAWAB "I need to check" / "Saya cek dulu".** Seluruh data perbandingan sudah disiapkan di battlecards.
+- **Variasi Pesan WhatsApp (scripts):**
+  Buat 3 variasi pesan WhatsApp siap kirim (120–250 kata per variasi):
+  - Variasi 1 — Nada Santai & Empatik (Casual WhatsApp)
+  - Variasi 2 — Nada Konsultatif Profesional (Professional Consultative)
+  - Variasi 3 — Perbandingan Nilai Langsung & Bukti (Direct Value & Proof Point)
+  Semua variasi WAJIB mengikuti 4 shared answer pattern di atas dan diakhiri pertanyaan santai (low-pressure question).
+- **Competitor Analysis Object ("competitor_analysis"):**
+  Wajib mengisi objek "competitor_analysis" secara terstruktur sesuai data knowledge base.
+
 ## ATURAN PANJANG RESPONS (WAJIB DIIKUTI)
+- Pada menu "pitch" & "comparison": Tiap draf variasi pesan WhatsApp di "scripts" WAJIB MINIMAL 120 KATA (rentang 120–300 KATA). DILARANG KERAS di bawah 120 kata.
 - Pada menu "alumni": "career_journey_summary" dibuat padat MAKSIMAL 200–250 KATA per alumni di "alumni_matches" dengan menyertakan hyperlink lengkap.
 - Pada menu "alumni": "scripts" WAJIB KOSONG ([]).
 - Penjelasan Program (program_overview_short) & Ringkasan Knowledge: WAJIB KOMPREHENSIF, LENGKAP, dan DETAIL.
@@ -242,6 +289,13 @@ ${knowledgeBase}
   "whats_happening": "Interpretasi underlying concern atau kebutuhan social proof (max 2 kalimat)",
   "recommended_approach": "Saran pendekatan tim sales dalam menyampaikan informasi alumni atau pitch (max 2-3 kalimat)",
   "revision_summary": "Jika ada instruksi revisi/klarifikasi dari Sales, jelaskan secara cerdas & natural dalam 2-3 kalimat bagaimana draf disesuaikan.",
+  "competitor_analysis": {
+    "competitor_name": "Hacktiv8 | Purwadhika | Dibimbing | IT Lab | Umum",
+    "attraction_point": "Poin spesifik yang menarik perhatian lead",
+    "honest_competitor_strength": "1 kalimat jujur & objektif mengenai apa yang kompetitor lakukan lebih baik",
+    "where_revou_wins": "Di mana keunggulan mutlak RevoU pada konteks tersebut",
+    "one_proof_point": "1 bukti konkret (kredensial ITB/BINUS, 93% placement rate, atau RevoU Labs)"
+  },
   "featured_alumni_summary": {
     "name": "Nama salah satu alumni yang paling relevan (PERHATIAN: Untuk program Applied AI & Data-Driven Decision Making, TIDAK ADA nama orang di data, isi format '[Job Title] — [Perusahaan]', DILARANG mengarang nama orang!)",
     "summary": "Ringkasan singkat (3-5 kalimat) tentang peran dan relevansi program bagi posisi dan industri tersebut (WAJIB 100% SESUAI DENGAN INDUSTRI YANG DICARI USER; jika user minta Manufaktur, WAJIB profil Manufaktur seperti Komatsu / Karcher / Trias Sentosa / Gatra Mapan, DILARANG menampilkan Oil & Gas / Pertamina!)",
@@ -262,9 +316,9 @@ ${knowledgeBase}
     }
   ],
   "scripts": [
-    { "badge": "Variasi 1 — [Nama angle]", "text": "Pesan WA siap kirim (HANYA untuk menu pitch, KOSONGKAN [] jika menu alumni)" },
-    { "badge": "Variasi 2 — [Nama angle]", "text": "Pesan WA siap kirim (HANYA untuk menu pitch, KOSONGKAN [] jika menu alumni)" },
-    { "badge": "Variasi 3 — [Nama angle]", "text": "Pesan WA siap kirim (HANYA untuk menu pitch, KOSONGKAN [] jika menu alumni)" }
+    { "badge": "Variasi 1 — [Nama angle]", "text": "Pesan WA siap kirim (WAJIB MINIMAL 120 KATA, rentang 120-300 kata, HANYA untuk menu pitch & comparison, KOSONGKAN [] jika menu alumni)" },
+    { "badge": "Variasi 2 — [Nama angle]", "text": "Pesan WA siap kirim (WAJIB MINIMAL 120 KATA, rentang 120-300 kata, HANYA untuk menu pitch & comparison, KOSONGKAN [] jika menu alumni)" },
+    { "badge": "Variasi 3 — [Nama angle]", "text": "Pesan WA siap kirim (WAJIB MINIMAL 120 KATA, rentang 120-300 kata, HANYA untuk menu pitch & comparison, KOSONGKAN [] jika menu alumni)" }
   ],
   "knowledge_details": {
     "summary": "Penjelasan komprehensif dan detail dari fakta relevan di knowledge base mengenai topik/program/alumni yang ditanyakan",
@@ -592,7 +646,8 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
 
         // Prioritize fast and resilient models
         const candidateModels = [
-          model || "gemini-3.5-flash-lite",
+          model || "gemini-3.8-flash",
+          "gemini-3.8-flash",
           "gemini-3.5-flash-lite",
           "gemini-3.5-flash",
         ].filter((m, idx, arr) => m && arr.indexOf(m) === idx);
@@ -609,7 +664,7 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
             const response = await fetch(url, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              signal: AbortSignal.timeout(8500), // 8.5s timeout prevents hitting Vercel's 10s Serverless hard limit
+              signal: AbortSignal.timeout(45000), // 45s timeout ensures complete response without premature abort
               body: JSON.stringify({
                 contents: [
                   {
@@ -625,90 +680,91 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
               }),
             });
 
-              if (response.ok) {
-                const data = await response.json();
-                const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+            if (response.ok) {
+              const data = await response.json();
+              const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
 
-                if (rawText) {
-                  try {
-                    const cleanedText = rawText
-                      .replace(/^```json\s*/i, "")
-                      .replace(/^```\s*/i, "")
-                      .replace(/\s*```$/i, "")
-                      .trim();
-                    const parsed = JSON.parse(cleanedText);
+              if (rawText) {
+                try {
+                  const cleanedText = rawText
+                    .replace(/^```json\s*/i, "")
+                    .replace(/^```\s*/i, "")
+                    .replace(/\s*```$/i, "")
+                    .trim();
+                  const parsed = JSON.parse(cleanedText);
 
-                    // Catat keberhasilan penggunaan key ini
-                    recordKeyExecution(currentCandidate.key, currentCandidate.keyIndex, "success", 200);
+                  // Catat keberhasilan penggunaan key ini
+                  recordKeyExecution(currentCandidate.key, currentCandidate.keyIndex, "success", 200);
 
-                    return NextResponse.json({
-                      success: true,
-                      modelUsed: modelId,
-                      apiKeyInfo: {
-                        activeKeyIndex: currentCandidate.keyIndex,
-                        totalKeys: availableKeys.length,
-                        wasRotatedDueToQuota: !currentCandidate.isInitialTurn,
-                        quotaNotifications: quotaNotifications,
-                        poolStatus: getApiKeysStatus(customKeys),
-                      },
-                      menu: parsed.menu || tab,
-                      persona: parsed.persona || "Prospective Student",
-                      whats_happening: parsed.whats_happening || "",
-                      recommended_approach: parsed.recommended_approach || "",
-                      program_match: parsed.program_match || "",
-                      ai_relevancy_statement: parsed.ai_relevancy_statement || "",
-                      program_overview_short: parsed.program_overview_short || "",
-                      target_audience: parsed.target_audience || "",
-                      prerequisites: parsed.prerequisites || "",
-                      eligibility_check: parsed.eligibility_check || "",
-                      revision_summary: parsed.revision_summary || "",
-                      featured_alumni_summary: sanitizeFeaturedAlumni(parsed.featured_alumni_summary),
-                      alumni_matches: sanitizeAlumniMatches(parsed.alumni_matches),
-                      scripts: tab === "alumni" ? [] : (Array.isArray(parsed.scripts) ? parsed.scripts : []),
-                      knowledge_details: parsed.knowledge_details || null,
-                    });
-                  } catch (parseErr) {
-                    console.error("JSON parse error for model", modelId, parseErr.message, rawText?.slice(0, 300));
-                  }
+                  return NextResponse.json({
+                    success: true,
+                    modelUsed: modelId,
+                    apiKeyInfo: {
+                      activeKeyIndex: currentCandidate.keyIndex,
+                      totalKeys: availableKeys.length,
+                      wasRotatedDueToQuota: !currentCandidate.isInitialTurn,
+                      quotaNotifications: quotaNotifications,
+                      poolStatus: getApiKeysStatus(customKeys),
+                    },
+                    menu: parsed.menu || tab,
+                    persona: parsed.persona || "Prospective Student",
+                    whats_happening: parsed.whats_happening || "",
+                    recommended_approach: parsed.recommended_approach || "",
+                    program_match: parsed.program_match || "",
+                    ai_relevancy_statement: parsed.ai_relevancy_statement || "",
+                    program_overview_short: parsed.program_overview_short || "",
+                    target_audience: parsed.target_audience || "",
+                    prerequisites: parsed.prerequisites || "",
+                    eligibility_check: parsed.eligibility_check || "",
+                    revision_summary: parsed.revision_summary || "",
+                    competitor_analysis: parsed.competitor_analysis || null,
+                    featured_alumni_summary: sanitizeFeaturedAlumni(parsed.featured_alumni_summary),
+                    alumni_matches: sanitizeAlumniMatches(parsed.alumni_matches),
+                    scripts: tab === "alumni" ? [] : (Array.isArray(parsed.scripts) ? parsed.scripts : []),
+                    knowledge_details: parsed.knowledge_details || null,
+                  });
+                } catch (parseErr) {
+                  console.error("JSON parse error for model", modelId, parseErr.message, rawText?.slice(0, 300));
                 }
-              } else if (response.status === 429) {
-                // Rate limit / Quota exceeded terdeteksi pada key ini!
-                const errText = await response.text();
-                console.warn(`[RoundRobin] Key #${currentCandidate.keyIndex} hit 429 quota:`, errText.slice(0, 120));
-                
-                recordKeyExecution(currentCandidate.key, currentCandidate.keyIndex, "rate_limited", 429, "Rate limit terlampaui");
-                
-                const rotationMsg = nextCandidate
-                  ? `API ${currentCandidate.keyIndex} mencapai limit kuota (429 Rate Limit). Otomatis dialihkan ke API ${nextCandidate.keyIndex} via Round Robin.`
-                  : `API ${currentCandidate.keyIndex} mencapai limit kuota (429 Rate Limit).`;
-                quotaNotifications.push(rotationMsg);
-
-                keyEncounteredQuota = true;
-                break; // Segera keluar dari loop model untuk pindah ke key berikutnya!
-              } else if (response.status === 400 || response.status === 403) {
-                // Key tidak valid atau dinonaktifkan
-                const errText = await response.text();
-                console.warn(`[RoundRobin] Key #${currentCandidate.keyIndex} invalid (${response.status}):`, errText.slice(0, 120));
-                
-                recordKeyExecution(currentCandidate.key, currentCandidate.keyIndex, "invalid", response.status, "API tidak valid");
-                
-                const rotationMsg = nextCandidate
-                  ? `API ${currentCandidate.keyIndex} tidak valid (${response.status}). Otomatis dialihkan ke API ${nextCandidate.keyIndex} via Round Robin.`
-                  : `API ${currentCandidate.keyIndex} tidak valid (${response.status}).`;
-                quotaNotifications.push(rotationMsg);
-
-                keyEncounteredInvalid = true;
-                break; // Keluar untuk mencoba key berikutnya
-              } else {
-                const errText = await response.text();
-                console.warn(`Gemini API warning on ${modelId} (${response.status}):`, errText.slice(0, 150));
-                lastError = `Model ${modelId} (${response.status}): ${errText.slice(0, 100)}`;
               }
-            } catch (apiErr) {
-              console.warn(`Gemini API call exception for ${modelId}:`, apiErr.message);
-              lastError = apiErr.message;
+            } else if (response.status === 429) {
+              // Rate limit / Quota exceeded terdeteksi pada key ini!
+              const errText = await response.text();
+              console.warn(`[RoundRobin] Key #${currentCandidate.keyIndex} hit 429 quota:`, errText.slice(0, 120));
+
+              recordKeyExecution(currentCandidate.key, currentCandidate.keyIndex, "rate_limited", 429, "Rate limit terlampaui");
+
+              const rotationMsg = nextCandidate
+                ? `API ${currentCandidate.keyIndex} mencapai limit kuota (429 Rate Limit). Otomatis dialihkan ke API ${nextCandidate.keyIndex} via Round Robin.`
+                : `API ${currentCandidate.keyIndex} mencapai limit kuota (429 Rate Limit).`;
+              quotaNotifications.push(rotationMsg);
+
+              keyEncounteredQuota = true;
+              break; // Segera keluar dari loop model untuk pindah ke key berikutnya!
+            } else if (response.status === 400 || response.status === 403) {
+              // Key tidak valid atau dinonaktifkan
+              const errText = await response.text();
+              console.warn(`[RoundRobin] Key #${currentCandidate.keyIndex} invalid (${response.status}):`, errText.slice(0, 120));
+
+              recordKeyExecution(currentCandidate.key, currentCandidate.keyIndex, "invalid", response.status, "API tidak valid");
+
+              const rotationMsg = nextCandidate
+                ? `API ${currentCandidate.keyIndex} tidak valid (${response.status}). Otomatis dialihkan ke API ${nextCandidate.keyIndex} via Round Robin.`
+                : `API ${currentCandidate.keyIndex} tidak valid (${response.status}).`;
+              quotaNotifications.push(rotationMsg);
+
+              keyEncounteredInvalid = true;
+              break; // Keluar untuk mencoba key berikutnya
+            } else {
+              const errText = await response.text();
+              console.warn(`Gemini API warning on ${modelId} (${response.status}):`, errText.slice(0, 150));
+              lastError = `Model ${modelId} (${response.status}): ${errText.slice(0, 100)}`;
             }
+          } catch (apiErr) {
+            console.warn(`Gemini API call exception for ${modelId}:`, apiErr.message);
+            lastError = apiErr.message;
           }
+        }
       }
 
       // Jika semua key telah dicoba dan semuanya gagal (misal seluruh 5 key kuotanya habis)
