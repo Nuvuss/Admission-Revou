@@ -1048,6 +1048,50 @@ export default function ComparisonView() {
 
   const activeBattlecard = BATTLECARDS.find((b) => b.id === selectedCompetitorKey) || BATTLECARDS[0];
 
+  // Helper to dynamically integrate row data combining general benchmarks with activeProgramDetail specifics
+  const getIntegratedRowData = (row: GeneralComparisonRow) => {
+    if (!activeProgramDetail) {
+      return {
+        revouText: row.revou,
+        compText: row[selectedCompetitorKey] || row.general,
+        isSpecificMatch: false
+      };
+    }
+
+    const matchingDetailRow = activeProgramDetail.tableRows.find((detailRow) => {
+      const p1 = detailRow.parameter.toLowerCase();
+      const p2 = row.feature.toLowerCase();
+      return (
+        p1.includes(p2) ||
+        p2.includes(p1) ||
+        (p2.includes("biaya") && p1.includes("biaya")) ||
+        (p2.includes("jadwal") && p1.includes("jadwal")) ||
+        (p2.includes("durasi") && p1.includes("durasi")) ||
+        (p2.includes("proyek") && (p1.includes("portofolio") || p1.includes("proyek"))) ||
+        (p2.includes("portofolio") && (p1.includes("portofolio") || p1.includes("proyek"))) ||
+        (p2.includes("kurikulum") && p1.includes("kurikulum")) ||
+        (p2.includes("refund") && p1.includes("refund")) ||
+        (p2.includes("jaminan") && p1.includes("jaminan")) ||
+        (p2.includes("karir") && p1.includes("karir")) ||
+        (p2.includes("sertifikasi") && p1.includes("sertifikasi"))
+      );
+    });
+
+    if (matchingDetailRow) {
+      return {
+        revouText: matchingDetailRow.revouValue,
+        compText: matchingDetailRow.competitorValue,
+        isSpecificMatch: true
+      };
+    }
+
+    return {
+      revouText: row.revou,
+      compText: row[selectedCompetitorKey] || row.general,
+      isSpecificMatch: false
+    };
+  };
+
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
       {/* ───────────────────────────────────────────────────────────── */}
@@ -1408,23 +1452,30 @@ export default function ComparisonView() {
       )}
 
       {/* ───────────────────────────────────────────────────────────── */}
-      {/* 2. TAB: TABEL GENERAL REVOU                                   */}
+      {/* 2. TAB: TABEL GENERAL REVOU (TERINTEGRASI PROGRAM)            */}
       {/* ───────────────────────────────────────────────────────────── */}
-      {activeTab === "general" && (
+      {activeTab === "general" && activeProgramDetail && (
         <div className="space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-[#E8E8E4] shadow-2xs">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 sm:p-5 rounded-2xl border border-[#E8E8E4] shadow-2xs">
             <div>
-              <div className="flex items-center gap-2">
-                <h3 className="font-display font-bold text-base sm:text-lg text-[#141412]">
-                  Tabel Komparasi General: RevoU vs {competitorDisplayNames[selectedCompetitorKey]}
-                </h3>
-                <span className="font-mono text-[10.5px] bg-[#EBF7EE] text-[#1F7A4D] font-bold px-2 py-0.5 rounded-full border border-[#D4EDDA]">
-                  Verified Data 20 Okt 2026
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="font-mono text-xs font-bold px-2.5 py-0.5 rounded-full bg-[#141412] text-white">
+                  Tabel Komparasi Terintegrasi Program
+                </span>
+                <span className="font-mono text-xs bg-[#EBF7EE] text-[#1F7A4D] font-bold px-2.5 py-0.5 rounded-full border border-[#D4EDDA]">
+                  {activeProgramDetail.revouMatchBadge}
+                </span>
+                <span className="font-mono text-xs bg-[#FFF4E5] text-[#A15C00] font-bold px-2.5 py-0.5 rounded-full border border-[#FFE2B8]">
+                  {activeProgramDetail.badge}
                 </span>
               </div>
+              <h3 className="font-display font-bold text-base sm:text-lg text-[#141412] mt-1.5 flex flex-wrap items-center gap-2">
+                <span>RevoU {activeProgramDetail.revouMatchProgram}</span>
+                <span className="text-[#8A8A84] font-normal text-sm">vs</span>
+                <span>{activeProgramDetail.competitorName} – {activeProgramDetail.programTitle}</span>
+              </h3>
               <p className="text-xs text-[#8A8A84] mt-0.5">
-                Kolom komparasi di bawah otomatis disinkronkan dengan data resmi{" "}
-                <strong className="text-[#141412]">{competitorDisplayNames[selectedCompetitorKey]}</strong> dari dropdown di atas.
+                Data parameter kurikulum, biaya, durasi, dan portofolio disinkronkan langsung dengan program <strong className="text-[#141412]">{activeProgramDetail.programTitle}</strong> yang Anda pilih di atas.
               </p>
             </div>
 
@@ -1452,26 +1503,26 @@ export default function ComparisonView() {
               <thead>
                 <tr className="bg-[#141412] text-white font-display text-xs sm:text-sm">
                   <th className="p-3.5 sm:p-4 w-1/4 font-bold border-r border-white/10">Fitur & Parameter</th>
-                  <th className="p-3.5 sm:p-4 w-1/3 font-bold bg-[#1F7A4D] border-r border-white/10 text-white">
+                  <th className="p-3.5 sm:p-4 w-3/8 font-bold bg-[#1F7A4D] border-r border-white/10 text-white">
                     <div className="flex items-center gap-1.5">
                       <Sparkles className="w-3.5 h-3.5 text-[#FEF08A]" />
-                      <span>RevoU</span>
+                      <span>RevoU ({activeProgramDetail.revouMatchBadge})</span>
                     </div>
                   </th>
-                  <th className="p-3.5 sm:p-4 w-1/3 font-semibold text-white/95 border-r border-white/10 bg-[#2A2A26]">
+                  <th className="p-3.5 sm:p-4 w-3/8 font-semibold text-white/95 border-r border-white/10 bg-[#2A2A26]">
                     <div className="flex items-center gap-1.5">
                       <Building2 className="w-3.5 h-3.5 text-[#FFD84D]" />
-                      <span>{competitorDisplayNames[selectedCompetitorKey]} (Data Resmi 20 Okt 2026)</span>
+                      <span>{activeProgramDetail.competitorName} – {activeProgramDetail.programTitle}</span>
                     </div>
                   </th>
-                  <th className="p-3.5 sm:p-4 w-1/6 font-semibold text-white/70">
+                  <th className="p-3.5 sm:p-4 w-1/5 font-semibold text-white/70">
                     Program Mandiri / Luar
                   </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#E8E8E4]">
                 {filteredGeneralRows.map((row, idx) => {
-                  const compContent = row[selectedCompetitorKey] || row.general;
+                  const integrated = getIntegratedRowData(row);
                   return (
                     <tr
                       key={idx}
@@ -1480,7 +1531,14 @@ export default function ComparisonView() {
                     >
                       <td className="p-3 sm:p-3.5 font-semibold text-[#141412] border-r border-[#E8E8E4]/70 align-top">
                         <div>
-                          <span>{row.feature}</span>
+                          <div className="flex items-center gap-1.5">
+                            <span>{row.feature}</span>
+                            {integrated.isSpecificMatch && (
+                              <span className="font-mono text-[9px] bg-[#EBF7EE] text-[#1F7A4D] font-bold px-1.5 py-0.2 rounded border border-[#D4EDDA]">
+                                Sesuai Program
+                              </span>
+                            )}
+                          </div>
                           <span className="block font-mono text-[10px] text-[#8A8A84] font-normal uppercase mt-0.5">
                             {row.category}
                           </span>
@@ -1489,11 +1547,11 @@ export default function ComparisonView() {
                       <td className="p-3 sm:p-3.5 text-[#141412] font-medium border-r border-[#E8E8E4]/70 bg-[#EBF7EE]/40 align-top">
                         <div className="flex items-start gap-1.5">
                           <CheckCircle2 className="w-3.5 h-3.5 text-[#1F7A4D] shrink-0 mt-0.5" />
-                          <span className="leading-relaxed font-semibold text-[#1F7A4D]">{row.revou}</span>
+                          <span className="leading-relaxed font-semibold text-[#1F7A4D]">{integrated.revouText}</span>
                         </div>
                       </td>
                       <td className="p-3 sm:p-3.5 text-[#141412] border-r border-[#E8E8E4]/70 align-top leading-relaxed font-normal bg-[#FAFAF8]/60">
-                        {compContent}
+                        {integrated.compText}
                       </td>
                       <td className="p-3 sm:p-3.5 text-[#8A8A84] align-top leading-relaxed">
                         {row.selfPaced}
@@ -1505,21 +1563,17 @@ export default function ComparisonView() {
             </table>
           </div>
 
-          {/* ── ANALISIS KRITIS & JAWABAN AC UNTUK GENERAL TAB ── */}
+          {/* ── ANALISIS KRITIS & JAWABAN AC TERINTEGRASI SESUAI PROGRAM YANG DIPILIH ── */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Keunggulan Mutlak RevoU vs Kompetitor Ini */}
+            {/* Keunggulan Mutlak RevoU pada Program Ini */}
             <div className="p-4 sm:p-5 rounded-xl border border-[#D4EDDA] bg-[#EBF7EE]/60 space-y-2.5">
               <div className="flex items-center gap-2 font-display font-bold text-xs uppercase tracking-wider text-[#1F7A4D]">
                 <CheckCircle2 className="w-4 h-4 text-[#1F7A4D]" />
-                <span>Keunggulan Mutlak RevoU vs {activeBattlecard.name}</span>
+                <span>Keunggulan Mutlak RevoU ({activeProgramDetail.revouMatchProgram})</span>
               </div>
-              <ul className="text-xs sm:text-[13px] text-[#141412] font-medium space-y-1.5 list-disc pl-4 leading-relaxed">
-                {activeBattlecard.revouWins.map((win, idx) => (
-                  <li key={idx}>
-                    <span>{win}</span>
-                  </li>
-                ))}
-              </ul>
+              <p className="text-xs sm:text-[13px] text-[#141412] font-medium leading-relaxed">
+                {activeProgramDetail.revouEdge}
+              </p>
               <div className="text-[11.5px] text-[#1F7A4D] space-y-1 pt-2 border-t border-[#D4EDDA]/80">
                 <p>✓ 100% Live Instruction malam (19:00–21:00 WIB) — tidak perlu resign kerja</p>
                 <p>✓ 3 Bulan RevoU Labs mengerjakan real client & real budget (bukan simulasi dummy)</p>
@@ -1527,38 +1581,34 @@ export default function ComparisonView() {
               </div>
             </div>
 
-            {/* Keterbatasan Kompetitor yang Perlu Diketahui AC */}
+            {/* Keterbatasan Program Kompetitor yang Dipilih */}
             <div className="p-4 sm:p-5 rounded-xl border border-[#FFD84D]/80 bg-[#FFFDF0] space-y-2.5">
               <div className="flex items-center gap-2 font-display font-bold text-xs uppercase tracking-wider text-[#A15C00]">
                 <AlertTriangle className="w-4 h-4 text-[#A15C00]" />
-                <span>Karakteristik & Keterbatasan {activeBattlecard.name}</span>
+                <span>Keterbatasan {activeProgramDetail.competitorName} ({activeProgramDetail.programTitle})</span>
               </div>
               <p className="text-xs sm:text-[13px] text-[#141412] leading-relaxed">
-                {activeBattlecard.honestStrength}
+                {activeProgramDetail.competitorLimitation}
               </p>
-              <div className="p-2.5 rounded-lg bg-white/70 border border-[#FFD84D]/50 text-xs text-[#141412]">
-                <p className="font-bold text-[#A15C00] mb-0.5">Bukti Nyata (Proof Point):</p>
-                <p className="text-[#4B4B46]">{activeBattlecard.proofPoint}</p>
-              </div>
               <p className="text-[11px] text-[#8A8A84] italic pt-1 border-t border-[#FFD84D]/40">
-                💡 Tips AC: Gunakan poin di atas untuk memvalidasi minat siswa secara elegan tanpa menjatuhkan lembaga lain.
+                💡 Gunakan poin ini secara elegan saat calon siswa menanyakan perbandingan program ini.
               </p>
             </div>
           </div>
 
-          {/* Template Jawaban AC WhatsApp Siap Salin */}
+          {/* Template Jawaban AC WhatsApp Siap Salin untuk Program Ini */}
           <div className="p-4 sm:p-5 rounded-xl border border-[#0E62FE]/30 bg-[#EDF5FF] space-y-2.5">
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-center gap-1.5 font-display font-bold text-xs uppercase tracking-wider text-[#0E62FE]">
                 <Sparkles className="w-4 h-4 text-[#0E62FE]" />
-                <span>Template Jawaban AC Siap Salin: RevoU vs {activeBattlecard.name}</span>
+                <span>Template Jawaban AC Siap Salin ({activeProgramDetail.programTitle})</span>
               </div>
               <button
                 type="button"
-                onClick={() => handleCopyText(activeBattlecard.acScriptTemplate, `gen-${activeBattlecard.id}`)}
+                onClick={() => handleCopyText(activeProgramDetail.acTalkingPoint, `gen-prog-${activeProgramDetail.id}`)}
                 className="font-mono text-[11px] font-bold px-2.5 py-1 rounded-lg bg-[#0E62FE] text-white hover:bg-[#004ECC] transition-all cursor-pointer flex items-center gap-1 shadow-2xs"
               >
-                {copiedId === `gen-${activeBattlecard.id}` ? (
+                {copiedId === `gen-prog-${activeProgramDetail.id}` ? (
                   <>
                     <Check className="w-3 h-3 text-white" />
                     <span>Tersalin</span>
@@ -1572,7 +1622,7 @@ export default function ComparisonView() {
               </button>
             </div>
             <blockquote className="text-xs sm:text-[13px] text-[#141412] leading-relaxed bg-white/80 p-3.5 rounded-lg border border-[#0E62FE]/15 whitespace-pre-line font-normal">
-              {activeBattlecard.acScriptTemplate}
+              {activeProgramDetail.acTalkingPoint}
             </blockquote>
           </div>
         </div>
