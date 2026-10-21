@@ -996,6 +996,30 @@ export default function ComparisonView() {
     return availableProgramsForSelectedComp.find((p) => p.id === selectedProgramId) || availableProgramsForSelectedComp[0];
   }, [availableProgramsForSelectedComp, selectedProgramId]);
 
+  // Unique RevoU program badges for this competitor
+  const uniqueRevoUProgramsForComp = useMemo(() => {
+    const seen = new Set<string>();
+    const list: { badge: string; title: string; firstProgramId: string }[] = [];
+    for (const prog of availableProgramsForSelectedComp) {
+      if (!seen.has(prog.revouMatchBadge)) {
+        seen.add(prog.revouMatchBadge);
+        list.push({
+          badge: prog.revouMatchBadge,
+          title: `RevoU ${prog.revouMatchProgram}`,
+          firstProgramId: prog.id
+        });
+      }
+    }
+    return list;
+  }, [availableProgramsForSelectedComp]);
+
+  const handleRevoUMatchChange = (badge: string) => {
+    const found = uniqueRevoUProgramsForComp.find((item) => item.badge === badge);
+    if (found) {
+      setSelectedProgramId(found.firstProgramId);
+    }
+  };
+
   // Handle change of Dropdown 1 (Competitor)
   const handleCompetitorChange = (newComp: "hacktiv8" | "purwadhika" | "dibimbing" | "dqlab") => {
     setSelectedCompetitorKey(newComp);
@@ -1027,70 +1051,144 @@ export default function ComparisonView() {
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
       {/* ───────────────────────────────────────────────────────────── */}
-      {/* TOP BAR: DUAL DROPDOWN CONTROLS                               */}
-      {/* 1. Pilih Lawan: RevoU vs [Hacktiv8 / Purwadhika / dll]       */}
-      {/* 2. Pilih Program yang Ada di Kompetitor Tersebut              */}
+      {/* TOP CONTROL CONTAINER: DUA LEVEL DROPDOWN TERPISAH            */}
+      {/* LEVEL 1: HEAD-TO-HEAD LEMBAGA (DIPISAH: LEMBAGA 1 VS LEMBAGA 2) */}
+      {/* LEVEL 2: DROPDOWN PROGRAM-PROGRAM LEMBAGA (DI BAWAHNYA)       */}
       {/* ───────────────────────────────────────────────────────────── */}
-      <div className="bg-white border-2 border-[#141412] rounded-2xl p-4 sm:p-5 shadow-2xs space-y-3">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#E8E8E4] pb-3">
-          <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#1F7A4D] animate-pulse" />
-            <h3 className="font-display font-bold text-sm sm:text-base text-[#141412]">
-              Pilih Komparasi Kompetitor & Program
-            </h3>
-            <span className="font-mono text-[10.5px] bg-[#EBF7EE] text-[#1F7A4D] font-bold px-2 py-0.5 rounded-full border border-[#D4EDDA]">
-              Data Resmi 20 Okt 2026
+      {/* ───────────────────────────────────────────────────────────── */}
+      {/* KONTROL KOMPARASI PERSIS SESUAI SKETSA USER                   */}
+      {/* Baris 1: Lembaga kami [RevoU] vs Pilih Kompetitor [Lembaga lain]*/}
+      {/* Baris 2: Program kami [RevoU] vs Program kompetitor            */}
+      {/* ───────────────────────────────────────────────────────────── */}
+      <div className="bg-white border-2 border-[#141412] rounded-2xl p-5 sm:p-7 shadow-2xs space-y-6">
+        
+        {/* ── BARIS 1: LEMBAGA KAMI vs PILIH KOMPETITOR ── */}
+        <div className="grid grid-cols-1 md:grid-cols-[1fr,auto,1fr] gap-4 sm:gap-6 items-center">
+          {/* Sisi Kiri: Lembaga kami */}
+          <div>
+            <label className="block text-sm sm:text-base font-bold text-[#141412] mb-1.5">
+              Lembaga kami
+            </label>
+            <div className="relative">
+              <select
+                disabled
+                className="w-full appearance-none bg-[#E0E0E0] hover:bg-[#D6D6D6] text-[#141412] font-display font-extrabold text-base sm:text-lg rounded-2xl px-5 py-3.5 pr-12 cursor-pointer shadow-xs transition-all focus:outline-none"
+              >
+                <option value="revou">RevoU</option>
+              </select>
+              <ChevronDown className="w-6 h-6 text-white stroke-[3] absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none drop-shadow-xs" />
+            </div>
+          </div>
+
+          {/* Tengah: vs */}
+          <div className="flex items-center justify-center pt-1 md:pt-6">
+            <span className="font-display font-bold text-lg sm:text-xl text-[#141412] lowercase select-none">
+              vs
             </span>
           </div>
 
-          <span className="font-mono text-xs text-[#8A8A84]">
-            {availableProgramsForSelectedComp.length} Program Tersedia
-          </span>
-        </div>
-
-        {/* Dual Cascading Dropdowns */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
-          {/* DROPDOWN 1: RevoU vs [Kompetitor] */}
-          <div className="space-y-1.5">
-            <label className="font-mono text-xs font-bold text-[#8A8A84] uppercase flex items-center gap-1.5">
-              <Building2 className="w-3.5 h-3.5 text-[#A15C00]" />
-              <span>1. Pilih Komparasi Lembaga:</span>
+          {/* Sisi Kanan: Pilih Kompetitor */}
+          <div>
+            <label className="block text-sm sm:text-base font-bold text-[#141412] mb-1.5">
+              Pilih Kompetitor
             </label>
             <div className="relative">
               <select
                 value={selectedCompetitorKey}
                 onChange={(e) => handleCompetitorChange(e.target.value as any)}
-                className="w-full appearance-none bg-[#F5F5F2] hover:bg-[#EFEFEA] border-2 border-[#141412] rounded-xl px-4 py-2.5 pr-10 text-xs sm:text-sm font-bold text-[#141412] cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#FFD84D] transition-all shadow-2xs"
+                className="w-full appearance-none bg-[#E0E0E0] hover:bg-[#D6D6D6] text-[#141412] font-display font-extrabold text-base sm:text-lg rounded-2xl px-5 py-3.5 pr-12 cursor-pointer shadow-xs transition-all focus:outline-none"
               >
-                <option value="hacktiv8">RevoU vs Hacktiv8</option>
-                <option value="purwadhika">RevoU vs Purwadhika</option>
-                <option value="dibimbing">RevoU vs Dibimbing</option>
-                <option value="dqlab">RevoU vs DQLab</option>
+                <option value="hacktiv8">Hacktiv8</option>
+                <option value="purwadhika">Purwadhika</option>
+                <option value="dibimbing">Dibimbing</option>
+                <option value="dqlab">DQLab</option>
               </select>
-              <ChevronDown className="w-4 h-4 text-[#141412] absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <ChevronDown className="w-6 h-6 text-white stroke-[3] absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none drop-shadow-xs" />
+            </div>
+          </div>
+        </div>
+
+        {/* ── BARIS 2 (DI BAWAHNYA): PROGRAM KAMI vs PROGRAM KOMPETITOR ── */}
+        <div className="pt-4 border-t border-[#E8E8E4]">
+          <div className="grid grid-cols-1 md:grid-cols-[1fr,auto,1fr] gap-4 sm:gap-6 items-center">
+            {/* Sisi Kiri: Program kami */}
+            <div>
+              <label className="block text-sm sm:text-base font-bold text-[#141412] mb-1.5">
+                Program kami
+              </label>
+              <div className="relative">
+                <select
+                  value={activeProgramDetail.revouMatchBadge}
+                  onChange={(e) => handleRevoUMatchChange(e.target.value)}
+                  className="w-full appearance-none bg-[#E8E8E8] hover:bg-[#DFDFDF] text-[#141412] font-display font-bold text-sm sm:text-base rounded-2xl px-5 py-3.5 pr-12 cursor-pointer shadow-xs transition-all focus:outline-none truncate"
+                >
+                  {uniqueRevoUProgramsForComp.map((p) => (
+                    <option key={p.badge} value={p.badge}>
+                      {p.title}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown className="w-6 h-6 text-white stroke-[3] absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none drop-shadow-xs" />
+              </div>
+              <p className="text-xs text-[#60605B] mt-1.5 font-medium truncate">
+                {activeProgramDetail.revouMatchProgram}
+              </p>
+            </div>
+
+            {/* Tengah: vs */}
+            <div className="flex items-center justify-center pt-1 md:pt-6">
+              <span className="font-display font-bold text-lg sm:text-xl text-[#141412] lowercase select-none">
+                vs
+              </span>
+            </div>
+
+            {/* Sisi Kanan: Program kompetitor */}
+            <div>
+              <label className="block text-sm sm:text-base font-bold text-[#141412] mb-1.5">
+                Program {competitorDisplayNames[selectedCompetitorKey]}
+              </label>
+              <div className="relative">
+                <select
+                  value={selectedProgramId}
+                  onChange={(e) => setSelectedProgramId(e.target.value)}
+                  className="w-full appearance-none bg-[#E8E8E8] hover:bg-[#DFDFDF] text-[#141412] font-display font-bold text-sm sm:text-base rounded-2xl px-5 py-3.5 pr-12 cursor-pointer shadow-xs transition-all focus:outline-none truncate"
+                >
+                  {availableProgramsForSelectedComp.map((prog) => (
+                    <option key={prog.id} value={prog.id}>
+                      {prog.programTitle} — [{prog.badge}]
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown className="w-6 h-6 text-white stroke-[3] absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none drop-shadow-xs" />
+              </div>
+              <p className="text-xs text-[#A15C00] mt-1.5 font-medium truncate">
+                Format: {activeProgramDetail.badge}
+              </p>
             </div>
           </div>
 
-          {/* DROPDOWN 2: Pilih Program yang Ada di Kompetitor Tersebut */}
-          <div className="space-y-1.5">
-            <label className="font-mono text-xs font-bold text-[#8A8A84] uppercase flex items-center gap-1.5">
-              <Layers className="w-3.5 h-3.5 text-[#A15C00]" />
-              <span>2. Pilih Program {competitorDisplayNames[selectedCompetitorKey]}:</span>
-            </label>
-            <div className="relative">
-              <select
-                value={selectedProgramId}
-                onChange={(e) => setSelectedProgramId(e.target.value)}
-                className="w-full appearance-none bg-[#FFFDF0] hover:bg-[#FFF9E6] border-2 border-[#FFD84D] rounded-xl px-4 py-2.5 pr-10 text-xs sm:text-sm font-bold text-[#141412] cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#141412] transition-all shadow-2xs"
-              >
-                {availableProgramsForSelectedComp.map((prog) => (
-                  <option key={prog.id} value={prog.id}>
-                    {prog.programTitle} — [{prog.badge}]
-                  </option>
-                ))}
-              </select>
-              <ChevronDown className="w-4 h-4 text-[#A15C00] absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-            </div>
+          {/* Quick Pill Buttons untuk Program Kompetitor */}
+          <div className="pt-4 flex flex-wrap items-center gap-1.5">
+            <span className="font-mono text-[11px] text-[#8A8A84] font-bold uppercase shrink-0">
+              Pilihan Cepat:
+            </span>
+            {availableProgramsForSelectedComp.map((p) => {
+              const isSelected = p.id === activeProgramDetail.id;
+              return (
+                <button
+                  key={p.id}
+                  type="button"
+                  onClick={() => setSelectedProgramId(p.id)}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap select-none border ${
+                    isSelected
+                      ? "bg-[#141412] text-[#FFD84D] border-[#141412] shadow-xs"
+                      : "bg-[#F5F5F2] text-[#4B4B46] border-[#E8E8E4] hover:border-[#141412] hover:bg-[#EAEAEA]"
+                  }`}
+                >
+                  {p.programTitle}
+                </button>
+              );
+            })}
           </div>
         </div>
       </div>
@@ -1405,6 +1503,77 @@ export default function ComparisonView() {
                 })}
               </tbody>
             </table>
+          </div>
+
+          {/* ── ANALISIS KRITIS & JAWABAN AC UNTUK GENERAL TAB ── */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Keunggulan Mutlak RevoU vs Kompetitor Ini */}
+            <div className="p-4 sm:p-5 rounded-xl border border-[#D4EDDA] bg-[#EBF7EE]/60 space-y-2.5">
+              <div className="flex items-center gap-2 font-display font-bold text-xs uppercase tracking-wider text-[#1F7A4D]">
+                <CheckCircle2 className="w-4 h-4 text-[#1F7A4D]" />
+                <span>Keunggulan Mutlak RevoU vs {activeBattlecard.name}</span>
+              </div>
+              <ul className="text-xs sm:text-[13px] text-[#141412] font-medium space-y-1.5 list-disc pl-4 leading-relaxed">
+                {activeBattlecard.revouWins.map((win, idx) => (
+                  <li key={idx}>
+                    <span>{win}</span>
+                  </li>
+                ))}
+              </ul>
+              <div className="text-[11.5px] text-[#1F7A4D] space-y-1 pt-2 border-t border-[#D4EDDA]/80">
+                <p>✓ 100% Live Instruction malam (19:00–21:00 WIB) — tidak perlu resign kerja</p>
+                <p>✓ 3 Bulan RevoU Labs mengerjakan real client & real budget (bukan simulasi dummy)</p>
+                <p>✓ Garansi Refund Biaya s.d. 100% transparan (cukup 10 lamaran/minggu)</p>
+              </div>
+            </div>
+
+            {/* Keterbatasan Kompetitor yang Perlu Diketahui AC */}
+            <div className="p-4 sm:p-5 rounded-xl border border-[#FFD84D]/80 bg-[#FFFDF0] space-y-2.5">
+              <div className="flex items-center gap-2 font-display font-bold text-xs uppercase tracking-wider text-[#A15C00]">
+                <AlertTriangle className="w-4 h-4 text-[#A15C00]" />
+                <span>Karakteristik & Keterbatasan {activeBattlecard.name}</span>
+              </div>
+              <p className="text-xs sm:text-[13px] text-[#141412] leading-relaxed">
+                {activeBattlecard.honestStrength}
+              </p>
+              <div className="p-2.5 rounded-lg bg-white/70 border border-[#FFD84D]/50 text-xs text-[#141412]">
+                <p className="font-bold text-[#A15C00] mb-0.5">Bukti Nyata (Proof Point):</p>
+                <p className="text-[#4B4B46]">{activeBattlecard.proofPoint}</p>
+              </div>
+              <p className="text-[11px] text-[#8A8A84] italic pt-1 border-t border-[#FFD84D]/40">
+                💡 Tips AC: Gunakan poin di atas untuk memvalidasi minat siswa secara elegan tanpa menjatuhkan lembaga lain.
+              </p>
+            </div>
+          </div>
+
+          {/* Template Jawaban AC WhatsApp Siap Salin */}
+          <div className="p-4 sm:p-5 rounded-xl border border-[#0E62FE]/30 bg-[#EDF5FF] space-y-2.5">
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-1.5 font-display font-bold text-xs uppercase tracking-wider text-[#0E62FE]">
+                <Sparkles className="w-4 h-4 text-[#0E62FE]" />
+                <span>Template Jawaban AC Siap Salin: RevoU vs {activeBattlecard.name}</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => handleCopyText(activeBattlecard.acScriptTemplate, `gen-${activeBattlecard.id}`)}
+                className="font-mono text-[11px] font-bold px-2.5 py-1 rounded-lg bg-[#0E62FE] text-white hover:bg-[#004ECC] transition-all cursor-pointer flex items-center gap-1 shadow-2xs"
+              >
+                {copiedId === `gen-${activeBattlecard.id}` ? (
+                  <>
+                    <Check className="w-3 h-3 text-white" />
+                    <span>Tersalin</span>
+                  </>
+                ) : (
+                  <>
+                    <Copy className="w-3 h-3 text-white" />
+                    <span>Salin Pesan</span>
+                  </>
+                )}
+              </button>
+            </div>
+            <blockquote className="text-xs sm:text-[13px] text-[#141412] leading-relaxed bg-white/80 p-3.5 rounded-lg border border-[#0E62FE]/15 whitespace-pre-line font-normal">
+              {activeBattlecard.acScriptTemplate}
+            </blockquote>
           </div>
         </div>
       )}
