@@ -820,7 +820,7 @@ INSTRUKSI PENTING:
     <div className="min-h-screen bg-[#FFFFFF] text-[#141412] font-sans antialiased px-4 sm:px-6 py-6 sm:py-10">
       <div className="max-w-[820px] mx-auto">
         {/* ========================================================= */}
-        {/* 1. TOPBAR & HEADER                                        */}
+        {/* 1. TOPBAR & EDITORIAL MASTHEAD                            */}
         {/* ========================================================= */}
         <motion.header
           initial={{ opacity: 0, y: -12 }}
@@ -828,22 +828,28 @@ INSTRUKSI PENTING:
           transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
           className="mb-6"
         >
-          <div className="flex items-center justify-between flex-wrap gap-3 mb-3.5">
-            <div className="flex items-center gap-3.5">
-              <div className="w-14 h-14 rounded-full overflow-hidden shadow-sm shrink-0 border border-[#FFD84D] bg-[#FFD84D] flex items-center justify-center">
+          {/* Masthead Utility Navigation Bar */}
+          <div className="flex items-center justify-between flex-wrap gap-3 mb-4 pb-3 border-b border-[#E8E8E4]">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl overflow-hidden shadow-2xs shrink-0 border border-[#E8E8E4] bg-white p-1 flex items-center justify-center">
                 <img
                   src="/revou-logo.png"
                   alt="RevoU Logo"
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-contain"
                 />
               </div>
               <div>
-                <p className="font-mono text-xs tracking-wider uppercase text-[#8A8A84] m-0">
-                  RevoU Admission Team · AI Sales Assistant
+                <p className="font-mono text-[11px] font-bold tracking-wider uppercase text-[#141412] m-0 flex items-center gap-1.5">
+                  <span>RevoU Admission Copilot</span>
+                  <span className="font-mono text-[9px] bg-[#FFD84D] text-[#141412] font-black px-1.5 py-0.2 rounded">
+                    INTERNAL
+                  </span>
                 </p>
                 <div className="flex items-center gap-2 mt-0.5">
                   <span className="w-2 h-2 rounded-full bg-[#1F7A4D]" />
-                  <span className="text-xs font-mono text-[#8A8A84]">Grounded on /knowledge/</span>
+                  <span className="text-[11px] font-mono text-[#7A7A74]">
+                    Verified Data &middot; Knowledge Base 2026
+                  </span>
                 </div>
               </div>
             </div>
@@ -853,14 +859,14 @@ INSTRUKSI PENTING:
               <button
                 type="button"
                 onClick={() => setIsKeyModalOpen(true)}
-                className="inline-flex items-center gap-2 px-3 py-2 rounded-xl border border-[#D9D9D4] bg-white hover:bg-[#F5F5F2] hover:border-[#141412] text-xs font-bold text-[#141412] transition-all cursor-pointer shadow-2xs hover:shadow-xs active:scale-95 select-none"
+                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-[#D9D9D4] bg-white hover:bg-[#F5F5F2] hover:border-[#141412] text-xs font-bold text-[#141412] transition-all cursor-pointer shadow-2xs hover:shadow-xs active:scale-95 select-none"
                 title="Kelola 5 API Keys & Pantau Status Kuota (Round Robin)"
               >
                 <Key className="w-3.5 h-3.5 text-[#0E62FE]" />
                 <span className="hidden sm:inline">5 API Keys</span>
-                <span className="flex items-center gap-1 font-mono text-[11px] px-1.5 py-0.5 rounded-md bg-[#F5F5F2] text-[#4B4B46] border border-[#E8E8E4]">
+                <span className="flex items-center gap-1 font-mono text-[10.5px] px-1.5 py-0.5 rounded bg-[#F5F5F2] text-[#4B4B46] border border-[#E8E8E4]">
                   <span
-                    className={`w-2 h-2 rounded-full ${apiPoolStatus?.quotaHealth === "optimal"
+                    className={`w-1.5 h-1.5 rounded-full ${apiPoolStatus?.quotaHealth === "optimal"
                       ? "bg-[#1F7A4D]"
                       : apiPoolStatus?.quotaHealth === "partial_warning"
                         ? "bg-[#D97706] animate-pulse"
@@ -884,13 +890,13 @@ INSTRUKSI PENTING:
                   setDrawerTab("favorites");
                   setIsHistoryDrawerOpen(true);
                 }}
-                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-[#D9D9D4] bg-white hover:bg-[#F5F5F2] hover:border-[#141412] text-xs font-bold text-[#141412] transition-all cursor-pointer shadow-2xs hover:shadow-xs active:scale-95 select-none"
+                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-[#D9D9D4] bg-white hover:bg-[#F5F5F2] hover:border-[#141412] text-xs font-bold text-[#141412] transition-all cursor-pointer shadow-2xs hover:shadow-xs active:scale-95 select-none"
                 title="Lihat riwayat percakapan dan skrip tersimpan"
               >
                 <Bookmark className="w-3.5 h-3.5 text-[#A15C00]" />
-                <span>Favorit & Riwayat</span>
+                <span>Favorit &amp; Riwayat</span>
                 {favoritesCount > 0 ? (
-                  <span className="flex items-center gap-0.5 px-1.5 py-0.5 text-[10.5px] font-mono font-bold rounded-full bg-[#FFD84D] text-[#141412]">
+                  <span className="flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] font-mono font-bold rounded-full bg-[#FFD84D] text-[#141412]">
                     ★ {favoritesCount}
                   </span>
                 ) : historyList.length > 0 ? (
@@ -902,54 +908,39 @@ INSTRUKSI PENTING:
             </div>
           </div>
 
+          {/* Editorial Headline */}
           <motion.h1
-            initial={{ opacity: 0, y: 14 }}
+            initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
-            className="font-display font-bold text-2xl sm:text-3xl md:text-[34px] tracking-tight leading-[1.15] text-[#141412] mb-2"
+            transition={{ duration: 0.5, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
+            className="font-display font-extrabold text-2xl sm:text-3xl md:text-[34px] tracking-tight leading-[1.18] text-[#141412] mb-2"
           >
-            Turn prospect context into a better pitch.
+            Turn prospect context into a{" "}
+            <span className="relative inline-block px-2 py-0.5 rounded-lg bg-[#FFD84D] text-[#141412] shadow-2xs">
+              high-converting pitch
+            </span>
+            .
           </motion.h1>
           <motion.p
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.16, ease: [0.16, 1, 0.3, 1] }}
-            className="text-[#4B4B46] text-sm sm:text-[15px] leading-relaxed max-w-[62ch]"
+            transition={{ duration: 0.45, delay: 0.14, ease: [0.16, 1, 0.3, 1] }}
+            className="text-[#4B4B46] text-sm sm:text-[15px] leading-relaxed max-w-[68ch]"
           >
-            Describe your situation. The assistant identifies the persona, intent, likely concern, and suggested angle.
+            Asisten penjualan cerdas Admission RevoU: rancang pitch WhatsApp personal (<strong className="text-[#141412] font-semibold">Create a Pitch</strong>), temukan bukti nyata kisah alumni (<strong className="text-[#141412] font-semibold">Checking Alumni</strong>), dan bedah komparasi kurikulum head-to-head vs kompetitor (<strong className="text-[#141412] font-semibold">Comparison Table</strong>) secara faktual.
           </motion.p>
 
-          {/* Greeting Bubble Section */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.96, y: 8 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ duration: 0.45, delay: 0.22, ease: [0.16, 1, 0.3, 1] }}
-            className="flex gap-2.5 items-start mt-4 mb-5"
-          >
-            <div className="w-8 h-8 rounded-full overflow-hidden shadow-2xs shrink-0 mt-0.5 border border-[#FFD84D] bg-[#FFD84D] flex items-center justify-center">
-              <img
-                src="/revou-logo.png"
-                alt="RevoU Logo"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div className="bg-[#FFF6D1] rounded-tr-[14px] rounded-br-[14px] rounded-bl-[14px] rounded-tl-[4px] p-3 sm:px-4 sm:py-2.5 max-w-[620px] text-sm text-[#141412] shadow-2xs card-interactive">
-              <p className="font-bold mb-0.5">Hi! Aku Admission Assistant 👋</p>
-              <p className="leading-relaxed">
-                Aku siap bantu kamu menyusun <strong>pitch personal</strong> yang menghubungkan modul program RevoU ke kebutuhan riil dan konteks harian prospect dan juga <strong>mencari data alumni</strong> RevoU untuk dijadikan social proof faktual. serta untuk mempermudah kebutuhan AC dalam membandingkan <strong>program RevoU</strong> dengan program kompetitor.
-              </p>
-            </div>
-          </motion.div>
+
         </motion.header>
 
         {/* Real-time Quota Notification Banner */}
         {quotaAlertBanner && (
-          <div className="mb-4 p-3.5 bg-[#FFF6D1] border border-[#FFD84D] rounded-xl flex items-start justify-between gap-3 text-xs sm:text-sm text-[#141412] shadow-2xs animate-in fade-in duration-200">
+          <div className="mb-4 p-3 bg-[#FFF6D1] border border-[#FFD84D] rounded-xl flex items-start justify-between gap-3 text-xs sm:text-sm text-[#141412] shadow-2xs">
             <div className="flex items-start gap-2.5">
               <AlertCircle className="w-4 h-4 text-[#A15C00] shrink-0 mt-0.5" />
               <div>
                 <p className="font-bold text-[#A15C00] text-xs uppercase tracking-wider mb-0.5">
-                  Pemberitahuan Kuota & Rotasi API Key (Round Robin)
+                  Pemberitahuan Kuota &amp; Rotasi API Key (Round Robin)
                 </p>
                 <p className="text-[#4B4B46] leading-relaxed">{quotaAlertBanner}</p>
               </div>
@@ -971,44 +962,41 @@ INSTRUKSI PENTING:
         <motion.section
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.55, delay: 0.26, ease: [0.16, 1, 0.3, 1] }}
-          className="bg-white border border-[#E8E8E4] rounded-[14px] p-5 sm:p-6 shadow-[0_1px_3px_rgba(20,20,18,0.05),0_4px_16px_rgba(20,20,18,0.04)] space-y-6"
+          transition={{ duration: 0.5, delay: 0.22, ease: [0.16, 1, 0.3, 1] }}
+          className="bg-white border border-[#E8E8E4] rounded-2xl p-5 sm:p-6 shadow-xs space-y-6"
         >
-          {/* Start Menu Tabs (Create a Pitch vs Checking Alumni vs Comparison Table) */}
-          <div className="flex border-b border-[#E8E8E4] pb-px gap-2.5 overflow-x-auto">
-            <button
-              type="button"
-              onClick={() => handleModeChange("pitch")}
-              className={`group flex items-center gap-2 px-4 py-2.5 text-xs sm:text-sm font-bold rounded-t-xl transition-all duration-200 border-b-2 cursor-pointer shrink-0 active:scale-95 select-none ${mode === "pitch"
-                ? "bg-[#FFF6D1] text-[#141412] border-[#FFD84D] shadow-[0_2px_8px_rgba(255,216,77,0.35)] animate-tab-active"
-                : "text-[#8A8A84] hover:text-[#141412] hover:bg-[#F5F5F2] hover:scale-[1.02] border-transparent"
-                }`}
-            >
-              <Sparkles className={`w-4 h-4 transition-transform duration-300 group-hover:rotate-12 ${mode === "pitch" ? "text-[#A15C00] animate-icon-pop" : "text-[#8A8A84]"}`} />
-              <span className="transition-colors">Create a Pitch</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => handleModeChange("alumni")}
-              className={`group flex items-center gap-2 px-4 py-2.5 text-xs sm:text-sm font-bold rounded-t-xl transition-all duration-200 border-b-2 cursor-pointer shrink-0 active:scale-95 select-none ${mode === "alumni"
-                ? "bg-[#FFF6D1] text-[#141412] border-[#FFD84D] shadow-[0_2px_8px_rgba(255,216,77,0.35)] animate-tab-active"
-                : "text-[#8A8A84] hover:text-[#141412] hover:bg-[#F5F5F2] hover:scale-[1.02] border-transparent"
-                }`}
-            >
-              <UserCheck className={`w-4 h-4 transition-transform duration-300 group-hover:scale-110 ${mode === "alumni" ? "text-[#A15C00] animate-icon-pop" : "text-[#8A8A84]"}`} />
-              <span className="transition-colors">Checking Alumni</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => handleModeChange("comparison")}
-              className={`group flex items-center gap-2 px-4 py-2.5 text-xs sm:text-sm font-bold rounded-t-xl transition-all duration-200 border-b-2 cursor-pointer shrink-0 active:scale-95 select-none ${mode === "comparison"
-                ? "bg-[#FFF6D1] text-[#141412] border-[#FFD84D] shadow-[0_2px_8px_rgba(255,216,77,0.35)] animate-tab-active"
-                : "text-[#8A8A84] hover:text-[#141412] hover:bg-[#F5F5F2] hover:scale-[1.02] border-transparent"
-                }`}
-            >
-              <Scale className={`w-4 h-4 transition-transform duration-300 group-hover:scale-110 ${mode === "comparison" ? "text-[#A15C00] animate-icon-pop" : "text-[#8A8A84]"}`} />
-              <span className="transition-colors">Comparison Table</span>
-            </button>
+          {/* Segmented Control Pill Navigation Bar (Animated layoutId) */}
+          <div className="p-1 rounded-xl bg-[#F5F5F2] border border-[#E8E8E4] flex gap-1 overflow-x-auto">
+            {[
+              { key: "pitch", label: "Create a Pitch", icon: Sparkles },
+              { key: "alumni", label: "Checking Alumni", icon: UserCheck },
+              { key: "comparison", label: "Comparison Table", icon: Scale }
+            ].map((tab) => {
+              const Icon = tab.icon;
+              const isActive = mode === tab.key;
+              return (
+                <button
+                  key={tab.key}
+                  type="button"
+                  onClick={() => handleModeChange(tab.key as ModeKey)}
+                  className={`relative px-4 py-2.5 text-xs sm:text-sm font-bold rounded-lg transition-colors cursor-pointer select-none flex items-center gap-2 shrink-0 ${
+                    isActive ? "text-[#141412]" : "text-[#7A7A74] hover:text-[#141412]"
+                  }`}
+                >
+                  {isActive && (
+                    <motion.div
+                      layoutId="activeModeTab"
+                      transition={{ type: "spring", stiffness: 450, damping: 32 }}
+                      className="absolute inset-0 bg-[#FFD84D] rounded-lg shadow-2xs border border-[#E5B500]/60"
+                    />
+                  )}
+                  <span className="relative z-10 flex items-center gap-2">
+                    <Icon className={`w-4 h-4 ${isActive ? "text-[#141412]" : "text-[#8A8A84]"}`} />
+                    <span>{tab.label}</span>
+                  </span>
+                </button>
+              );
+            })}
           </div>
 
           {/* Dedicated Comparison Table Explorer (Battlecards, General Table, Bootcamp Table) */}
@@ -1022,8 +1010,8 @@ INSTRUKSI PENTING:
           {mode !== "comparison" && (
             <>
               {/* Describe Your Situation Section */}
-              <div>
-                <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 mb-2">
+              <div className="space-y-2">
+                <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2">
                   <label
                     htmlFor="situation-input"
                     className="font-bold text-[14.5px] text-[#141412] block"
@@ -1034,7 +1022,7 @@ INSTRUKSI PENTING:
                   </label>
 
                   {/* Model Selector Pill */}
-                  <div className="dropdown-wrapper group inline-flex items-center gap-1.5 bg-[#F5F5F2] hover:bg-white px-3 py-1.5 rounded-full border border-[#E8E8E4] hover:border-[#FFD84D] transition-all self-start sm:self-auto shadow-2xs hover:shadow-xs">
+                  <div className="dropdown-wrapper group inline-flex items-center gap-1.5 bg-[#F5F5F2] hover:bg-white px-3 py-1 rounded-full border border-[#E8E8E4] hover:border-[#FFD84D] transition-all self-start sm:self-auto shadow-2xs hover:shadow-xs">
                     <Cpu className="w-3.5 h-3.5 text-[#8A8A84] group-hover:text-[#A15C00] transition-colors" />
                     <select
                       value={selectedModel}
@@ -1051,8 +1039,8 @@ INSTRUKSI PENTING:
                 </div>
 
                 {/* Mode Line: Pill + Lead */}
-                <div key={mode} className="flex flex-wrap gap-2 items-baseline mb-2 animate-tab-content">
-                  <span className="font-mono text-[11px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#FFD84D] text-[#141412] font-semibold shadow-2xs">
+                <div key={mode} className="flex flex-wrap gap-2 items-baseline animate-tab-content">
+                  <span className="font-mono text-[10.5px] uppercase tracking-wider px-2 py-0.5 rounded-md bg-[#FFD84D] text-[#141412] font-bold shadow-2xs">
                     {curConfig.title}
                   </span>
                   <span className="text-[13px] text-[#8A8A84] leading-relaxed">
@@ -1074,64 +1062,63 @@ INSTRUKSI PENTING:
                       }
                     }}
                     placeholder={curConfig.placeholder}
-                    className="w-full text-[15px] text-[#141412] bg-white border border-[#D9D9D4] rounded-[12px] p-3.5 focus:outline-none focus:border-[#141412] focus:ring-3 focus:ring-[#FFF6D1] transition-all resize-y min-h-[120px] leading-relaxed placeholder:text-[#8A8A84]"
+                    className="w-full text-[14.5px] text-[#141412] bg-white border border-[#D9D9D4] rounded-xl p-3.5 focus:outline-none focus:border-[#141412] focus:ring-2 focus:ring-[#FFD84D]/40 transition-all resize-y min-h-[120px] leading-relaxed placeholder:text-[#8A8A84]"
                   />
                   {inputText.length > 0 && (
-                    <span className="absolute bottom-2.5 right-3 font-mono text-[11px] text-[#8A8A84] bg-white/90 px-1.5 py-0.5 rounded">
-                      {inputText.trim() ? inputText.trim().split(/\s+/).length : 0} kata · ⌘+Enter
+                    <span className="absolute bottom-2.5 right-3 font-mono text-[11px] text-[#8A8A84] bg-white/90 px-1.5 py-0.5 rounded border border-[#E8E8E4]">
+                      {inputText.trim() ? inputText.trim().split(/\s+/).length : 0} kata &middot; ⌘+Enter
                     </span>
                   )}
                 </div>
+
+
               </div>
 
-              {/* C. Action Buttons Row */}
+              {/* Action Buttons Row */}
               <div className="flex flex-wrap items-center gap-2.5 pt-1">
-                <button
+                <motion.button
                   type="button"
                   disabled={isLoading || !inputText.trim()}
                   onClick={handleGenerate}
-                  className={`relative overflow-hidden inline-flex items-center gap-2 font-display font-bold text-base px-6 py-3.5 rounded-[12px] select-none transition-all duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFD84D] focus-visible:ring-offset-2 ${!inputText.trim() || isLoading
-                    ? "bg-[#FFD84D]/70 text-[#141412]/60 cursor-not-allowed border border-transparent shadow-none"
-                    : "bg-[#FFD84D] hover:bg-[#FFCC1A] hover:border-[#FFE27A] hover:shadow-[0_0_24px_rgba(255,216,77,0.75),0_0_45px_rgba(255,204,26,0.4)] hover:-translate-y-0.5 active:translate-y-0.5 active:scale-[0.97] active:bg-[#E5B500] text-[#141412] border border-[#FFD84D] shadow-sm cursor-pointer animate-cta-pulse"
-                    }`}
+                  whileHover={!isLoading && inputText.trim() ? { y: -1 } : {}}
+                  whileTap={!isLoading && inputText.trim() ? { scale: 0.98 } : {}}
+                  className={`inline-flex items-center gap-2 font-display font-bold text-sm sm:text-base px-6 py-3 rounded-xl select-none transition-all duration-150 ${
+                    !inputText.trim() || isLoading
+                      ? "bg-[#E8E8E4] text-[#8A8A84] cursor-not-allowed border border-[#D9D9D4]"
+                      : "bg-[#FFD84D] hover:bg-[#FFCC1A] text-[#141412] border border-[#E5B500] shadow-xs cursor-pointer active:bg-[#E5B500]"
+                  }`}
                 >
-                  {/* Shimmer sweep light bar */}
-                  {inputText.trim() && !isLoading && (
-                    <span
-                      aria-hidden="true"
-                      className="pointer-events-none absolute inset-0 -top-full -bottom-full w-1/3 bg-gradient-to-r from-transparent via-white/50 to-transparent animate-shimmer"
-                    />
-                  )}
                   {isLoading ? (
                     <>
-                      <div className="w-4 h-4 border-2 border-[#141412] border-t-transparent rounded-full animate-spin shrink-0 relative z-10" />
-                      <span className="animate-pulse font-medium relative z-10">Analyzing with Gemini…</span>
+                      <div className="w-4 h-4 border-2 border-[#141412] border-t-transparent rounded-full animate-spin shrink-0" />
+                      <span className="font-semibold">Menganalisis dengan RevoU Copilot…</span>
                     </>
                   ) : (
-                    <span className="relative z-10 flex items-center gap-2">
-                      <span>Generate personalized response</span>
-                      <span className="transition-transform group-hover:translate-x-1">→</span>
+                    <span className="flex items-center gap-2">
+                      <Sparkles className="w-4 h-4 text-[#141412]" />
+                      <span>Generate Rekomendasi Script</span>
+                      <ChevronRight className="w-4 h-4" />
                     </span>
                   )}
-                </button>
+                </motion.button>
 
                 <button
                   type="button"
                   onClick={handleClear}
-                  className="inline-flex items-center font-display font-bold text-base px-4 py-3 rounded-[10px] border border-[#D9D9D4] bg-white text-[#141412] hover:border-[#141412] hover:bg-white hover:shadow-[0_0_20px_rgba(20,20,18,0.18),0_0_35px_rgba(255,216,77,0.38)] hover:-translate-y-0.5 active:translate-y-0.5 active:scale-[0.97] active:bg-[#E5E5DF] active:border-[#666660] active:shadow-inner select-none transition-all duration-200 ease-out cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D9D9D4] focus-visible:ring-offset-2"
+                  className="inline-flex items-center font-display font-semibold text-sm px-4 py-3 rounded-xl border border-[#D9D9D4] bg-white text-[#4B4B46] hover:text-[#141412] hover:bg-[#F5F5F2] hover:border-[#8A8A84] transition-all cursor-pointer shadow-2xs active:scale-98"
                 >
                   Clear
                 </button>
               </div>
 
               {/* Autonote status */}
-              <p className="text-[12.5px] text-[#8A8A84] m-0 flex items-center gap-1.5">
-                <span className="inline-flex items-center gap-1.5 font-mono text-[12px] text-[#1F7A4D]">
+              <p className="text-[12px] text-[#8A8A84] m-0 flex items-center gap-1.5">
+                <span className="inline-flex items-center gap-1.5 font-mono text-[11px] text-[#1F7A4D] font-bold">
                   <span className="w-2 h-2 rounded-full bg-[#1F7A4D]" />
                   AI siap
                 </span>
-                <span>·</span>
-                <span>AI memilih program yang paling cocok dari knowledge base.</span>
+                <span>&middot;</span>
+                <span>AI memetakan program RevoU yang paling relevan secara otomatis dari knowledge base.</span>
               </p>
 
               {errorMessage && (
