@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { motion } from "motion/react";
 import {
   Sparkles,
   Copy,
@@ -821,7 +822,12 @@ INSTRUKSI PENTING:
         {/* ========================================================= */}
         {/* 1. TOPBAR & HEADER                                        */}
         {/* ========================================================= */}
-        <header className="mb-6">
+        <motion.header
+          initial={{ opacity: 0, y: -12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          className="mb-6"
+        >
           <div className="flex items-center justify-between flex-wrap gap-3 mb-3.5">
             <div className="flex items-center gap-3.5">
               <div className="w-14 h-14 rounded-full overflow-hidden shadow-sm shrink-0 border border-[#FFD84D] bg-[#FFD84D] flex items-center justify-center">
@@ -855,12 +861,12 @@ INSTRUKSI PENTING:
                 <span className="flex items-center gap-1 font-mono text-[11px] px-1.5 py-0.5 rounded-md bg-[#F5F5F2] text-[#4B4B46] border border-[#E8E8E4]">
                   <span
                     className={`w-2 h-2 rounded-full ${apiPoolStatus?.quotaHealth === "optimal"
-                        ? "bg-[#1F7A4D]"
-                        : apiPoolStatus?.quotaHealth === "partial_warning"
-                          ? "bg-[#D97706] animate-pulse"
-                          : apiPoolStatus?.quotaHealth === "all_exhausted"
-                            ? "bg-[#DA1E28] animate-pulse"
-                            : "bg-[#1F7A4D]"
+                      ? "bg-[#1F7A4D]"
+                      : apiPoolStatus?.quotaHealth === "partial_warning"
+                        ? "bg-[#D97706] animate-pulse"
+                        : apiPoolStatus?.quotaHealth === "all_exhausted"
+                          ? "bg-[#DA1E28] animate-pulse"
+                          : "bg-[#1F7A4D]"
                       }`}
                   />
                   <span>
@@ -896,15 +902,30 @@ INSTRUKSI PENTING:
             </div>
           </div>
 
-          <h1 className="font-display font-bold text-2xl sm:text-3xl md:text-[34px] tracking-tight leading-[1.15] text-[#141412] mb-2">
+          <motion.h1
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.55, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
+            className="font-display font-bold text-2xl sm:text-3xl md:text-[34px] tracking-tight leading-[1.15] text-[#141412] mb-2"
+          >
             Turn prospect context into a better pitch.
-          </h1>
-          <p className="text-[#4B4B46] text-sm sm:text-[15px] leading-relaxed max-w-[62ch]">
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.16, ease: [0.16, 1, 0.3, 1] }}
+            className="text-[#4B4B46] text-sm sm:text-[15px] leading-relaxed max-w-[62ch]"
+          >
             Describe your situation. The assistant identifies the persona, intent, likely concern, and suggested angle.
-          </p>
+          </motion.p>
 
           {/* Greeting Bubble Section */}
-          <div className="flex gap-2.5 items-start mt-4 mb-5">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.96, y: 8 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 0.45, delay: 0.22, ease: [0.16, 1, 0.3, 1] }}
+            className="flex gap-2.5 items-start mt-4 mb-5"
+          >
             <div className="w-8 h-8 rounded-full overflow-hidden shadow-2xs shrink-0 mt-0.5 border border-[#FFD84D] bg-[#FFD84D] flex items-center justify-center">
               <img
                 src="/revou-logo.png"
@@ -912,14 +933,14 @@ INSTRUKSI PENTING:
                 className="w-full h-full object-cover"
               />
             </div>
-            <div className="bg-[#FFF6D1] rounded-tr-[14px] rounded-br-[14px] rounded-bl-[14px] rounded-tl-[4px] p-3 sm:px-4 sm:py-2.5 max-w-[620px] text-sm text-[#141412] shadow-2xs">
+            <div className="bg-[#FFF6D1] rounded-tr-[14px] rounded-br-[14px] rounded-bl-[14px] rounded-tl-[4px] p-3 sm:px-4 sm:py-2.5 max-w-[620px] text-sm text-[#141412] shadow-2xs card-interactive">
               <p className="font-bold mb-0.5">Hi! Aku Admission Assistant 👋</p>
               <p className="leading-relaxed">
-                Aku siap bantu kamu menyusun <strong>pitch personal</strong> yang menghubungkan modul program RevoU ke kebutuhan riil dan konteks harian prospect dan juga <strong>mencari data alumni</strong> RevoU untuk dijadikan social proof faktual.
+                Aku siap bantu kamu menyusun <strong>pitch personal</strong> yang menghubungkan modul program RevoU ke kebutuhan riil dan konteks harian prospect dan juga <strong>mencari data alumni</strong> RevoU untuk dijadikan social proof faktual. serta untuk mempermudah kebutuhan AC dalam membandingkan <strong>program RevoU</strong> dengan program kompetitor.
               </p>
             </div>
-          </div>
-        </header>
+          </motion.div>
+        </motion.header>
 
         {/* Real-time Quota Notification Banner */}
         {quotaAlertBanner && (
@@ -947,7 +968,12 @@ INSTRUKSI PENTING:
         {/* ========================================================= */}
         {/* 2. MAIN CARD WORKSPACE (.card.work)                       */}
         {/* ========================================================= */}
-        <section className="bg-white border border-[#E8E8E4] rounded-[14px] p-5 sm:p-6 shadow-[0_1px_3px_rgba(20,20,18,0.05),0_4px_16px_rgba(20,20,18,0.04)] space-y-6">
+        <motion.section
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.55, delay: 0.26, ease: [0.16, 1, 0.3, 1] }}
+          className="bg-white border border-[#E8E8E4] rounded-[14px] p-5 sm:p-6 shadow-[0_1px_3px_rgba(20,20,18,0.05),0_4px_16px_rgba(20,20,18,0.04)] space-y-6"
+        >
           {/* Start Menu Tabs (Create a Pitch vs Checking Alumni vs Comparison Table) */}
           <div className="flex border-b border-[#E8E8E4] pb-px gap-2.5 overflow-x-auto">
             <button
@@ -1008,809 +1034,821 @@ INSTRUKSI PENTING:
                   </label>
 
                   {/* Model Selector Pill */}
-                  <div className="inline-flex items-center gap-1.5 bg-[#F5F5F2] px-2.5 py-1 rounded-full border border-[#E8E8E4] self-start sm:self-auto">
-                    <Cpu className="w-3.5 h-3.5 text-[#8A8A84]" />
-                <select
-                  value={selectedModel}
-                  onChange={(e) => setSelectedModel(e.target.value)}
-                  className="font-mono text-[11px] text-[#4B4B46] bg-transparent focus:outline-none cursor-pointer"
-                >
-                  {availableModels.map((m) => (
-                    <option key={m.id} value={m.id}>
-                      {m.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
+                  <div className="dropdown-wrapper group inline-flex items-center gap-1.5 bg-[#F5F5F2] hover:bg-white px-3 py-1.5 rounded-full border border-[#E8E8E4] hover:border-[#FFD84D] transition-all self-start sm:self-auto shadow-2xs hover:shadow-xs">
+                    <Cpu className="w-3.5 h-3.5 text-[#8A8A84] group-hover:text-[#A15C00] transition-colors" />
+                    <select
+                      value={selectedModel}
+                      onChange={(e) => setSelectedModel(e.target.value)}
+                      className="font-mono text-[11px] text-[#4B4B46] group-hover:text-[#141412] bg-transparent focus:outline-none cursor-pointer pr-1"
+                    >
+                      {availableModels.map((m) => (
+                        <option key={m.id} value={m.id}>
+                          {m.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
 
-            {/* Mode Line: Pill + Lead */}
-            <div key={mode} className="flex flex-wrap gap-2 items-baseline mb-2 animate-tab-content">
-              <span className="font-mono text-[11px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#FFD84D] text-[#141412] font-semibold shadow-2xs">
-                {curConfig.title}
-              </span>
-              <span className="text-[13px] text-[#8A8A84] leading-relaxed">
-                {curConfig.lead}
-              </span>
-            </div>
-
-            {/* Textarea Input */}
-            <div className="relative">
-              <textarea
-                id="situation-input"
-                rows={5}
-                value={inputText}
-                onChange={(e) => setInputText(e.target.value)}
-                onKeyDown={(e) => {
-                  if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
-                    e.preventDefault();
-                    handleGenerate();
-                  }
-                }}
-                placeholder={curConfig.placeholder}
-                className="w-full text-[15px] text-[#141412] bg-white border border-[#D9D9D4] rounded-[12px] p-3.5 focus:outline-none focus:border-[#141412] focus:ring-3 focus:ring-[#FFF6D1] transition-all resize-y min-h-[120px] leading-relaxed placeholder:text-[#8A8A84]"
-              />
-              {inputText.length > 0 && (
-                <span className="absolute bottom-2.5 right-3 font-mono text-[11px] text-[#8A8A84] bg-white/90 px-1.5 py-0.5 rounded">
-                  {inputText.trim() ? inputText.trim().split(/\s+/).length : 0} kata · ⌘+Enter
-                </span>
-              )}
-            </div>
-          </div>
-
-          {/* C. Action Buttons Row */}
-          <div className="flex flex-wrap items-center gap-2.5 pt-1">
-            <button
-              type="button"
-              disabled={isLoading || !inputText.trim()}
-              onClick={handleGenerate}
-              className={`inline-flex items-center gap-2 font-display font-bold text-base px-5 py-3 rounded-[10px] select-none transition-all duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFD84D] focus-visible:ring-offset-2 ${!inputText.trim() || isLoading
-                ? "bg-[#FFD84D]/70 text-[#141412]/60 cursor-not-allowed border border-transparent shadow-none"
-                : "bg-[#FFD84D] hover:bg-[#FFD84D] hover:brightness-105 hover:border-[#FFE27A] hover:shadow-[0_0_22px_rgba(255,216,77,0.8),0_0_45px_rgba(255,204,26,0.45)] hover:-translate-y-0.5 active:translate-y-0.5 active:scale-[0.97] active:bg-[#E5B500] active:border-[#D4A300] active:shadow-inner text-[#141412] border border-[#FFD84D] shadow-sm cursor-pointer"
-                }`}
-            >
-              {isLoading ? (
-                <>
-                  <div className="w-4 h-4 border-2 border-[#141412] border-t-transparent rounded-full animate-spin shrink-0" />
-                  <span className="animate-pulse font-medium">Analyzing with Gemini…</span>
-                </>
-              ) : (
-                <>
-                  <span>Generate personalized response</span>
-                  <span>→</span>
-                </>
-              )}
-            </button>
-
-            <button
-              type="button"
-              onClick={handleClear}
-              className="inline-flex items-center font-display font-bold text-base px-4 py-3 rounded-[10px] border border-[#D9D9D4] bg-white text-[#141412] hover:border-[#141412] hover:bg-white hover:shadow-[0_0_20px_rgba(20,20,18,0.18),0_0_35px_rgba(255,216,77,0.38)] hover:-translate-y-0.5 active:translate-y-0.5 active:scale-[0.97] active:bg-[#E5E5DF] active:border-[#666660] active:shadow-inner select-none transition-all duration-200 ease-out cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D9D9D4] focus-visible:ring-offset-2"
-            >
-              Clear
-            </button>
-          </div>
-
-          {/* Autonote status */}
-          <p className="text-[12.5px] text-[#8A8A84] m-0 flex items-center gap-1.5">
-            <span className="inline-flex items-center gap-1.5 font-mono text-[12px] text-[#1F7A4D]">
-              <span className="w-2 h-2 rounded-full bg-[#1F7A4D]" />
-              AI siap
-            </span>
-            <span>·</span>
-            <span>AI memilih program yang paling cocok dari knowledge base.</span>
-          </p>
-
-          {errorMessage && (
-            <div className="p-3 bg-red-50 border border-red-200 text-[#B42318] text-xs rounded-lg">
-              {errorMessage}
-            </div>
-          )}
-
-          {/* ========================================================= */}
-          {/* D. REVISED STRUCTURED RESULTS AREA (.out)                 */}
-          {/* ========================================================= */}
-          {responseResult && (
-            <div className="border-t border-[#E8E8E4] pt-5 mt-6 space-y-6 animate-in fade-in duration-300">
-              {/* Output Header */}
-              <div className="flex flex-wrap justify-between items-center gap-2.5 pb-2">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="font-mono text-[11px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#F5F5F2] text-[#4B4B46] font-semibold">
+                {/* Mode Line: Pill + Lead */}
+                <div key={mode} className="flex flex-wrap gap-2 items-baseline mb-2 animate-tab-content">
+                  <span className="font-mono text-[11px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#FFD84D] text-[#141412] font-semibold shadow-2xs">
                     {curConfig.title}
                   </span>
-                  {responseResult.apiKeyInfo && (
+                  <span className="text-[13px] text-[#8A8A84] leading-relaxed">
+                    {curConfig.lead}
+                  </span>
+                </div>
+
+                {/* Textarea Input */}
+                <div className="relative">
+                  <textarea
+                    id="situation-input"
+                    rows={5}
+                    value={inputText}
+                    onChange={(e) => setInputText(e.target.value)}
+                    onKeyDown={(e) => {
+                      if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
+                        e.preventDefault();
+                        handleGenerate();
+                      }
+                    }}
+                    placeholder={curConfig.placeholder}
+                    className="w-full text-[15px] text-[#141412] bg-white border border-[#D9D9D4] rounded-[12px] p-3.5 focus:outline-none focus:border-[#141412] focus:ring-3 focus:ring-[#FFF6D1] transition-all resize-y min-h-[120px] leading-relaxed placeholder:text-[#8A8A84]"
+                  />
+                  {inputText.length > 0 && (
+                    <span className="absolute bottom-2.5 right-3 font-mono text-[11px] text-[#8A8A84] bg-white/90 px-1.5 py-0.5 rounded">
+                      {inputText.trim() ? inputText.trim().split(/\s+/).length : 0} kata · ⌘+Enter
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {/* C. Action Buttons Row */}
+              <div className="flex flex-wrap items-center gap-2.5 pt-1">
+                <button
+                  type="button"
+                  disabled={isLoading || !inputText.trim()}
+                  onClick={handleGenerate}
+                  className={`relative overflow-hidden inline-flex items-center gap-2 font-display font-bold text-base px-6 py-3.5 rounded-[12px] select-none transition-all duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFD84D] focus-visible:ring-offset-2 ${!inputText.trim() || isLoading
+                    ? "bg-[#FFD84D]/70 text-[#141412]/60 cursor-not-allowed border border-transparent shadow-none"
+                    : "bg-[#FFD84D] hover:bg-[#FFCC1A] hover:border-[#FFE27A] hover:shadow-[0_0_24px_rgba(255,216,77,0.75),0_0_45px_rgba(255,204,26,0.4)] hover:-translate-y-0.5 active:translate-y-0.5 active:scale-[0.97] active:bg-[#E5B500] text-[#141412] border border-[#FFD84D] shadow-sm cursor-pointer animate-cta-pulse"
+                    }`}
+                >
+                  {/* Shimmer sweep light bar */}
+                  {inputText.trim() && !isLoading && (
                     <span
-                      className="font-mono text-[11px] px-2.5 py-0.5 rounded-full bg-[#EFF6FF] text-[#1D4ED8] border border-[#BFDBFE] font-medium flex items-center gap-1.5"
-                      title="API Key yang memproses jawaban ini dalam pool Round Robin"
-                    >
-                      <Key className="w-3 h-3 text-[#2563EB]" />
-                      <span>
-                        API {responseResult.apiKeyInfo.activeKeyIndex || 1}/{responseResult.apiKeyInfo.totalKeys || 5}
-                      </span>
-                      {responseResult.apiKeyInfo.wasRotatedDueToQuota && (
-                        <span className="text-[10px] bg-[#FEF3C7] text-[#92400E] px-1 rounded font-bold">
-                          Auto-Rotated (429)
-                        </span>
-                      )}
-                    </span>
-                  )}
-                </div>
-
-                <div className="flex gap-2 flex-wrap items-center">
-                  <button
-                    type="button"
-                    onClick={toggleCurrentSessionFavorite}
-                    className={`font-sans text-xs font-semibold px-3 py-1.5 rounded-lg border transition-all cursor-pointer flex items-center gap-1.5 select-none active:scale-95 ${isCurrentFavorite
-                        ? "bg-[#FFF6D1] text-[#A15C00] border-[#FFD84D] shadow-2xs font-bold"
-                        : "bg-white text-[#141412] border-[#D9D9D4] hover:bg-[#F5F5F2]"
-                      }`}
-                    title={isCurrentFavorite ? "Hapus dari Favorit" : "Simpan draf ini ke koleksi Favorit"}
-                  >
-                    <Star
-                      className={`w-3.5 h-3.5 transition-colors ${isCurrentFavorite ? "fill-[#FFCC1A] text-[#A15C00]" : "text-[#8A8A84]"
-                        }`}
+                      aria-hidden="true"
+                      className="pointer-events-none absolute inset-0 -top-full -bottom-full w-1/3 bg-gradient-to-r from-transparent via-white/50 to-transparent animate-shimmer"
                     />
-                    <span>{isCurrentFavorite ? "Tersimpan di Favorit" : "Simpan ke Favorit"}</span>
-                  </button>
-
-                  {responseResult.scripts && responseResult.scripts.length > 0 && (
-                    <button
-                      type="button"
-                      onClick={handleCopyAll}
-                      className="font-sans text-xs font-semibold px-3 py-1.5 rounded-lg border border-[#D9D9D4] bg-white hover:bg-[#F5F5F2] text-[#141412] transition-all cursor-pointer"
-                    >
-                      {copiedAll ? "Tersalin ✓" : "Salin semua script"}
-                    </button>
                   )}
-
-                  <button
-                    type="button"
-                    onClick={handleGenerate}
-                    className="font-sans text-xs font-semibold px-3 py-1.5 rounded-lg border border-[#D9D9D4] bg-white hover:bg-[#F5F5F2] text-[#141412] transition-all cursor-pointer"
-                  >
-                    Buat ulang
-                  </button>
-                </div>
-              </div>
-
-              {/* ===================================================== */}
-              {/* SPECIFIC STRUCTURE BY ACTIVE MENU                     */}
-              {/* ===================================================== */}
-
-              {/* SECTION: OUTPUT CONTENT */}
-              <div className="space-y-4">
-
-                {/* ALUMNI MATCHES CARDS GRID (Hanya untuk menu alumni) */}
-                {mode === "alumni" && responseResult.alumni_matches && responseResult.alumni_matches.length > 0 && (
-                  <div className="space-y-3 pt-1">
-                    <div className="flex items-center justify-between gap-2">
-                      <div className="flex items-center gap-2 font-display font-bold text-xs uppercase tracking-wider text-[#1F7A4D]">
-                        <UserCheck className="w-3.5 h-3.5 text-[#1F7A4D]" />
-                        <span>Data Alumni & Bukti Nyata ({responseResult.alumni_matches.length} Profil Ditemukan)</span>
-                      </div>
-                      <a
-                        href="https://www.revou.co/alumni"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="font-mono text-[11px] text-[#0E62FE] hover:underline inline-flex items-center gap-1 font-semibold"
-                      >
-                        <span>Direktori Lengkap Alumni</span>
-                        <ExternalLink className="w-3 h-3" />
-                      </a>
-                    </div>
-
-                    <div className="grid grid-cols-1 gap-4">
-                      {responseResult.alumni_matches.map((alumni: any, i: number) => (
-                        <div
-                          key={i}
-                          className="bg-[#FFFFFF] p-4 sm:p-5 rounded-xl border border-[#E8E8E4] space-y-3.5 shadow-2xs hover:border-[#D9D9D4] transition-all flex flex-col justify-between"
-                        >
-                          <div className="space-y-3">
-                            <div className="flex flex-wrap items-start justify-between gap-2 border-b border-[#E8E8E4] pb-2.5">
-                              <div>
-                                <h4 className="font-bold text-[15.5px] text-[#141412] leading-tight">
-                                  {alumni.name}
-                                </h4>
-                                <p className="text-xs text-[#8A8A84] font-medium mt-0.5">
-                                  {alumni.program_batch}
-                                </p>
-                              </div>
-                              {alumni.achievement && (
-                                <span className="font-mono text-[11px] px-2.5 py-0.5 rounded-full bg-[#EBF7EE] text-[#1F7A4D] font-bold shrink-0 border border-[#D4EDDA]">
-                                  {alumni.achievement}
-                                </span>
-                              )}
-                            </div>
-
-                            <div className="text-xs text-[#4B4B46] space-y-1 bg-[#F5F5F2] p-3 rounded-lg border border-[#E8E8E4]/70">
-                              {alumni.previous_role && alumni.previous_role !== "-" && alumni.previous_role.toLowerCase() !== "tidak ada" && (
-                                <div>
-                                  <span className="text-[#8A8A84] font-medium">Latar Belakang / Profesi Sebelumnya: </span>
-                                  <span className="font-semibold text-[#141412]">{alumni.previous_role}</span>
-                                </div>
-                              )}
-                              {alumni.current_role && (
-                                <div>
-                                  <span className="text-[#8A8A84] font-medium">Posisi & Perusahaan Sekarang: </span>
-                                  <span className="font-semibold text-[#1F7A4D]">{alumni.current_role}</span>
-                                  {alumni.company && <span className="text-[#4B4B46]"> · {alumni.company}</span>}
-                                </div>
-                              )}
-                              {alumni.industry && (
-                                <div>
-                                  <span className="text-[#8A8A84] font-medium">Kategori / Industri: </span>
-                                  <span className="font-semibold text-[#141412]">{alumni.industry}</span>
-                                </div>
-                              )}
-                            </div>
-
-                            {/* Detailed Career Journey Summary (min 250 words) */}
-                            {alumni.career_journey_summary && (
-                              <div className="space-y-1.5 pt-1">
-                                <div className="font-mono text-[11px] uppercase tracking-wider text-[#1F7A4D] font-bold flex items-center gap-1.5">
-                                  <Sparkles className="w-3 h-3 text-[#1F7A4D]" />
-                                  <span>Summary Perjalanan Karir & Transformasi:</span>
-                                </div>
-                                <div className="text-[13.5px] text-[#141412] leading-relaxed whitespace-pre-line bg-[#FAFAF8] p-3.5 rounded-lg border border-[#E8E8E4]/80">
-                                  {renderFormattedTextWithLinks(alumni.career_journey_summary, { isSummary: true })}
-                                </div>
-                              </div>
-                            )}
-
-                            {alumni.why_relevant && (
-                              <p className="text-xs text-[#4B4B46] leading-relaxed bg-[#FFF6D1]/40 p-2.5 rounded-md border border-[#FFD84D]/40">
-                                💡 <span className="text-[#8A8A84] font-semibold">Relevansi untuk Leads: </span>
-                                <span className="font-medium text-[#141412]">{alumni.why_relevant}</span>
-                              </p>
-                            )}
-                          </div>
-
-                          {alumni.profile_url && (
-                            <div className="pt-2.5 border-t border-[#E8E8E4] flex items-center justify-between">
-                              <a
-                                href={alumni.profile_url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-xs font-semibold text-[#0E62FE] hover:text-[#0043CE] inline-flex items-center gap-1.5 transition-colors"
-                              >
-                                <span>Baca Kisah & Bukti Nyata Alumni di RevoU</span>
-                                <ExternalLink className="w-3.5 h-3.5 inline" />
-                              </a>
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* 2. Recommended approach */}
-                {mode === "pitch" && responseResult.recommended_approach && (
-                  <div className="bg-[#FFF6D1]/60 p-4 sm:p-5 rounded-xl border border-[#FFD84D]/60 space-y-1.5">
-                    <div className="flex items-center gap-2 font-display font-bold text-xs uppercase tracking-wider text-[#A15C00]">
-                      <Lightbulb className="w-3.5 h-3.5 text-[#A15C00]" />
-                      <span>Recommended approach for Sales</span>
-                    </div>
-                    <p className="text-sm text-[#141412] leading-relaxed">
-                      {responseResult.recommended_approach}
-                    </p>
-                  </div>
-                )}
-              </div>
-
-              {/* 3. SUGGESTED RESPONSE (TAB UI SYSTEM — UNTUK MENU PITCH) */}
-              {mode === "pitch" && responseResult.scripts && responseResult.scripts.length > 0 && (
-                <div className="space-y-3 pt-2">
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="font-mono text-xs font-bold uppercase tracking-wider text-[#8A8A84] flex items-center gap-1.5">
-                      <Layers className="w-3.5 h-3.5 text-[#8A8A84]" />
-                      <span>Suggested response ({responseResult.scripts.length} Variasi)</span>
+                  {isLoading ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-[#141412] border-t-transparent rounded-full animate-spin shrink-0 relative z-10" />
+                      <span className="animate-pulse font-medium relative z-10">Analyzing with Gemini…</span>
+                    </>
+                  ) : (
+                    <span className="relative z-10 flex items-center gap-2">
+                      <span>Generate personalized response</span>
+                      <span className="transition-transform group-hover:translate-x-1">→</span>
                     </span>
-                  </div>
-
-                  {/* Tabs bar */}
-                  <div className="flex border-b border-[#E8E8E4] gap-1 overflow-x-auto pb-px">
-                    {responseResult.scripts.map((s: any, idx: number) => {
-                      const isActive = activeScriptTab === idx;
-                      return (
-                        <button
-                          key={idx}
-                          type="button"
-                          onClick={() => setActiveScriptTab(idx)}
-                          className={`px-3.5 py-2 text-xs font-semibold rounded-t-lg transition-all border-b-2 whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${isActive
-                            ? "bg-[#F5F5F2] text-[#141412] border-[#FFD84D] font-bold"
-                            : "text-[#8A8A84] hover:text-[#141412] hover:bg-[#F5F5F2]/60 border-transparent"
-                            }`}
-                        >
-                          <span className={`w-2 h-2 rounded-full ${isActive ? "bg-[#FFCC1A]" : "bg-[#D9D9D4]"}`} />
-                          <span>{s.badge.split("—")[0].trim() || `Variasi ${idx + 1}`}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
-
-                  {/* Active Script Blockquote Card */}
-                  {responseResult.scripts[activeScriptTab] && (
-                    <div className="relative rounded-[12px] bg-[#F5F5F2] border border-[#E8E8E4] p-4 sm:p-5 text-[15px] leading-relaxed">
-                      <div className="font-mono text-[11px] uppercase tracking-wider text-[#8A8A84] mb-2 font-semibold flex items-center justify-between">
-                        <span>{responseResult.scripts[activeScriptTab].badge}</span>
-                        {responseResult.scripts[activeScriptTab]?.text && (
-                          <span className="bg-white/80 px-2 py-0.5 rounded border border-[#E8E8E4] text-[#4B4B46] font-medium">
-                            {responseResult.scripts[activeScriptTab].text.trim().split(/\s+/).length} kata
-                          </span>
-                        )}
-                      </div>
-
-                      <blockquote className="whitespace-pre-line text-[#141412] font-normal leading-relaxed pb-8">
-                        {renderFormattedTextWithLinks(responseResult.scripts[activeScriptTab].text)}
-                      </blockquote>
-
-                      {/* Floating Copy Button */}
-                      <button
-                        type="button"
-                        onClick={() => handleCopySingle(responseResult.scripts[activeScriptTab].text, activeScriptTab)}
-                        className="absolute right-3 bottom-3 font-mono text-[11px] tracking-wide font-bold px-2.5 py-1 rounded-[6px] bg-[#FFD84D] text-[#141412] hover:bg-[#FFCC1A] transition-all cursor-pointer active:scale-95 shadow-2xs flex items-center gap-1"
-                      >
-                        {copiedIndex === activeScriptTab ? (
-                          <>
-                            <Check className="w-3 h-3 text-[#141412]" />
-                            <span>Tersalin</span>
-                          </>
-                        ) : (
-                          <>
-                            <Copy className="w-3 h-3 text-[#141412]" />
-                            <span>Salin</span>
-                          </>
-                        )}
-                      </button>
-                    </div>
                   )}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleClear}
+                  className="inline-flex items-center font-display font-bold text-base px-4 py-3 rounded-[10px] border border-[#D9D9D4] bg-white text-[#141412] hover:border-[#141412] hover:bg-white hover:shadow-[0_0_20px_rgba(20,20,18,0.18),0_0_35px_rgba(255,216,77,0.38)] hover:-translate-y-0.5 active:translate-y-0.5 active:scale-[0.97] active:bg-[#E5E5DF] active:border-[#666660] active:shadow-inner select-none transition-all duration-200 ease-out cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D9D9D4] focus-visible:ring-offset-2"
+                >
+                  Clear
+                </button>
+              </div>
+
+              {/* Autonote status */}
+              <p className="text-[12.5px] text-[#8A8A84] m-0 flex items-center gap-1.5">
+                <span className="inline-flex items-center gap-1.5 font-mono text-[12px] text-[#1F7A4D]">
+                  <span className="w-2 h-2 rounded-full bg-[#1F7A4D]" />
+                  AI siap
+                </span>
+                <span>·</span>
+                <span>AI memilih program yang paling cocok dari knowledge base.</span>
+              </p>
+
+              {errorMessage && (
+                <div className="p-3 bg-red-50 border border-red-200 text-[#B42318] text-xs rounded-lg">
+                  {errorMessage}
                 </div>
               )}
 
-              {/* ===================================================== */}
-              {/* Revision / Clarification Section (.chat)             */}
-              {/* ===================================================== */}
-              <div className="border-t border-[#E8E8E4] pt-5 mt-6 space-y-4">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <div>
-                    <label
-                      htmlFor="chat-input"
-                      className="block font-mono text-xs font-bold uppercase tracking-wider text-[#8A8A84]"
-                    >
-                      Kurang pas? Klarifikasi ke AI
-                    </label>
-                    <p className="text-[12.5px] text-[#8A8A84] mt-0.5">
-                      Kirim pertanyaan atau instruksi revisi. Jawaban dan draf baru akan ditampilkan di bawah tanpa mengubah hasil awal di atas.
-                    </p>
-                  </div>
-
-                  {chatThread.length > 0 && (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setChatThread([]);
-                        setClarificationTabs({});
-                      }}
-                      className="text-xs font-mono text-[#8A8A84] hover:text-[#B42318] hover:underline transition-all cursor-pointer"
-                    >
-                      Hapus riwayat klarifikasi
-                    </button>
-                  )}
-                </div>
-
-                {/* Clarification Input Box */}
-                <div className="flex gap-2 items-end">
-                  <textarea
-                    id="chat-input"
-                    rows={2}
-                    value={chatInput}
-                    onChange={(e) => setChatInput(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" && !e.shiftKey) {
-                        e.preventDefault();
-                        handleSendClarification();
-                      }
-                    }}
-                    placeholder={
-                      mode === "alumni"
-                        ? "Contoh: Ada contoh alumni lainnya? / Berikan profil alumni yang berbeda dari sebelumnya..."
-                        : "Contoh: prospect ini sebenarnya sudah kerja 5 tahun, bukan fresh grad. Tolong sesuaikan scriptnya."
-                    }
-                    className="flex-1 text-sm text-[#141412] bg-white border border-[#D9D9D4] rounded-[10px] p-2.5 focus:outline-none focus:border-[#141412] focus:ring-2 focus:ring-[#FFF6D1] resize-none"
-                  />
-                  <button
-                    type="button"
-                    disabled={isChatLoading || !chatInput.trim()}
-                    onClick={() => handleSendClarification()}
-                    className="font-display font-bold text-sm px-4 py-2.5 rounded-[10px] bg-[#FFD84D] hover:bg-[#FFCC1A] hover:shadow-xs hover:-translate-y-0.5 active:translate-y-0.5 active:scale-95 active:bg-[#E5B500] text-[#141412] border border-[#FFD84D] transition-all duration-150 cursor-pointer shrink-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none select-none"
-                  >
-                    {isChatLoading ? "..." : "Kirim"}
-                  </button>
-                </div>
-
-                {/* Quick clarification chips */}
-                <div className="flex flex-wrap gap-1.5">
-                  {mode === "alumni" ? (
-                    <>
-                      <button
-                        type="button"
-                        onClick={() => handleSendClarification("Berikan contoh alumni lainnya yang berbeda dari yang sudah ditampilkan sebelumnya.")}
-                        className="font-mono text-xs px-2.5 py-1 rounded-full bg-[#FFD84D] text-[#141412] font-semibold cursor-pointer hover:bg-[#FFCC1A] active:scale-95 active:bg-[#E5B500] transition-all select-none flex items-center gap-1.5 shadow-2xs"
-                      >
-                        <UserCheck className="w-3.5 h-3.5 text-[#141412]" />
-                        <span>Contoh alumni lainnya</span>
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleSendClarification("Cari contoh alumni yang murni Career Switcher dari latar belakang non-IT.")}
-                        className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] hover:bg-[#F5F5F2] active:scale-95 active:bg-[#E8E8E4] bg-white transition-all cursor-pointer select-none"
-                      >
-                        Career Switcher non-IT
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleSendClarification("Cari alumni yang mendapatkan kenaikan gaji (salary increase) tinggi.")}
-                        className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] hover:bg-[#F5F5F2] active:scale-95 active:bg-[#E8E8E4] bg-white transition-all cursor-pointer select-none"
-                      >
-                        Kenaikan gaji tinggi
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleSendClarification("Cari alumni yang Hired Before Graduation (diterima kerja sebelum lulus).")}
-                        className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] hover:bg-[#F5F5F2] active:scale-95 active:bg-[#E8E8E4] bg-white transition-all cursor-pointer select-none"
-                      >
-                        Hired Before Graduation
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleSendClarification("Cari alumni dari industri Manufaktur, BUMN, atau Korporasi besar.")}
-                        className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] hover:bg-[#F5F5F2] active:scale-95 active:bg-[#E8E8E4] bg-white transition-all cursor-pointer select-none"
-                      >
-                        Manufaktur / BUMN
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      <button
-                        type="button"
-                        onClick={() => handleSendClarification("Buat use case konkret pemetaan AI framework")}
-                        className="font-mono text-xs px-2.5 py-1 rounded-full bg-[#FFD84D] text-[#141412] font-semibold cursor-pointer hover:bg-[#FFCC1A] active:scale-95 active:bg-[#E5B500] transition-all select-none"
-                      >
-                        Buat use case
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleSendClarification("Program yang direkomendasikan kurang tepat. Tolong beri alternatif program lain.")}
-                        className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] hover:bg-[#F5F5F2] active:scale-95 active:bg-[#E8E8E4] bg-white transition-all cursor-pointer select-none"
-                      >
-                        Program kurang tepat
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleSendClarification("Persona yang kamu tebak salah. Tolong sesuaikan.")}
-                        className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] hover:bg-[#F5F5F2] active:scale-95 active:bg-[#E8E8E4] bg-white transition-all cursor-pointer select-none"
-                      >
-                        Persona salah
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleSendClarification("Buat script-nya lebih singkat dan to the point.")}
-                        className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] hover:bg-[#F5F5F2] active:scale-95 active:bg-[#E8E8E4] bg-white transition-all cursor-pointer select-none"
-                      >
-                        Lebih singkat
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleSendClarification("Buat nadanya lebih formal dan sopan.")}
-                        className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] hover:bg-[#F5F5F2] active:scale-95 active:bg-[#E8E8E4] bg-white transition-all cursor-pointer select-none"
-                      >
-                        Lebih formal
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleSendClarification("Buat 2 variasi baru dengan angle yang berbeda.")}
-                        className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] hover:bg-[#F5F5F2] active:scale-95 active:bg-[#E8E8E4] bg-white transition-all cursor-pointer select-none"
-                      >
-                        Variasi lain
-                      </button>
-                    </>
-                  )}
-                </div>
-
-                {/* Loading indicator while waiting for clarification response */}
-                {isChatLoading && (
-                  <div className="p-4 bg-[#FFF6D1]/50 border border-[#FFD84D]/60 rounded-xl flex items-center gap-3 animate-pulse">
-                    <div className="w-4 h-4 border-2 border-[#141412] border-t-transparent rounded-full animate-spin shrink-0" />
-                    <span className="text-sm font-medium text-[#141412]">
-                      AI sedang memproses klarifikasi dan menyesuaikan draf script...
-                    </span>
-                  </div>
-                )}
-
-                {/* Clarification Responses List (Placed Below the Box) */}
-                {chatThread.length > 0 && (
-                  <div className="pt-2 space-y-5">
-                    <div className="flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-[#FFCC1A]" />
-                      <h3 className="font-display font-bold text-sm text-[#141412]">
-                        Hasil & Riwayat Klarifikasi ({Math.ceil(chatThread.length / 2)} sesi)
-                      </h3>
+              {/* ========================================================= */}
+              {/* D. REVISED STRUCTURED RESULTS AREA (.out)                 */}
+              {/* ========================================================= */}
+              {responseResult && (
+                <motion.div
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+                  className="border-t border-[#E8E8E4] pt-5 mt-6 space-y-6"
+                >
+                  {/* Output Header */}
+                  <div className="flex flex-wrap justify-between items-center gap-2.5 pb-2">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="font-mono text-[11px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#F5F5F2] text-[#4B4B46] font-semibold">
+                        {curConfig.title}
+                      </span>
+                      {responseResult.apiKeyInfo && (
+                        <span
+                          className="font-mono text-[11px] px-2.5 py-0.5 rounded-full bg-[#EFF6FF] text-[#1D4ED8] border border-[#BFDBFE] font-medium flex items-center gap-1.5"
+                          title="API Key yang memproses jawaban ini dalam pool Round Robin"
+                        >
+                          <Key className="w-3 h-3 text-[#2563EB]" />
+                          <span>
+                            API {responseResult.apiKeyInfo.activeKeyIndex || 1}/{responseResult.apiKeyInfo.totalKeys || 5}
+                          </span>
+                          {responseResult.apiKeyInfo.wasRotatedDueToQuota && (
+                            <span className="text-[10px] bg-[#FEF3C7] text-[#92400E] px-1 rounded font-bold">
+                              Auto-Rotated (429)
+                            </span>
+                          )}
+                        </span>
+                      )}
                     </div>
 
-                    {chatThread.map((msg, i) => {
-                      if (msg.role === "user") {
-                        return (
-                          <div key={msg.id || i} className="flex justify-end pt-1">
-                            <div className="max-w-[85%] bg-[#141412] text-white px-4 py-2.5 rounded-[14px_14px_4px_14px] text-sm shadow-2xs">
-                              <div className="flex items-center justify-between gap-3 font-mono text-[10.5px] text-[#D9D9D4] mb-1">
-                                <span>💬 Klarifikasi Kamu</span>
-                                {msg.timestamp && <span>{msg.timestamp}</span>}
-                              </div>
-                              <p className="leading-relaxed font-normal">{msg.text}</p>
-                            </div>
-                          </div>
-                        );
-                      }
+                    <div className="flex gap-2 flex-wrap items-center">
+                      <button
+                        type="button"
+                        onClick={toggleCurrentSessionFavorite}
+                        className={`font-sans text-xs font-semibold px-3 py-1.5 rounded-lg border transition-all cursor-pointer flex items-center gap-1.5 select-none active:scale-95 ${isCurrentFavorite
+                          ? "bg-[#FFF6D1] text-[#A15C00] border-[#FFD84D] shadow-2xs font-bold"
+                          : "bg-white text-[#141412] border-[#D9D9D4] hover:bg-[#F5F5F2]"
+                          }`}
+                        title={isCurrentFavorite ? "Hapus dari Favorit" : "Simpan draf ini ke koleksi Favorit"}
+                      >
+                        <Star
+                          className={`w-3.5 h-3.5 transition-colors ${isCurrentFavorite ? "fill-[#FFCC1A] text-[#A15C00]" : "text-[#8A8A84]"
+                            }`}
+                        />
+                        <span>{isCurrentFavorite ? "Tersimpan di Favorit" : "Simpan ke Favorit"}</span>
+                      </button>
 
-                      // AI Response Card
-                      const currentTab = clarificationTabs[msg.id] ?? 0;
-                      const scripts = msg.data?.scripts || [];
-
-                      return (
-                        <div
-                          key={msg.id || i}
-                          className="bg-[#FFFFFF] border-2 border-[#FFD84D]/80 rounded-[14px] p-4 sm:p-5 shadow-[0_2px_8px_rgba(255,216,77,0.15)] space-y-4"
+                      {responseResult.scripts && responseResult.scripts.length > 0 && (
+                        <button
+                          type="button"
+                          onClick={handleCopyAll}
+                          className="font-sans text-xs font-semibold px-3 py-1.5 rounded-lg border border-[#D9D9D4] bg-white hover:bg-[#F5F5F2] text-[#141412] transition-all cursor-pointer"
                         >
-                          {/* Header */}
-                          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#E8E8E4] pb-3">
-                            <div className="flex items-center gap-2">
-                              <div className="w-6 h-6 rounded-full overflow-hidden border border-[#FFD84D] bg-[#FFD84D] shrink-0 flex items-center justify-center">
-                                <img
-                                  src="/revou-logo.png"
-                                  alt="RevoU AI"
-                                  className="w-full h-full object-cover"
-                                />
-                              </div>
-                              <span className="font-display font-bold text-sm text-[#141412]">
-                                Tanggapan & Penyesuaian AI
-                              </span>
-                            </div>
+                          {copiedAll ? "Tersalin ✓" : "Salin semua script"}
+                        </button>
+                      )}
 
-                            <div className="flex items-center gap-2">
-                              {scripts.length > 0 && (
-                                <button
-                                  type="button"
-                                  onClick={() => handleCopyClarificationAll(scripts, msg.id)}
-                                  className="font-sans text-[11.5px] font-semibold px-2.5 py-1 rounded-md border border-[#D9D9D4] bg-[#F5F5F2] hover:bg-[#E8E8E4] text-[#141412] transition-all cursor-pointer"
-                                >
-                                  {copiedClarificationKey === `${msg.id}-all`
-                                    ? "Semua Tersalin ✓"
-                                    : "Salin Semua Variasi Revisi"}
-                                </button>
-                              )}
-                              {msg.timestamp && (
-                                <span className="font-mono text-[11px] text-[#8A8A84]">
-                                  {msg.timestamp}
-                                </span>
-                              )}
-                            </div>
+                      <button
+                        type="button"
+                        onClick={handleGenerate}
+                        className="font-sans text-xs font-semibold px-3 py-1.5 rounded-lg border border-[#D9D9D4] bg-white hover:bg-[#F5F5F2] text-[#141412] transition-all cursor-pointer"
+                      >
+                        Buat ulang
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* ===================================================== */}
+                  {/* SPECIFIC STRUCTURE BY ACTIVE MENU                     */}
+                  {/* ===================================================== */}
+
+                  {/* SECTION: OUTPUT CONTENT */}
+                  <div className="space-y-4">
+
+                    {/* ALUMNI MATCHES CARDS GRID (Hanya untuk menu alumni) */}
+                    {mode === "alumni" && responseResult.alumni_matches && responseResult.alumni_matches.length > 0 && (
+                      <div className="space-y-3 pt-1">
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-2 font-display font-bold text-xs uppercase tracking-wider text-[#1F7A4D]">
+                            <UserCheck className="w-3.5 h-3.5 text-[#1F7A4D]" />
+                            <span>Data Alumni & Bukti Nyata ({responseResult.alumni_matches.length} Profil Ditemukan)</span>
                           </div>
+                          <a
+                            href="https://www.revou.co/alumni"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="font-mono text-[11px] text-[#0E62FE] hover:underline inline-flex items-center gap-1 font-semibold"
+                          >
+                            <span>Direktori Lengkap Alumni</span>
+                            <ExternalLink className="w-3 h-3" />
+                          </a>
+                        </div>
 
-                          {/* AI Explanation Text */}
-                          <div className="bg-[#FFF6D1]/70 p-3.5 rounded-xl border border-[#FFD84D]/50 text-sm text-[#141412] leading-relaxed">
-                            <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-[#A15C00] block mb-1">
-                              💡 Catatan Penyesuaian:
-                            </span>
-                            <p className="font-medium">{msg.text}</p>
-                          </div>
-
-                          {/* Recommended Approach if available and in pitch mode */}
-                          {mode === "pitch" && msg.data?.recommended_approach && msg.data.recommended_approach !== msg.text && (
-                            <div className="p-3 bg-[#F5F5F2] rounded-xl border border-[#E8E8E4] text-xs leading-relaxed space-y-1">
-                              <span className="font-mono text-[10.5px] font-bold uppercase tracking-wider text-[#8A8A84] block">
-                                🎯 Saran Pendekatan Revisi:
-                              </span>
-                              <p className="text-[#141412] font-medium">{msg.data.recommended_approach}</p>
-                            </div>
-                          )}
-
-
-
-                          {/* ALUMNI MATCHES CARDS GRID (From Clarification - Hanya untuk menu alumni) */}
-                          {mode === "alumni" && msg.data?.alumni_matches && msg.data.alumni_matches.length > 0 && (
-                            <div className="space-y-3 pt-1">
-                              <div className="flex items-center justify-between gap-2">
-                                <div className="flex items-center gap-2 font-display font-bold text-xs uppercase tracking-wider text-[#1F7A4D]">
-                                  <UserCheck className="w-3.5 h-3.5 text-[#1F7A4D]" />
-                                  <span>Data Alumni Hasil Klarifikasi ({msg.data.alumni_matches.length} Profil Ditemukan)</span>
+                        <div className="grid grid-cols-1 gap-4">
+                          {responseResult.alumni_matches.map((alumni: any, i: number) => (
+                            <div
+                              key={i}
+                              className="bg-[#FFFFFF] p-4 sm:p-5 rounded-xl border border-[#E8E8E4] space-y-3.5 shadow-2xs card-interactive flex flex-col justify-between"
+                            >
+                              <div className="space-y-3">
+                                <div className="flex flex-wrap items-start justify-between gap-2 border-b border-[#E8E8E4] pb-2.5">
+                                  <div>
+                                    <h4 className="font-bold text-[15.5px] text-[#141412] leading-tight">
+                                      {alumni.name}
+                                    </h4>
+                                    <p className="text-xs text-[#8A8A84] font-medium mt-0.5">
+                                      {alumni.program_batch}
+                                    </p>
+                                  </div>
+                                  {alumni.achievement && (
+                                    <span className="font-mono text-[11px] px-2.5 py-0.5 rounded-full bg-[#EBF7EE] text-[#1F7A4D] font-bold shrink-0 border border-[#D4EDDA]">
+                                      {alumni.achievement}
+                                    </span>
+                                  )}
                                 </div>
-                                <a
-                                  href="https://www.revou.co/alumni"
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="font-mono text-[11px] text-[#0E62FE] hover:underline inline-flex items-center gap-1 font-semibold"
-                                >
-                                  <span>Direktori Lengkap Alumni</span>
-                                  <ExternalLink className="w-3 h-3" />
-                                </a>
+
+                                <div className="text-xs text-[#4B4B46] space-y-1 bg-[#F5F5F2] p-3 rounded-lg border border-[#E8E8E4]/70">
+                                  {alumni.previous_role && alumni.previous_role !== "-" && alumni.previous_role.toLowerCase() !== "tidak ada" && (
+                                    <div>
+                                      <span className="text-[#8A8A84] font-medium">Latar Belakang / Profesi Sebelumnya: </span>
+                                      <span className="font-semibold text-[#141412]">{alumni.previous_role}</span>
+                                    </div>
+                                  )}
+                                  {alumni.current_role && (
+                                    <div>
+                                      <span className="text-[#8A8A84] font-medium">Posisi & Perusahaan Sekarang: </span>
+                                      <span className="font-semibold text-[#1F7A4D]">{alumni.current_role}</span>
+                                      {alumni.company && <span className="text-[#4B4B46]"> · {alumni.company}</span>}
+                                    </div>
+                                  )}
+                                  {alumni.industry && (
+                                    <div>
+                                      <span className="text-[#8A8A84] font-medium">Kategori / Industri: </span>
+                                      <span className="font-semibold text-[#141412]">{alumni.industry}</span>
+                                    </div>
+                                  )}
+                                </div>
+
+                                {/* Detailed Career Journey Summary (min 250 words) */}
+                                {alumni.career_journey_summary && (
+                                  <div className="space-y-1.5 pt-1">
+                                    <div className="font-mono text-[11px] uppercase tracking-wider text-[#1F7A4D] font-bold flex items-center gap-1.5">
+                                      <Sparkles className="w-3 h-3 text-[#1F7A4D]" />
+                                      <span>Summary Perjalanan Karir & Transformasi:</span>
+                                    </div>
+                                    <div className="text-[13.5px] text-[#141412] leading-relaxed whitespace-pre-line bg-[#FAFAF8] p-3.5 rounded-lg border border-[#E8E8E4]/80">
+                                      {renderFormattedTextWithLinks(alumni.career_journey_summary, { isSummary: true })}
+                                    </div>
+                                  </div>
+                                )}
+
+                                {alumni.why_relevant && (
+                                  <p className="text-xs text-[#4B4B46] leading-relaxed bg-[#FFF6D1]/40 p-2.5 rounded-md border border-[#FFD84D]/40">
+                                    💡 <span className="text-[#8A8A84] font-semibold">Relevansi untuk Leads: </span>
+                                    <span className="font-medium text-[#141412]">{alumni.why_relevant}</span>
+                                  </p>
+                                )}
                               </div>
 
-                              <div className="grid grid-cols-1 gap-4">
-                                {msg.data.alumni_matches.map((alumni: any, idx: number) => (
-                                  <div
-                                    key={idx}
-                                    className="bg-[#FFFFFF] p-4 sm:p-5 rounded-xl border border-[#E8E8E4] space-y-3.5 shadow-2xs hover:border-[#D9D9D4] transition-all flex flex-col justify-between"
+                              {alumni.profile_url && (
+                                <div className="pt-2.5 border-t border-[#E8E8E4] flex items-center justify-between">
+                                  <a
+                                    href={alumni.profile_url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-xs font-semibold text-[#0E62FE] hover:text-[#0043CE] inline-flex items-center gap-1.5 transition-colors"
                                   >
-                                    <div className="space-y-3">
-                                      <div className="flex flex-wrap items-start justify-between gap-2 border-b border-[#E8E8E4] pb-2.5">
-                                        <div>
-                                          <h4 className="font-bold text-[15.5px] text-[#141412] leading-tight">
-                                            {alumni.name}
-                                          </h4>
-                                          <p className="text-xs text-[#8A8A84] font-medium mt-0.5">
-                                            {alumni.program_batch}
-                                          </p>
+                                    <span>Baca Kisah & Bukti Nyata Alumni di RevoU</span>
+                                    <ExternalLink className="w-3.5 h-3.5 inline" />
+                                  </a>
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* 2. Recommended approach */}
+                    {mode === "pitch" && responseResult.recommended_approach && (
+                      <div className="bg-[#FFF6D1]/60 p-4 sm:p-5 rounded-xl border border-[#FFD84D]/60 space-y-1.5 card-interactive">
+                        <div className="flex items-center gap-2 font-display font-bold text-xs uppercase tracking-wider text-[#A15C00]">
+                          <Lightbulb className="w-3.5 h-3.5 text-[#A15C00]" />
+                          <span>Recommended approach for Sales</span>
+                        </div>
+                        <p className="text-sm text-[#141412] leading-relaxed">
+                          {responseResult.recommended_approach}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* 3. SUGGESTED RESPONSE (TAB UI SYSTEM — UNTUK MENU PITCH) */}
+                  {mode === "pitch" && responseResult.scripts && responseResult.scripts.length > 0 && (
+                    <div className="space-y-3 pt-2">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="font-mono text-xs font-bold uppercase tracking-wider text-[#8A8A84] flex items-center gap-1.5">
+                          <Layers className="w-3.5 h-3.5 text-[#8A8A84]" />
+                          <span>Suggested response ({responseResult.scripts.length} Variasi)</span>
+                        </span>
+                      </div>
+
+                      {/* Tabs bar */}
+                      <div className="flex border-b border-[#E8E8E4] gap-1 overflow-x-auto pb-px">
+                        {responseResult.scripts.map((s: any, idx: number) => {
+                          const isActive = activeScriptTab === idx;
+                          return (
+                            <button
+                              key={idx}
+                              type="button"
+                              onClick={() => setActiveScriptTab(idx)}
+                              className={`px-3.5 py-2 text-xs font-semibold rounded-t-lg transition-all border-b-2 whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${isActive
+                                ? "bg-[#F5F5F2] text-[#141412] border-[#FFD84D] font-bold"
+                                : "text-[#8A8A84] hover:text-[#141412] hover:bg-[#F5F5F2]/60 border-transparent"
+                                }`}
+                            >
+                              <span className={`w-2 h-2 rounded-full ${isActive ? "bg-[#FFCC1A]" : "bg-[#D9D9D4]"}`} />
+                              <span>{s.badge.split("—")[0].trim() || `Variasi ${idx + 1}`}</span>
+                            </button>
+                          );
+                        })}
+                      </div>
+
+                      {/* Active Script Blockquote Card */}
+                      {responseResult.scripts[activeScriptTab] && (
+                        <div className="relative rounded-[12px] bg-[#F5F5F2] border border-[#E8E8E4] p-4 sm:p-5 text-[15px] leading-relaxed card-interactive">
+                          <div className="font-mono text-[11px] uppercase tracking-wider text-[#8A8A84] mb-2 font-semibold flex items-center justify-between">
+                            <span>{responseResult.scripts[activeScriptTab].badge}</span>
+                            {responseResult.scripts[activeScriptTab]?.text && (
+                              <span className="bg-white/80 px-2 py-0.5 rounded border border-[#E8E8E4] text-[#4B4B46] font-medium">
+                                {responseResult.scripts[activeScriptTab].text.trim().split(/\s+/).length} kata
+                              </span>
+                            )}
+                          </div>
+
+                          <blockquote className="whitespace-pre-line text-[#141412] font-normal leading-relaxed pb-8">
+                            {renderFormattedTextWithLinks(responseResult.scripts[activeScriptTab].text)}
+                          </blockquote>
+
+                          {/* Floating Copy Button */}
+                          <button
+                            type="button"
+                            onClick={() => handleCopySingle(responseResult.scripts[activeScriptTab].text, activeScriptTab)}
+                            className="absolute right-3 bottom-3 font-mono text-[11px] tracking-wide font-bold px-2.5 py-1 rounded-[6px] bg-[#FFD84D] text-[#141412] hover:bg-[#FFCC1A] transition-all cursor-pointer active:scale-95 shadow-2xs flex items-center gap-1"
+                          >
+                            {copiedIndex === activeScriptTab ? (
+                              <>
+                                <Check className="w-3 h-3 text-[#141412]" />
+                                <span>Tersalin</span>
+                              </>
+                            ) : (
+                              <>
+                                <Copy className="w-3 h-3 text-[#141412]" />
+                                <span>Salin</span>
+                              </>
+                            )}
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* ===================================================== */}
+                  {/* Revision / Clarification Section (.chat)             */}
+                  {/* ===================================================== */}
+                  <div className="border-t border-[#E8E8E4] pt-5 mt-6 space-y-4">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <div>
+                        <label
+                          htmlFor="chat-input"
+                          className="block font-mono text-xs font-bold uppercase tracking-wider text-[#8A8A84]"
+                        >
+                          Kurang pas? Klarifikasi ke AI
+                        </label>
+                        <p className="text-[12.5px] text-[#8A8A84] mt-0.5">
+                          Kirim pertanyaan atau instruksi revisi. Jawaban dan draf baru akan ditampilkan di bawah tanpa mengubah hasil awal di atas.
+                        </p>
+                      </div>
+
+                      {chatThread.length > 0 && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setChatThread([]);
+                            setClarificationTabs({});
+                          }}
+                          className="text-xs font-mono text-[#8A8A84] hover:text-[#B42318] hover:underline transition-all cursor-pointer"
+                        >
+                          Hapus riwayat klarifikasi
+                        </button>
+                      )}
+                    </div>
+
+                    {/* Clarification Input Box */}
+                    <div className="flex gap-2 items-end">
+                      <textarea
+                        id="chat-input"
+                        rows={2}
+                        value={chatInput}
+                        onChange={(e) => setChatInput(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" && !e.shiftKey) {
+                            e.preventDefault();
+                            handleSendClarification();
+                          }
+                        }}
+                        placeholder={
+                          mode === "alumni"
+                            ? "Contoh: Ada contoh alumni lainnya? / Berikan profil alumni yang berbeda dari sebelumnya..."
+                            : "Contoh: prospect ini sebenarnya sudah kerja 5 tahun, bukan fresh grad. Tolong sesuaikan scriptnya."
+                        }
+                        className="flex-1 text-sm text-[#141412] bg-white border border-[#D9D9D4] rounded-[10px] p-2.5 focus:outline-none focus:border-[#141412] focus:ring-2 focus:ring-[#FFF6D1] resize-none"
+                      />
+                      <button
+                        type="button"
+                        disabled={isChatLoading || !chatInput.trim()}
+                        onClick={() => handleSendClarification()}
+                        className="font-display font-bold text-sm px-4 py-2.5 rounded-[10px] bg-[#FFD84D] hover:bg-[#FFCC1A] hover:shadow-xs hover:-translate-y-0.5 active:translate-y-0.5 active:scale-95 active:bg-[#E5B500] text-[#141412] border border-[#FFD84D] transition-all duration-150 cursor-pointer shrink-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none select-none"
+                      >
+                        {isChatLoading ? "..." : "Kirim"}
+                      </button>
+                    </div>
+
+                    {/* Quick clarification chips */}
+                    <div className="flex flex-wrap gap-1.5">
+                      {mode === "alumni" ? (
+                        <>
+                          <button
+                            type="button"
+                            onClick={() => handleSendClarification("Berikan contoh alumni lainnya yang berbeda dari yang sudah ditampilkan sebelumnya.")}
+                            className="font-mono text-xs px-2.5 py-1 rounded-full bg-[#FFD84D] text-[#141412] font-semibold cursor-pointer hover:bg-[#FFCC1A] active:scale-95 active:bg-[#E5B500] transition-all select-none flex items-center gap-1.5 shadow-2xs"
+                          >
+                            <UserCheck className="w-3.5 h-3.5 text-[#141412]" />
+                            <span>Contoh alumni lainnya</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleSendClarification("Cari contoh alumni yang murni Career Switcher dari latar belakang non-IT.")}
+                            className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] hover:bg-[#F5F5F2] active:scale-95 active:bg-[#E8E8E4] bg-white transition-all cursor-pointer select-none"
+                          >
+                            Career Switcher non-IT
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleSendClarification("Cari alumni yang mendapatkan kenaikan gaji (salary increase) tinggi.")}
+                            className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] hover:bg-[#F5F5F2] active:scale-95 active:bg-[#E8E8E4] bg-white transition-all cursor-pointer select-none"
+                          >
+                            Kenaikan gaji tinggi
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleSendClarification("Cari alumni yang Hired Before Graduation (diterima kerja sebelum lulus).")}
+                            className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] hover:bg-[#F5F5F2] active:scale-95 active:bg-[#E8E8E4] bg-white transition-all cursor-pointer select-none"
+                          >
+                            Hired Before Graduation
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleSendClarification("Cari alumni dari industri Manufaktur, BUMN, atau Korporasi besar.")}
+                            className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] hover:bg-[#F5F5F2] active:scale-95 active:bg-[#E8E8E4] bg-white transition-all cursor-pointer select-none"
+                          >
+                            Manufaktur / BUMN
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <button
+                            type="button"
+                            onClick={() => handleSendClarification("Buat use case konkret pemetaan AI framework")}
+                            className="font-mono text-xs px-2.5 py-1 rounded-full bg-[#FFD84D] text-[#141412] font-semibold cursor-pointer hover:bg-[#FFCC1A] active:scale-95 active:bg-[#E5B500] transition-all select-none"
+                          >
+                            Buat use case
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleSendClarification("Program yang direkomendasikan kurang tepat. Tolong beri alternatif program lain.")}
+                            className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] hover:bg-[#F5F5F2] active:scale-95 active:bg-[#E8E8E4] bg-white transition-all cursor-pointer select-none"
+                          >
+                            Program kurang tepat
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleSendClarification("Persona yang kamu tebak salah. Tolong sesuaikan.")}
+                            className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] hover:bg-[#F5F5F2] active:scale-95 active:bg-[#E8E8E4] bg-white transition-all cursor-pointer select-none"
+                          >
+                            Persona salah
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleSendClarification("Buat script-nya lebih singkat dan to the point.")}
+                            className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] hover:bg-[#F5F5F2] active:scale-95 active:bg-[#E8E8E4] bg-white transition-all cursor-pointer select-none"
+                          >
+                            Lebih singkat
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleSendClarification("Buat nadanya lebih formal dan sopan.")}
+                            className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] hover:bg-[#F5F5F2] active:scale-95 active:bg-[#E8E8E4] bg-white transition-all cursor-pointer select-none"
+                          >
+                            Lebih formal
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleSendClarification("Buat 2 variasi baru dengan angle yang berbeda.")}
+                            className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] hover:bg-[#F5F5F2] active:scale-95 active:bg-[#E8E8E4] bg-white transition-all cursor-pointer select-none"
+                          >
+                            Variasi lain
+                          </button>
+                        </>
+                      )}
+                    </div>
+
+                    {/* Loading indicator while waiting for clarification response */}
+                    {isChatLoading && (
+                      <div className="p-4 bg-[#FFF6D1]/50 border border-[#FFD84D]/60 rounded-xl flex items-center gap-3 animate-pulse">
+                        <div className="w-4 h-4 border-2 border-[#141412] border-t-transparent rounded-full animate-spin shrink-0" />
+                        <span className="text-sm font-medium text-[#141412]">
+                          AI sedang memproses klarifikasi dan menyesuaikan draf script...
+                        </span>
+                      </div>
+                    )}
+
+                    {/* Clarification Responses List (Placed Below the Box) */}
+                    {chatThread.length > 0 && (
+                      <div className="pt-2 space-y-5">
+                        <div className="flex items-center gap-2">
+                          <span className="w-2 h-2 rounded-full bg-[#FFCC1A]" />
+                          <h3 className="font-display font-bold text-sm text-[#141412]">
+                            Hasil & Riwayat Klarifikasi ({Math.ceil(chatThread.length / 2)} sesi)
+                          </h3>
+                        </div>
+
+                        {chatThread.map((msg, i) => {
+                          if (msg.role === "user") {
+                            return (
+                              <div key={msg.id || i} className="flex justify-end pt-1">
+                                <div className="max-w-[85%] bg-[#141412] text-white px-4 py-2.5 rounded-[14px_14px_4px_14px] text-sm shadow-2xs">
+                                  <div className="flex items-center justify-between gap-3 font-mono text-[10.5px] text-[#D9D9D4] mb-1">
+                                    <span>💬 Klarifikasi Kamu</span>
+                                    {msg.timestamp && <span>{msg.timestamp}</span>}
+                                  </div>
+                                  <p className="leading-relaxed font-normal">{msg.text}</p>
+                                </div>
+                              </div>
+                            );
+                          }
+
+                          // AI Response Card
+                          const currentTab = clarificationTabs[msg.id] ?? 0;
+                          const scripts = msg.data?.scripts || [];
+
+                          return (
+                            <div
+                              key={msg.id || i}
+                              className="bg-[#FFFFFF] border-2 border-[#FFD84D]/80 rounded-[14px] p-4 sm:p-5 shadow-[0_2px_8px_rgba(255,216,77,0.15)] space-y-4"
+                            >
+                              {/* Header */}
+                              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#E8E8E4] pb-3">
+                                <div className="flex items-center gap-2">
+                                  <div className="w-6 h-6 rounded-full overflow-hidden border border-[#FFD84D] bg-[#FFD84D] shrink-0 flex items-center justify-center">
+                                    <img
+                                      src="/revou-logo.png"
+                                      alt="RevoU AI"
+                                      className="w-full h-full object-cover"
+                                    />
+                                  </div>
+                                  <span className="font-display font-bold text-sm text-[#141412]">
+                                    Tanggapan & Penyesuaian AI
+                                  </span>
+                                </div>
+
+                                <div className="flex items-center gap-2">
+                                  {scripts.length > 0 && (
+                                    <button
+                                      type="button"
+                                      onClick={() => handleCopyClarificationAll(scripts, msg.id)}
+                                      className="font-sans text-[11.5px] font-semibold px-2.5 py-1 rounded-md border border-[#D9D9D4] bg-[#F5F5F2] hover:bg-[#E8E8E4] text-[#141412] transition-all cursor-pointer"
+                                    >
+                                      {copiedClarificationKey === `${msg.id}-all`
+                                        ? "Semua Tersalin ✓"
+                                        : "Salin Semua Variasi Revisi"}
+                                    </button>
+                                  )}
+                                  {msg.timestamp && (
+                                    <span className="font-mono text-[11px] text-[#8A8A84]">
+                                      {msg.timestamp}
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+
+                              {/* AI Explanation Text */}
+                              <div className="bg-[#FFF6D1]/70 p-3.5 rounded-xl border border-[#FFD84D]/50 text-sm text-[#141412] leading-relaxed">
+                                <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-[#A15C00] block mb-1">
+                                  💡 Catatan Penyesuaian:
+                                </span>
+                                <p className="font-medium">{msg.text}</p>
+                              </div>
+
+                              {/* Recommended Approach if available and in pitch mode */}
+                              {mode === "pitch" && msg.data?.recommended_approach && msg.data.recommended_approach !== msg.text && (
+                                <div className="p-3 bg-[#F5F5F2] rounded-xl border border-[#E8E8E4] text-xs leading-relaxed space-y-1">
+                                  <span className="font-mono text-[10.5px] font-bold uppercase tracking-wider text-[#8A8A84] block">
+                                    🎯 Saran Pendekatan Revisi:
+                                  </span>
+                                  <p className="text-[#141412] font-medium">{msg.data.recommended_approach}</p>
+                                </div>
+                              )}
+
+
+
+                              {/* ALUMNI MATCHES CARDS GRID (From Clarification - Hanya untuk menu alumni) */}
+                              {mode === "alumni" && msg.data?.alumni_matches && msg.data.alumni_matches.length > 0 && (
+                                <div className="space-y-3 pt-1">
+                                  <div className="flex items-center justify-between gap-2">
+                                    <div className="flex items-center gap-2 font-display font-bold text-xs uppercase tracking-wider text-[#1F7A4D]">
+                                      <UserCheck className="w-3.5 h-3.5 text-[#1F7A4D]" />
+                                      <span>Data Alumni Hasil Klarifikasi ({msg.data.alumni_matches.length} Profil Ditemukan)</span>
+                                    </div>
+                                    <a
+                                      href="https://www.revou.co/alumni"
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="font-mono text-[11px] text-[#0E62FE] hover:underline inline-flex items-center gap-1 font-semibold"
+                                    >
+                                      <span>Direktori Lengkap Alumni</span>
+                                      <ExternalLink className="w-3 h-3" />
+                                    </a>
+                                  </div>
+
+                                  <div className="grid grid-cols-1 gap-4">
+                                    {msg.data.alumni_matches.map((alumni: any, idx: number) => (
+                                      <div
+                                        key={idx}
+                                        className="bg-[#FFFFFF] p-4 sm:p-5 rounded-xl border border-[#E8E8E4] space-y-3.5 shadow-2xs hover:border-[#D9D9D4] transition-all flex flex-col justify-between"
+                                      >
+                                        <div className="space-y-3">
+                                          <div className="flex flex-wrap items-start justify-between gap-2 border-b border-[#E8E8E4] pb-2.5">
+                                            <div>
+                                              <h4 className="font-bold text-[15.5px] text-[#141412] leading-tight">
+                                                {alumni.name}
+                                              </h4>
+                                              <p className="text-xs text-[#8A8A84] font-medium mt-0.5">
+                                                {alumni.program_batch}
+                                              </p>
+                                            </div>
+                                            {alumni.achievement && (
+                                              <span className="font-mono text-[11px] px-2.5 py-0.5 rounded-full bg-[#EBF7EE] text-[#1F7A4D] font-bold shrink-0 border border-[#D4EDDA]">
+                                                {alumni.achievement}
+                                              </span>
+                                            )}
+                                          </div>
+
+                                          <div className="text-xs text-[#4B4B46] space-y-1 bg-[#F5F5F2] p-3 rounded-lg border border-[#E8E8E4]/70">
+                                            {alumni.previous_role && alumni.previous_role !== "-" && alumni.previous_role.toLowerCase() !== "tidak ada" && (
+                                              <div>
+                                                <span className="text-[#8A8A84] font-medium">Latar Belakang / Profesi Sebelumnya: </span>
+                                                <span className="font-semibold text-[#141412]">{alumni.previous_role}</span>
+                                              </div>
+                                            )}
+                                            {alumni.current_role && (
+                                              <div>
+                                                <span className="text-[#8A8A84] font-medium">Posisi & Perusahaan Sekarang: </span>
+                                                <span className="font-semibold text-[#1F7A4D]">{alumni.current_role}</span>
+                                                {alumni.company && <span className="text-[#4B4B46]"> · {alumni.company}</span>}
+                                              </div>
+                                            )}
+                                            {alumni.industry && (
+                                              <div>
+                                                <span className="text-[#8A8A84] font-medium">Kategori / Industri: </span>
+                                                <span className="font-semibold text-[#141412]">{alumni.industry}</span>
+                                              </div>
+                                            )}
+                                          </div>
+
+                                          {/* Detailed Career Journey Summary (min 250 words) */}
+                                          {alumni.career_journey_summary && (
+                                            <div className="space-y-1.5 pt-1">
+                                              <div className="font-mono text-[11px] uppercase tracking-wider text-[#1F7A4D] font-bold flex items-center gap-1.5">
+                                                <Sparkles className="w-3 h-3 text-[#1F7A4D]" />
+                                                <span>Summary Perjalanan Karir & Transformasi:</span>
+                                              </div>
+                                              <div className="text-[13.5px] text-[#141412] leading-relaxed whitespace-pre-line bg-[#FAFAF8] p-3.5 rounded-lg border border-[#E8E8E4]/80">
+                                                {renderFormattedTextWithLinks(alumni.career_journey_summary, { isSummary: true })}
+                                              </div>
+                                            </div>
+                                          )}
+
+                                          {alumni.why_relevant && (
+                                            <p className="text-xs text-[#4B4B46] leading-relaxed bg-[#FFF6D1]/40 p-2.5 rounded-md border border-[#FFD84D]/40">
+                                              💡 <span className="text-[#8A8A84] font-semibold">Relevansi untuk Leads: </span>
+                                              <span className="font-medium text-[#141412]">{alumni.why_relevant}</span>
+                                            </p>
+                                          )}
                                         </div>
-                                        {alumni.achievement && (
-                                          <span className="font-mono text-[11px] px-2.5 py-0.5 rounded-full bg-[#EBF7EE] text-[#1F7A4D] font-bold shrink-0 border border-[#D4EDDA]">
-                                            {alumni.achievement}
+
+                                        {alumni.profile_url && (
+                                          <div className="pt-2.5 border-t border-[#E8E8E4] flex items-center justify-between">
+                                            <a
+                                              href={alumni.profile_url}
+                                              target="_blank"
+                                              rel="noopener noreferrer"
+                                              className="text-xs font-semibold text-[#0E62FE] hover:text-[#0043CE] inline-flex items-center gap-1.5 transition-colors"
+                                            >
+                                              <span>Baca Kisah & Bukti Nyata Alumni di RevoU</span>
+                                              <ExternalLink className="w-3.5 h-3.5 inline" />
+                                            </a>
+                                          </div>
+                                        )}
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+
+                              {/* Revised Script Variations (for pitch mode) */}
+                              {mode === "pitch" && scripts.length > 0 && (
+                                <div className="space-y-2.5 pt-1">
+                                  <div className="flex items-center justify-between gap-2">
+                                    <span className="font-mono text-xs font-bold uppercase tracking-wider text-[#8A8A84] flex items-center gap-1.5">
+                                      <Layers className="w-3.5 h-3.5 text-[#8A8A84]" />
+                                      <span>Draf Script Hasil Klarifikasi ({scripts.length} Variasi)</span>
+                                    </span>
+                                  </div>
+
+                                  {/* Tabs Bar */}
+                                  <div className="flex border-b border-[#E8E8E4] gap-1 overflow-x-auto pb-px">
+                                    {scripts.map((s: any, idx: number) => {
+                                      const isActive = currentTab === idx;
+                                      return (
+                                        <button
+                                          key={idx}
+                                          type="button"
+                                          onClick={() =>
+                                            setClarificationTabs((prev) => ({ ...prev, [msg.id]: idx }))
+                                          }
+                                          className={`px-3 py-1.5 text-xs font-semibold rounded-t-lg transition-all border-b-2 whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${isActive
+                                            ? "bg-[#F5F5F2] text-[#141412] border-[#FFD84D] font-bold"
+                                            : "text-[#8A8A84] hover:text-[#141412] hover:bg-[#F5F5F2]/60 border-transparent"
+                                            }`}
+                                        >
+                                          <span
+                                            className={`w-2 h-2 rounded-full ${isActive ? "bg-[#FFCC1A]" : "bg-[#D9D9D4]"
+                                              }`}
+                                          />
+                                          <span>{s.badge?.split("—")[0]?.trim() || `Variasi ${idx + 1}`}</span>
+                                        </button>
+                                      );
+                                    })}
+                                  </div>
+
+                                  {/* Active Script Content */}
+                                  {scripts[currentTab] && (
+                                    <div className="relative rounded-[12px] bg-[#F5F5F2] border border-[#E8E8E4] p-4 text-[14.5px] leading-relaxed">
+                                      <div className="font-mono text-[11px] uppercase tracking-wider text-[#8A8A84] mb-2 font-semibold flex items-center justify-between">
+                                        <span>{scripts[currentTab].badge}</span>
+                                        {scripts[currentTab]?.text && (
+                                          <span className="bg-white/80 px-2 py-0.5 rounded border border-[#E8E8E4] text-[#4B4B46] font-medium">
+                                            {scripts[currentTab].text.trim().split(/\s+/).length} kata
                                           </span>
                                         )}
                                       </div>
 
-                                      <div className="text-xs text-[#4B4B46] space-y-1 bg-[#F5F5F2] p-3 rounded-lg border border-[#E8E8E4]/70">
-                                        {alumni.previous_role && alumni.previous_role !== "-" && alumni.previous_role.toLowerCase() !== "tidak ada" && (
-                                          <div>
-                                            <span className="text-[#8A8A84] font-medium">Latar Belakang / Profesi Sebelumnya: </span>
-                                            <span className="font-semibold text-[#141412]">{alumni.previous_role}</span>
-                                          </div>
-                                        )}
-                                        {alumni.current_role && (
-                                          <div>
-                                            <span className="text-[#8A8A84] font-medium">Posisi & Perusahaan Sekarang: </span>
-                                            <span className="font-semibold text-[#1F7A4D]">{alumni.current_role}</span>
-                                            {alumni.company && <span className="text-[#4B4B46]"> · {alumni.company}</span>}
-                                          </div>
-                                        )}
-                                        {alumni.industry && (
-                                          <div>
-                                            <span className="text-[#8A8A84] font-medium">Kategori / Industri: </span>
-                                            <span className="font-semibold text-[#141412]">{alumni.industry}</span>
-                                          </div>
-                                        )}
-                                      </div>
+                                      <blockquote className="whitespace-pre-line text-[#141412] font-normal leading-relaxed pb-8">
+                                        {renderFormattedTextWithLinks(scripts[currentTab].text)}
+                                      </blockquote>
 
-                                      {/* Detailed Career Journey Summary (min 250 words) */}
-                                      {alumni.career_journey_summary && (
-                                        <div className="space-y-1.5 pt-1">
-                                          <div className="font-mono text-[11px] uppercase tracking-wider text-[#1F7A4D] font-bold flex items-center gap-1.5">
-                                            <Sparkles className="w-3 h-3 text-[#1F7A4D]" />
-                                            <span>Summary Perjalanan Karir & Transformasi:</span>
-                                          </div>
-                                          <div className="text-[13.5px] text-[#141412] leading-relaxed whitespace-pre-line bg-[#FAFAF8] p-3.5 rounded-lg border border-[#E8E8E4]/80">
-                                            {renderFormattedTextWithLinks(alumni.career_journey_summary, { isSummary: true })}
-                                          </div>
-                                        </div>
-                                      )}
-
-                                      {alumni.why_relevant && (
-                                        <p className="text-xs text-[#4B4B46] leading-relaxed bg-[#FFF6D1]/40 p-2.5 rounded-md border border-[#FFD84D]/40">
-                                          💡 <span className="text-[#8A8A84] font-semibold">Relevansi untuk Leads: </span>
-                                          <span className="font-medium text-[#141412]">{alumni.why_relevant}</span>
-                                        </p>
-                                      )}
+                                      {/* Copy Button */}
+                                      <button
+                                        type="button"
+                                        onClick={() =>
+                                          handleCopyClarificationSingle(
+                                            scripts[currentTab].text,
+                                            `${msg.id}-${currentTab}`
+                                          )
+                                        }
+                                        className="absolute right-3 bottom-3 font-mono text-[11px] tracking-wide font-bold px-2.5 py-1 rounded-[6px] bg-[#FFD84D] text-[#141412] hover:bg-[#FFCC1A] transition-all cursor-pointer active:scale-95 shadow-2xs flex items-center gap-1"
+                                      >
+                                        {copiedClarificationKey === `${msg.id}-${currentTab}` ? (
+                                          <>
+                                            <Check className="w-3 h-3 text-[#141412]" />
+                                            <span>Tersalin</span>
+                                          </>
+                                        ) : (
+                                          <>
+                                            <Copy className="w-3 h-3 text-[#141412]" />
+                                            <span>Salin</span>
+                                          </>
+                                        )}
+                                      </button>
                                     </div>
-
-                                    {alumni.profile_url && (
-                                      <div className="pt-2.5 border-t border-[#E8E8E4] flex items-center justify-between">
-                                        <a
-                                          href={alumni.profile_url}
-                                          target="_blank"
-                                          rel="noopener noreferrer"
-                                          className="text-xs font-semibold text-[#0E62FE] hover:text-[#0043CE] inline-flex items-center gap-1.5 transition-colors"
-                                        >
-                                          <span>Baca Kisah & Bukti Nyata Alumni di RevoU</span>
-                                          <ExternalLink className="w-3.5 h-3.5 inline" />
-                                        </a>
-                                      </div>
-                                    )}
-                                  </div>
-                                ))}
-                              </div>
-                            </div>
-                          )}
-
-                          {/* Revised Script Variations (for pitch mode) */}
-                          {mode === "pitch" && scripts.length > 0 && (
-                            <div className="space-y-2.5 pt-1">
-                              <div className="flex items-center justify-between gap-2">
-                                <span className="font-mono text-xs font-bold uppercase tracking-wider text-[#8A8A84] flex items-center gap-1.5">
-                                  <Layers className="w-3.5 h-3.5 text-[#8A8A84]" />
-                                  <span>Draf Script Hasil Klarifikasi ({scripts.length} Variasi)</span>
-                                </span>
-                              </div>
-
-                              {/* Tabs Bar */}
-                              <div className="flex border-b border-[#E8E8E4] gap-1 overflow-x-auto pb-px">
-                                {scripts.map((s: any, idx: number) => {
-                                  const isActive = currentTab === idx;
-                                  return (
-                                    <button
-                                      key={idx}
-                                      type="button"
-                                      onClick={() =>
-                                        setClarificationTabs((prev) => ({ ...prev, [msg.id]: idx }))
-                                      }
-                                      className={`px-3 py-1.5 text-xs font-semibold rounded-t-lg transition-all border-b-2 whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${isActive
-                                        ? "bg-[#F5F5F2] text-[#141412] border-[#FFD84D] font-bold"
-                                        : "text-[#8A8A84] hover:text-[#141412] hover:bg-[#F5F5F2]/60 border-transparent"
-                                        }`}
-                                    >
-                                      <span
-                                        className={`w-2 h-2 rounded-full ${isActive ? "bg-[#FFCC1A]" : "bg-[#D9D9D4]"
-                                          }`}
-                                      />
-                                      <span>{s.badge?.split("—")[0]?.trim() || `Variasi ${idx + 1}`}</span>
-                                    </button>
-                                  );
-                                })}
-                              </div>
-
-                              {/* Active Script Content */}
-                              {scripts[currentTab] && (
-                                <div className="relative rounded-[12px] bg-[#F5F5F2] border border-[#E8E8E4] p-4 text-[14.5px] leading-relaxed">
-                                  <div className="font-mono text-[11px] uppercase tracking-wider text-[#8A8A84] mb-2 font-semibold flex items-center justify-between">
-                                    <span>{scripts[currentTab].badge}</span>
-                                    {scripts[currentTab]?.text && (
-                                      <span className="bg-white/80 px-2 py-0.5 rounded border border-[#E8E8E4] text-[#4B4B46] font-medium">
-                                        {scripts[currentTab].text.trim().split(/\s+/).length} kata
-                                      </span>
-                                    )}
-                                  </div>
-
-                                  <blockquote className="whitespace-pre-line text-[#141412] font-normal leading-relaxed pb-8">
-                                    {renderFormattedTextWithLinks(scripts[currentTab].text)}
-                                  </blockquote>
-
-                                  {/* Copy Button */}
-                                  <button
-                                    type="button"
-                                    onClick={() =>
-                                      handleCopyClarificationSingle(
-                                        scripts[currentTab].text,
-                                        `${msg.id}-${currentTab}`
-                                      )
-                                    }
-                                    className="absolute right-3 bottom-3 font-mono text-[11px] tracking-wide font-bold px-2.5 py-1 rounded-[6px] bg-[#FFD84D] text-[#141412] hover:bg-[#FFCC1A] transition-all cursor-pointer active:scale-95 shadow-2xs flex items-center gap-1"
-                                  >
-                                    {copiedClarificationKey === `${msg.id}-${currentTab}` ? (
-                                      <>
-                                        <Check className="w-3 h-3 text-[#141412]" />
-                                        <span>Tersalin</span>
-                                      </>
-                                    ) : (
-                                      <>
-                                        <Copy className="w-3 h-3 text-[#141412]" />
-                                        <span>Salin</span>
-                                      </>
-                                    )}
-                                  </button>
+                                  )}
                                 </div>
                               )}
                             </div>
-                          )}
-                        </div>
-                      );
-                    })}
+                          );
+                        })}
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-            </div>
+                </motion.div>
+              )}
+            </>
           )}
-        </>
-      )}
-    </section>
+        </motion.section>
 
         {/* ========================================================= */}
         {/* 3. FOOTER                                                 */}
@@ -1866,8 +1904,8 @@ INSTRUKSI PENTING:
                   type="button"
                   onClick={() => setDrawerTab("favorites")}
                   className={`flex items-center gap-2 px-3.5 py-2 text-xs sm:text-sm font-bold border-b-2 transition-all cursor-pointer select-none ${drawerTab === "favorites"
-                      ? "border-[#FFD84D] text-[#141412] bg-[#FFF6D1]/60 rounded-t-lg font-bold"
-                      : "border-transparent text-[#8A8A84] hover:text-[#141412] hover:bg-[#F5F5F2] rounded-t-lg"
+                    ? "border-[#FFD84D] text-[#141412] bg-[#FFF6D1]/60 rounded-t-lg font-bold"
+                    : "border-transparent text-[#8A8A84] hover:text-[#141412] hover:bg-[#F5F5F2] rounded-t-lg"
                     }`}
                 >
                   <Star
@@ -1884,8 +1922,8 @@ INSTRUKSI PENTING:
                   type="button"
                   onClick={() => setDrawerTab("all")}
                   className={`flex items-center gap-2 px-3.5 py-2 text-xs sm:text-sm font-bold border-b-2 transition-all cursor-pointer select-none ${drawerTab === "all"
-                      ? "border-[#FFD84D] text-[#141412] bg-[#FFF6D1]/60 rounded-t-lg font-bold"
-                      : "border-transparent text-[#8A8A84] hover:text-[#141412] hover:bg-[#F5F5F2] rounded-t-lg"
+                    ? "border-[#FFD84D] text-[#141412] bg-[#FFF6D1]/60 rounded-t-lg font-bold"
+                    : "border-transparent text-[#8A8A84] hover:text-[#141412] hover:bg-[#F5F5F2] rounded-t-lg"
                     }`}
                 >
                   <Clock className="w-3.5 h-3.5 text-[#8A8A84]" />
@@ -1952,21 +1990,20 @@ INSTRUKSI PENTING:
                       <div
                         key={item.id}
                         className={`p-3.5 sm:p-4 rounded-xl border transition-all space-y-2.5 bg-white hover:border-[#D9D9D4] hover:shadow-2xs ${isSelectedCurrent
-                            ? "border-[#FFD84D] bg-[#FFF6D1]/20 ring-1 ring-[#FFD84D]"
-                            : "border-[#E8E8E4]"
+                          ? "border-[#FFD84D] bg-[#FFF6D1]/20 ring-1 ring-[#FFD84D]"
+                          : "border-[#E8E8E4]"
                           }`}
                       >
                         {/* Item Top: Mode Badge, Date, Star & Trash */}
                         <div className="flex items-start justify-between gap-2">
                           <div className="flex items-center gap-1.5 flex-wrap">
                             <span
-                              className={`font-mono text-[10.5px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-full ${
-                                item.mode === "pitch"
-                                  ? "bg-[#FFF6D1] text-[#A15C00] border border-[#FFD84D]/60"
-                                  : item.mode === "alumni"
+                              className={`font-mono text-[10.5px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-full ${item.mode === "pitch"
+                                ? "bg-[#FFF6D1] text-[#A15C00] border border-[#FFD84D]/60"
+                                : item.mode === "alumni"
                                   ? "bg-[#EBF7EE] text-[#1F7A4D] border border-[#D4EDDA]"
                                   : "bg-[#EDF5FF] text-[#0E62FE] border border-[#B3D4FF]"
-                              }`}
+                                }`}
                             >
                               {item.mode === "pitch" ? "Pitch" : item.mode === "alumni" ? "Alumni" : "Comparison"}
                             </span>
@@ -1985,8 +2022,8 @@ INSTRUKSI PENTING:
                               type="button"
                               onClick={(e) => toggleFavorite(item.id, e)}
                               className={`w-7 h-7 rounded-lg flex items-center justify-center transition-all cursor-pointer ${item.isFavorite
-                                  ? "text-[#A15C00] hover:bg-[#FFF6D1]"
-                                  : "text-[#8A8A84] hover:text-[#141412] hover:bg-[#F5F5F2]"
+                                ? "text-[#A15C00] hover:bg-[#FFF6D1]"
+                                : "text-[#8A8A84] hover:text-[#141412] hover:bg-[#F5F5F2]"
                                 }`}
                               title={item.isFavorite ? "Hapus dari Favorit" : "Tandai sebagai Favorit"}
                             >
@@ -2056,8 +2093,8 @@ INSTRUKSI PENTING:
                             type="button"
                             onClick={() => handleLoadSession(item)}
                             className={`flex-1 text-xs font-bold py-2 px-3 rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer select-none ${isSelectedCurrent
-                                ? "bg-[#141412] text-white"
-                                : "bg-[#FFD84D] hover:bg-[#FFCC1A] text-[#141412] active:scale-97 shadow-2xs"
+                              ? "bg-[#141412] text-white"
+                              : "bg-[#FFD84D] hover:bg-[#FFCC1A] text-[#141412] active:scale-97 shadow-2xs"
                               }`}
                           >
                             <RotateCcw className="w-3.5 h-3.5" />
@@ -2209,8 +2246,8 @@ INSTRUKSI PENTING:
                     <div
                       key={idx}
                       className={`border rounded-xl p-3 sm:p-3.5 transition-all ${isCurrentActive
-                          ? "border-[#FFD84D] bg-[#FFF6D1]/20 shadow-2xs"
-                          : "border-[#E8E8E4] bg-[#FAFAF8]"
+                        ? "border-[#FFD84D] bg-[#FFF6D1]/20 shadow-2xs"
+                        : "border-[#E8E8E4] bg-[#FAFAF8]"
                         }`}
                     >
                       <div className="flex items-center justify-between gap-2 mb-1.5">

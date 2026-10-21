@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
+import { motion } from "motion/react";
 import {
   Scale,
   Check,
@@ -985,15 +986,16 @@ export default function ComparisonView() {
   // Programs of the active competitor in Dropdown 1
   const availableProgramsForSelectedComp = COMPETITOR_PROGRAMS_BY_VENDOR[selectedCompetitorKey] || [];
   
-  // Default to the first program of the competitor so the specific table appears right away!
-  const [selectedProgramId, setSelectedProgramId] = useState<string>(availableProgramsForSelectedComp[0]?.id || "h8-fsd");
+  // Initially empty so output tables appear only after the user selects a program!
+  const [selectedProgramId, setSelectedProgramId] = useState<string>("");
 
   // State for General Comparison Category Filter
   const [selectedCategory, setSelectedCategory] = useState<string>("Semua");
 
-  // Active program detail
+  // Active program detail (null when no program has been chosen yet)
   const activeProgramDetail = useMemo(() => {
-    return availableProgramsForSelectedComp.find((p) => p.id === selectedProgramId) || availableProgramsForSelectedComp[0];
+    if (!selectedProgramId) return null;
+    return availableProgramsForSelectedComp.find((p) => p.id === selectedProgramId) || null;
   }, [availableProgramsForSelectedComp, selectedProgramId]);
 
   // Unique RevoU program badges for this competitor
@@ -1014,6 +1016,10 @@ export default function ComparisonView() {
   }, [availableProgramsForSelectedComp]);
 
   const handleRevoUMatchChange = (badge: string) => {
+    if (!badge) {
+      setSelectedProgramId("");
+      return;
+    }
     const found = uniqueRevoUProgramsForComp.find((item) => item.badge === badge);
     if (found) {
       setSelectedProgramId(found.firstProgramId);
@@ -1023,8 +1029,7 @@ export default function ComparisonView() {
   // Handle change of Dropdown 1 (Competitor)
   const handleCompetitorChange = (newComp: "hacktiv8" | "purwadhika" | "dibimbing" | "dqlab") => {
     setSelectedCompetitorKey(newComp);
-    const nextProgs = COMPETITOR_PROGRAMS_BY_VENDOR[newComp] || [];
-    setSelectedProgramId(nextProgs[0]?.id || "");
+    setSelectedProgramId(""); // Reset program selection so user chooses program for new competitor
   };
 
   const handleCopyText = (text: string, id: string) => {
@@ -1104,50 +1109,61 @@ export default function ComparisonView() {
       {/* Baris 1: Lembaga kami [RevoU] vs Pilih Kompetitor [Lembaga lain]*/}
       {/* Baris 2: Program kami [RevoU] vs Program kompetitor            */}
       {/* ───────────────────────────────────────────────────────────── */}
-      <div className="bg-white border-2 border-[#141412] rounded-2xl p-5 sm:p-7 shadow-2xs space-y-6">
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+        className="bg-white border-2 border-[#141412] rounded-2xl p-5 sm:p-7 shadow-2xs space-y-6 card-interactive"
+      >
         
         {/* ── BARIS 1: LEMBAGA KAMI vs PILIH KOMPETITOR ── */}
         <div className="grid grid-cols-1 md:grid-cols-[1fr,auto,1fr] gap-4 sm:gap-6 items-center">
           {/* Sisi Kiri: Lembaga kami */}
           <div>
-            <label className="block text-sm sm:text-base font-bold text-[#141412] mb-1.5">
-              Lembaga kami
+            <label className="block text-sm sm:text-base font-bold text-[#141412] mb-1.5 flex items-center justify-between">
+              <span>Lembaga kami</span>
+              <span className="font-mono text-[10.5px] uppercase font-bold text-[#1F7A4D] bg-[#EBF7EE] px-2 py-0.5 rounded-full border border-[#D4EDDA]">
+                Utama
+              </span>
             </label>
-            <div className="relative">
+            <div className="dropdown-wrapper group">
               <select
                 disabled
-                className="w-full appearance-none bg-[#E0E0E0] hover:bg-[#D6D6D6] text-[#141412] font-display font-extrabold text-base sm:text-lg rounded-2xl px-5 py-3.5 pr-12 cursor-pointer shadow-xs transition-all focus:outline-none"
+                className="w-full appearance-none bg-[#F5F5F2] text-[#141412] font-display font-extrabold text-base sm:text-lg rounded-2xl px-5 py-3.5 pr-12 cursor-default border-2 border-transparent transition-all"
               >
                 <option value="revou">RevoU</option>
               </select>
-              <ChevronDown className="w-6 h-6 text-white stroke-[3] absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none drop-shadow-xs" />
+              <ChevronDown className="dropdown-chevron-animated w-6 h-6 text-[#141412] stroke-[3] absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none drop-shadow-xs" />
             </div>
           </div>
 
           {/* Tengah: vs */}
           <div className="flex items-center justify-center pt-1 md:pt-6">
-            <span className="font-display font-bold text-lg sm:text-xl text-[#141412] lowercase select-none">
+            <span className="font-display font-bold text-lg sm:text-xl text-[#141412] lowercase select-none px-3 py-1 bg-[#F5F5F2] rounded-full border border-[#E8E8E4]">
               vs
             </span>
           </div>
 
           {/* Sisi Kanan: Pilih Kompetitor */}
           <div>
-            <label className="block text-sm sm:text-base font-bold text-[#141412] mb-1.5">
-              Pilih Kompetitor
+            <label className="block text-sm sm:text-base font-bold text-[#141412] mb-1.5 flex items-center justify-between">
+              <span>Pilih Kompetitor</span>
+              <span className="font-mono text-[10.5px] uppercase font-bold text-[#A15C00] bg-[#FFF6D1] px-2 py-0.5 rounded-full border border-[#FFD84D]/60 animate-pulse">
+                Pilih
+              </span>
             </label>
-            <div className="relative">
+            <div className="dropdown-wrapper group">
               <select
                 value={selectedCompetitorKey}
                 onChange={(e) => handleCompetitorChange(e.target.value as any)}
-                className="w-full appearance-none bg-[#E0E0E0] hover:bg-[#D6D6D6] text-[#141412] font-display font-extrabold text-base sm:text-lg rounded-2xl px-5 py-3.5 pr-12 cursor-pointer shadow-xs transition-all focus:outline-none"
+                className="w-full appearance-none bg-[#E0E0E0] hover:bg-[#D6D6D6] text-[#141412] font-display font-extrabold text-base sm:text-lg rounded-2xl px-5 py-3.5 pr-12 cursor-pointer shadow-xs transition-all duration-200 border-2 border-transparent hover:border-[#FFD84D] focus:border-[#FFD84D] focus:ring-4 focus:ring-[#FFD84D]/35 focus:outline-none"
               >
                 <option value="hacktiv8">Hacktiv8</option>
                 <option value="purwadhika">Purwadhika</option>
                 <option value="dibimbing">Dibimbing</option>
                 <option value="dqlab">DQLab</option>
               </select>
-              <ChevronDown className="w-6 h-6 text-white stroke-[3] absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none drop-shadow-xs" />
+              <ChevronDown className="dropdown-chevron-animated w-6 h-6 text-[#141412] stroke-[3] absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none drop-shadow-xs" />
             </div>
           </div>
         </div>
@@ -1157,56 +1173,64 @@ export default function ComparisonView() {
           <div className="grid grid-cols-1 md:grid-cols-[1fr,auto,1fr] gap-4 sm:gap-6 items-center">
             {/* Sisi Kiri: Program kami */}
             <div>
-              <label className="block text-sm sm:text-base font-bold text-[#141412] mb-1.5">
-                Program kami
+              <label className="block text-sm sm:text-base font-bold text-[#141412] mb-1.5 flex items-center justify-between">
+                <span>Program kami</span>
+                <span className={`font-mono text-[10.5px] uppercase font-bold px-2 py-0.5 rounded-full border ${activeProgramDetail ? "text-[#1F7A4D] bg-[#EBF7EE] border-[#D4EDDA]" : "text-[#A15C00] bg-[#FFF6D1] border-[#FFD84D]/60 animate-pulse"}`}>
+                  {activeProgramDetail ? "Terpilih" : "Wajib Pilih"}
+                </span>
               </label>
-              <div className="relative">
+              <div className="dropdown-wrapper group">
                 <select
-                  value={activeProgramDetail.revouMatchBadge}
+                  value={activeProgramDetail?.revouMatchBadge || ""}
                   onChange={(e) => handleRevoUMatchChange(e.target.value)}
-                  className="w-full appearance-none bg-[#E8E8E8] hover:bg-[#DFDFDF] text-[#141412] font-display font-bold text-sm sm:text-base rounded-2xl px-5 py-3.5 pr-12 cursor-pointer shadow-xs transition-all focus:outline-none truncate"
+                  className="w-full appearance-none bg-[#E8E8E8] hover:bg-[#DFDFDF] text-[#141412] font-display font-bold text-sm sm:text-base rounded-2xl px-5 py-3.5 pr-12 cursor-pointer shadow-xs transition-all duration-200 border-2 border-transparent hover:border-[#FFD84D] focus:border-[#FFD84D] focus:ring-4 focus:ring-[#FFD84D]/35 focus:outline-none truncate"
                 >
+                  <option value="">— Pilih Program RevoU —</option>
                   {uniqueRevoUProgramsForComp.map((p) => (
                     <option key={p.badge} value={p.badge}>
                       {p.title}
                     </option>
                   ))}
                 </select>
-                <ChevronDown className="w-6 h-6 text-white stroke-[3] absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none drop-shadow-xs" />
+                <ChevronDown className="dropdown-chevron-animated w-6 h-6 text-[#141412] stroke-[3] absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none drop-shadow-xs" />
               </div>
               <p className="text-xs text-[#60605B] mt-1.5 font-medium truncate">
-                {activeProgramDetail.revouMatchProgram}
+                {activeProgramDetail ? activeProgramDetail.revouMatchProgram : "Pilih program RevoU untuk membuka tabel"}
               </p>
             </div>
 
             {/* Tengah: vs */}
             <div className="flex items-center justify-center pt-1 md:pt-6">
-              <span className="font-display font-bold text-lg sm:text-xl text-[#141412] lowercase select-none">
+              <span className="font-display font-bold text-lg sm:text-xl text-[#141412] lowercase select-none px-3 py-1 bg-[#F5F5F2] rounded-full border border-[#E8E8E4]">
                 vs
               </span>
             </div>
 
             {/* Sisi Kanan: Program kompetitor */}
             <div>
-              <label className="block text-sm sm:text-base font-bold text-[#141412] mb-1.5">
-                Program {competitorDisplayNames[selectedCompetitorKey]}
+              <label className="block text-sm sm:text-base font-bold text-[#141412] mb-1.5 flex items-center justify-between">
+                <span>Program {competitorDisplayNames[selectedCompetitorKey]}</span>
+                <span className={`font-mono text-[10.5px] uppercase font-bold px-2 py-0.5 rounded-full border ${activeProgramDetail ? "text-[#1F7A4D] bg-[#EBF7EE] border-[#D4EDDA]" : "text-[#A15C00] bg-[#FFF6D1] border-[#FFD84D]/60 animate-pulse"}`}>
+                  {activeProgramDetail ? "Terpilih" : "Wajib Pilih"}
+                </span>
               </label>
-              <div className="relative">
+              <div className="dropdown-wrapper group">
                 <select
                   value={selectedProgramId}
                   onChange={(e) => setSelectedProgramId(e.target.value)}
-                  className="w-full appearance-none bg-[#E8E8E8] hover:bg-[#DFDFDF] text-[#141412] font-display font-bold text-sm sm:text-base rounded-2xl px-5 py-3.5 pr-12 cursor-pointer shadow-xs transition-all focus:outline-none truncate"
+                  className="w-full appearance-none bg-[#E8E8E8] hover:bg-[#DFDFDF] text-[#141412] font-display font-bold text-sm sm:text-base rounded-2xl px-5 py-3.5 pr-12 cursor-pointer shadow-xs transition-all duration-200 border-2 border-transparent hover:border-[#FFD84D] focus:border-[#FFD84D] focus:ring-4 focus:ring-[#FFD84D]/35 focus:outline-none truncate"
                 >
+                  <option value="">— Pilih Program {competitorDisplayNames[selectedCompetitorKey]} —</option>
                   {availableProgramsForSelectedComp.map((prog) => (
                     <option key={prog.id} value={prog.id}>
                       {prog.programTitle} — [{prog.badge}]
                     </option>
                   ))}
                 </select>
-                <ChevronDown className="w-6 h-6 text-white stroke-[3] absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none drop-shadow-xs" />
+                <ChevronDown className="dropdown-chevron-animated w-6 h-6 text-[#141412] stroke-[3] absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none drop-shadow-xs" />
               </div>
               <p className="text-xs text-[#A15C00] mt-1.5 font-medium truncate">
-                Format: {activeProgramDetail.badge}
+                {activeProgramDetail ? `Format: ${activeProgramDetail.badge}` : `Pilih program ${competitorDisplayNames[selectedCompetitorKey]} untuk membuka tabel`}
               </p>
             </div>
           </div>
@@ -1217,7 +1241,7 @@ export default function ComparisonView() {
               Pilihan Cepat:
             </span>
             {availableProgramsForSelectedComp.map((p) => {
-              const isSelected = p.id === activeProgramDetail.id;
+              const isSelected = p.id === selectedProgramId;
               return (
                 <button
                   key={p.id}
@@ -1225,8 +1249,8 @@ export default function ComparisonView() {
                   onClick={() => setSelectedProgramId(p.id)}
                   className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap select-none border ${
                     isSelected
-                      ? "bg-[#141412] text-[#FFD84D] border-[#141412] shadow-xs"
-                      : "bg-[#F5F5F2] text-[#4B4B46] border-[#E8E8E4] hover:border-[#141412] hover:bg-[#EAEAEA]"
+                      ? "bg-[#141412] text-[#FFD84D] border-[#141412] shadow-xs active:scale-95"
+                      : "bg-[#F5F5F2] text-[#4B4B46] border-[#E8E8E4] hover:border-[#141412] hover:bg-[#EAEAEA] active:scale-95"
                   }`}
                 >
                   {p.programTitle}
@@ -1235,7 +1259,7 @@ export default function ComparisonView() {
             })}
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* ───────────────────────────────────────────────────────────── */}
       {/* SUB-NAVIGATION TABS (Tabel Spesifik, Tabel General, Battlecard)*/}
@@ -1284,8 +1308,15 @@ export default function ComparisonView() {
       {/* ───────────────────────────────────────────────────────────── */}
       {/* 1. TAB: TABEL KOMPARASI SPESIFIK (FORMAT TABEL SEPERTI GENERAL) */}
       {/* ───────────────────────────────────────────────────────────── */}
-      {activeTab === "bootcamp" && activeProgramDetail && (
-        <div className="space-y-5 animate-in fade-in duration-200">
+      {activeTab === "bootcamp" && (
+        activeProgramDetail ? (
+          <motion.div
+            key={activeProgramDetail.id}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+            className="space-y-5"
+          >
           {/* Header Info Komparasi Spesifik */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 sm:p-5 rounded-2xl border border-[#E8E8E4] shadow-2xs">
             <div>
@@ -1389,7 +1420,7 @@ export default function ComparisonView() {
           {/* ── ANALISIS KRITIS & JAWABAN AC ── */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Keunggulan RevoU */}
-            <div className="p-4 sm:p-5 rounded-xl border border-[#D4EDDA] bg-[#EBF7EE]/60 space-y-2.5">
+            <div className="p-4 sm:p-5 rounded-xl border border-[#D4EDDA] bg-[#EBF7EE]/60 space-y-2.5 card-interactive">
               <div className="flex items-center gap-2 font-display font-bold text-xs uppercase tracking-wider text-[#1F7A4D]">
                 <CheckCircle2 className="w-4 h-4 text-[#1F7A4D]" />
                 <span>Keunggulan Mutlak RevoU ({activeProgramDetail.revouMatchProgram})</span>
@@ -1405,7 +1436,7 @@ export default function ComparisonView() {
             </div>
 
             {/* Keterbatasan Program Kompetitor */}
-            <div className="p-4 sm:p-5 rounded-xl border border-[#FFD84D]/80 bg-[#FFFDF0] space-y-2.5">
+            <div className="p-4 sm:p-5 rounded-xl border border-[#FFD84D]/80 bg-[#FFFDF0] space-y-2.5 card-interactive">
               <div className="flex items-center gap-2 font-display font-bold text-xs uppercase tracking-wider text-[#A15C00]">
                 <AlertTriangle className="w-4 h-4 text-[#A15C00]" />
                 <span>Keterbatasan {activeProgramDetail.competitorName} yang Perlu Diketahui AC</span>
@@ -1420,7 +1451,7 @@ export default function ComparisonView() {
           </div>
 
           {/* Template Jawaban AC WhatsApp */}
-          <div className="p-4 sm:p-5 rounded-xl border border-[#0E62FE]/30 bg-[#EDF5FF] space-y-2.5">
+          <div className="p-4 sm:p-5 rounded-xl border border-[#0E62FE]/30 bg-[#EDF5FF] space-y-2.5 card-interactive">
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-center gap-1.5 font-display font-bold text-xs uppercase tracking-wider text-[#0E62FE]">
                 <Sparkles className="w-4 h-4 text-[#0E62FE]" />
@@ -1448,14 +1479,55 @@ export default function ComparisonView() {
               {activeProgramDetail.acTalkingPoint}
             </blockquote>
           </div>
-        </div>
-      )}
+        </motion.div>
+      ) : (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.98, y: 8 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+          className="bg-white border-2 border-dashed border-[#D9D9D4] rounded-2xl p-8 sm:p-12 text-center space-y-4 shadow-2xs card-interactive"
+        >
+          <div className="w-14 h-14 rounded-2xl bg-[#FFF6D1] text-[#A15C00] mx-auto flex items-center justify-center border border-[#FFD84D] shadow-2xs">
+            <Layers className="w-7 h-7" />
+          </div>
+          <div className="space-y-1">
+            <h4 className="font-display font-bold text-lg sm:text-xl text-[#141412]">
+              Pilih Program untuk Membuka Tabel Komparasi Spesifik
+            </h4>
+            <p className="text-sm text-[#8A8A84] max-w-[56ch] mx-auto leading-relaxed">
+              Tabel komparasi spesifik head-to-head akan muncul setelah Anda memilih program di dropdown atas, atau klik salah satu pilihan cepat di bawah ini:
+            </p>
+          </div>
+          <div className="flex flex-wrap justify-center items-center gap-2 pt-2">
+            <span className="font-mono text-xs text-[#8A8A84] font-bold uppercase w-full mb-1">
+              Pilihan Cepat Program {competitorDisplayNames[selectedCompetitorKey]}:
+            </span>
+            {availableProgramsForSelectedComp.map((p) => (
+              <button
+                key={p.id}
+                type="button"
+                onClick={() => setSelectedProgramId(p.id)}
+                className="px-3.5 py-2 rounded-xl text-xs font-bold bg-[#F5F5F2] hover:bg-[#FFD84D] hover:text-[#141412] text-[#4B4B46] border border-[#E8E8E4] transition-all cursor-pointer shadow-2xs active:scale-95"
+              >
+                {p.programTitle} →
+              </button>
+            ))}
+          </div>
+        </motion.div>
+      ))}
 
       {/* ───────────────────────────────────────────────────────────── */}
       {/* 2. TAB: TABEL GENERAL REVOU (TERINTEGRASI PROGRAM)            */}
       {/* ───────────────────────────────────────────────────────────── */}
-      {activeTab === "general" && activeProgramDetail && (
-        <div className="space-y-4">
+      {activeTab === "general" && (
+        activeProgramDetail ? (
+          <motion.div
+            key={activeProgramDetail.id}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+            className="space-y-4"
+          >
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 sm:p-5 rounded-2xl border border-[#E8E8E4] shadow-2xs">
             <div>
               <div className="flex flex-wrap items-center gap-2">
@@ -1625,8 +1697,42 @@ export default function ComparisonView() {
               {activeProgramDetail.acTalkingPoint}
             </blockquote>
           </div>
-        </div>
-      )}
+        </motion.div>
+      ) : (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.98, y: 8 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+          className="bg-white border-2 border-dashed border-[#D9D9D4] rounded-2xl p-8 sm:p-12 text-center space-y-4 shadow-2xs card-interactive"
+        >
+          <div className="w-14 h-14 rounded-2xl bg-[#EBF7EE] text-[#1F7A4D] mx-auto flex items-center justify-center border border-[#D4EDDA] shadow-2xs">
+            <Scale className="w-7 h-7" />
+          </div>
+          <div className="space-y-1">
+            <h4 className="font-display font-bold text-lg sm:text-xl text-[#141412]">
+              Pilih Program untuk Membuka Tabel General RevoU
+            </h4>
+            <p className="text-sm text-[#8A8A84] max-w-[56ch] mx-auto leading-relaxed">
+              Tabel general akan langsung disinkronkan secara otomatis sesuai dengan program spesifik yang Anda pilih untuk membandingkan parameter pembelajaran RevoU vs {competitorDisplayNames[selectedCompetitorKey]}.
+            </p>
+          </div>
+          <div className="flex flex-wrap justify-center items-center gap-2 pt-2">
+            <span className="font-mono text-xs text-[#8A8A84] font-bold uppercase w-full mb-1">
+              Pilihan Cepat Program {competitorDisplayNames[selectedCompetitorKey]}:
+            </span>
+            {availableProgramsForSelectedComp.map((p) => (
+              <button
+                key={p.id}
+                type="button"
+                onClick={() => setSelectedProgramId(p.id)}
+                className="px-3.5 py-2 rounded-xl text-xs font-bold bg-[#F5F5F2] hover:bg-[#FFD84D] hover:text-[#141412] text-[#4B4B46] border border-[#E8E8E4] transition-all cursor-pointer shadow-2xs active:scale-95"
+              >
+                {p.programTitle} →
+              </button>
+            ))}
+          </div>
+        </motion.div>
+      ))}
 
       {/* ───────────────────────────────────────────────────────────── */}
       {/* 3. TAB: ONE-PAGER BATTLECARD                                  */}
