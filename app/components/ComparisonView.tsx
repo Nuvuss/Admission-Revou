@@ -60,26 +60,26 @@ const BATTLECARDS: CompetitorBattlecard[] = [
       "Jadwal kelas malam (19:00–21:00 WIB) yang fleksibel — peserta tidak perlu resign dari kantor saat masa belajar.",
       "12 Minggu Virtual Internship (3 Bulan): Mengerjakan real business problem dengan partner bisnis nyata (Telkom OCA, Zurich, dll) & portofolio riil.",
       "Indonesia's 1st AI-Native Software Engineering Program (Kemitraan eksklusif AWS, kurikulum 4 fase: Algorithm HackerRank, Python/Flask, Next.js/TypeScript, AI Kiro/Claude).",
-      "Garansi refund biaya s.d. 100% dengan syarat transparan dan realistis (10 lamaran/minggu)."
+      "Dukungan karir intensif Career+ (1:1 Personal Career Coach, AI Career Engine, dan Mock Interview dengan Hiring Manager)."
     ],
     proofPoint: "15.000+ alumni RevoU di 11+ kota & 1.000+ top company. Completion rate belajar Hacktiv8 tidak dipublikasi resmi di web. RevoU transparan mempublikasikan 93% completion rate & 93% placement rate resmi.",
-    acScriptTemplate: "Wah menarik banget kak! Hacktiv8 memang punya reputasi bagus untuk bootcamp coding seharian terutama kalau kakak siap komitmen full-day dari jam 9 pagi sampai 6 sore. Nah, di RevoU kelas kita didesain khusus jam 19.00 WIB malam, jadi kakak tetap bisa belajar dan bangun karir baru tanpa harus resign kantor. Plus, RevoU adalah Indonesia's 1st AI-Native Program bermitra eksklusif dengan AWS, ada 12 minggu Virtual Internship mengerjakan real project perusahaan, dan ada garansi refund 100%. Kakak saat ini lebih nyaman belajar full-day seharian atau kelas malam di luar jam kerja kak? :)"
+    acScriptTemplate: "Wah menarik banget kak! Hacktiv8 memang punya reputasi bagus untuk bootcamp coding seharian terutama kalau kakak siap komitmen full-day dari jam 9 pagi sampai 6 sore. Nah, di RevoU kelas kita didesain khusus jam 19.00 WIB malam, jadi kakak tetap bisa belajar dan bangun karir baru tanpa harus resign kantor. Plus, RevoU adalah Indonesia's 1st AI-Native Program bermitra eksklusif dengan AWS, ada 12 minggu Virtual Internship mengerjakan real project perusahaan, dan bimbingan karir intensif 1-on-1 Career+ sampai dapat kerja. Kakak saat ini lebih nyaman belajar full-day seharian atau kelas malam di luar jam kerja kak? :)"
   },
   {
     id: "purwadhika",
     name: "Purwadhika",
     tagline: "Pilihan bagi yang mencari fasilitas kampus fisik BSD/Jakarta, ada 10 program Job Connector",
-    price: "Tiered Pricing: Early Bird Rp 13jt–20jt | Term 1 Rp 15jt–25jt | Term 2 Rp 17jt–30jt | Promo 39th Anniv Rp 14,5jt–27,5jt | Scholarship Sinarmas Rp 10jt–17,5jt | Harga normal Rp 20jt–35jt (Tools premium tertentu ditanggung peserta).",
-    duration: "Batch kalender 20–28 minggu (modul 6–15 minggu + final project 4–5 minggu). Pilihan After Hours (Sen–Kam 19:00–22:00 / Sel & Kam) & Office Hours (09:00–12:00).",
-    format: "On campus (BSD Green Office Park, Jakarta, Batam) atau online livestream.",
-    careerSupport: "Bimbingan CV & LinkedIn, persiapan interview, 1-on-1 career counseling, Purwadhika Hiring Network ke 1.000+ hiring partner (syarat koneksi kerja full-time: maks. usia 30 tahun & min. S1).",
-    certification: "Sertifikat Purwadhika Digital Technology School, Terdaftar Kemendikbud & Certified Google Partner (tidak ada kemitraan kampus).",
+    price: "Tiered Pricing per Intake (10 Program Job Connector):\n• AI Engineering: Early Bird Rp 20jt | Term 1 Rp 25jt | Term 2 Rp 30jt | Promo 39th Rp 27,5jt | Sinarmas Rp 17,5jt | Normal Rp 35jt\n• DM, BDA, DSML, FSD, Data Eng, Cybersecurity: Early Bird Rp 15jt | Term 1 Rp 18jt | Term 2 Rp 21jt | Promo 39th Rp 18,5jt | Sinarmas Rp 12,5jt | Normal Rp 25jt\n• QA & Social Media: Early Bird Rp 14jt | Term 2 Rp 20jt | Promo 39th Rp 14,5jt | Normal Rp 23jt\n• AI Automation: Early Bird Rp 13jt | Term 1 Rp 15jt | Term 2 Rp 17jt | Promo 39th Rp 14,5jt | Sinarmas Rp 10jt | Normal Rp 20jt\n*Catatan: Akun/tools premium tertentu ditanggung peserta, non-refundable.",
+    duration: "Batch kalender 20–28 minggu (modul materi 5–15 minggu + final project 3–5 minggu). Pilihan After Hours (Sen–Kam 19:00–22:00 / Sel & Kam 19:00–22:00) & Office Hours (Sen–Kam 09:00–12:00).",
+    format: "On campus (BSD Green Office Park, Jakarta, Batam) atau Online Livestream Zoom.",
+    careerSupport: "Bimbingan CV & LinkedIn, persiapan interview, 1-on-1 career counseling, Purwadhika Hiring Network ke 1.000+ hiring partner (syarat koneksi kerja full-time: maksimal usia 30 tahun & minimal lulusan S1/sederajat, kecuali Full Stack Software Development dan Visual Design & UI/UX yang terbuka untuk SMA/SMK).",
+    certification: "Sertifikat Purwadhika Digital Technology School, Terdaftar Kemendikbud & Certified Google Partner (tidak ada kemitraan kampus perguruan tinggi).",
     honestStrength: "Memiliki fasilitas kampus offline fisik yang megah di BSD & Jakarta bagi siswa yang memprioritaskan kehadiran fisik tatap muka di ruang kelas.",
     revouWins: [
       "100% Live Online dua arah hemat biaya akomodasi hingga puluhan juta rupiah bagi siswa luar kota.",
-      "12 Minggu Virtual Internship: Portofolio nyata dengan real client & real ads budget/dataset (bukan tugas dummy simulasi kelompok 7-8 orang).",
+      "12 Minggu Virtual Internship: Portofolio nyata dengan real client & real ads budget/dataset (bukan tugas kelompok besar 7-8 orang).",
       "Kemitraan resmi universitas terkemuka (#1 ITB untuk Leaders & Data Science, BINUS untuk AI & Cybersecurity x AWS, UI untuk Strategic Finance).",
-      "Persyaratan fleksibel & inklusif (terbuka untuk seluruh jenjang SMA/SMK/D3/S1 vs Purwadhika yang mayoritas mewajibkan minimal S1)."
+      "Persyaratan fleksibel & inklusif (terbuka untuk seluruh jenjang SMA/SMK/D3/S1 di semua program vs Purwadhika yang mayoritas mewajibkan minimal S1/sederajat, kecuali FSD dan UI/UX)."
     ],
     proofPoint: "15.000+ alumni RevoU & 550.000+ digital learners. Completion rate belajar Purwadhika tidak dipublikasi di web. RevoU transparan dengan 93% completion rate dan 12 minggu Virtual Internship dengan real partner (Telkom OCA, Zurich, dll).",
     acScriptTemplate: "Purwadhika reputasinya memang sangat baik kak, terutama untuk teman-teman yang berdomisili di BSD/Jakarta dan ingin merasakan suasana kampus fisik. Kalau di RevoU, kita fokus 100% live interaktif online agar teman-teman dari seluruh Indonesia bisa belajar langsung dari praktisi top company tanpa perlu keluar biaya sewa kos puluhan juta. Di RevoU juga ada 12 minggu Virtual Internship mengerjakan real project perusahaan partner, real ads budget mandiri, serta sertifikasi resmi ITB, BINUS, dan UI. Kakak sendiri lebih mempertimbangkan fleksibilitas online atau tatap muka fisik kak? :)"
@@ -101,7 +101,7 @@ const BATTLECARDS: CompetitorBattlecard[] = [
       "Standar seleksi ketat menjamin circle belajar ambisius dan suportif (tingkat penerimaan <10%)."
     ],
     proofPoint: "15.000+ alumni RevoU di 1.000+ top company (Gojek, Tokopedia, Traveloka, Shopee, Big 4, BUMN). Completion rate Dibimbing tidak dipublikasi resmi di web. RevoU transparan mempublikasikan 93% completion rate resmi.",
-    acScriptTemplate: "Dibimbing pilihan yang bagus kak kalau kakak mencari opsi belajar santai 2-3 sesi per minggu via video rekaman LMS dengan budget hemat. Namun kalau tujuan kakak adalah career switch total di tech company papan atas, RevoU memberikan 100% live class interaktif setiap hari, bimbingan karir 1-on-1 intensif selama 7-8 bulan, 12 minggu Virtual Internship portofolio riil, dan garansi refund 100%. Boleh tau tujuan utama kakak ambil program ini apakah untuk eksplorasi dasar atau persiapan karir jangka panjang kak? :)"
+    acScriptTemplate: "Dibimbing pilihan yang bagus kak kalau kakak mencari opsi belajar santai 2-3 sesi per minggu via video rekaman LMS dengan budget hemat. Namun kalau tujuan kakak adalah career switch total di tech company papan atas, RevoU memberikan 100% live class interaktif setiap hari, bimbingan karir 1-on-1 intensif selama 7-8 bulan, 12 minggu Virtual Internship portofolio riil, dan pendampingan karir intensif 1-on-1 Career+ sampai dapat kerja. Boleh tau tujuan utama kakak ambil program ini apakah untuk eksplorasi dasar atau persiapan karir jangka panjang kak? :)"
   },
   {
     id: "dqlab",
@@ -116,10 +116,10 @@ const BATTLECARDS: CompetitorBattlecard[] = [
     revouWins: [
       "Program karir komprehensif 7 bulan dari nol hingga siap kerja (8 modul + Apache Airflow & Automated ETL, 7 portofolio proyek industri, bukan sekadar lulus ujian tertulis).",
       "12 Minggu Virtual Internship memegang dataset bisnis riil (mitra Telkom OCA, Zurich) dan problem solving bisnis strategis C-level.",
-      "Bimbingan karir intensif Career+ 1-on-1 bersama Career Coach profesional selama 7 bulan penuh + jaminan refund 100% transparan.",
+      "Bimbingan karir intensif Career+ 1-on-1 bersama Career Coach profesional selama 7 bulan penuh + simulasi interview hiring manager.",
       "Ekosistem 15.000+ alumni aktif di 1.000+ top company dan komunitas pelajar 550.000+ member."
     ],
-    proofPoint: "550.000+ komunitas pelajar RevoU & 15.000+ alumni. Completion rate DQLab tidak dipublikasi di web. RevoU mendampingi 7 bulan komprehensif dari nol dengan 12 minggu Virtual Internship dan garansi refund 100% transparan.",
+    proofPoint: "550.000+ komunitas pelajar RevoU & 15.000+ alumni. Completion rate DQLab tidak dipublikasi di web. RevoU mendampingi 7 bulan komprehensif dari nol dengan 12 minggu Virtual Internship dan 93% placement rate resmi.",
     acScriptTemplate: "DQLab itu opsi yang oke banget kak kalau kakak sekadar ingin mengambil ujian sertifikasi BNSP atau kursus kilat Excel/Python dalam durasi 1-2 bulan dengan budget terjangkau. Namun kalau tujuan kakak ingin career switch menjadi Data Analyst profesional yang siap kerja di top company (rata-rata gaji alumni RevoU Rp 9,8jt/bln), di RevoU kakak akan belajar 7 bulan komprehensif, menguasai SQL, Python, Tableau, Looker Studio, Apache Airflow ETL, dan 12 minggu Virtual Internship menganalisis dataset bisnis riil, plus bimbingan karir 1-on-1 sampai dapat kerja. Kakak saat ini lebih butuh sertifikasi singkat atau persiapan karir menyeluruh sampai siap kerja kak? :)"
   }
 ];
@@ -147,6 +147,12 @@ export interface CompetitorProgramItem {
   competitorLimitation: string;
   revouEdge: string;
   acTalkingPoint: string;
+  referenceImages?: {
+    url: string;
+    title: string;
+    subtitle?: string;
+    tools: string[];
+  }[];
 }
 
 const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbing" | "dqlab", CompetitorProgramItem[]> = {
@@ -211,11 +217,11 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
           highlight: true
         },
         {
-          parameter: "Jaminan Kerja & Kebijakan Refund",
-          categoryTag: "JAMINAN REFUND",
-          revouValue: "Garansi Refund Biaya s.d. 100% dengan syarat transparan & realistis (cukup 10 lamaran kerja per minggu).",
+          parameter: "Kebijakan Biaya & Dukungan Karir",
+          categoryTag: "DUKUNGAN KARIR",
+          revouValue: "Biaya non-refundable (tidak ada garansi refund). Komitmen investasi difokuskan penuh ke pendampingan intensif Career+ (1:1 Personal Career Coach selama 8 bulan, AI Career Engine, dan 3 bulan Virtual Internship) dengan 93% placement rate resmi.",
           competitorValue: "NON-REFUNDABLE (Tidak ada garansi refund pengembalian uang sama sekali jika tidak mendapatkan pekerjaan).",
-          highlight: true
+          highlight: false
         },
         {
           parameter: "Bimbingan Karir & Job Placement",
@@ -233,8 +239,8 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
         }
       ],
       competitorLimitation: "Biaya sangat tinggi (Rp 45.000.000), mewajibkan cuti/resign karena jam belajar seharian 09:00–18:00 WIB, dan biaya pendaftaran/kursus bersifat non-refundable (tanpa refund).",
-      revouEdge: "RevoU FSSE adalah program AI-Native pertama di Indonesia bermitra eksklusif dengan AWS, berdurasi 8 bulan (210+ jam live) malam hari (19:00–21:00 WIB), mengajarkan Python/Flask + Next.js/TypeScript, portofolio riil Virtual Internship, dan garansi refund 100%.",
-      acTalkingPoint: "Hacktiv8 memang bagus untuk coding seharian kak, tapi biayanya Rp 45 jt dan jam belajarnya 09:00–18:00 sehingga kakak harus resign duluan. Di RevoU FSSE, kita adalah Indonesia's 1st AI-Native Program bermitra eksklusif dengan AWS, kelas jam 19.00 malam (tidak perlu resign), diajarkan Python/Flask dan Next.js/TypeScript, 3 bulan Virtual Internship mengerjakan masalah nyata perusahaan, dan ada Garansi Refund 100% transparan."
+      revouEdge: "RevoU FSSE adalah program AI-Native pertama di Indonesia bermitra eksklusif dengan AWS, berdurasi 8 bulan (210+ jam live) malam hari (19:00–21:00 WIB), mengajarkan Python/Flask + Next.js/TypeScript, portofolio riil Virtual Internship, dan 93% placement rate resmi.",
+      acTalkingPoint: "Hacktiv8 memang bagus untuk coding seharian kak, tapi biayanya Rp 45 jt dan jam belajarnya 09:00–18:00 sehingga kakak harus resign duluan. Di RevoU FSSE, kita adalah Indonesia's 1st AI-Native Program bermitra eksklusif dengan AWS, kelas jam 19.00 malam (tidak perlu resign), diajarkan Python/Flask dan Next.js/TypeScript, 3 bulan Virtual Internship mengerjakan masalah nyata perusahaan, dan didampingi Career Coach 1-on-1 sampai dapat kerja."
     },
     {
       id: "h8-golang",
@@ -262,9 +268,16 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
         {
           parameter: "Cakupan Stack Pengembangan",
           categoryTag: "CAKUPAN ROLE",
-          revouValue: "Full Stack AI-Native (Frontend Next.js/TypeScript + Backend Python/Flask/PostgreSQL + AI Spec Mode Kiro & AWS) — paling dicari dan fleksibel untuk peluang loker software engineer di Indonesia.",
-          competitorValue: "Backend Murni (Golang, Gin, gRPC, Microservices, K8s) — spesialisasi backend tanpa penguasaan frontend web modern.",
+          revouValue: "Full Stack AI-Native (Frontend Next.js App Router/TypeScript/TailwindCSS + Backend Python/Flask/PostgreSQL + 3-Layer Testing Playwright & Locust + AI Spec Mode Kiro & AWS Cloud) — mencakup end-to-end frontend dan backend untuk fleksibilitas loker software engineer di Indonesia.",
+          competitorValue: "Backend Golang Murni: Go fundamentals (Goroutine/Channel), REST API Gin/Echo, PostgreSQL, NoSQL, Load Testing Grafana k6, Microservices gRPC, Docker, K8s, serta Cloud Deployment via Railway — fokus backend tanpa penguasaan frontend web modern.",
           highlight: true
+        },
+        {
+          parameter: "Database, Testing & Cloud Tooling",
+          categoryTag: "DATABASE & DEVOPS",
+          revouValue: "PostgreSQL RDBMS design, 3-layer automated testing (pytest unit test, Locust performance/stress test, Playwright E2E), AI engineering dengan Kiro spec mode & Claude, serta Cloud Infrastructure bersama Amazon Web Services (AWS) Partner & Vercel/Railway.",
+          competitorValue: "Relational Database (PostgreSQL) & NoSQL database, performance load testing menggunakan Grafana k6, containerisasi Docker & Kubernetes (K8s), serta cloud deployment ke Railway.",
+          highlight: false
         },
         {
           parameter: "Portofolio Proyek",
@@ -274,16 +287,16 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
           highlight: true
         },
         {
-          parameter: "Jaminan Refund",
-          categoryTag: "JAMINAN REFUND",
-          revouValue: "Garansi Refund 100% transparan (10 lamaran/minggu).",
+          parameter: "Dukungan Karir & Kebijakan Biaya",
+          categoryTag: "DUKUNGAN KARIR",
+          revouValue: "Biaya non-refundable (tidak ada garansi refund). Didampingi Career+ (1:1 Career Coach harian, AI Career Engine, dan mock interview) dengan 93% placement rate resmi.",
           competitorValue: "Non-refundable (Tidak ada garansi refund).",
-          highlight: true
+          highlight: false
         }
       ],
-      competitorLimitation: "Hanya mencakup backend Golang saja tanpa frontend React/Next.js, sehingga cakupan loker entry level lebih terbatas dibanding Full Stack.",
-      revouEdge: "RevoU FSSE melatih Full Stack AI-Native (Next.js + Python/Flask + AWS) yang komprehensif untuk entry level hingga associate, lengkap dengan 3 bulan Virtual Internship dan garansi refund 100%.",
-      acTalkingPoint: "Golang di Hacktiv8 sangat bagus jika kakak sudah pasti ingin berkarir khusus di backend microservices. Namun bagi pemula atau career switcher, lowongan kerja Software Engineer terbesar di Indonesia mencari Full Stack (Next.js + Python/Flask). Di RevoU FSSE kakak belajar end-to-end frontend dan backend lengkap dengan portofolio riil Virtual Internship dan kemitraan resmi AWS."
+      competitorLimitation: "Fokus kurikulum sangat spesifik pada backend Golang dengan PostgreSQL, NoSQL, Grafana k6, dan deployment Railway tanpa penguasaan frontend Next.js/React modern, sehingga cakupan peluang kerja bagi pemula/career switcher lebih terbatas dibanding Full Stack.",
+      revouEdge: "RevoU FSSE melatih Full Stack AI-Native (Next.js/TypeScript + Python/Flask/PostgreSQL + AWS) yang mencakup 3-layer testing (Playwright & Locust) dan deployment, lengkap dengan 3 bulan Virtual Internship dan 93% placement rate resmi.",
+      acTalkingPoint: "Golang di Hacktiv8 sangat bagus jika kakak sudah pasti ingin berkarir spesifik di backend microservices dengan PostgreSQL, NoSQL, Grafana k6, dan Railway. Namun bagi pemula atau career switcher, lowongan kerja Software Engineer terbesar di Indonesia mencari Full Stack (Next.js + Python/Flask). Di RevoU FSSE kakak belajar end-to-end frontend dan backend lengkap dengan portofolio riil Virtual Internship dan kemitraan resmi AWS."
     },
     {
       id: "h8-dsml",
@@ -337,16 +350,16 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
           highlight: false
         },
         {
-          parameter: "Jaminan Refund",
-          categoryTag: "JAMINAN REFUND",
-          revouValue: "Garansi Refund 100% transparan jika tidak terserap kerja (syarat realistis: 10 lamaran/minggu).",
+          parameter: "Dukungan Karir & Kebijakan Biaya",
+          categoryTag: "DUKUNGAN KARIR",
+          revouValue: "Biaya non-refundable (tidak ada garansi refund). Pendampingan penuh Career+ (1:1 Career Coach selama 7 bulan, AI Career Engine, dan simulasi interview hiring manager) dengan 93% placement rate resmi.",
           competitorValue: "Non-refundable (Tidak ada pengembalian uang sama sekali).",
-          highlight: true
+          highlight: false
         }
       ],
       competitorLimitation: "Jadwal seharian penuh (09:00–18:00) menyulitkan pekerja, biaya non-refundable, dan fokus dominan matematika koding tanpa latihan business communication ke direksi.",
-      revouEdge: "RevoU FSDA fokus melatih Business Communication & Problem Solving C-level, 8 modul lengkap dengan Apache Airflow & Automated ETL, jadwal fleksibel weekday malam / weekend, 12 minggu Virtual Internship studi kasus riil (Telkom OCA, Zurich), dan garansi refund 100%.",
-      acTalkingPoint: "Hacktiv8 DS&ML mewajibkan waktu seharian dari pagi sampai jam 6 sore kak. Kalau di RevoU FSDA, kita ada opsi kelas malam 19.00 WIB atau weekend, jadi kakak tidak perlu resign. Di RevoU juga fokus melatih cara mempresentasikan data ke bos dan manajemen bisnis, ada modul Apache Airflow ETL terbaru, 12 minggu Virtual Internship menganalisis real dataset bisnis mitra, dan didukung garansi refund 100%."
+      revouEdge: "RevoU FSDA fokus melatih Business Communication & Problem Solving C-level, 8 modul lengkap dengan Apache Airflow & Automated ETL, jadwal fleksibel weekday malam / weekend, 12 minggu Virtual Internship studi kasus riil (Telkom OCA, Zurich), dan 93% placement rate resmi.",
+      acTalkingPoint: "Hacktiv8 DS&ML mewajibkan waktu seharian dari pagi sampai jam 6 sore kak. Kalau di RevoU FSDA, kita ada opsi kelas malam 19.00 WIB atau weekend, jadi kakak tidak perlu resign. Di RevoU juga fokus melatih cara mempresentasikan data ke bos dan manajemen bisnis, ada modul Apache Airflow ETL terbaru, 12 minggu Virtual Internship menganalisis real dataset bisnis mitra, dan didampingi Career Coach 1-on-1 sampai dapat kerja."
     },
     {
       id: "h8-cda",
@@ -360,7 +373,7 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
         {
           parameter: "Biaya & Skema Pembayaran",
           categoryTag: "INVESTASI & BIAYA",
-          revouValue: "Rp 16.000.000 – Rp 25.000.000-an (Cicilan 0% s.d. 12-18 bulan, garansi refund 100%).",
+          revouValue: "Rp 16.000.000 – Rp 25.000.000-an (Cicilan 0% s.d. 12-18 bulan via kartu kredit/Danacita).",
           competitorValue: "Rp 18.000.000 (Early Bird Rp 16.000.000). Non-refundable. Cicilan Danacita/CIMB.",
           highlight: false
         },
@@ -379,11 +392,11 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
           highlight: true
         },
         {
-          parameter: "Kurikulum & Tools",
+          parameter: "Kurikulum & Tools Dipelajari",
           categoryTag: "KURIKULUM",
-          revouValue: "8 Modules + AI: Business Problem Solving (Issue Tree, RCA), SQL BigQuery, Python Pandas & PandasAI, Tableau, Looker Studio, Data Storytelling, serta Production-Ready Analytics (Apache Airflow & Automated ETL).",
-          competitorValue: "SQL, Python, FastAPI, Spreadsheet, Tableau, Looker Studio, Big Data ETL, GenAI.",
-          highlight: false
+          revouValue: "8 Modules + AI: Business Problem Solving (Issue Tree, RCA), Advanced Spreadsheet, SQL BigQuery AI, Python Pandas & PandasAI, Tableau, Looker Studio, Data Storytelling, serta Production-Ready Analytics (Apache Airflow & Automated ETL).",
+          competitorValue: "3 Fase Stack Lengkap: (1) Analytics & Viz: Python, Pandas, SQL, Google Sheets, Looker Studio, Tableau; (2) Data Scraping & API: PostgreSQL, Selenium, BeautifulSoup, FastAPI, Git, GitHub, Vercel; (3) Big Data & GenAI: Apache Spark, dbt, MongoDB, Great Expectations, Apache Airflow, AWS Glue, Docker, OpenAI, Gemini.",
+          highlight: true
         },
         {
           parameter: "Proyek Nyata (Virtual Internship)",
@@ -393,16 +406,36 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
           highlight: true
         },
         {
-          parameter: "Kebijakan Garansi Refund",
-          categoryTag: "JAMINAN REFUND",
-          revouValue: "Garansi Refund Biaya s.d. 100% jika belum mendapatkan pekerjaan.",
+          parameter: "Dukungan Karir & Kebijakan Biaya",
+          categoryTag: "DUKUNGAN KARIR",
+          revouValue: "Biaya non-refundable (tidak ada garansi refund). Pendampingan intensif Career+ (1:1 Personal Career Coach, AI Career Engine, mock interview) dengan 93% placement rate resmi.",
           competitorValue: "Non-refundable (Tidak ada refund sama sekali).",
-          highlight: true
+          highlight: false
         }
       ],
       competitorLimitation: "Biaya non-refundable (tidak ada pengembalian uang sama sekali jika tidak dapat kerja), durasi hanya 12 minggu tanpa program lab portofolio terpisah.",
-      revouEdge: "RevoU FSDA berdurasi 7 bulan komprehensif termasuk 8 modul + Apache Airflow ETL, 12 minggu Virtual Internship data nyata klien, dan didukung Garansi Refund 100% transparan jika tidak dapat kerja.",
-      acTalkingPoint: "Hacktiv8 Comprehensive DA bagus kak, tapi mereka tidak ada jaminan refund (non-refundable) dan durasinya hanya 12 minggu. Di RevoU FSDA kakak belajar 7 bulan komprehensif, menguasai Apache Airflow ETL, ada 12 minggu Virtual Internship menganalisis dataset bisnis riil perusahaan, dan ada Garansi Refund 100% jika belum mendapatkan pekerjaan. Tentu jauh lebih aman dan matang untuk persiapan karir kakak :)"
+      revouEdge: "RevoU FSDA berdurasi 7 bulan komprehensif termasuk 8 modul + Apache Airflow ETL, 12 minggu Virtual Internship data nyata klien, dan didukung bimbingan karir 1-on-1 intensif Career+ dengan 93% placement rate resmi.",
+      acTalkingPoint: "Hacktiv8 Comprehensive DA durasinya hanya 12 minggu kak. Di RevoU FSDA kakak belajar 7 bulan komprehensif, menguasai Apache Airflow ETL, ada 12 minggu Virtual Internship menganalisis dataset bisnis riil perusahaan, dan dibimbing langsung oleh Career Coach 1-on-1 sampai dapat kerja. Tentu jauh lebih matang untuk persiapan karir kakak :)",
+      referenceImages: [
+        {
+          url: "/images/hacktiv8/h8-cda-stack-analytics-viz.png",
+          title: "Fase 1: Data Analytics & Visualization",
+          subtitle: "Fondasi analisis data, spreadsheet, database SQL, dan pembuatan dashboard visual interaktif",
+          tools: ["Python", "Pandas", "SQL", "Google Sheets", "Looker Studio", "Tableau"]
+        },
+        {
+          url: "/images/hacktiv8/h8-cda-stack-scraping-fastapi.png",
+          title: "Fase 2: Data Pipeline, Web Scraping & REST API",
+          subtitle: "Automasi web scraping (Selenium & BeautifulSoup), database PostgreSQL, dan API backend FastAPI",
+          tools: ["PostgreSQL", "Selenium", "BeautifulSoup", "FastAPI", "Pandas", "Git", "GitHub", "Vercel", "Python"]
+        },
+        {
+          url: "/images/hacktiv8/h8-cda-stack-bigdata-genai.png",
+          title: "Fase 3: Big Data, Data Engineering & Generative AI",
+          subtitle: "Pemrosesan big data terdistribusi (Spark), orkestrasi pipeline (Airflow, dbt, Glue), dan integrasi AI (OpenAI & Gemini)",
+          tools: ["OpenAI", "Gemini", "Apache Spark", "dbt", "MongoDB", "Great Expectations", "Apache Airflow", "AWS Glue", "Docker", "Python", "SQL"]
+        }
+      ]
     },
     {
       id: "h8-ai-itb",
@@ -522,7 +555,7 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
           parameter: "Sesi Kampus & Pengajar",
           categoryTag: "FORMAT KELAS",
           revouValue: "Guru Besar & Dosen FEB/FIA UI serta praktisi eks McKinsey/GoTo + Capstone Defense di Kampus UI.",
-          competitorValue: "Instruktur internal Hacktiv8 via Zoom.",
+          competitorValue: "Instruktur praktisi data & AI industri (Remote Online Livestream); tidak memiliki kurikulum corporate finance atau dosen perguruan tinggi.",
           highlight: false
         }
       ],
@@ -568,7 +601,7 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
           parameter: "Persyaratan Pendidikan",
           categoryTag: "SYARAT MASUK",
           revouValue: "Terbuka bagi seluruh jenjang pendidikan profesional (manajer, staf bisnis, owner, finance).",
-          competitorValue: "Mewajibkan minimal lulusan S1.",
+          competitorValue: "Mewajibkan minimal lulusan S1/sederajat (hanya program Full Stack Software Development dan Visual Design & UI/UX yang terbuka untuk SMA/SMK).",
           highlight: true
         },
         {
@@ -579,7 +612,7 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
           highlight: false
         }
       ],
-      competitorLimitation: "Hanya menerbitkan sertifikat internal Purwadhika tanpa kemitraan universitas ternama, durasi modul inti relatif singkat (6 minggu), dan mensyaratkan min. S1.",
+      competitorLimitation: "Menerbitkan sertifikat internal Purwadhika (tanpa kemitraan perguruan tinggi), durasi modul 6 minggu (24 sesi), dan mensyaratkan min. S1/sederajat.",
       revouEdge: "Executive Joint Program BINUS x RevoU: Kredensial resmi universitas bergengsi (BINUS), kurikulum otomasi AI bisnis enterprise, dan pengajar Lead AI internasional.",
       acTalkingPoint: "Purwadhika AI Automation memang mengajarkan tools seperti Zapier dan n8n kak. Nah, di RevoU kita bekerjasama resmi dengan BINUS (Applied AI & Automation) dan ITB (AI for Leaders), jadi selain menguasai otomasi AI untuk efisiensi kantor, kakak mendapatkan sertifikasi dan kredensial resmi dari universitas top yang sangat diakui manajemen perusahaan!"
     },
@@ -614,7 +647,7 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
           highlight: false
         }
       ],
-      competitorLimitation: "Biaya sangat tinggi (mencapai Rp 35 jt harga normal) dan kurikulum sangat berat koding matematika murni tanpa akreditasi kampus ternama.",
+      competitorLimitation: "Biaya normal Rp 35 juta menerbitkan sertifikat internal Purwadhika (tanpa kemitraan perguruan tinggi), dengan kurikulum teknis koding machine learning & deep learning.",
       revouEdge: "Joint Program ITB & BINUS x RevoU memadukan keahlian praktis AI terkini dengan sertifikasi resmi perguruan tinggi terbaik dengan biaya jauh lebih terjangkau.",
       acTalkingPoint: "Purwadhika AI Engineering biayanya mencapai Rp 35 juta untuk sertifikat internal. Di RevoU, kakak bisa mengambil program AI bekerjasama langsung dengan ITB atau BINUS dengan kurikulum praktikal bisnis, mentor AI Lead global, dan kredensial kampus nomor satu dengan investasi yang jauh lebih terjangkau."
     },
@@ -628,11 +661,11 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
       revouMatchBadge: "FSDA",
       tableRows: [
         {
-          parameter: "Biaya & Garansi Refund",
+          parameter: "Biaya & Skema Pembayaran",
           categoryTag: "INVESTASI & BIAYA",
-          revouValue: "Rp 16.000.000 – Rp 25.000.000-an + **Garansi Refund 100%** jika tidak dapat kerja.",
-          competitorValue: "Early Bird Rp 15jt | Term 1 Rp 18jt | Promo 39th Rp 18,5jt | Normal Rp 25jt. **Tanpa garansi refund biaya**.",
-          highlight: true
+          revouValue: "Rp 16.000.000 – Rp 25.000.000-an (Cicilan 0% s.d. 12-18 bulan, all-in sudah termasuk 12 minggu Virtual Internship & Career+).",
+          competitorValue: "Early Bird Rp 15jt | Term 1 Rp 18jt | Term 2 Rp 21jt | Promo 39th Rp 18,5jt | Scholarship Sinarmas Land Rp 12,5jt | Normal Rp 25jt (Non-refundable).",
+          highlight: false
         },
         {
           parameter: "Durasi Modul Pembelajaran",
@@ -652,7 +685,7 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
           parameter: "Persyaratan Peserta",
           categoryTag: "SYARAT MASUK",
           revouValue: "Terbuka bagi seluruh jenjang pendidikan (SMA/SMK, D3, S1).",
-          competitorValue: "Mewajibkan minimal lulusan S1.",
+          competitorValue: "Mewajibkan minimal lulusan S1/sederajat (hanya program Full Stack Software Development dan Visual Design & UI/UX yang terbuka untuk SMA/SMK).",
           highlight: true
         },
         {
@@ -663,9 +696,9 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
           highlight: true
         }
       ],
-      competitorLimitation: "Durasi modul pembelajaran sangat cepat (hanya 9 minggu modul), mensyaratkan min. lulusan S1, dan tidak ada jaminan refund biaya.",
-      revouEdge: "RevoU FSDA terbuka untuk seluruh jenjang, durasi belajar 7 bulan komprehensif termasuk 8 modul + Apache Airflow ETL, 12 minggu Virtual Internship studi kasus riil (Telkom OCA, Zurich), dan garansi refund 100% transparan.",
-      acTalkingPoint: "Purwadhika BDA waktu modul belajarnya relatif singkat yaitu 9 minggu dan mewajibkan syarat min. S1. Kalau di RevoU FSDA, kita mendalami SQL, Python, Tableau, Looker, dan Apache Airflow ETL selama 7 bulan termasuk 12 minggu Virtual Internship mengerjakan data klien nyata, dan ada jaminan refund 100% transparan."
+      competitorLimitation: "Durasi modul pembelajaran sangat cepat (hanya 9 minggu modul), dan mewajibkan minimal lulusan S1 untuk fasilitas penyaluran kerja.",
+      revouEdge: "RevoU FSDA terbuka untuk seluruh jenjang, durasi belajar 7 bulan komprehensif termasuk 8 modul + Apache Airflow ETL, 12 minggu Virtual Internship studi kasus riil (Telkom OCA, Zurich), dan didampingi Career Coach 1-on-1 sampai hired.",
+      acTalkingPoint: "Purwadhika BDA waktu modul belajarnya relatif singkat yaitu 9 minggu dan mewajibkan syarat min. S1. Kalau di RevoU FSDA, kita mendalami SQL, Python, Tableau, Looker, dan Apache Airflow ETL selama 7 bulan termasuk 12 minggu Virtual Internship mengerjakan data klien nyata, dan ada bimbingan Career Coach 1-on-1 intensif sampai dapat kerja."
     },
     {
       id: "pwd-dsml-itb",
@@ -680,21 +713,21 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
           parameter: "Biaya & Kredensial Universitas",
           categoryTag: "INVESTASI & KREDENSIAL",
           revouValue: "Rp 16.999.000 (opsi cicilan 0% & corporate invoice) + Certificate of Completion resmi **Institut Teknologi Bandung (FTI ITB)** + Opsi transfer kredit 1 SKS Program Magister FTI ITB.",
-          competitorValue: "Early Bird Rp 15jt | Term 1 Rp 18jt | Term 2 Rp 21jt | Normal Rp 25.000.000 (Hanya sertifikat kelulusan internal kursus Purwadhika).",
+          competitorValue: "Early Bird Rp 15jt | Term 1 Rp 18jt | Term 2 Rp 21jt | Promo 39th Rp 18,5jt | Scholarship Sinarmas Land Rp 12,5jt | Normal Rp 25jt (Hanya sertifikat kelulusan internal kursus Purwadhika).",
           highlight: true
         },
         {
           parameter: "Pengajar & Instruktur Praktisi",
           categoryTag: "PENGAJAR",
           revouValue: "Kolaborasi Dosen FTI ITB & Praktisi Senior Aktif: **Rahmat Hidayatullah** (Head of Data Science, XLSMART) — kurikulum terapan mutakhir.",
-          competitorValue: "Instruktur & mentor internal Purwadhika.",
+          competitorValue: "Instruktur pengajar kelas dan mentor praktisi internal saat final project.",
           highlight: true
         },
         {
           parameter: "Kurikulum & Modern AI Tooling",
           categoryTag: "KURIKULUM",
           revouValue: "Modern Data Science: Predictive analytics (regression, classification), forecasting, ML clustering, AI coding agent via **Claude Code Safety Gate** untuk akselerasi koding aman.",
-          competitorValue: "Sintaks Python dasar, SQL, Tableau, dan algoritma machine learning konvensional (Scikit-Learn).",
+          competitorValue: "Python dasar, SQL, Tableau, statistik, dan machine learning (Scikit-Learn).",
           highlight: true
         },
         {
@@ -712,7 +745,7 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
           highlight: true
         }
       ],
-      competitorLimitation: "Biaya normal mencapai Rp 25 juta hanya untuk sertifikat internal lembaga kursus, kurikulum machine learning masih konvensional tanpa AI coding agent, dan tugas akhir dikerjakan berkelompok.",
+      competitorLimitation: "Biaya normal mencapai Rp 25 juta menerbitkan sertifikat internal Purwadhika, fokus kurikulum pada machine learning Python/Scikit-Learn tanpa integrasi AI coding agent seperti Claude Code, dan final project dikerjakan secara berkelompok.",
       revouEdge: "Kredensial resmi universitas teknik nomor 1 di Indonesia (FTI ITB) dengan opsi 1 SKS Magister, bimbingan langsung Head of Data Science XLSMART & Dosen FTI ITB, integrasi modern Claude Code, dan Capstone Decision App nyata.",
       acTalkingPoint: "Purwadhika DS&ML biaya normalnya Rp 25 juta untuk sertifikat internal kursus kak. Di program RevoU x ITB Applied Data Science with AI (Rp 16,99jt), kakak belajar machine learning terapan modern bersama Dosen FTI ITB dan Head of Data Science XLSMART, menggunakan AI coding agent Claude Code, dan mendapatkan sertifikat resmi ITB plus opsi 1 SKS Magister ITB. Kredensial dan kedalamannya jauh lebih bernilai tinggi di mata industri!"
     },
@@ -726,11 +759,11 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
       revouMatchBadge: "FSDA",
       tableRows: [
         {
-          parameter: "Biaya & Jaminan Refund",
-          categoryTag: "INVESTASI & REFUND",
-          revouValue: "Rp 16.000.000 – Rp 25.000.000-an + **Garansi Refund Biaya s.d. 100%** jika belum mendapatkan pekerjaan (syarat realistis: 10 lamaran/minggu).",
-          competitorValue: "Early Bird Rp 15jt | Term 1 Rp 18jt | Promo 39th Rp 18,5jt | Normal Rp 25jt. **Tanpa jaminan refund biaya**.",
-          highlight: true
+          parameter: "Biaya & Skema Pembayaran",
+          categoryTag: "INVESTASI & BIAYA",
+          revouValue: "Rp 16.000.000 – Rp 25.000.000-an (Cicilan 0% s.d. 12-18 bulan via kartu kredit/Danacita, tanpa biaya kos). Non-refundable.",
+          competitorValue: "Early Bird Rp 15jt | Term 1 Rp 18jt | Term 2 Rp 21jt | Promo 39th Rp 18,5jt | Scholarship Sinarmas Land Rp 12,5jt | Normal Rp 25jt. Non-refundable.",
+          highlight: false
         },
         {
           parameter: "Durasi & Kedalaman Modul",
@@ -743,7 +776,7 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
           parameter: "Kurikulum & Production Engineering",
           categoryTag: "KURIKULUM",
           revouValue: "8 Modules + AI: Business Problem Solving (Issue Tree, RCA), SQL BigQuery AI, Python Pandas/PandasAI, Tableau, Looker Studio, Data Storytelling, serta **Production-Ready Analytics (Apache Airflow & Automated ETL)**.",
-          competitorValue: "Python programming, SQL, Tableau, statistik, dan machine learning konvensional (Scikit-Learn).",
+          competitorValue: "Python programming, SQL, Tableau, statistik, dan machine learning (Scikit-Learn).",
           highlight: false
         },
         {
@@ -757,7 +790,7 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
           parameter: "Persyaratan Pendidikan & Usia",
           categoryTag: "SYARAT MASUK",
           revouValue: "Terbuka bagi seluruh jenjang (SMA/SMK, D3, S1) tanpa batasan usia karir.",
-          competitorValue: "Mewajibkan minimal lulusan S1 dan fasilitas koneksi kerja dibatasi maks. usia 30 tahun.",
+          competitorValue: "Mewajibkan minimal lulusan S1/sederajat (hanya program Full Stack Software Development dan Visual Design & UI/UX yang terbuka untuk SMA/SMK), dan fasilitas koneksi kerja dibatasi maks. usia 30 tahun.",
           highlight: true
         },
         {
@@ -768,9 +801,9 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
           highlight: false
         }
       ],
-      competitorLimitation: "Tidak ada jaminan refund biaya jika tidak bekerja, durasi modul materi relatif singkat (12–14 minggu), mewajibkan minimal S1, dan batas usia 30 tahun untuk koneksi kerja.",
-      revouEdge: "RevoU FSDA berdurasi 7 bulan komprehensif dari nol hingga menguasai Apache Airflow & Automated ETL, 12 minggu Virtual Internship studi kasus riil perusahaan (Telkom OCA, Zurich), terbuka semua jenjang/usia, dan didukung garansi refund 100% transparan.",
-      acTalkingPoint: "Purwadhika DS&ML mensyaratkan minimal S1 dan tidak ada garansi refund jika belum dapat kerja. Di RevoU FSDA, kita mendalami data end-to-end selama 7 bulan dari nol, menguasai Apache Airflow ETL, ada 12 minggu Virtual Internship mengolah real dataset perusahaan mitra, dan ada Garansi Refund 100% transparan jika belum mendapatkan pekerjaan. Tentu jauh lebih aman dan matang untuk persiapan karir kakak :)"
+      competitorLimitation: "Durasi modul materi relatif singkat (12–14 minggu), mewajibkan minimal S1/sederajat, dan batas usia 30 tahun untuk koneksi kerja.",
+      revouEdge: "RevoU FSDA berdurasi 7 bulan komprehensif dari nol hingga menguasai Apache Airflow & Automated ETL, 12 minggu Virtual Internship studi kasus riil perusahaan (Telkom OCA, Zurich), terbuka semua jenjang/usia, dan didukung bimbingan karir 1-on-1 Career+.",
+      acTalkingPoint: "Purwadhika DS&ML mensyaratkan minimal S1/sederajat dan batas usia 30 tahun. Di RevoU FSDA, kita mendalami data end-to-end selama 7 bulan dari nol, menguasai Apache Airflow ETL, ada 12 minggu Virtual Internship mengolah real dataset perusahaan mitra, dan dibimbing langsung oleh Career Coach 1-on-1 intensif sampai dapat kerja. Tentu jauh lebih matang untuk persiapan karir kakak :)"
     },
     {
       id: "pwd-dm",
@@ -785,7 +818,7 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
           parameter: "Biaya & Skema Pembayaran",
           categoryTag: "INVESTASI & BIAYA",
           revouValue: "Rp 16.000.000 – Rp 25.000.000-an (All-in termasuk alokasi real ads budget jutaan rupiah).",
-          competitorValue: "Early Bird Rp 15jt | Term 1 Rp 18jt | Promo 39th Rp 18,5jt | Normal Rp 25jt.",
+          competitorValue: "Early Bird Rp 15jt | Term 1 Rp 18jt | Term 2 Rp 21jt | Promo 39th Rp 18,5jt | Scholarship Sinarmas Land Rp 12,5jt | Normal Rp 25jt. Non-refundable.",
           highlight: false
         },
         {
@@ -806,27 +839,27 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
           parameter: "Praktek Anggaran Iklan Riil",
           categoryTag: "REAL ADS BUDGET",
           revouValue: "Setiap siswa memegang REAL BUDGET ADS jutaan rupiah langsung untuk running campaign live di Meta, Google, & TikTok.",
-          competitorValue: "Latihan akun demo / tugas kelompok dengan anggaran terbatas.",
+          competitorValue: "Tidak tercantum informasi alokasi real ad spend mandiri di website resmi (tools/akun premium tertentu ditanggung peserta).",
           highlight: true
         },
         {
           parameter: "Format Portofolio Proyek Akhir",
           categoryTag: "PORTOFOLIO AKHIR",
           revouValue: "13 Portfolio Projects praktis mandiri (1 per modul) + 12 Minggu Virtual Internship bersama partner bisnis nyata.",
-          competitorValue: "Final project dikerjakan dalam kelompok BESAR (7–8 orang) sehingga kontribusi individu tidak menonjol.",
+          competitorValue: "Final project 5 minggu (persiapan s.d. presentasi) dikerjakan dalam kelompok 7–8 orang didampingi 1 mentor internal praktisi; wajib memenuhi prerequisite nilai akhir modul untuk bisa mengikuti.",
           highlight: true
         },
         {
           parameter: "Persyaratan Pendidikan",
           categoryTag: "SYARAT MASUK",
           revouValue: "Terbuka bagi seluruh jenjang (SMA/SMK/D3/S1).",
-          competitorValue: "Mewajibkan minimal lulusan S1.",
+          competitorValue: "Mewajibkan minimal lulusan S1/sederajat (hanya program Full Stack Software Development dan Visual Design & UI/UX yang terbuka untuk SMA/SMK), dan koneksi kerja dibatasi maks. usia 30 tahun.",
           highlight: true
         }
       ],
-      competitorLimitation: "Final project dibagi dalam kelompok besar (7–8 orang) sehingga kontribusi individu tidak terlihat, dan mensyaratkan min. S1.",
+      competitorLimitation: "Final project 5 minggu dikerjakan dalam kelompok 7–8 orang didampingi 1 mentor internal (wajib lolos prerequisite nilai akhir seluruh modul), serta syarat koneksi kerja min. S1/sederajat dan usia maks. 30 tahun.",
       revouEdge: "Di RevoU FSDM, setiap peserta menguasai 12 modul digital marketing terintegrasi AI, mengelola real budget ads jutaan rupiah secara mandiri, memiliki 13 portofolio nyata, serta 12 minggu Virtual Internship.",
-      acTalkingPoint: "Di Purwadhika final project-nya dikerjakan bareng 7-8 orang kak, jadi hasil portofolionya dibagi banyak orang. Kalau di RevoU FSDM, kakak langsung megang real ads budget jutaan rupiah sendiri untuk running live campaign, ada 13 portofolio project mandiri, 12 minggu Virtual Internship, dan dibimbing Career Coach 1-on-1 sampai dapat kerja. Kakak lebih memprioritaskan portofolio mandiri atau kelompok besar kak? :)"
+      acTalkingPoint: "Di Purwadhika, final project-nya berlangsung 5 minggu dikerjakan dalam kelompok 7-8 orang dengan 1 mentor internal, dan ada syarat nilai prerequisite modul dulu kak. Kalau di RevoU FSDM, setiap siswa membuat 13 portofolio mandiri per modul, mengelola real ads budget jutaan rupiah secara mandiri, ada 12 minggu Virtual Internship mengerjakan real project perusahaan mitra, dan dibimbing Career Coach 1-on-1 sampai dapat kerja. Kakak lebih memprioritaskan portofolio mandiri atau kelompok besar kak? :)"
     },
     {
       id: "pwd-fsd",
@@ -838,24 +871,24 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
       revouMatchBadge: "FSSE",
       tableRows: [
         {
-          parameter: "Biaya & Jaminan Refund",
-          categoryTag: "INVESTASI & REFUND",
-          revouValue: "Rp 16.000.000 – Rp 25.000.000-an + Garansi Refund 100% transparan.",
-          competitorValue: "Early Bird Rp 15jt | Promo 39th Rp 18,5jt | Normal Rp 25jt. Tanpa garansi refund.",
-          highlight: true
+          parameter: "Biaya & Skema Pembayaran",
+          categoryTag: "INVESTASI & BIAYA",
+          revouValue: "Rp 16.000.000 – Rp 25.000.000-an (Cicilan 0% s.d. 12-18 bulan via kartu kredit/Danacita). Non-refundable.",
+          competitorValue: "Early Bird Rp 15jt | Term 1 Rp 18jt | Term 2 Rp 21jt | Promo 39th Rp 18,5jt | Scholarship Sinarmas Land Rp 12,5jt | Normal Rp 25jt. Tanpa garansi refund.",
+          highlight: false
         },
         {
           parameter: "Durasi & Kurikulum",
           categoryTag: "DURASI & KURIKULUM",
           revouValue: "8 Bulan komprehensif (5 Bulan Live Classes 210+ Jam LIVE malam 19:00–21:00 WIB + 3 Bulan Virtual Internship). Indonesia's 1st AI-Native Software Engineering Program (Eksklusif AWS), Python/Flask, Next.js/TypeScript, Tailwind, Playwright, Kiro spec mode, Claude.",
-          competitorValue: "13 minggu modul + 4–5 minggu final project (JavaScript/Node.js/React stack konvensional).",
+          competitorValue: "13 minggu modul + 4–5 minggu final project (JavaScript/Node.js, Express, React, MySQL).",
           highlight: true
         },
         {
           parameter: "Support System Harian",
           categoryTag: "SUPPORT BELAJAR",
           revouValue: "Pengajar Praktisi + Section Manager + Team Lead + Mentor + 1-on-1 Personal Career Coach (Career+).",
-          competitorValue: "Instruktur kelas + Admin + Career portal.",
+          competitorValue: "Instruktur kelas, 1 mentor internal praktisi saat final project, akses video materi LMS, serta soft skill development by innergy.",
           highlight: true
         },
         {
@@ -864,11 +897,18 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
           revouValue: "2 Proyek Utama skala produksi (Full-Stack konvensional & AI-built) + 3 Bulan Virtual Internship memecahkan masalah nyata perusahaan partner.",
           competitorValue: "Final project kelompok 2–3 orang (4–5 minggu).",
           highlight: true
+        },
+        {
+          parameter: "Persyaratan Pendidikan",
+          categoryTag: "SYARAT MASUK",
+          revouValue: "Terbuka bagi seluruh jenjang (SMA/SMK, D3, S1) tanpa batasan latar belakang.",
+          competitorValue: "Terbuka untuk lulusan SMA/SMK (salah satu dari 2 program Job Connector Purwadhika yang menerima SMA/SMK bersama Visual Design & UI/UX; program Job Connector lainnya wajib S1/sederajat).",
+          highlight: false
         }
       ],
-      competitorLimitation: "Tidak ada garansi refund biaya 100% jika peserta tidak bekerja, kurikulum belum AI-native, dan tanpa kemitraan cloud AWS resmi.",
-      revouEdge: "RevoU FSSE adalah program AI-Native pertama di Indonesia bermitra eksklusif dengan AWS, berdurasi 8 bulan komprehensif, review kode baris-per-baris, 3 bulan Virtual Internship, dan garansi refund 100% transparan.",
-      acTalkingPoint: "Kurikulum Fullstack Purwadhika belum berbasis AI-native dan tanpa kemitraan cloud global kak. Di RevoU FSSE, kita bermitra eksklusif dengan AWS, kurikulum AI-native 8 bulan (210+ jam live) mengajarkan Python/Flask dan Next.js/TypeScript, ada 3 bulan Virtual Internship membangun produk riil perusahaan mitra, serta jaminan refund 100% transparan jika tidak terserap kerja."
+      competitorLimitation: "Kurikulum fokus pada fullstack JavaScript (Express/React), tanpa kemitraan cloud AWS resmi atau pendekatan AI-native terstruktur.",
+      revouEdge: "RevoU FSSE adalah program AI-Native pertama di Indonesia bermitra eksklusif dengan AWS, berdurasi 8 bulan komprehensif, review kode baris-per-baris, 3 bulan Virtual Internship, dan bimbingan karir 1-on-1 intensif Career+.",
+      acTalkingPoint: "Kurikulum Fullstack Purwadhika belum berbasis AI-native dan tanpa kemitraan cloud global kak. Di RevoU FSSE, kita bermitra eksklusif dengan AWS, kurikulum AI-native 8 bulan (210+ jam live) mengajarkan Python/Flask dan Next.js/TypeScript, ada 3 bulan Virtual Internship membangun produk riil perusahaan mitra, serta bimbingan Career Coach 1-on-1 intensif sampai siap kerja."
     },
     {
       id: "pwd-cyber",
@@ -883,21 +923,21 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
           parameter: "Biaya & Kredensial Resmi",
           categoryTag: "INVESTASI & BIAYA",
           revouValue: "Online: Rp 15.000.000 / On-Campus: Rp 16.500.000 (cicilan tersedia) + Professional Certificate resmi kolaborasi **BINUS University, AWS, dan RevoU**.",
-          competitorValue: "Early Bird Rp 15jt | Term 1 Rp 18jt | Promo 39th Rp 18,5jt | Normal Rp 25.000.000 (sertifikat internal Purwadhika).",
+          competitorValue: "Early Bird Rp 15jt | Term 1 Rp 18jt | Term 2 Rp 21jt | Promo 39th Rp 18,5jt | Scholarship Sinarmas Land Rp 12,5jt | Normal Rp 25.000.000 (sertifikat internal Purwadhika).",
           highlight: true
         },
         {
           parameter: "Fasilitas Cloud Lab Praktis",
           categoryTag: "LABS PRAKTIK",
           revouValue: "3 Live Cloud Infrastructure Labs di lingkungan resmi **Amazon Web Services (AWS)** + 5 sesi on-campus di BINUS Kemanggisan.",
-          competitorValue: "Sesi live stream Zoom umum tanpa dedicated enterprise cloud labs di AWS.",
+          competitorValue: "Sesi Online Livestream Zoom dengan hands-on labs (tidak tercantum dedicated live cloud lab AWS enterprise resmi).",
           highlight: true
         },
         {
           parameter: "Fokus Kurikulum Pertahanan",
           categoryTag: "KURIKULUM",
           revouValue: "Mendalam pada **Defensive Cybersecurity (Blue Team)**: threat triage, monitoring, incident response, dan integrasi AI security agent sejak Day One.",
-          competitorValue: "Campuran pengantar umum Blue Team & Red Team (ethical hacking) tanpa spesialisasi lab AWS enterprise.",
+          competitorValue: "Mencakup materi keamanan siber Blue Team (defensive) dan Red Team (ethical hacking/penetration testing).",
           highlight: true
         },
         {
@@ -908,9 +948,184 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
           highlight: false
         }
       ],
-      competitorLimitation: "Biaya mencapai Rp 25 juta untuk sertifikat internal, materi campuran umum tanpa live cloud labs AWS resmi bersertifikasi kampus.",
+      competitorLimitation: "Biaya normal mencapai Rp 25 juta menerbitkan sertifikat internal Purwadhika, materi mencakup Blue Team & Red Team tanpa dedicated live cloud lab AWS terintegrasi.",
       revouEdge: "Kolaborasi resmi BINUS University, AWS, dan RevoU, fokus mendalam pada Defensive Cybersecurity (Blue Team), 3 hari live lab AWS, dan sertifikasi resmi institusi dengan biaya mulai Rp 15 juta.",
       acTalkingPoint: "Purwadhika Cybersecurity biaya normalnya mencapai Rp 25jt untuk sertifikat internal sekolah kursus kak. Di RevoU x BINUS Applied Cybersecurity with AI, kakak belajar 12 minggu langsung praktek di 3 live labs infrastruktur cloud AWS asli, fokus di Defensive Security (Blue Team) yang paling dicari industri saat ini, dan mendapatkan Professional Certificate resmi dari BINUS University & AWS dengan biaya mulai Rp 15 juta saja!"
+    },
+    {
+      id: "pwd-de",
+      competitorId: "purwadhika",
+      competitorName: "Purwadhika",
+      programTitle: "Data Engineering",
+      badge: "Job Connector (Online Livestream)",
+      revouMatchProgram: "Full Stack Data Analytics (FSDA)",
+      revouMatchBadge: "FSDA",
+      tableRows: [
+        {
+          parameter: "Biaya & Skema Pembayaran",
+          categoryTag: "INVESTASI & BIAYA",
+          revouValue: "Rp 16.000.000 – Rp 25.000.000-an (Cicilan 0% s.d. 12-18 bulan via kartu kredit/Danacita, tanpa biaya kos). Non-refundable.",
+          competitorValue: "Early Bird Rp 15jt | Term 1 Rp 18jt | Term 2 Rp 21jt | Promo 39th Rp 18,5jt | Scholarship Sinarmas Land Rp 12,5jt | Normal Rp 25jt. Non-refundable.",
+          highlight: false
+        },
+        {
+          parameter: "Jadwal Belajar",
+          categoryTag: "JADWAL KELAS",
+          revouValue: "Pilihan Fleksibel: Option A Weekday Evening (Senin–Kamis 19:00–21:00 WIB + Review Sabtu) atau Option B Weekend (Sabtu–Minggu 10:00–12:00 & 13:00–15:00 WIB + Review Jumat).",
+          competitorValue: "Senin–Kamis 19:00–22:00 WIB (Online Livestream, 3 jam per sesi).",
+          highlight: false
+        },
+        {
+          parameter: "Durasi Modul & Sesi Belajar",
+          categoryTag: "DURASI MODUL",
+          revouValue: "7 Bulan komprehensif (Bulan 1-4 Modul Live + Bulan 5-7: 12 Minggu Virtual Internship & Career Track; Lifetime Community).",
+          competitorValue: "14 minggu materi (44 sesi) + 5 minggu final project (total batch kalender ±20–25 minggu).",
+          highlight: true
+        },
+        {
+          parameter: "Kurikulum & Data Pipeline Stack",
+          categoryTag: "KURIKULUM",
+          revouValue: "End-to-end Data Lifecycle: Business Problem Framing, Advanced SQL BigQuery AI, Python Pandas, Data Storytelling, serta **Production-Ready Analytics (Apache Airflow & Automated ETL Pipeline)**.",
+          competitorValue: "Python OOP & Docker -> Database (Relational & NoSQL) -> Data Warehouse (BigQuery) -> Data Pipeline (Apache Airflow, Apache Spark, GCP).",
+          highlight: false
+        },
+        {
+          parameter: "Portofolio Proyek (Virtual Internship)",
+          categoryTag: "PROYEK NYATA",
+          revouValue: "7 Portofolio Proyek standar industri + **12 Minggu Virtual Internship** mengolah dataset korporasi nyata (Telkom OCA, Zurich, dll) dan presentasi ke tim manajemen mitra.",
+          competitorValue: "Final project kelompok 1–3 orang (membangun pipeline data mandiri).",
+          highlight: true
+        },
+        {
+          parameter: "Persyaratan Pendidikan & Usia",
+          categoryTag: "SYARAT MASUK",
+          revouValue: "Terbuka bagi seluruh jenjang pendidikan (SMA/SMK, D3, S1) tanpa batasan usia.",
+          competitorValue: "Mewajibkan minimal lulusan S1/sederajat (hanya program Full Stack Software Development dan Visual Design & UI/UX yang terbuka untuk SMA/SMK), dan koneksi kerja dibatasi maksimal usia 30 tahun.",
+          highlight: true
+        },
+        {
+          parameter: "Dukungan Karir & Bimbingan",
+          categoryTag: "PERSIAPAN KERJA",
+          revouValue: "Career+ (1:1 Personal Career Coach selama 7 bulan penuh, AI Career Engine, simulasi interview hiring manager). Rata-rata gaji alumni Rp 9.800.000/bulan.",
+          competitorValue: "Bimbingan CV & LinkedIn, persiapan interview, dan koneksi ke Purwadhika Hiring Network.",
+          highlight: false
+        }
+      ],
+      competitorLimitation: "Kurikulum murni teknis backend pipeline tanpa latihan presentasi bisnis ke jajaran direksi/stakeholder, mewajibkan min. S1/sederajat, dan batas usia 30 tahun untuk koneksi kerja.",
+      revouEdge: "RevoU FSDA menggabungkan pemecahan masalah bisnis nyata, visualisasi eksekutif, dan automated ETL Apache Airflow selama 7 bulan komprehensif, 12 minggu Virtual Internship korporasi nyata, dan Career+ 1-on-1 coaching sampai dapat kerja.",
+      acTalkingPoint: "Purwadhika Data Engineering fokusnya sangat teknikal koding pipeline data dan mewajibkan syarat min. S1/sederajat serta usia maks 30 tahun kak. Kalau di RevoU FSDA, kakak belajar komprehensif 7 bulan dari business problem solving, SQL, Python, Tableau, hingga automated ETL dengan Apache Airflow, ada 12 minggu Virtual Internship mengerjakan real dataset partner korporasi, terbuka untuk semua jenjang pendidikan, dan didampingi Career Coach 1-on-1 sampai dapat kerja."
+    },
+    {
+      id: "pwd-qa",
+      competitorId: "purwadhika",
+      competitorName: "Purwadhika",
+      programTitle: "Quality Assurance Engineer",
+      badge: "Job Connector (Sen–Kam 19:00–22:00)",
+      revouMatchProgram: "Full Stack Software Engineering (FSSE)",
+      revouMatchBadge: "FSSE",
+      tableRows: [
+        {
+          parameter: "Biaya & Skema Pembayaran",
+          categoryTag: "INVESTASI & BIAYA",
+          revouValue: "Rp 16.000.000 – Rp 25.000.000-an (Cicilan 0% s.d. 12-18 bulan via kartu kredit/Danacita). Non-refundable.",
+          competitorValue: "Early Bird Rp 14jt | Term 2 Rp 20jt | Promo 39th Rp 14,5jt | Normal Rp 23jt. Non-refundable.",
+          highlight: false
+        },
+        {
+          parameter: "Jadwal & Waktu Belajar",
+          categoryTag: "JADWAL KELAS",
+          revouValue: "Kelas malam konsisten 19:00–21:00 WIB Senin–Jumat (210+ jam live) — sangat ramah pekerja tanpa perlu resign.",
+          competitorValue: "Senin–Kamis 19:00–22:00 WIB (Online Livestream).",
+          highlight: false
+        },
+        {
+          parameter: "Durasi Modul & Kedalaman Materi",
+          categoryTag: "DURASI MODUL",
+          revouValue: "8 Bulan komprehensif (5 Bulan Live Classes 210+ Jam LIVE + 3 Bulan Virtual Internship memecahkan masalah klien nyata).",
+          competitorValue: "8 minggu modul materi (32 sesi) + 4 minggu final project (total batch kalender ±16–20 minggu).",
+          highlight: true
+        },
+        {
+          parameter: "Kurikulum & Cakupan Skill",
+          categoryTag: "KURIKULUM",
+          revouValue: "Full Stack Software Engineering AI-Native (AWS partner): Python/Flask, Next.js/TypeScript, modern testing end-to-end dengan Playwright & spec-driven AI development, cloud deployment CI/CD.",
+          competitorValue: "Manual Testing (Test Case, SDLC/STLC, Jira), API Testing (Postman, Newman), Automation Testing (Selenium, Cypress/Playwright), Performance Testing (JMeter).",
+          highlight: true
+        },
+        {
+          parameter: "Persyaratan Pendidikan & Usia",
+          categoryTag: "SYARAT MASUK",
+          revouValue: "Terbuka bagi seluruh jenjang (SMA/SMK, D3, S1) tanpa batasan usia karir.",
+          competitorValue: "Mewajibkan minimal lulusan S1/sederajat (hanya program Full Stack Software Development dan Visual Design & UI/UX yang terbuka untuk SMA/SMK), dan koneksi kerja dibatasi maksimal usia 30 tahun.",
+          highlight: true
+        },
+        {
+          parameter: "Proyek Nyata (Virtual Internship)",
+          categoryTag: "PROYEK NYATA",
+          revouValue: "2 Proyek Utama skala produksi + 3 Bulan Virtual Internship membangun produk software nyata bersama partner korporasi.",
+          competitorValue: "Final project testing kelompok pada aplikasi web/mobile.",
+          highlight: true
+        }
+      ],
+      competitorLimitation: "Durasi modul 8 minggu (32 sesi) dengan biaya normal Rp 23jt fokus pada pengujian perangkat lunak (QA manual & automation), mewajibkan min. S1/sederajat, dan batas usia 30 tahun untuk koneksi kerja.",
+      revouEdge: "RevoU FSSE berdurasi 8 bulan komprehensif bermitra eksklusif dengan AWS, melatih software engineer serba bisa yang menguasai automated end-to-end testing (Playwright) sekaligus full stack coding, 3 bulan Virtual Internship, dan Career+ 1-on-1 coaching.",
+      acTalkingPoint: "Purwadhika QA durasi modulnya 8 minggu dengan harga normal Rp 23jt fokus pada testing (QA) kak. Di industri modern, banyak recruiter mencari Software Engineer yang menguasai pengembangan aplikasi sekaligus automated testing. Di RevoU FSSE (8 bulan, kemitraan AWS), kakak belajar Full Stack Next.js dan Python, automated testing dengan Playwright, 3 bulan Virtual Internship, dan didampingi Career Coach 1-on-1 sampai dapat kerja!"
+    },
+    {
+      id: "pwd-socmed",
+      competitorId: "purwadhika",
+      competitorName: "Purwadhika",
+      programTitle: "Social Media & Content Creation",
+      badge: "Job Connector (Sen–Kam 19:00–22:00)",
+      revouMatchProgram: "Full Stack Digital Marketing (FSDM)",
+      revouMatchBadge: "FSDM",
+      tableRows: [
+        {
+          parameter: "Biaya & Skema Pembayaran",
+          categoryTag: "INVESTASI & BIAYA",
+          revouValue: "Rp 16.000.000 – Rp 25.000.000-an (All-in sudah termasuk alokasi real ads budget jutaan rupiah, tanpa biaya tools tambahan).",
+          competitorValue: "Early Bird Rp 14jt | Term 2 Rp 20jt | Promo 39th Rp 14,5jt | Normal Rp 23jt. Non-refundable.",
+          highlight: false
+        },
+        {
+          parameter: "Durasi Modul Pembelajaran",
+          categoryTag: "DURASI MODUL",
+          revouValue: "7 Bulan komprehensif (Bulan 1-4 Modul Live interaktif + Bulan 5-7: 12 Minggu Virtual Internship & Career Track).",
+          competitorValue: "5 minggu modul materi (30 sesi) + 5 minggu final project (total batch kalender ±15–20 minggu).",
+          highlight: true
+        },
+        {
+          parameter: "Cakupan Kurikulum & Kanal Marketing",
+          categoryTag: "KURIKULUM",
+          revouValue: "12 Modul Digital Marketing Full Funnel: Social Media Organic AI, Short-form Video, Influencer KOL, Meta/Google/TikTok Ads, SEO with AI, GA4 & GTM, Looker Studio, CRM & Automation.",
+          competitorValue: "Fokus kurikulum: Marketing foundation, Content planning & calendar, Copywriting, Short-form video production, AI-optimized content strategy.",
+          highlight: true
+        },
+        {
+          parameter: "Praktek Anggaran Iklan Riil",
+          categoryTag: "REAL ADS BUDGET",
+          revouValue: "Setiap siswa memegang REAL BUDGET ADS jutaan rupiah langsung untuk running campaign live di Meta, Google, & TikTok.",
+          competitorValue: "Tidak tercantum alokasi ad spend (fokus kurikulum resmi pada konten media sosial organik & copywriting).",
+          highlight: true
+        },
+        {
+          parameter: "Format Portofolio Akhir",
+          categoryTag: "PORTOFOLIO AKHIR",
+          revouValue: "13 Portfolio Projects praktis mandiri (1 per modul) + 12 Minggu Virtual Internship bersama partner bisnis nyata.",
+          competitorValue: "Final project dikerjakan dalam kelompok maksimal 5 orang.",
+          highlight: true
+        },
+        {
+          parameter: "Persyaratan Pendidikan & Usia",
+          categoryTag: "SYARAT MASUK",
+          revouValue: "Terbuka bagi seluruh jenjang pendidikan (SMA/SMK, D3, S1) tanpa batasan usia.",
+          competitorValue: "Mewajibkan minimal lulusan S1/sederajat (hanya program Full Stack Software Development dan Visual Design & UI/UX yang terbuka untuk SMA/SMK), dan koneksi kerja dibatasi maksimal usia 30 tahun.",
+          highlight: true
+        }
+      ],
+      competitorLimitation: "Durasi modul 5 minggu dengan biaya normal Rp 23jt berfokus pada media sosial organik & konten, tidak mencakup alokasi ad spend berbayar mandiri, serta mewajibkan min. S1/sederajat.",
+      revouEdge: "RevoU FSDM memberikan penguasaan digital marketing 360° lengkap (organik + paid advertising dengan real budget jutaan rupiah), 13 portofolio mandiri, 12 minggu Virtual Internship, dan didampingi Career Coach 1-on-1 sampai hired.",
+      acTalkingPoint: "Purwadhika Social Media modulnya hanya 5 minggu dengan biaya normal Rp 23jt dan hanya belajar konten media sosial organik kak. Kalau di RevoU FSDM, selama 7 bulan kakak menguasai strategi konten organik PLUS paid performance marketing (Meta, Google, TikTok Ads) dengan real ads budget jutaan rupiah mandiri, ada 13 portofolio nyata, 12 minggu Virtual Internship, dan didampingi Career Coach 1-on-1 sampai dapat kerja. Nilai karirnya jauh lebih tinggi di mata recruiter!"
     }
   ],
 
@@ -926,11 +1141,11 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
       revouMatchBadge: "FSDA",
       tableRows: [
         {
-          parameter: "Biaya & Garansi Uang Kembali",
+          parameter: "Biaya & Skema Pembelajaran",
           categoryTag: "INVESTASI & BIAYA",
-          revouValue: "Investasi berbanding lurus dengan fasilitas: **100% Live Instruction** harian, 12 minggu Virtual Internship, & **Garansi Refund 100%**.",
+          revouValue: "Investasi berbanding lurus dengan fasilitas: **100% Live Instruction** harian, 12 minggu Virtual Internship, & Career+ 1-on-1 coaching (non-refundable).",
           competitorValue: "Rp 7.000.000 – Rp 15.000.000 (Harga ekonomis, banyak diskon promo, benefit gratis ulang kelas seumur hidup tanpa refund dana).",
-          highlight: true
+          highlight: false
         },
         {
           parameter: "Format Belajar & Intensitas Sesi",
@@ -962,7 +1177,7 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
         }
       ],
       competitorLimitation: "Hanya 2–3 sesi per minggu dan sebagian materi berupa rekaman video; jam interaksi live bersama praktisi jauh lebih sedikit.",
-      revouEdge: "100% Live Instruction interaktif, 8 modul lengkap dengan Apache Airflow & Automated ETL, 7 portofolio proyek + 12 minggu Virtual Internship mitra nyata, dan garansi refund 100%.",
+      revouEdge: "100% Live Instruction interaktif, 8 modul lengkap dengan Apache Airflow & Automated ETL, 7 portofolio proyek + 12 minggu Virtual Internship mitra nyata, dan bimbingan karir 1-on-1 intensif Career+.",
       acTalkingPoint: "Dibimbing cocok kalau kakak ingin belajar santai 2-3 sesi per minggu via video rekaman LMS. Tapi jika kakak ingin switch career total menjadi Data Analyst handal, RevoU menyediakan 100% live class interaktif, bimbingan langsung dari Lead Data unicorn, penguasaan Apache Airflow ETL, dan 12 minggu Virtual Internship analisis real dataset bisnis."
     },
     {
@@ -996,14 +1211,14 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
           highlight: true
         },
         {
-          parameter: "Garansi Refund & Hasil Alumni",
-          categoryTag: "JAMINAN REFUND",
-          revouValue: "Garansi Refund Biaya s.d. 100% jika belum mendapatkan pekerjaan. Gaji rata-rata alumni Rp 7.100.000/bulan.",
+          parameter: "Dukungan Karir & Hasil Alumni",
+          categoryTag: "PERSIAPAN KERJA",
+          revouValue: "Career+ (1:1 Personal Career Coach selama 7 bulan, AI Career Engine, simulasi interview). Gaji rata-rata alumni Rp 7.100.000/bulan dengan 93% placement rate resmi (non-refundable).",
           competitorValue: "Benefit mengulang kelas gratis tanpa pengembalian biaya.",
-          highlight: true
+          highlight: false
         }
       ],
-      competitorLimitation: "Sebagian materi berupa rekaman video mandiri LMS dan pertemuan live hanya 2–3x seminggu; anggaran ads latihan sangat terbatas dibanding RevoU.",
+      competitorLimitation: "Sebagian materi dipelajari mandiri melalui video rekaman LMS dengan sesi live 2–3x seminggu, dan tidak tercantum alokasi anggaran ads berbayar mandiri untuk tiap siswa.",
       revouEdge: "100% Live Instruction interaktif malam, kurikulum 12 modul lengkap integrasi AI, alokasi real ads budget jutaan rupiah untuk setiap siswa, 13 portofolio mandiri, dan 12 minggu Virtual Internship.",
       acTalkingPoint: "Dibimbing memang opsi yang ramah kantong untuk belajar santai 2-3x seminggu via video LMS kak. Tapi kalau tujuan kakak ingin career switch menjadi Digital Marketer handal di perusahaan top, RevoU memberikan 100% live class interaktif, real ads budget jutaan rupiah mandiri, 12 modul integrasi AI, 13 portofolio project, dan 12 minggu Virtual Internship bersama real client."
     },
@@ -1034,7 +1249,7 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
           parameter: "Fokus Kurikulum Pertahanan",
           categoryTag: "KURIKULUM",
           revouValue: "Mendalam pada **Defensive Cybersecurity (Blue Team)**: threat detection, triage, respons insiden, dan integrasi AI security agent sejak Day One.",
-          competitorValue: "Materi umum campuran rekaman video LMS tanpa live AWS cloud lab terintegrasi.",
+          competitorValue: "Kombinasi materi rekaman video LMS dan sesi live Zoom (tidak tercantum fasilitas live cloud labs AWS enterprise).",
           highlight: true
         }
       ],
@@ -1058,9 +1273,9 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
         {
           parameter: "Biaya & Model Program",
           categoryTag: "INVESTASI & BIAYA",
-          revouValue: "Program Karir Komprehensif End-to-End 7 bulan (Rp 16jt–25jt) + Garansi Refund 100%.",
+          revouValue: "Program Karir Komprehensif End-to-End 7 bulan (Rp 16jt–25jt) termasuk 12 minggu Virtual Internship & Career+ (non-refundable).",
           competitorValue: "Kursus Modular Singkat Rp 899.000 (normal Rp 1.099.000) atau paket bundle BNSP Rp 1,2jt–3,8jt.",
-          highlight: true
+          highlight: false
         },
         {
           parameter: "Durasi & Total Jam Belajar",
@@ -1084,9 +1299,9 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
           highlight: true
         }
       ],
-      competitorLimitation: "Hanya 17 sesi (42 jam) pengenalan dasar tanpa bimbingan portofolio bisnis nyata atau pendampingan karir 1-on-1.",
+      competitorLimitation: "Format kursus modular singkat 17 sesi (42,5 jam) fokus pada persiapan ujian kompetensi BNSP, tanpa program magang virtual atau bimbingan karir intensif 1-on-1.",
       revouEdge: "Di RevoU FSDA peserta belajar 7 bulan komprehensif dari nol, menguasai SQL, Python, Tableau, Looker, dan Apache Airflow ETL, serta 12 minggu Virtual Internship mengerjakan data bisnis riil (Telkom OCA, Zurich), didampingi Career Coach 1-on-1 sampai dapat kerja.",
-      acTalkingPoint: "DQLab hanya 17 sesi (42 jam) pengenalan dasar kak. Di RevoU FSDA peserta belajar 7 bulan komprehensif, menguasai SQL, Python, Tableau, Looker Studio, dan Apache Airflow ETL, ada 12 minggu Virtual Internship mengerjakan data bisnis riil perusahaan, didampingi Career Coach 1-on-1 sampai dapat kerja (rata-rata gaji alumni Rp 9,8 jt/bln)."
+      acTalkingPoint: "DQLab berformat kursus modular singkat 17 sesi (42,5 jam) fokus pada persiapan sertifikasi BNSP kak. Di RevoU FSDA peserta belajar 7 bulan komprehensif, menguasai SQL, Python, Tableau, Looker Studio, dan Apache Airflow ETL, ada 12 minggu Virtual Internship mengerjakan data bisnis riil perusahaan, didampingi Career Coach 1-on-1 sampai dapat kerja (rata-rata gaji alumni Rp 9,8 jt/bln)."
     },
     {
       id: "dq-genai",
@@ -1112,9 +1327,9 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
           highlight: true
         }
       ],
-      competitorLimitation: "Hanya kursus ringkas 20 jam tanpa pendampingan manajerial dan tanpa akreditasi kampus ternama.",
+      competitorLimitation: "Format kursus ringkas 10 sesi (20 jam) berfokus pada pengenalan tools n8n & GenAI internal DQLab tanpa sertifikasi dari perguruan tinggi.",
       revouEdge: "Program Executive RevoU x BINUS memadukan otomatisasi n8n dengan strategic thinking manajerial, keamanan data korporasi, dan kredensial resmi institusi BINUS.",
-      acTalkingPoint: "Kelas DQLab ini ringkas 20 jam kak. Di program Executive RevoU x BINUS, otomatisasi dipadukan dengan strategic thinking manajerial, keamanan data korporasi, dan kredensial resmi institusi BINUS berdurasi 72 jam pembelajaran dengan biaya terjangkau!"
+      acTalkingPoint: "Kelas DQLab ini berformat kursus ringkas 10 sesi (20 jam) kak. Di program Executive RevoU x BINUS, otomatisasi dipadukan dengan strategic thinking manajerial, keamanan data korporasi, dan kredensial resmi institusi BINUS berdurasi 72 jam pembelajaran dengan biaya terjangkau!"
     }
   ]
 };
@@ -1155,7 +1370,7 @@ const GENERAL_COMPARISON_DATA: GeneralComparisonRow[] = [
     revou: "Program Karir: Rp 16jt – 25jt (Cicilan 0% s.d. 12-18 bulan via kartu kredit/Danacita, tanpa biaya kos) | Program Eksekutif: Rp 15jt – 16,99jt (Diskon alumni 15%)",
     general: "Rp 7.000.000 – Rp 45.000.000 (Sering ada biaya pendaftaran/non-refundable)",
     hacktiv8: "Full-Day Rp 35jt–45jt | Night Rp 18jt–25jt. Reg fee Rp 100rb, non-refundable. Upfront 2 tahap / cicilan",
-    purwadhika: "Tiered Rp 10jt–35jt (Early Bird Rp 13jt–20jt, Term 1/2 Rp 15jt–30jt, Promo Rp 14,5jt–27,5jt, Normal Rp 20jt–35jt)",
+    purwadhika: "Tiered 10 Program: Normal Rp 20jt–35jt (Early Bird Rp 13jt–20jt, Term 1 Rp 15jt–25jt, Term 2 Rp 17jt–30jt, Promo 39th Rp 14,5jt–27,5jt, Sinarmas Rp 10jt–17,5jt). Tools premium tertentu ditanggung peserta.",
     dibimbing: "Rp 7jt – Rp 15jt (Ekonomis, bayar penuh atau cicilan, gratis mengulang batch seumur hidup)",
     dqlab: "Rp 699rb – Rp 3,8jt (Bootcamp single Rp 699rb–2,5jt, Ujian BNSP Rp 1,9jt–2,5jt, Bundle Rp 1,2jt–3,8jt)",
     selfPaced: "Rp 500rb – Rp 5jt (tanpa bimbingan live)",
@@ -1226,9 +1441,9 @@ const GENERAL_COMPARISON_DATA: GeneralComparisonRow[] = [
     category: "Persiapan Kerja",
     feature: "Proyek Nyata Portofolio (Virtual Internship)",
     revou: "12 Minggu Virtual Internship mengerjakan kasus nyata perusahaan partner (Telkom OCA, Zurich, dll) & real budget ads jutaan rupiah (hingga 13 portofolio per program)",
-    general: "2–4 minggu proyek dummy simulasi / tugas akhir mandiri",
+    general: "2–4 minggu proyek simulasi internal / tugas akhir mandiri",
     hacktiv8: "Final project web app / pipeline model kelompok kecil di akhir fase",
-    purwadhika: "Final project kelompok (DM 7–8 orang, Fullstack 2–3 orang, AI 1–3 orang)",
+    purwadhika: "Final project 5 minggu persiapan s.d. presentasi (DM 7–8 orang didampingi 1 mentor internal, Fullstack 2–3 orang, AI 1–3 orang) dengan syarat prerequisite nilai akhir modul",
     dibimbing: "Portofolio tugas akhir dan talent showcase ke partner",
     dqlab: "Latihan modul sintaks koding & studi kasus dasar",
     selfPaced: "Proyek mandiri tanpa bimbingan",
@@ -1247,18 +1462,18 @@ const GENERAL_COMPARISON_DATA: GeneralComparisonRow[] = [
     revouHighlight: true
   },
 
-  // Jaminan Kerja
+  // Jaminan Kerja & Penyaluran Karir
   {
     category: "Jaminan Kerja",
-    feature: "Jaminan Refund Biaya",
-    revou: "Garansi Refund s.d. 100% biaya program dengan syarat transparan & realistis (cukup 10 lamaran/minggu)",
-    general: "Syarat refund sangat ketat / skema ISA mengikat",
+    feature: "Kebijakan Refund & Jaminan Karir",
+    revou: "Tidak ada garansi refund dana (Non-refundable). Komitmen difokuskan pada pendampingan karir intensif Career+ (1:1 Career Coach selama 7-8 bulan, AI Career Engine, dan 93% placement rate resmi)",
+    general: "Mayoritas non-refundable atau skema ISA/cicilan mengikat",
     hacktiv8: "Tanpa refund (Non-refundable), skema Study Now Pay Later atau cicilan",
-    purwadhika: "Tidak ada jaminan refund biaya (Purwadhika Hiring Network portal)",
+    purwadhika: "Tidak ada jaminan refund biaya (Non-refundable; fasilitas Purwadhika Hiring Network)",
     dibimbing: "Gratis mengulang batch seumur hidup (tidak ada jaminan refund dana)",
     dqlab: "Tidak ada jaminan refund dana",
     selfPaced: "Tidak ada jaminan refund",
-    revouHighlight: true
+    revouHighlight: false
   },
   {
     category: "Jaminan Kerja",
@@ -1266,7 +1481,7 @@ const GENERAL_COMPARISON_DATA: GeneralComparisonRow[] = [
     revou: "RevoU Certificate bertaraf internasional (Course Report 4.94, SwitchUp 4.93) + Kemitraan Resmi AWS Partner + Universitas Top (#1 ITB, BINUS x AWS, UI)",
     general: "Sertifikat internal lembaga kursus biasa",
     hacktiv8: "Sertifikat kelulusan Hacktiv8; tidak ada kemitraan kampus",
-    purwadhika: "Terdaftar Kemendikbud; Certified Google Partner; tidak ada kemitraan kampus",
+    purwadhika: "Terdaftar Kemendikbud; Certified Google Partner; menerbitkan sertifikat internal Purwadhika (tanpa kemitraan kampus)",
     dibimbing: "Terakui Kemendikti; layanan BNSP & placement program universitas; Forbes 30 Under 30 Asia 2025",
     dqlab: "E-certificate per modul; Sertifikasi BNSP DA; naungan Yayasan Multimedia Nusantara & Xeratic",
     selfPaced: "Certificate of completion otomatis platform",
@@ -1292,7 +1507,7 @@ const GENERAL_COMPARISON_DATA: GeneralComparisonRow[] = [
     revou: "Kurang dari 10% (Tes dasar + wawancara untuk jamin circle terbaik), terbuka seluruh jenjang SMA/SMK/D3/S1",
     general: "Mayoritas tanpa seleksi ketat",
     hacktiv8: "Form + reg fee Rp100rb, validasi; syarat motivasi, komitmen, laptop, English dasar",
-    purwadhika: "Tidak ada tes masuk; koneksi kerja full-time maks. usia 30 tahun & min. S1",
+    purwadhika: "Tidak ada tes masuk; koneksi kerja full-time maks. usia 30 tahun & min. S1/sederajat (kecuali program FSD dan UI/UX yang terbuka untuk SMA/SMK)",
     dibimbing: "Tes masuk tidak tercantum; Job Connect hanya untuk lulusan berpredikat eligible",
     dqlab: "Tidak ada; tidak perlu background IT",
     selfPaced: "Tanpa seleksi",
@@ -1877,6 +2092,77 @@ export default function ComparisonView() {
               </table>
             </div>
 
+            {/* ── ACUAN VISUAL SILABUS & TECH STACK KOMPETITOR ── */}
+            {activeProgramDetail.referenceImages && activeProgramDetail.referenceImages.length > 0 && (
+              <div className="bg-[#FAFAF8] border border-[#E8E8E4] rounded-2xl p-4 sm:p-5 space-y-4 shadow-2xs">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#E8E8E4] pb-3">
+                  <div className="space-y-0.5">
+                    <div className="flex items-center gap-2">
+                      <span className="text-base">📸</span>
+                      <h4 className="font-display font-bold text-sm sm:text-base text-[#141412]">
+                        Acuan Visual Silabus &amp; Stack ({activeProgramDetail.competitorName} {activeProgramDetail.programTitle})
+                      </h4>
+                    </div>
+                    <p className="text-xs text-[#73736C]">
+                      Daftar tools dan teknologi yang dipelajari pada tiap fase bootcamp sebagai acuan komparasi tim Admission
+                    </p>
+                  </div>
+                  <span className="font-mono text-[11px] font-bold px-2.5 py-1 rounded-full bg-[#FFF6D1] text-[#A15C00] border border-[#FFD84D] self-start sm:self-auto">
+                    {activeProgramDetail.referenceImages.length} Fase Modul
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {activeProgramDetail.referenceImages.map((refImg, idx) => (
+                    <div
+                      key={idx}
+                      className="rounded-xl border border-[#E8E8E4] bg-white overflow-hidden flex flex-col shadow-2xs hover:shadow-sm hover:border-[#141412]/30 transition-all"
+                    >
+                      <div className="p-3 bg-[#F5F5F2]/70 border-b border-[#E8E8E4] space-y-1">
+                        <div className="flex items-center justify-between">
+                          <span className="font-mono text-[10px] font-bold px-2 py-0.5 rounded bg-white text-[#141412] border border-[#E8E8E4]">
+                            Fase {idx + 1}
+                          </span>
+                          <span className="font-mono text-[10px] font-medium text-[#73736C]">
+                            {refImg.tools.length} Tools
+                          </span>
+                        </div>
+                        <h5 className="font-display font-bold text-xs sm:text-[13px] text-[#141412]">
+                          {refImg.title}
+                        </h5>
+                        {refImg.subtitle && (
+                          <p className="text-[11px] text-[#73736C] leading-snug">
+                            {refImg.subtitle}
+                          </p>
+                        )}
+                      </div>
+
+                      <div className="p-3 bg-white flex items-center justify-center min-h-[110px] max-h-[140px] overflow-hidden">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={refImg.url}
+                          alt={refImg.title}
+                          className="max-h-[100px] w-auto object-contain rounded transition-transform duration-200 hover:scale-105"
+                          loading="lazy"
+                        />
+                      </div>
+
+                      <div className="p-2.5 mt-auto bg-[#FAFAF8] border-t border-[#E8E8E4] flex flex-wrap gap-1">
+                        {refImg.tools.map((t, tIdx) => (
+                          <span
+                            key={tIdx}
+                            className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-white text-[#4B4B46] border border-[#E8E8E4]"
+                          >
+                            {t}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* ── ANALISIS KRITIS & JAWABAN AC ── */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Keunggulan RevoU */}
@@ -1890,8 +2176,8 @@ export default function ComparisonView() {
                 </p>
                 <div className="text-[11.5px] text-[#1F7A4D] space-y-1 pt-1 border-t border-[#D4EDDA]/80">
                   <p>✓ 100% Live Instruction malam (19:00–21:00 WIB) — tidak perlu resign kerja</p>
-                  <p>✓ 3 Bulan RevoU Labs mengerjakan real client & real budget (bukan simulasi dummy)</p>
-                  <p>✓ Garansi Refund Biaya s.d. 100% transparan (cukup 10 lamaran/minggu)</p>
+                  <p>✓ 12 Minggu Virtual Internship mengerjakan real client & real budget/dataset (bukan sekadar tugas simulasi internal)</p>
+                  <p>✓ Pendampingan Karir Intensif Career+ (1:1 Coaching sampai Hired & 93% Placement Rate)</p>
                 </div>
               </div>
 
@@ -2173,10 +2459,10 @@ export default function ComparisonView() {
               <div className="p-3.5 rounded-xl border border-[#D4EDDA] bg-[#EBF7EE]/60 space-y-1.5">
                 <div className="flex items-center gap-2 font-display font-bold text-xs text-[#1F7A4D]">
                   <CheckCircle2 className="w-3.5 h-3.5 text-[#1F7A4D]" />
-                  <span>3. 3 Bulan RevoU Labs (Real Client &amp; Budget)</span>
+                  <span>3. 12 Minggu Virtual Internship (Real Client &amp; Dataset)</span>
                 </div>
                 <p className="text-xs text-[#4B4B46] leading-relaxed">
-                  Bukan tugas dummy simulasi internal. Peserta memegang anggaran iklan jutaan rupiah riil atau menganalisis dataset bisnis skala enterprise.
+                  Bukan sekadar tugas simulasi internal. Peserta memegang anggaran iklan jutaan rupiah riil atau menganalisis dataset bisnis riil perusahaan partner (Telkom OCA, Zurich, dll).
                 </p>
               </div>
 
@@ -2193,10 +2479,10 @@ export default function ComparisonView() {
               <div className="p-3.5 rounded-xl border border-[#D4EDDA] bg-[#EBF7EE]/60 space-y-1.5 sm:col-span-2 lg:col-span-2">
                 <div className="flex items-center gap-2 font-display font-bold text-xs text-[#1F7A4D]">
                   <CheckCircle2 className="w-3.5 h-3.5 text-[#1F7A4D]" />
-                  <span>5. Garansi Refund s.d. 100% Transparan</span>
+                  <span>5. Bimbingan Karir Intensif Career+ &amp; 93% Placement Rate</span>
                 </div>
                 <p className="text-xs text-[#4B4B46] leading-relaxed">
-                  Komitmen penuh pada hasil karir alumni: jika belum mendapatkan pekerjaan dengan syarat realistis (10 lamaran/minggu), biaya dikembalikan hingga 100%.
+                  Pendampingan 1:1 Personal Career Coach selama 7-8 bulan, AI Career Engine untuk CV/LinkedIn, dan simulasi interview langsung bersama Hiring Manager hingga siap kerja (93% placement rate resmi).
                 </p>
               </div>
             </div>
