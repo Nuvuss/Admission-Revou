@@ -189,14 +189,17 @@ const MODES: Record<ModeKey, ModeConfig> = {
 };
 
 const availableModels = [
-  { id: "gemini-3.8-flash", name: "Gemini 3.8 Flash (Paling Cepat & Stabil - Rekomendasi)" },
-  { id: "gemini-3.5-flash-lite", name: "Gemini 3.5 Flash Lite" },
-  { id: "gemini-3.5-flash", name: "Gemini 3.5 Flash" },
+  { id: "gemini-3.5-flash", name: "Gemini 3.5 Flash (Paling Stabil & Cepat - Rekomendasi)" },
+  { id: "gemini-3.5-flash-lite", name: "Gemini 3.5 Flash Lite (Respon Singkat & Ringan)" },
+  { id: "gemini-3.6-flash", name: "Gemini 3.6 Flash (Tinggi Akurasi)" },
+  { id: "gemini-3.8-flash", name: "Gemini 3.8 Flash (Experimental)" },
 ];
 
 export default function DashboardPage() {
   const [mode, setMode] = useState<ModeKey>("pitch");
-  const [selectedModel, setSelectedModel] = useState("gemini-3.8-flash");
+  const [selectedModel, setSelectedModel] = useState(
+    process.env.NEXT_PUBLIC_DEFAULT_MODEL || "gemini-3.5-flash"
+  );
   const [inputText, setInputText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [responseResult, setResponseResult] = useState<any | null>(null);

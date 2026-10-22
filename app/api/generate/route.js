@@ -13,53 +13,197 @@ export const maxDuration = 60;
 export const dynamic = "force-dynamic";
 
 // ─────────────────────────────────────────────
-// Load knowledge files from /knowledge/ based on tab
+// In-Memory Caching for Knowledge Base & System Prompts
 // ─────────────────────────────────────────────
-function loadKnowledgeBase(tab = "pitch") {
+const rawFileCache = new Map();
+const tabKnowledgeCache = new Map();
+const systemPromptCache = new Map();
+let cachedSkillDefinition = null;
+let lastCacheCheck = 0;
+const DEV_CACHE_TTL = 5000; // 5 detik di local development agar perubahan file lekas termuat
+
+function checkCacheValidity() {
+  if (process.env.NODE_ENV === "development") {
+    const now = Date.now();
+    if (now - lastCacheCheck > DEV_CACHE_TTL) {
+      lastCacheCheck = now;
+      rawFileCache.clear();
+      tabKnowledgeCache.clear();
+      systemPromptCache.clear();
+      cachedSkillDefinition = null;
+    }
+  }
+}
+
+function getCachedFileContent(filePath) {
+  if (rawFileCache.has(filePath)) {
+    return rawFileCache.get(filePath);
+  }
+  const content = fs.readFileSync(filePath, "utf-8");
+  rawFileCache.set(filePath, content);
+  return content;
+}
+
+// ─────────────────────────────────────────────
+// Smart Topic Filtering: Memetakan kata kunci ke file dokumen relevan
+// ─────────────────────────────────────────────
+function detectRelevantKnowledgeFiles(situation = "", tab = "pitch") {
+  const text = (situation || "").toLowerCase();
+
+  // Dokumen Inti (Core) yang selalu dimuat di tab pitch agar AI selalu punya konteks ekosistem RevoU:
+  const CORE_FILES = [
+    "joint_program_product_knowledge.md",
+    "knowledge_base_sales_script_benchmarks_and_examples.md",
+  ];
+
+  // Khusus tab alumni: fokus ke kisah alumni
+  if (tab === "alumni") {
+    return [
+      "knowledge_base_alumni_success_stories.md",
+      "joint_program_product_knowledge.md",
+    ];
+  }
+
+  // Khusus tab comparison: fokus ke battlecard & perbandingan
+  if (tab === "comparison") {
+    return [
+      "knowledge_base_competitor_comparison.md",
+      "joint_program_product_knowledge.md",
+      "knowledge_base_sales_script_benchmarks_and_examples.md",
+    ];
+  }
+
+  // Cek sinyal topik program spesifik dari situasi/pertanyaan leads:
+  const detectedFiles = new Set(CORE_FILES);
+  let matchedSpecificProgram = false;
+
+  // 1. Digital Marketing (FSDM)
+  if (/marketing|fsdm|iklan|ads|meta ads|google ads|seo|sem|social media|sosmed|copywriting|content creator/i.test(text)) {
+    detectedFiles.add("fsdm_digital_marketing.md");
+    matchedSpecificProgram = true;
+  }
+
+  // 2. Data Analytics & Data Science (FSDA & Applied DS)
+  if (/data analytic|data analyst|fsda|data science|scientist|python|sql|tableau|looker|power bi|dashboard/i.test(text)) {
+    detectedFiles.add("fsda_data_analytics.md");
+    detectedFiles.add("knowledge_base_admission_applied_data_science_with_ai.md");
+    matchedSpecificProgram = true;
+  }
+
+  // 3. Software Engineering (FSSE / Fullstack / Coding)
+  if (/software engineer|developer|coding|programmer|fullstack|frontend|backend|fsse|react|javascript|typescript|golang|web dev/i.test(text)) {
+    detectedFiles.add("knowledge_base_se_fullstack.md");
+    detectedFiles.add("knowledge_base_software_engineering.md");
+    matchedSpecificProgram = true;
+  }
+
+  // 4. Strategic HR with AI
+  if (/hr|human resource|talent acquisition|recruiter|recruitment|compensation|benefit|remunerasi|payroll/i.test(text)) {
+    detectedFiles.add("knowledge_base_revou_strategic_hr_with_ai.md");
+    matchedSpecificProgram = true;
+  }
+
+  // 5. Applied AI, Analytics & Automation (BINUS)
+  if (/binus|applied ai|automation|otomasi|ai automation|workflow automation|no-code ai/i.test(text)) {
+    detectedFiles.add("knowledge_base_admission_applied_ai_analytics_automation_binus.md");
+    detectedFiles.add("knowledge_base_syllabus_binus_ai_analytics.md");
+    matchedSpecificProgram = true;
+  }
+
+  // 6. Strategic Finance (UI)
+  if (/finance|keuangan|akuntansi|accounting|tax|pajak|fpa|controller|treasury|audit/i.test(text)) {
+    detectedFiles.add("knowledge_base_admission_ai_strategic_finance_ui.md");
+    matchedSpecificProgram = true;
+  }
+
+  // 7. Data-Driven Decision Making for Leaders (ITB)
+  if (/itb|leader|leadership|manager|kepemimpinan|decision maker|decision making|c-level|direktur|head of/i.test(text)) {
+    detectedFiles.add("knowledge_base_itb_data_driven_ai_leaders.md");
+    detectedFiles.add("knowledge_base_syllabus_itb_decision_making.md");
+    matchedSpecificProgram = true;
+  }
+
+  // 8. Cybersecurity (BINUS)
+  if (/cyber|security|keamanan|soc|pentest|red team|blue team|hacker|hacking/i.test(text)) {
+    detectedFiles.add("knowledge_base_binus_cybersecurity.md");
+    matchedSpecificProgram = true;
+  }
+
+  // 9. Competitor Mention (jika lead membandingkan dengan kompetitor di tab pitch)
+  if (/hacktiv8|purwadhika|dibimbing|dqlab|kompetitor|bootcamp lain/i.test(text)) {
+    detectedFiles.add("knowledge_base_competitor_comparison.md");
+  }
+
+  // JIKA TIDAK ADA SINYAL SPESIFIK (Input umum / eksplorasi / rekomendasi):
+  // Fallback 100% aman: return null agar memuat seluruh dokumen program seperti sebelumnya
+  if (!matchedSpecificProgram) {
+    return null;
+  }
+
+  return Array.from(detectedFiles);
+}
+
+// ─────────────────────────────────────────────
+// Load knowledge files from /knowledge/ based on tab & situation (Smart Cached)
+// ─────────────────────────────────────────────
+function loadKnowledgeBase(tab = "pitch", situation = "") {
+  checkCacheValidity();
+
+  const relevantFiles = detectRelevantKnowledgeFiles(situation, tab);
+  const cacheKey = relevantFiles
+    ? `${tab}:${relevantFiles.sort().join(",")}`
+    : `${tab}:all`;
+
+  if (tabKnowledgeCache.has(cacheKey)) {
+    return tabKnowledgeCache.get(cacheKey);
+  }
+
   const knowledgeDir = path.join(process.cwd(), "knowledge");
   let knowledgeContent = "";
   try {
     if (fs.existsSync(knowledgeDir)) {
-      const files = fs.readdirSync(knowledgeDir).sort();
-      for (const file of files) {
+      const allFiles = fs.readdirSync(knowledgeDir).sort();
+      for (const file of allFiles) {
         if (!file.endsWith(".md") && !file.endsWith(".txt")) continue;
 
-        // Smart Filtering per Tab:
-        // 1. Menu 'pitch': Exclude massive alumni stories (~119 KB) to keep latency low & sharp
-        if (tab === "pitch" && file.includes("alumni_success_stories")) {
+        // Jika terdeteksi file relevan spesifik:
+        if (relevantFiles && !relevantFiles.includes(file)) {
           continue;
         }
 
-        // 2. Menu 'alumni': Focus on alumni stories + program overviews; skip heavy syllabus, sales scripts & competitor comparison
-        if (tab === "alumni" && (
-          file.includes("sales_script_benchmarks") ||
-          file.includes("syllabus_binus") ||
-          file.includes("syllabus_itb") ||
-          file.includes("competitor_comparison")
-        )) {
-          continue;
-        }
-
-        // 3. Menu 'comparison': Include competitor comparison KB, exclude heavy alumni stories
-        if (tab === "comparison" && file.includes("alumni_success_stories")) {
-          continue;
+        // Jika fallback (mode lengkap tanpa sinyal spesifik):
+        if (!relevantFiles) {
+          if (tab === "pitch" && file.includes("alumni_success_stories")) continue;
+          if (tab === "alumni" && (
+            file.includes("sales_script_benchmarks") ||
+            file.includes("syllabus_binus") ||
+            file.includes("syllabus_itb") ||
+            file.includes("competitor_comparison")
+          )) continue;
+          if (tab === "comparison" && file.includes("alumni_success_stories")) continue;
         }
 
         const filePath = path.join(knowledgeDir, file);
-        const content = fs.readFileSync(filePath, "utf-8");
+        const content = getCachedFileContent(filePath);
         knowledgeContent += `\n\n=== DOKUMEN: ${file} ===\n${content}\n`;
       }
     }
   } catch (err) {
     console.error("Error reading knowledge base:", err);
   }
+
+  tabKnowledgeCache.set(cacheKey, knowledgeContent);
   return knowledgeContent;
 }
 
 // ─────────────────────────────────────────────
-// Load SKILL.md
+// Load SKILL.md (Cached in Memory)
 // ─────────────────────────────────────────────
 function loadSkillDefinition() {
+  checkCacheValidity();
+  if (cachedSkillDefinition) {
+    return cachedSkillDefinition;
+  }
   const skillPath = path.join(
     process.cwd(),
     ".agents",
@@ -69,12 +213,34 @@ function loadSkillDefinition() {
   );
   try {
     if (fs.existsSync(skillPath)) {
-      return fs.readFileSync(skillPath, "utf-8");
+      cachedSkillDefinition = fs.readFileSync(skillPath, "utf-8");
+      return cachedSkillDefinition;
     }
   } catch (err) {
     console.error("Error reading SKILL.md:", err);
   }
   return "";
+}
+
+// ─────────────────────────────────────────────
+// Get System Prompt with Smart Topic Filtering & In-Memory Cache
+// ─────────────────────────────────────────────
+function getCachedSystemPrompt(tab, situation = "") {
+  checkCacheValidity();
+
+  const relevantFiles = detectRelevantKnowledgeFiles(situation, tab);
+  const cacheKey = relevantFiles
+    ? `${tab}:${relevantFiles.sort().join(",")}`
+    : `${tab}:all`;
+
+  if (systemPromptCache.has(cacheKey)) {
+    return systemPromptCache.get(cacheKey);
+  }
+  const skillInstructions = loadSkillDefinition();
+  const knowledgeBase = loadKnowledgeBase(tab, situation);
+  const prompt = buildSystemPrompt(skillInstructions, knowledgeBase, tab);
+  systemPromptCache.set(cacheKey, prompt);
+  return prompt;
 }
 
 // ─────────────────────────────────────────────
@@ -589,9 +755,7 @@ export async function POST(req) {
       );
     }
 
-    const skillInstructions = loadSkillDefinition();
-    const knowledgeBase = loadKnowledgeBase(tab);
-    const systemPrompt = buildSystemPrompt(skillInstructions, knowledgeBase, tab);
+    const systemPrompt = getCachedSystemPrompt(tab, situation);
 
     let exclusionDirective = "";
     if (Array.isArray(excluded_alumni) && excluded_alumni.length > 0) {
@@ -644,12 +808,12 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
         const currentCandidate = keyQueue[keyAttempt];
         const nextCandidate = keyQueue[keyAttempt + 1] || null;
 
-        // Prioritize fast and resilient models
+        // Prioritize fast, stable, and available models
         const candidateModels = [
-          model || "gemini-3.8-flash",
-          "gemini-3.8-flash",
-          "gemini-3.5-flash-lite",
+          model || "gemini-3.5-flash",
           "gemini-3.5-flash",
+          "gemini-3.5-flash-lite",
+          "gemini-3.6-flash",
         ].filter((m, idx, arr) => m && arr.indexOf(m) === idx);
 
         let keyEncounteredQuota = false;
@@ -664,7 +828,7 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
             const response = await fetch(url, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              signal: AbortSignal.timeout(45000), // 45s timeout ensures complete response without premature abort
+              signal: AbortSignal.timeout(35000), // 35s timeout ensures complete response without stalling
               body: JSON.stringify({
                 contents: [
                   {
@@ -755,6 +919,11 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
 
               keyEncounteredInvalid = true;
               break; // Keluar untuk mencoba key berikutnya
+            } else if (response.status === 503) {
+              const errText = await response.text();
+              console.warn(`[Gemini 503 Spike] Model ${modelId} sedang high-demand:`, errText.slice(0, 120));
+              lastError = `Model ${modelId} mengalami lonjakan trafik (503 Service Unavailable).`;
+              continue; // Otomatis coba candidate model berikutnya
             } else {
               const errText = await response.text();
               console.warn(`Gemini API warning on ${modelId} (${response.status}):`, errText.slice(0, 150));
@@ -763,6 +932,7 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
           } catch (apiErr) {
             console.warn(`Gemini API call exception for ${modelId}:`, apiErr.message);
             lastError = apiErr.message;
+            continue;
           }
         }
       }
@@ -795,18 +965,25 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
     }
 
     // ── Fallback ──────────────
+    const hasKeys = availableKeys && availableKeys.length > 0;
     return NextResponse.json({
       success: false,
       modelUsed: model || "gemini-3.5-flash",
       menu: tab,
-      persona: "Tidak dapat diidentifikasi",
-      whats_happening: "Koneksi ke Gemini API tidak tersedia atau API Key belum dikonfigurasi.",
-      recommended_approach: "Pastikan minimal 1 hingga 5 GEMINI_API_KEY valid di .env.local atau diisi di panel API Key.",
+      persona: hasKeys ? "Gangguan Server Google Gemini" : "Konfigurasi Diperlukan",
+      whats_happening: hasKeys
+        ? `API Key (${availableKeys.length} key) terkonfigurasi dengan baik, namun Google AI Studio saat ini sedang mengalami lonjakan beban atau timeout: ${lastError || "503 Service Unavailable"}.`
+        : "Koneksi ke Gemini API tidak tersedia atau API Key belum dikonfigurasi.",
+      recommended_approach: hasKeys
+        ? "Coba klik tombol 'Generate Jawaban' lagi (sistem akan merotasi ke key berikutnya) atau pilih model Gemini 3.5 Flash."
+        : "Pastikan minimal 1 hingga 5 GEMINI_API_KEY valid di .env.local atau diisi di panel Manajemen API Key.",
       program_match: "",
       scripts: [
         {
-          badge: "⚠️ Konfigurasi Diperlukan",
-          text: "Pastikan minimal 1 sampai 5 GEMINI_API_KEY valid di .env.local atau di panel Manajemen API Key untuk mengaktifkan AI.",
+          badge: hasKeys ? "⚠️ Gangguan Sementara Google" : "⚠️ Konfigurasi Diperlukan",
+          text: hasKeys
+            ? `Google AI Studio sedang mengalami lonjakan antrean server (${lastError || "503 Demand Spike"}). Sistem Round Robin siap merotasi key. Silakan klik Generate ulang.`
+            : "Pastikan minimal 1 sampai 5 GEMINI_API_KEY valid di .env.local atau di panel Manajemen API Key untuk mengaktifkan AI.",
         },
       ],
       knowledge_details: null,
