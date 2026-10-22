@@ -32,104 +32,108 @@ Setiap kali calon siswa (*leads*) menyebut atau membandingkan RevoU dengan lemba
 
 ### BATTLECARD 1: HACKTIV8
 
-| Kategori | Hacktiv8 (Data Resmi 20 Okt 2026) | RevoU |
+| Kategori | Hacktiv8 (Data Resmi Website Okt 2026) | RevoU |
 | :--- | :--- | :--- |
 | **Price & Cicilan** | • Full-Day: Rp 35.000.000 – Rp 45.000.000 (Early bird potongan Rp 2jt)<br>• Night Bootcamp: Rp 18.000.000 – Rp 25.000.000<br>• Reg fee Rp 100.000, **Non-refundable**.<br>• Pembayaran: Upfront 2 tahap, cicilan 0% (Danacita, CIMB Niaga), atau Study Now Pay Later (tangguh s.d. 4 bulan). Promo berkala s.d. 50%. | • Rp 16.000.000 – Rp 25.000.000-an<br>• Cicilan 0% s.d. 12-18 bulan via kartu kredit/mitra resmi Danacita.<br>• **Garansi refund biaya s.d. 100%** dengan syarat transparan. |
 | **Duration & Schedule** | • **Full-Day**: 12–16 minggu (Senin–Jumat 09:00–18:00 WIB, 4 minggu persiapan + 8-12 minggu bootcamp).<br>• **Night Bootcamp**: 12–16 minggu (Senin–Jumat 19:00–22:00 WIB, ±15 jam/minggu). | • **6 – 9 bulan komprehensif** (Foundation + Advanced Core + 3 bulan RevoU Labs & Career Acceleration).<br>• Jadwal malam (19:00–21:00 WIB) dirancang ramah bagi yang sedang bekerja maupun kuliah. |
-| **Format Belajar** | • Kampus Offline Jakarta (Kebayoran/Sultan Iskandar Muda) atau Remote Online.<br>• Live coding intensif harian hibrida. | • **100% Live Online Interaktif Dua Arah** (5x seminggu tanya jawab & diskusi langsung bersama praktisi).<br>• Akses rekaman & materi ajar selamanya tanpa biaya sewa tempat/kos. |
-| **Pilihan Program** | 1. AI-Enhanced Full Stack Developer (Rp 45jt)<br>2. Data Science & AI ML (Rp 35jt)<br>3. Comprehensive Data Analytics (Rp 18jt)<br>4. Back End Golang (Rp 22jt)<br>5. Applied AI Engineer (Rp 20jt) | • Full Stack Digital Marketing (FSDM)<br>• Full Stack Data Analytics (FSDA)<br>• Full Stack Software Engineering (FSSE)<br>• Joint AI Programs with ITB, BINUS, UI |
-| **Career Support & Placement** | Career class, latihan interview, Job Portal, Career Buddy. Klaim 87-88% direkrut <3 bulan, rerata gaji Rp 7jt - Rp 8jt. | RevoU NEXT: 16 sesi Career Development live, 1-on-1 Personal Career Coach, review CV & portofolio personal, simulasi interview teknis/HR, dan koneksi ke 1.000+ top tech employer. |
-| **Sertifikasi** | Sertifikat Kelulusan Hacktiv8 & BNSP (pada program tertentu). | RevoU Certificate of Completion bertaraf internasional + Sertifikasi Resmi Program Kemitraan Universitas Terbaik (**ITB, BINUS, UI**). |
+| **Format Pembelajaran** | Full-Day Bootcamp & Night Bootcamp; lokasi Jakarta, Tangerang, dan Remote. | **100% Live Online Interaktif Dua Arah** (+ Akses rekaman & materi ajar selamanya). |
+| **Sesi Tanya Jawab & Diskusi** | 1-on-1 mentoring dengan instruktur berpengalaman. | 5x per minggu live interaktif dua arah bersama praktisi industri. |
+| **Kurikulum & Case Study** | Kurikulum berbasis AI-powered sesuai kebutuhan industri. | Disesuaikan kebutuhan industri di Indonesia & Asia Tenggara + studi kasus riil. |
+| **Support System Belajar** | Sesi growth mindset; Career Buddy untuk konsultasi grup & 1-on-1. | Pengajar Praktisi + Section Manager + Team Lead + Mentor + Konselor Karir. |
+| **Kelas Karir & Review CV** | Career Class (CV & LinkedIn), latihan interview dengan HR, peluang interview langsung dengan hiring partner. | 16 sesi LIVE Career Coach + 1-on-1 Personalized Coaching & portfolio review. |
+| **Sertifikasi & Kampus** | Sertifikat kelulusan Hacktiv8; tidak ada kemitraan kampus. | RevoU Certificate bertaraf internasional + Sertifikasi Resmi Universitas Top (**ITB, BINUS x AWS, UI**). |
+| **Komunitas & Network** | 3.500+ lulusan di industri tech; 1.000+ hiring partner tanpa placement fee. | 6.000+ Alumni Aktif di 1.000+ top company & 550.000+ member pelajar. |
+| **Seleksi Masuk** | Form + biaya registrasi Rp100rb, lalu validasi; syarat: kemauan belajar, motivasi, laptop, komitmen, bahasa Inggris dasar. | Kurang dari 10% (Tes dasar + wawancara untuk jamin circle terbaik), terbuka SMA/SMK/D3/S1. |
+| **Completion Rate** | Tidak ada di halaman web. Outcome: 90% kerja full-time dalam 90 hari, 96% di pekerjaan relevan IT & Data. | 93% peserta berhasil menyelesaikan program sampai akhir. |
 | **What They Genuinely Do Better** | Sangat kuat dan terspesialisasi di bidang Software Engineering teknis murni (JavaScript stack & Golang) dengan format full-day immersion pagi-sore yang cocok bagi yang bisa komitmen 100% waktu penuh. |
 | **Where RevoU Wins** | 1. **Fleksibilitas Kerja**: Jadwal malam (19:00–21:00 WIB) memungkinkan transisi karir tanpa harus resign dari kantor saat masa belajar.<br>2. **RevoU Labs (3 Bulan)**: Mengerjakan portofolio riil dengan klien dan dataset bisnis riil, bukan simulasi latihan internal.<br>3. **Ekosistem Multi-Disiplin**: Terhubung dengan alumni Digital Marketing, Data, dan Tech untuk kolaborasi end-to-end.<br>4. **Jaminan Refund 100%**: Transparan dan realistis (cukup 10 lamaran/minggu). |
-| **One Proof Point** | **93% Completion & Employment Rate**: Laporan transparansi karir RevoU membuktikan 93% peserta menyelesaikan program dan mayoritas hired dalam 3–6 bulan pasca lulus di unicorn/multinasional. |
-
-**Contoh Template Jawaban AC (Hacktiv8):**
-> *"Wah menarik banget kak! Hacktiv8 memang punya reputasi bagus untuk bootcamp coding seharian terutama kalau kakak siap komitmen full-day dari jam 9 pagi sampai 6 sore. Nah, di RevoU kelas kita didesain khusus jam 19.00 WIB malam, jadi kakak tetap bisa belajar dan bangun karir baru tanpa harus mengorbankan pekerjaan atau resign duluan. Plus, di RevoU ada 3 bulan RevoU Labs mengerjakan real project perusahaan dan didukung sertifikasi resmi. Kakak saat ini lebih nyaman belajar full-day seharian atau kelas malam di luar jam kerja kak? :)"*
+| **One Proof Point** | 3.500+ lulusan di industri tech. Completion rate belajar tidak dipublikasi resmi di web (Outcome: 90% kerja full-time <90 hari). RevoU transparan mempublikasikan 93% completion rate & 93% placement rate resmi. |
 
 ---
 
 ### BATTLECARD 2: PURWADHIKA (JOB CONNECTOR BOOTCAMP)
 
-| Kategori | Purwadhika (Data Resmi 20 Okt 2026) | RevoU |
+| Kategori | Purwadhika (Data Resmi Website Okt 2026) | RevoU |
 | :--- | :--- | :--- |
-| **Price & Cicilan** | • Tiered Pricing per intake:<br>  - Early Bird: Rp 13jt – Rp 20jt (kuota terbatas/cepat berakhir)<br>  - Term 1: Rp 15jt – Rp 25jt<br>  - Term 2: Rp 17jt – Rp 30jt<br>  - Promo aktif: Road to 39th Anniversary (Rp 14,5jt – Rp 27,5jt), Scholarship Sinarmas Land (Rp 10jt – Rp 17,5jt)<br>  - Harga normal: Rp 20jt – Rp 35jt<br>• Biaya akun/tools premium tertentu ditanggung peserta. | • Rp 16.000.000 – Rp 25.000.000-an (All-in, transparan, tanpa biaya tools tersembunyi).<br>• Cicilan ringan bunga 0% s.d. 12-18 bulan via kartu kredit/Danacita.<br>• Tanpa biaya sewa kos/transportasi ke kampus fisik. |
-| **Duration & Schedule** | • Klaim durasi modul 6–15 minggu, namun rentang batch kalender 20–28 minggu (termasuk final project & job connect).<br>• Format: After Hours (Sen–Kam 19:00–22:00 atau Sel & Kam 19:00–22:00) & Office Hours (Sen–Kam 09:00–12:00). | • 6 – 9 bulan komprehensif (Foundation + Advanced Core + 3 bulan Real Projects RevoU Labs & Career Acceleration).<br>• Jam malam konsisten 19:00–21:00 WIB Senin–Jumat. |
-| **Format Belajar** | • Kampus Offline (BSD Green Office Park, Jakarta, Batam) & Online Livestream via Zoom.<br>• Opsi Online Video Learning (rekaman mandiri) untuk program tertentu. | • 100% Live Online interaktif dua arah bersama praktisi industri aktif (bukan rekaman pasif).<br>• Pendampingan Section Manager, Team Lead, dan Mentor setiap hari. |
-| **Pilihan Program** | 10 Program JC:<br>1. AI Automation Engineer (Rp 10jt - Rp 20jt)<br>2. AI Engineering (Rp 17,5jt - Rp 35jt)<br>3. Data Science & Machine Learning (Rp 12,5jt - Rp 25jt)<br>4. Business & Data Analyst (Rp 12,5jt - Rp 25jt)<br>5. Data Engineering (Rp 15jt - Rp 25jt)<br>6. Cybersecurity (Rp 15jt - Rp 25jt)<br>7. Quality Assurance Engineer (Rp 14jt - Rp 23jt)<br>8. Social Media & Content Creation (Rp 14jt - Rp 23jt)<br>9. Digital Marketing (Rp 12,5jt - Rp 25jt)<br>10. Fullstack Software Development (Rp 12,5jt - Rp 25jt) | • Full Stack Digital Marketing (FSDM)<br>• Full Stack Data Analytics (FSDA)<br>• Full Stack Software Engineering (FSSE)<br>• Joint AI Programs with ITB, BINUS, UI |
-| **Syarat Masuk** | Mayoritas minimal lulusan S1 (hanya Fullstack & Data Engineering tertentu yang buka untuk SMA/SMK). | Terbuka untuk seluruh jenjang pendidikan (SMA/SMK/D3/S1) dengan seleksi komitmen & aptitude test. |
-| **Career Support** | Purwadhika Hiring Network & Career Network (job connector portal). Klaim 92% alumni DS&ML berkarir di data. | RevoU NEXT: 1-on-1 Personalized Coaching, 16 sesi Live Career Development, review CV & portofolio, simulasi interview, jaminan refund s.d. 100%. |
-| **Sertifikasi** | Sertifikat Purwadhika Digital Technology School. | RevoU Certificate of Completion + Kredensial Resmi Program Kemitraan Universitas Top (**ITB, BINUS, UI**). |
+| **Price & Cicilan** | • Tiered Pricing per intake:<br>  - Early Bird: Rp 13jt – Rp 20jt<br>  - Term 1: Rp 15jt – Rp 25jt<br>  - Term 2: Rp 17jt – Rp 30jt<br>  - Promo aktif: Road to 39th Anniversary (Rp 14,5jt – Rp 27,5jt), Scholarship Sinarmas Land (Rp 10jt – Rp 17,5jt)<br>  - Harga normal: Rp 20jt – Rp 35jt<br>• Biaya akun/tools premium tertentu ditanggung peserta. | • Rp 16.000.000 – Rp 25.000.000-an (All-in, transparan, tanpa biaya tools tersembunyi).<br>• Cicilan ringan bunga 0% s.d. 12-18 bulan via kartu kredit/Danacita.<br>• Tanpa biaya sewa kos/transportasi ke kampus fisik. |
+| **Duration & Schedule** | • Modul 6–15 minggu, rentang kalender 20–28 minggu (termasuk final project & job connect).<br>• Format: After Hours (Sen–Kam 19:00–22:00 atau Sel & Kam 19:00–22:00) & Office Hours (Sen–Kam 09:00–12:00). | • 6 – 9 bulan komprehensif (Foundation + Advanced Core + 3 bulan Real Projects RevoU Labs & Career Acceleration).<br>• Jam malam konsisten 19:00–21:00 WIB Senin–Jumat. |
+| **Format Pembelajaran** | On campus atau online livestream. | **100% Live Online Interaktif Dua Arah** (+ Akses rekaman & materi ajar selamanya). |
+| **Sesi Tanya Jawab & Diskusi** | Final project didampingi mentor; rekaman kelas & materi tersedia di LMS. | 5x per minggu live interaktif dua arah bersama praktisi industri aktif. |
+| **Kurikulum & Case Study** | Kurikulum teruji industri dengan capstone project di tiap modul + AI Boost. | Kurikulum teruji industri dengan studi kasus lokal & regional SEA + 3 bulan RevoU Labs. |
+| **Support System Belajar** | LMS dengan video tambahan tanpa batas; soft skill development by innergy. | Pengajar Praktisi + Section Manager + Team Lead + Mentor + Konselor Karir. |
+| **Kelas Karir & Review CV** | Bimbingan CV & LinkedIn, persiapan interview, 1-on-1 career counseling. | 16 sesi LIVE Career Coach + 1-on-1 Personalized Coaching & portfolio review. |
+| **Sertifikasi & Kampus** | Terdaftar Kemendikbud; Certified Google Partner; tidak ada kemitraan kampus. | RevoU Certificate bertaraf internasional + Sertifikasi Resmi Universitas Top (**ITB, BINUS x AWS, UI**). |
+| **Komunitas & Network** | 30.000–40.000+ alumni; Alumni Club berbasis tribe; 1.000+ hiring partner. | 6.000+ Alumni Aktif di 1.000+ top company & 550.000+ member pelajar. |
+| **Seleksi Masuk** | Tidak ada tes masuk; untuk koneksi kerja full-time maks. usia 30 tahun & min. S1. | Terbuka untuk seluruh jenjang (SMA/SMK/D3/S1) dengan aptitude test & interview (penerimaan <10%). |
+| **Completion Rate** | Tidak dipublikasi di halaman website resmi. | 93% peserta berhasil menyelesaikan program sampai akhir. |
 | **What They Genuinely Do Better** | Memiliki fasilitas kampus offline fisik (BSD & Jakarta) untuk siswa yang memprioritaskan kehadiran fisik tatap muka di ruang kelas. |
 | **Where RevoU Wins** | 1. **RevoU Labs 3 Bulan**: Memegang real budget ads jutaan rupiah dan data bisnis nyata, bukan sekadar tugas kelompok simulasi.<br>2. **100% Live Online Efisien**: Menghemat puluhan juta biaya sewa kos dan transportasi di Jabodetabek.<br>3. **Kemitraan Universitas Ternama**: Program AI & Analytics diakui langsung oleh ITB, BINUS, dan UI. |
-| **One Proof Point** | **RevoU Labs Real Project Experience**: Peserta RevoU Digital Marketing memegang anggaran riil jutaan rupiah langsung untuk running campaign live, dan peserta Data menganalisa dataset bisnis skala enterprise. |
-
-**Contoh Template Jawaban AC (Purwadhika):**
-> *"Purwadhika reputasinya memang sangat baik kak, terutama untuk teman-teman yang berdomisili di BSD/Jakarta dan ingin suasana kampus tatap muka langsung. Kalau di RevoU, kita fokus 100% live interaktif online agar teman-teman dari seluruh Indonesia bisa belajar langsung dari praktisi top company tanpa perlu keluar biaya sewa kos/transportasi puluhan juta. Di RevoU juga ada RevoU Labs selama 3 bulan untuk ngerjain project riil dengan client beneran. Kakak sendiri lebih mempertimbangkan fleksibilitas online atau tatap muka fisik kak? :)"*
+| **One Proof Point** | 30.000–40.000+ alumni & Alumni Club berbasis tribe. Completion rate belajar tidak dipublikasi di web. RevoU transparan dengan 93% completion rate dan 3 bulan RevoU Labs mengerjakan data/anggaran riil. |
 
 ---
 
 ### BATTLECARD 3: DIBIMBING
 
-| Kategori | Dibimbing (Data Resmi 20 Okt 2026) | RevoU |
+| Kategori | Dibimbing (Data Resmi Website Okt 2026) | RevoU |
 | :--- | :--- | :--- |
-| **Price & Cicilan** | • Biaya masuk terjangkau (~Rp 7.000.000 – Rp 15.000.000 tergantung program & promo).<br>• Bayar penuh atau cicilan internal/mitra. Gratis mengulang batch. | • Rp 16.000.000 – Rp 25.000.000-an.<br>• Investasi sebanding dengan durasi belajar 2x lebih panjang dan 100% live instruction. |
+| **Price & Cicilan** | • Biaya masuk terjangkau (~Rp 7.000.000 – Rp 15.000.000 tergantung program & promo).<br>• Bayar penuh atau cicilan internal/mitra. Gratis mengulang batch seumur hidup. | • Rp 16.000.000 – Rp 25.000.000-an.<br>• Investasi sebanding dengan durasi belajar 2x lebih panjang dan 100% live instruction. |
 | **Duration & Schedule** | • Pre-bootcamp mandiri + 24 minggu bootcamp + 2 minggu post-bootcamp + 4 minggu Job Connect (total ±7 bulan).<br>• Pilihan weekday atau weekend (frekuensi 2–3 sesi per minggu). | • 6 – 9 bulan (5x per minggu sesi diskusi & interaksi, >80 total sesi live + 3 bulan RevoU Labs).<br>• Jadwal terstruktur Senin–Jumat 19:00–21:00 WIB. |
-| **Format Belajar** | • Kombinasi video rekaman materi LMS + sesi Live Zoom tanya jawab / mentoring mingguan.<br>• Tersedia format Online, Offline Jakarta/Surabaya, dan Private. | • **100% Live Instruction interaktif dua arah** (bukan sekadar menonton rekaman video).<br>• Feedback tugas mingguan langsung dari Lead Mentor. |
-| **Pilihan Program** | 14 Program across 3 Kategori:<br>• **Data**: Data Engineering, Data Analytics, AI Engineering<br>• **IT & Software**: Front-End, Back-End, Full-Stack, DevOps, QA, Cyber Security<br>• **Bisnis & Marketing**: Digital Marketing, HR, Supply Chain, ESG & Sustainability, Legal & Policy | • Program fokus mendalam berstandar tinggi: FSDM, FSDA, FSSE, AI Academy (Joint ITB, BINUS, UI). |
-| **Career Support** | Penyaluran kerja ke 1.100+ hiring partner, konsultasi 1-on-1, review CV & LinkedIn, talent showcase. Klaim 96% alumni bekerja. | RevoU NEXT: 16 sesi Career Development live, Career Coach 1-on-1, latihan interview teknis & HR, jaminan refund 100% transparan (10 lamaran/minggu). |
-| **Sertifikasi** | Sertifikat Kelulusan Dibimbing. | Sertifikat RevoU bertaraf industri + Opsi Kredensial Resmi Universitas Top (**ITB, BINUS, UI**). |
-| **What They Genuinely Do Better** | Pilihan kategori program sangat variatif (mencakup ESG, Legal, HR, Supply Chain) dengan biaya masuk lebih ekonomis (*budget-friendly*) dan benefit gratis mengulang batch. |
+| **Format Pembelajaran** | Online & offline, supported with AI. | **100% Live Instruction interaktif dua arah** (+ Akses rekaman & materi ajar selamanya). |
+| **Sesi Tanya Jawab & Diskusi** | Dedicated class manager untuk kebutuhan di dalam & luar kelas. | 5x per minggu live interaktif dua arah bersama praktisi industri. |
+| **Kurikulum & Case Study** | Tugas & project menantang untuk portofolio, plus pengalaman magang nyata. | Disesuaikan dengan kebutuhan industri di Indonesia & SEA + 3 bulan RevoU Labs dengan real client. |
+| **Support System Belajar** | 475+ mentor yang dievaluasi berkala; Talent Support selama & setelah bootcamp. | Pengajar Praktisi + Section Manager + Team Lead + Mentor + Konselor Karir. |
+| **Kelas Karir & Review CV** | Konsultasi karier & portofolio 1-on-1, review CV & LinkedIn, latihan interview, Talent Showcase. | 16 sesi LIVE Career Coach + 1-on-1 Personalized Coaching & portfolio review. |
+| **Sertifikasi & Kampus** | Terakui Kemendikti; layanan BNSP & placement program untuk universitas; Forbes 30 Under 30 Asia 2025. | RevoU Certificate bertaraf internasional + Sertifikasi Resmi Universitas Top (**ITB, BINUS x AWS, UI**). |
+| **Komunitas & Network** | 10K+ lulusan; 100.000+ digital learners; 1.100+ hiring partners. | 6.000+ Alumni Aktif di 1.000+ top company & 550.000+ member pelajar. |
+| **Seleksi Masuk** | Tes masuk tidak tercantum; Job Connect hanya untuk lulusan berpredikat eligible. | Tes kemampuan dasar & wawancara (tingkat penerimaan <10%) untuk jamin circle terbaik. |
+| **Completion Rate** | Tidak dipublikasi di web; klaim 96% alumni dapat kerja. | 93% peserta berhasil menyelesaikan program sampai akhir. |
+| **What They Genuinely Do Better** | Pilihan kategori program sangat variatif (mencakup ESG, Legal, HR, Supply Chain) dengan biaya masuk lebih ekonomis (*budget-friendly*) dan benefit gratis mengulang batch seumur hidup. |
 | **Where RevoU Wins** | 1. **Kedalaman Jam Terbang Live**: >80 sesi live intensif bersama praktisi aktif vs sesi rekaman video.<br>2. **RevoU Labs 3 Bulan**: Pengalaman kerja portofolio nyata dengan anggaran iklan dan data riil.<br>3. **Standar Seleksi & Circle Belajar**: Standar seleksi ketat menjamin circle belajar ambisius dan suportif.<br>4. **Track Record Unicorn & Multinasional**: Reputasi lulusan RevoU diakui recruiter unicorn terkemuka. |
-| **One Proof Point** | **Standar Portofolio & Reputasi Recruiter**: Hiring Partner RevoU telah mencapai ratusan perusahaan di Asia Tenggara, dan kurikulum RevoU diakui setara standar profesional associate di tech unicorn. |
-
-**Contoh Template Jawaban AC (Dibimbing):**
-> *"Dibimbing pilihan yang bagus kak kalau kakak mencari opsi belajar yang terjangkau dan memiliki variasi program yang luas seperti HR atau Legal. Namun kalau tujuan kakak adalah career switch total atau naik level karir di tech company papan atas, RevoU memberikan 100% live class interaktif setiap hari (bukan video rekaman), bimbingan karir 1-on-1 intensif, dan 3 bulan RevoU Labs portofolio riil. Boleh tau tujuan utama kakak ambil program ini apakah untuk eksplorasi dasar atau persiapan karir jangka panjang kak? :)"*
+| **One Proof Point** | 10K+ lulusan & 100.000+ digital learners. Completion rate belajar tidak dipublikasi resmi di web. RevoU transparan mempublikasikan 93% completion rate & >80 sesi intensif live harian. |
 
 ---
 
 ### BATTLECARD 4: DQLAB
 
-| Kategori | DQLab (Data Resmi 20 Okt 2026) | RevoU |
+| Kategori | DQLab (Data Resmi Website Okt 2026) | RevoU |
 | :--- | :--- | :--- |
 | **Price & Cicilan** | • **Bootcamp Single**: Rp 699.000 – Rp 2.500.000 (10–17 sesi, 20–42,5 jam).<br>• **Sertifikasi Resmi**: Rp 1.680.000 – Rp 2.800.000 (Pearson VUE & BNSP KKNI 6/7).<br>• **Bundle Program**: Rp 1.200.000 – Rp 3.800.000.<br>• Skema bayar upfront per kursus/bundle via Live Zoom. | • Rp 16.000.000 – Rp 25.000.000-an.<br>• Program Full Stack komprehensif end-to-end 6–9 bulan dengan jaminan refund dan pendampingan karir penuh. |
 | **Duration & Schedule** | • Sesi singkat 10–17 pertemuan (durasi 1,5 – 2,5 bulan).<br>• Jadwal: 2x seminggu (Sen & Kam / Sel & Jum 19:00–21:30, atau Rab malam + Sab pagi). | • 6 – 9 bulan (>80 sesi live interaktif, 5x seminggu) + 3 bulan RevoU Labs + pendampingan karir RevoU NEXT. |
-| **Format Belajar** | • Live Class via Zoom interaktif singkat + modul platform mandiri.<br>• Level Beginner hingga Intermediate. | • 100% Live Online terstruktur harian bersama praktisi Lead/Manager + RevoU Labs real project. |
-| **Pilihan Program** | • **Bootcamp**: Data Analyst (SQL & Python), Excel for DA, BI Analyst (Power BI), ML & AI Beginner, Gen AI & n8n.<br>• **Sertifikasi**: Pearson VUE AI, MOS Excel, BNSP (BI Analyst, DA, DE, Data Scientist).<br>• **Bundle**: DA, DS, BI, Sertifikasi BNSP. | • Full Stack Data Analytics (FSDA)<br>• Full Stack Digital Marketing (FSDM)<br>• Full Stack Software Engineering (FSSE)<br>• Joint AI Programs with ITB, BINUS, UI |
-| **Career Support** | Fokus pada persiapan ujian sertifikasi (BNSP/Pearson VUE) dan live class; tidak ada program job placement 1-on-1 mendalam. | RevoU NEXT: Pendampingan karir 1-on-1, 16 sesi Career Development live, portofolio nyata RevoU Labs, jaminan refund s.d. 100%. |
-| **Sertifikasi** | Ujian Sertifikasi Resmi BNSP (KKNI 6/7) & Pearson VUE AI. | RevoU Certificate of Completion + Kredensial Resmi Program Kemitraan Universitas Top (**ITB, BINUS, UI**). |
+| **Format Pembelajaran** | Bootcamp live class virtual + belajar mandiri via modul. | **100% Live Online terstruktur harian** (+ Akses rekaman & materi ajar selamanya). |
+| **Sesi Tanya Jawab & Diskusi** | Forum belajar dibantu tim data; Data Mentoring dengan praktisi minimal 1x/bulan. | 5x per minggu live interaktif dua arah bersama praktisi industri. |
+| **Kurikulum & Case Study** | Metode HERO (Hands-On, Experiential Learning, Outcome-based); portofolio dari studi kasus dengan data relevan industri. | Kurikulum komprehensif end-to-end + 3 bulan RevoU Labs mengerjakan dataset bisnis riil. |
+| **Support System Belajar** | ChatGPT terintegrasi di semua modul; real-time feedback. | Pengajar Praktisi + Section Manager + Team Lead + Mentor + Konselor Karir. |
+| **Kelas Karir & Review CV** | DQLab Career: portofolio terbaik berpeluang interview dengan partner. CV review tidak tercantum di website. | 16 sesi LIVE Career Coach + 1-on-1 Personalized Coaching & portfolio review. |
+| **Sertifikasi & Kampus** | E-certificate per modul; program Sertifikasi BNSP Data Analyst; dimiliki Yayasan Multimedia Nusantara & Xeratic. | RevoU Certificate bertaraf internasional + Sertifikasi Resmi Universitas Top (**ITB, BINUS x AWS, UI**). |
+| **Komunitas & Network** | 500.000+ pengguna; 30+ mitra hiring & corporate training. | 6.000+ Alumni Aktif di 1.000+ top company & 550.000+ member pelajar. |
+| **Seleksi Masuk** | Tidak ada; tidak perlu background IT. | Tes kemampuan dasar & wawancara (tingkat penerimaan <10%) untuk jamin circle terbaik. |
+| **Completion Rate** | Tidak dipublikasi di halaman website resmi. | 93% peserta berhasil menyelesaikan program sampai akhir. |
 | **What They Genuinely Do Better** | Opsi kursus modular sangat terjangkau bagi pemula yang hanya ingin sertifikasi BNSP atau Pearson VUE dalam waktu singkat tanpa komitmen biaya besar. |
 | **Where RevoU Wins** | 1. **Transformasi Karir End-to-End**: RevoU melatih dari nol hingga level profesional siap kerja lengkap dengan portfolio bisnis nyata, bukan sekadar lulus ujian sertifikasi.<br>2. **Business Problem Solving & Storytelling**: Fokus RevoU bukan hanya sintaks rumus, melainkan bagaimana data diterjemahkan menjadi keputusan bisnis manajemen.<br>3. **RevoU Labs 3 Bulan**: Bekerja langsung menganalisis dataset bisnis skala enterprise ribuan/jutaan baris data.<br>4. **Dukungan Karir Komprehensif**: Didampingi Career Coach 1-on-1 hingga mendapatkan pekerjaan. |
-| **One Proof Point** | **93% Penyerapan Karir & Kenaikan Gaji Up to 100%+**: Alumni FSDA RevoU banyak yang melipatgandakan gajinya dan bekerja di Gojek, Tokopedia, Traveloka, Shopee, Big 4, dan perbankan terkemuka. |
-
-**Contoh Template Jawaban AC (DQLab):**
-> *"DQLab itu opsi yang oke banget kak kalau kakak sekadar ingin mengambil ujian sertifikasi BNSP atau kursus kilat Excel/Python dalam durasi 1-2 bulan dengan budget terjangkau. Namun kalau tujuan kakak ingin career switch menjadi Data Analyst profesional yang siap kerja di top company, di RevoU kakak akan belajar 6–9 bulan komprehensif, menguasai SQL, Python, Tableau, Looker Studio, dan 3 bulan RevoU Labs menganalisis real dataset bisnis riil, plus bimbingan karir 1-on-1 sampai dapat kerja. Kakak saat ini lebih butuh sertifikasi singkat atau persiapan karir menyeluruh sampai siap kerja kak? :)"*
+| **One Proof Point** | 500.000+ pengguna. Completion rate tidak dipublikasi di web. RevoU mendampingi 6–9 bulan komprehensif dari nol dengan 3 bulan RevoU Labs dan garansi refund 100% transparan. |
 
 ---
 
 ## 📋 3. TABEL KOMPARASI GENERAL (GENERAL COMPARISON TABLE)
-*(Diadaptasi resmi dari https://revou.webflow.io/perbandingan)*
+*(Data diverifikasi per Oktober 2026 berdasarkan website resmi masing-masing penyelenggara)*
 
-| Fitur / Parameter | RevoU | Program Intensif Lainnya (Kompetitor Rata-rata) | Program Mandiri / Kursus Luar Negeri |
-| :--- | :--- | :--- | :--- |
-| **Format Pembelajaran** | **100% Live Online** (+ Akses rekaman & materi ajar selamanya) | Kombinasi kelas live dengan rekaman video | 100% rekaman video mandiri |
-| **Interaksi Pengajar di Kelas** | **Dua Arah** (Diskusi langsung, hands-on feedback) | Satu / dua arah tergantung sesi | Satu arah (via rekaman) |
-| **Sesi Tanya Jawab & Diskusi** | **5x per minggu** | 1 – 3x per minggu | 1 – 2x per minggu (hanya sesi khusus) |
-| **Total Jumlah Sesi** | **> 80 sesi intensif** | < 60 sesi | < 40 sesi |
-| **Durasi Program** | **6 – 9 bulan** (3–6 bulan kursus + 3 bulan RevoU Labs) | 3 – 5 bulan | 7 – 9 bulan (tanpa bimbingan live) |
-| **Jadwal Kelas** | **Malam hari (19.00–21.00 WIB)**, di luar jam kerja | Bervariasi (beberapa bentrok jam kerja) | Mandiri tanpa jadwal pasti |
-| **Kurikulum & Case Study** | Disesuaikan dengan kebutuhan industri di Indonesia & SEA | Sebagian standar teori umum | Materi terjemahan luar negeri tanpa konteks lokal |
-| **Review Tugas & Portofolio** | **Dinilai dan diberi feedback personal setiap minggu** | Review umum / otomatis sistem | Terbatas atau tidak ada feedback |
-| **Support System Belajar** | Pengajar Praktisi + Team Lead + Section Manager + Mentor + Konselor Karir | Pengajar + Admin Kelas | Pengajar saja / Forum diskusi |
-| **Profil Pengajar** | **Real Expert & Praktisi Aktif** level Lead/Manager di top tech | Kombinasi instruktur internal/akademisi dengan tamu | Praktisi luar negeri via video |
-| **Proyek Nyata Portofolio** | **3 Bulan Program Khusus (RevoU Labs)** dengan real client & real budget | 2–4 minggu proyek dummy/tugas akhir | Proyek mandiri tanpa bimbingan |
-| **Kelas Pengembangan Karir** | **16 sesi LIVE** bersama Career Coach profesional | < 10 sesi, mayoritas rekaman | < 10 sesi rekaman |
-| **Konsultasi Karir & Review CV** | **1-on-1 Personalized Coaching** & simulasi interview | Sesi review grup / opsional | Tergantung penyedia / tidak ada |
-| **Jaminan Kerja & Refund** | **Refund s.d. 100% biaya program** (syarat transparan: 10 lamaran/minggu) | Syarat refund sangat ketat / penalti ISA | Tidak ada refund |
-| **Jaringan Alumni** | **6.000+ Alumni Aktif** di 1.000+ top company | < 2.000 alumni | 0 / tidak terpusat |
-| **Komunitas Pelajar** | **550.000+ member aktif** | < 200.000 | 0 |
-| **Seleksi Masuk** | Ada tes kemampuan dasar & wawancara (penerimaan <10%) untuk jamin circle belajar terbaik | Mayoritas tanpa seleksi ketat | Tanpa seleksi |
-| **Completion Rate** | **93% peserta lulus hingga akhir program** | 30% – 60% completion rate | < 15% completion rate |
+| Fitur / Parameter | RevoU | Hacktiv8 | Purwadhika | Dibimbing | DQLab | Kursus Mandiri / Self-Paced |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **Format Pembelajaran** | **100% Live Online** (+ Akses rekaman & materi selamanya) | Full-Day & Night Bootcamp (Jakarta, Tangerang, Remote) | On campus atau online livestream | Online & offline, supported with AI | Bootcamp live class virtual + modul mandiri | 100% rekaman video mandiri |
+| **Sesi Tanya Jawab & Diskusi** | **5x per minggu** live interaktif dua arah bersama praktisi | 1-on-1 mentoring dengan instruktur berpengalaman | Final project didampingi mentor; rekaman kelas & LMS | Dedicated class manager untuk dalam & luar kelas | Forum belajar tim data + Data Mentoring min 1x/bulan | Forum mandiri / tidak ada |
+| **Kurikulum & Case Study** | Disesuaikan kebutuhan industri di Indonesia & SEA | Kurikulum AI-powered sesuai kebutuhan industri | Teruji industri + capstone tiap modul + AI Boost | Tugas & project menantang + magang nyata | Metode HERO; studi kasus data industri | Materi terjemahan luar tanpa konteks lokal |
+| **Support System Belajar** | Pengajar + Section Manager + Team Lead + Mentor + Konselor | Sesi growth mindset; Career Buddy grup & 1-on-1 | LMS video unlimited; soft skill innergy | 475+ mentor dievaluasi; Talent Support | ChatGPT terintegrasi di semua modul | Pengajar saja / Forum mandiri |
+| **Proyek Nyata Portofolio** | **3 Bulan RevoU Labs** (real client & real budget) | Final project web app / pipeline model di akhir fase | Final project kelompok (DM 7-8 org, AI 1-3 org) | Portofolio tugas akhir & talent showcase | Latihan modul koding & studi kasus dasar | Proyek mandiri tanpa bimbingan |
+| **Kelas Karir & Review CV** | **16 sesi LIVE** Career Coach + 1-on-1 Coaching | Career Class (CV & LinkedIn), latihan interview HR | Bimbingan CV & LinkedIn, 1-on-1 counseling | Konsultasi 1-on-1, review CV/LinkedIn, interview | DQLab Career (CV review tidak tercantum di web) | Tergantung penyedia / tidak ada |
+| **Jaminan Refund Biaya** | **Refund s.d. 100% biaya** (syarat: 10 lamaran/minggu) | Tanpa refund (Non-refundable), skema ISA/cicilan | Tidak ada jaminan refund biaya | Gratis ulang batch seumur hidup (tanpa refund dana) | Tidak ada jaminan refund dana | Tidak ada refund |
+| **Sertifikasi & Kampus** | RevoU Certificate + **Kemitraan Universitas Top (ITB, BINUS, UI)** | Sertifikat Hacktiv8; tidak ada kemitraan kampus | Terdaftar Kemendikbud; Google Partner; tanpa mitra kampus | Terakui Kemendikti; BNSP & placement universitas | E-certificate modul; BNSP DA; UMN & Xeratic | Sertifikat otomatis platform |
+| **Komunitas & Network** | **6.000+ Alumni Aktif** di 1.000+ top co & 550.000+ member | 3.500+ lulusan di tech; 1.000+ hiring partner | 30.000–40.000+ alumni; Alumni Club tribe | 10K+ lulusan; 100.000+ learners; 1.100+ partner | 500.000+ pengguna; 30+ mitra hiring | 0 / tidak terpusat |
+| **Seleksi Masuk** | **Kurang dari 10%** (Tes dasar & interview), terbuka SMA-S1 | Form + reg fee Rp100rb, validasi motivasi & English | Tanpa tes masuk (koneksi kerja maks 30 thn & min S1) | Tes masuk tidak tercantum; Job Connect jika eligible | Tidak ada; tidak perlu background IT | Tanpa seleksi |
+| **Completion Rate** | **93% peserta lulus hingga akhir program** | Tidak ada di web (Outcome: 90% kerja <90 hari) | Tidak dipublikasi di web resmi | Tidak dipublikasi di web (klaim 96% kerja) | Tidak dipublikasi di web resmi | < 15% completion rate |
+
+> ℹ️ **Catatan Transparansi & Validasi Data (Audit Website Resmi Kompetitor - Oktober 2026):**
+> - **Completion rate tidak dipublikasikan oleh satu pun kompetitor di halaman website resmi mereka.** Kandidat sumber data sekunder: laporan CIRR Hacktiv8 (PDF) dan Outcomes Report Dibimbing. RevoU secara transparan mempublikasikan 93% completion rate dan 93% placement rate resmi.
+> - Parameter yang "Sesuai Program" (Biaya & Cicilan, Jadwal Kelas, Durasi & Total Sesi, Proyek Portofolio, Jaminan Refund) disinkronkan otomatis sesuai pilihan program spesifik di tab Komparasi Program.
 
 ---
 
@@ -161,14 +165,67 @@ Setiap kali calon siswa (*leads*) menyebut atau membandingkan RevoU dengan lemba
   - *Dibimbing Web Dev*: Front-End / Back-End terpisah atau Full-Stack.
   - **Kelemahan Kompetitor**: Kelas full-day Hacktiv8 mewajibkan resign/cuti penuh; opsi cicilan ISA mengikat secara hukum dengan batasan karir.
 
-### D. AI & Advanced Technology Programs (Joint ITB / BINUS / UI)
-- **RevoU:** Kredensial resmi universitas terbaik (ITB untuk AI for Leaders, BINUS untuk Applied AI & Automation, UI untuk AI Strategic Finance), kurikulum no-code applied AI praktikal untuk bisnis.
-- **Kompetitor:**
-  - *Hacktiv8 Applied AI Engineer*: Rp 20jt - Rp 25jt, syarat min 1 tahun di IT (bukan untuk pemula bisnis), fokus Airflow, Databricks, CrewAI, MCP.
-  - *Purwadhika AI Automation Engineer*: Rp 10jt - Rp 20jt (Zapier, Make, n8n, Ollama, 6 minggu modul + 3-4 minggu project).
-  - *Purwadhika AI Engineering*: Rp 17,5jt - Rp 35jt (15 minggu modul + 4 minggu project, MLOps, LangChain, CV).
-  - *DQLab Gen AI & n8n*: Rp 2,5jt (10 sesi, 20 jam).
-  - **Kelemahan Kompetitor**: Tidak memiliki sertifikasi perguruan tinggi papan atas (ITB / BINUS / UI), melainkan hanya sertifikat internal lembaga kursus.
+### D. Program Kemitraan Universitas Unggulan (RevoU University-Partnership Programs)
+
+#### 📊 Matriks Ringkasan Cepat Program Kemitraan Universitas RevoU:
+| Parameter | ITB – Data Driven & AI-Enabled Decision Making for Leaders | ITB – Applied Data Science with AI | BINUS – Applied AI, Analytics & Automation | BINUS – Applied Cybersecurity with AI | UI – AI-Enabled Strategic Finance |
+|---|---|---|---|---|---|
+| **Partner** | RevoU × ITB (Direktorat Pendidikan Profesional Berkelanjutan) | RevoU × ITB (FTI ITB & Dit. PPB) | RevoU × BINUS × GreatNusa | RevoU × BINUS × GreatNusa (Lab oleh AWS) | RevoU × Universitas Indonesia (FEB UI & FIA UI) |
+| **Durasi** | 12 Minggu | 13 Minggu | 12 Minggu | 12 Minggu | 13 Minggu |
+| **Jadwal** | Selasa & Kamis, 19.30–21.30 WIB | Selasa & Kamis, 19.30–21.30 WIB | Senin & Selasa (Lecture) + Kamis (Simulation), 19.30–21.30 WIB | Senin, Selasa & Kamis, 19.30–21.30 WIB | Selasa & Kamis, 19.30–21.30 WIB |
+| **On-Campus** | 2 hari di ITB Ganesha, Bandung (Networking & Graduation) | 2 hari di ITB Ganesha, Bandung (Kickoff & Graduation) | 2 sesi di BINUS Kemanggisan (Opsional/Sangat disarankan) | 5 sesi hybrid di BINUS Kemanggisan (AWS Labs, Opening, Graduation) | Capstone Defense & Wisuda di Kampus UI Depok |
+| **Kredensial** | ITB Certificate of Completion + Digital Badge resmi ITB | ITB Certificate of Completion + Opsional 1 SKS Microcredential FTI ITB | Professional Certificate of Achievement (72 jam) dari BINUS & RevoU | Professional Certificate of Achievement dari BINUS, AWS & RevoU | Professional Certificate resmi FEB & FIA UI + RevoU |
+| **Harga Normal** | Rp 15.000.000 / orang | Rp 16.999.000 (Early Bird Rp 15.999.000, 10 kursi pertama) | Rp 15.000.000 / orang | On-Campus: Rp 16.500.000 / Online: Rp 15.000.000 | Rp 15.000.000 / orang |
+| **Harga Alumni** | ITB / RevoU Alumni: **Rp 12.750.000** (Diskon 15%) | RevoU DA Alumni: **Rp 11.999.000**; ITB / RevoU Alumni: **Rp 14.499.000** | Mahasiswa BINUS & Alumni RevoU: **Rp 12.750.000** (Diskon 15%) | Tidak ada harga alumni khusus | Alumni RevoU / UI: **Rp 12.500.000** |
+| **Cicilan** | Tersedia cicilan bunga 0% | Tersedia cicilan untuk semua tier harga | Tersedia cicilan fleksibel | Tersedia cicilan resmi | Tersedia cicilan 0% |
+| **Prasyarat** | **Tanpa coding**; nyaman spreadsheet + pengalaman memimpin | **Basic SQL atau Python** (Tingkat lanjut/Advanced) | **Tanpa coding**; bisa spreadsheet & paham masalah operasional | Basic IT literacy, familiar scripting/koding, baca dokumentasi English | Min. 2 tahun pengalaman kerja di finance/accounting |
+| **Group / Org** | 3+ peserta: **Diskon 15%**; 30+ peserta: Dedicated Cohort | Team enrollment (single invoice); 30+ seats enterprise use case | 3+ peserta: **Diskon 15%**; 30+ peserta: Dedicated Cohort | 3+ peserta: **Diskon 15%**; 30+ peserta: Dedicated Cohort | Group package corporate training |
+| **Link Resmi** | https://rebrand.ly/ai-leaders-itb | revou.co/itb-applied-data-science | https://rebrand.ly/applied-ai-prog | https://rebrand.ly/cybersecurity-ai-prog | revou.co/ui-strategic-finance |
+
+---
+
+#### 1. ITB – Data Driven & AI-Enabled Decision Making for Leaders
+- **RevoU x ITB:** Rp 15.000.000 (Alumni Rp 12.750.000). Executive training 12 minggu tanpa koding. Mentransformasi leader mengambil keputusan strategis bisnis dengan AI. 2 hari on-campus di Kampus ITB Ganesha Bandung, ITB Certificate & Digital Badge, capstone masalah nyata organisasi (hemat hingga 162 jam/bulan).
+- **Head-to-head vs Kompetitor:**
+  - *Hacktiv8 Applied AI Engineer:* Biaya Rp 20jt–25jt, mewajibkan pengalaman IT min 1 tahun dan tes koding teknis berat. Tidak cocok untuk pemimpin bisnis non-IT.
+  - *Purwadhika AI Engineering:* Biaya mencapai Rp 35jt (normal), kurikulum matematika dan koding AI berat, hanya sertifikat internal lembaga kursus tanpa kredensial universitas top.
+- **Selling Edge:** Kredensial bergengsi ITB (kampus teknik #1 di Indonesia), fokus pada *leadership decision making* & ROI AI, bukan teknis koding.
+
+#### 2. ITB – Applied Data Science with AI
+- **RevoU x ITB:** Early Bird Rp 15.999.000 / Reguler Rp 16.999.000 (Alumni DA Rp 11.999.000, Alumni ITB/RevoU Rp 14.499.000). Durasi 13 minggu, integrasi Claude Code di bawah *AI Coding Safety Gate*, statistical rigor FTI ITB, opsional 1 SKS Microcredential Metode Statistika ITB, dan output *working data product* (Streamlit) yang dipertahankan di depan panel industri. Next intake: **Desember 2026**.
+- **Head-to-head vs Kompetitor:**
+  - *Hacktiv8 Data Science & AI ML:* Biaya Rp 35jt (early bird Rp 33jt), full-day 09:00–18:00 WIB mewajibkan komitmen waktu penuh, sertifikat internal.
+  - *Purwadhika Data Science & Machine Learning:* Biaya normal Rp 25jt, durasi modul relatif pendek (12–14 minggu), tugas kelompok 1–3 orang, sertifikat internal kursus.
+  - *Dibimbing Data Science / AI:* Modul teori campuran rekaman video LMS.
+- **Selling Edge:** Kredensial resmi ITB + opsi transfer kredit 1 SKS Magister ITB, bimbingan langsung dosen FTI ITB dan Head of Data Science XLSMART, serta akses tool canggih Claude Code.
+
+#### 3. BINUS – Applied AI, Analytics & Automation
+- **RevoU x BINUS x GreatNusa:** Rp 15.000.000 (Mahasiswa BINUS & Alumni RevoU Rp 12.750.000). Durasi 12 minggu, **100% No-Code/Low-Code**, membangun live AI workflow, n8n automation, multi-agent AI, sertifikat resmi 72 jam pembelajaran BINUS & RevoU, 2 sesi on-campus di BINUS Kemanggisan.
+- **Head-to-head vs Kompetitor:**
+  - *Purwadhika AI Automation Engineer:* Biaya Rp 13jt–20jt, namun hanya 6 minggu modul, mewajibkan lulusan S1, dan sertifikat internal.
+  - *DQLab Gen AI & n8n:* Biaya Rp 2,5jt, namun hanya kelas singkat 10 sesi (20 jam) tanpa pendampingan manajerial atau akreditasi universitas.
+- **Selling Edge:** Kredensial resmi BINUS University (Top 450 dunia CS & IS), kurikulum otomasi terapan lintas fungsi kerja, dan pendampingan mentor industri top (L'Oréal, EDTS, ARIF Analytics).
+
+#### 4. BINUS – Applied Cybersecurity with AI (AWS Labs)
+- **RevoU x BINUS x GreatNusa x AWS:** On-Campus Rp 16.500.000 / Online Rp 15.000.000. Durasi 12 minggu, fokus **Defensive Cybersecurity (Blue Team)**, 3 live labs di infrastruktur cloud AWS nyata, 5 portofolio deliverables, capstone vibe coding workflow, 5 sesi on-campus di BINUS Kemanggisan, sertifikat resmi kolaborasi BINUS, AWS, dan RevoU.
+- **Head-to-head vs Kompetitor:**
+  - *Purwadhika Cybersecurity:* Biaya Rp 15jt–25jt, online livestream umum tanpa live lab AWS bersertifikasi kampus.
+  - *Dibimbing Cyber Security:* Materi pengantar umum campuran offensive/defensive tanpa infrastruktur cloud enterprise AWS terdedikasi.
+- **Selling Edge:** Hands-on di infrastruktur AWS live cloud, kurikulum defensif Blue Team berorientasi kebutuhan operasional SOC industri masa kini, dan sertifikasi resmi institusi BINUS & AWS.
+
+#### 5. UI – AI-Enabled Strategic Finance
+- **RevoU x UI:** Rp 15.000.000 (Alumni Rp 12.500.000). 13 minggu bersama Guru Besar & Dosen FEB UI & FIA UI serta praktisi ex-McKinsey/GoTo/Deloitte. Fokus pada analisis permodalan, transaksi multi-entitas holding, dan kepatuhan pajak DJP dengan integrasi AI tanpa koding.
+
+---
+
+### ⚠️ PANDUAN ADMISSION: CATATAN INKONSISTENSI BROSUR RESMI
+1. **ITB DDDM – Label Enterprise:** Tertulis "3+ PARTICIPANTS" di judul kotak, namun deskripsinya menjelaskan cohort 30+. (Gunakan 30+ untuk Enterprise, dan 3+ untuk Group Discount 15%).
+2. **ITB DDDM – Subjudul Capstone Edi Rachman:** Di brosur tertulis "Making Weekly Resource Allocation Decisions Faster" (copy paste), padahal kasus nyatanya adalah sistem penagihan overdue PDAM (hemat 162 jam/bulan).
+3. **ITB DDDM vs ITB ADS – Klaim Ranking ITB:** DDDM menulis "Top 100 global Engineering", sedangkan ADS menulis "#1 Indonesia Engineering & Technology". Keduanya merujuk pada QS World University Rankings by Subject 2026.
+4. **ITB ADS – Mockup Sertifikat:** Mockup sertifikat di brosur ADS masih bertuliskan program DDDM. Sertifikat riil lulusan tetap berjudul *Applied Data Science with AI*.
+5. **BINUS AAA – Sesi On-Campus:** Teks menyebut 2 sesi on-campus, di bagian lain menyebut "Three times". Informasi resmi: **2 sesi on-campus** di Kampus BINUS Kemanggisan.
+6. **BINUS Cybersecurity – Penamaan Program:** Terdapat sisa copy-paste teks "Applied Cybersecurity with AI, Analytics & Automation Program". Nama resmi adalah **Applied Cybersecurity with AI (Threat Detection, Defense, and Security Operations)**.
+7. **BINUS Cybersecurity – Alumni Price:** Program Cybersecurity saat ini HANYA memiliki tarif **On-Campus Rp 16.500.000** dan **Online Rp 15.000.000** (tidak ada harga alumni khusus yang tercantum di brosur).
 
 ---
 

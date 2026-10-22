@@ -1,169 +1,115 @@
 # KNOWLEDGE BASE ADMISSION ASSISTANT
 
-## PROGRAM: Applied AI, Analytics, & Automation
+## PROGRAM: Applied AI, Analytics & Automation Program (RevoU x BINUS x GreatNusa)
 
-## 1. RINGKASAN PROGRAM (PROGRAM OVERVIEW)
+Sumber Resmi: Brosur Resmi Program BINUS Applied AI, Analytics & Automation.
 
-* **Nama Resmi Program:** Applied AI, Analytics, & Automation
+---
 
-* **Kemitraan Strategis:** RevoU x BINUS University x GreatNusa
-
-* **Deskripsi Utama:** Program akselerasi 12 minggu *No-Code/Low-Code* yang dirancang khusus untuk profesional agar dapat membangun alur kerja AI (*live AI workflows*), otomatisasi bisnis, dan sistem *agentic AI* tanpa perlu latar belakang pemrograman (*no coding required*).
-
+## 1. RINGKASAN PROGRAM & KREDENSIAL
+* **Nama Resmi Program:** Applied AI, Analytics & Automation Program
+* **Kemitraan Strategis:** RevoU × BINUS University × GreatNusa
 * **Durasi Program:** 12 Minggu
-
 * **Mode Pembelajaran:** Hybrid
-
-  * *Live Online Sessions:* 3x seminggu (Senin, Selasa, & Kamis) pukul 19.30 - 21.30 WIB.
-
-  * *On-Campus Sessions:* 2x Sesi Tatap Muka di Kampus **BINUS Kemanggisan**, Jakarta (Networking, Diskusi Panel, & Graduation/Showcase).
-
+  * *Live Online Sessions:* 3 kali seminggu (Senin & Selasa untuk Lecture, Kamis untuk Simulation) pukul 19.30 – 21.30 WIB.
+  * *On-Campus Sessions:* 2 sesi tatap muka di Kampus **BINUS Kemanggisan**, Jakarta (Sesi kolaborasi, diskusi industri, dan perayaan Graduation Day).
 * **Sertifikasi & Kredensial:**
+  * **Professional Certificate of Achievement** resmi diterbitkan bersama oleh akademisi (BINUS University) dan industri (RevoU).
+  * Durasi pembelajaran resmi tercantum di sertifikat: **72 Jam Pembelajaran (72 hours of learning duration)**.
+* **Tautan Resmi:** https://rebrand.ly/applied-ai-prog
 
-  * **Professional Certificate of Achievement** terakreditasi gabungan dari Akademisi (BINUS University) & Industri (RevoU).
+---
 
-  * Total durasi jam pembelajaran yang diakui: 72 Jam (*72 hours of learning duration*).
+## 2. POSITIONING & VALUE PROPOSITION
+* **Headline:** *"Become an AI Champion and gain the unfair advantage to accelerate your career."*
+* **Deskripsi:** Program 12 minggu tanpa koding (*no coding required*) yang mengajarkan cara membangun alur kerja AI aktif (*live AI workflows*), otomasi proses bisnis harian, dan sistem *multi-agent AI* untuk efisiensi instan di tempat kerja.
+* **Key Pitch Hook:** *"The gap between professionals who build with AI and those who merely use it is widening fast. Don't get left behind."*
+* **Sistem Pendaftaran:** Rolling basis, kuota kursi dibatasi per cohort untuk memastikan pendampingan mentor tetap intensif.
 
-## 2. NILAI UTAMA & KEUNGGULAN PROGRAM (VALUE PROPOSITION)
+---
 
-Mengapa program ini berbeda dari kursus AI/Data lainnya di pasaran?
+## 3. 4 PEMBEDA UTAMA ("WHY THIS PROGRAM IS DIFFERENT")
+1. **You graduate with a working product:** Peserta lulus membawa sistem otomasi AI yang dibangun sendiri, siap dipresentasikan ke atasan, dijadikan portofolio, atau langsung dipakai bekerja sejak hari pertama.
+2. **Boost your professional credibility:** Kredensial bergengsi yang diakui universitas top (BINUS University terakreditasi internasional ABET, AACSB, ASIIN) dan industri terdepan.
+3. **Built for people with full-time jobs:** Jadwal kelas malam hari kerja (19.30–21.30 WIB) ramah pekerja kantor; online-first dengan 2 sesi on-campus di kampus BINUS Kemanggisan.
+4. **No code. Real results:** Membangun workflow otomasi AI, asisten AI kustom, dan sistem agen cerdas dengan no-code/low-code tools (n8n, Custom AI Assistants, Claude Code). Cukup bisa spreadsheet dan paham masalah operasional.
 
-1. **No Code. Real Results (Tanpa Koding):**
+---
 
-   * Tidak membutuhkan latar belakang *computer science* atau koding.
+## 4. STRUKTUR MODUL MINGGUAN (12 MINGGU)
 
-   * Menggunakan *tools* No-Code / Low-Code (seperti n8n, Custom AI Assistants, Multi-Agent Systems) untuk membangun otomatisasi tingkat lanjut.
+### W1–W3: Foundations of Data-Driven Problem Solving
+* **Week 1 (Data & Business Foundations):** Program Onboarding & filosofi *Data-First*; framework pemecahan masalah dan prioritisasi; masa depan Data & AI di dunia bisnis.
+* **Week 2 (Problem Solving & Data Quality):** Fondasi analitik bisnis; penanganan data praktis untuk bisnis; tata kelola kualitas data untuk input AI; persiapan data & eksplorasi awal capstone.
+* **Week 3 (EDA & Data Visualization):** Exploratory Data Analysis (EDA); best practices visualisasi data; pembuatan insight & *data storytelling*; merangkum insight menjadi narasi bisnis.
 
-2. **Graduate with a Live Working Product (Portofolio Nyata):**
+### W4: AI Foundations
+* **Week 4 (AI Foundations):** Fondasi AI & aplikasi bisnis; teknik *Prompt Engineering* profesional; wawasan industri AI & sesi networking.
 
-   * Peserta tidak hanya menonton video atau mengerjakan kuis.
+### W5–W6: Custom AI & Analytics + Product Thinking
+* **Week 5 (Custom AI & Analytics):** Membangun *Custom AI Assistants* tanpa koding; pengenalan AI dalam analitik data; simulasi perancangan AI Assistant untuk Capstone.
+* **Week 6 (Product Thinking & Automation):** *Data Product Management 101*; dasar-dasar otomatisasi workflow visual (**n8n**); perancangan arsitektur otomasi; pembuatan *blueprint* workflow capstone.
 
-   * Peserta lulus dengan membawa *end-to-end AI system* berbasis masalah nyata di tempat kerja yang langsung bisa dipakai pada hari Senin berikutnya.
+### W7–W8: AI Automation & Agentic AI
+* **Week 7 (AI Automation):** Otomasi bisnis bertenaga AI (*AI-Enhanced Automation*); integrasi API untuk AI Assistants; implementasi alur kerja otomatis; mengotomasi penarikan insight capstone.
+* **Week 8 (Agentic AI):** Agen AI & alur kerja otonom (*AI Agents & Autonomous Workflows*); orkestrasi sistem multi-agen (*Multi-Agent Systems*); praktik pembuatan agen AI; prototipe alur kerja agentic capstone.
 
-3. **Dual Credibility (Kredibilitas Akademik & Industri):**
+### W9: Claude Code for AI Automation
+* **Week 9:** Fondasi **Claude Code** dan otomasi; alur kerja agentic dan integrasi lanjutan; praktik pengembangan otomasi AI; seleksi tools final untuk capstone.
 
-   * Dinilai dan disertifikasi langsung oleh Dosen/Fakultas BINUS University serta Praktisi Senior Industri RevoU.
+### W10–W12: Capstone, Data-First AI Product
+* **Week 10 (Capstone Kickoff):** Kickoff capstone & perencanaan produk; teknik pitching dan presentasi; sesi mentorship dan penyempurnaan produk; eksekusi *build sprint*.
+* **Week 11 (Capstone Building):** Pembangunan capstone & optimasi UX solusi; pengujian fungsional solusi; simulasi pitch & *presentation coaching*; finalisasi produk.
+* **Week 12 (Showcase & Graduation):** Presentasi akhir capstone & demo produk langsung di depan *panel evaluasi industri*; kalkulasi dampak bisnis (*business impact*); pembahasan etika AI (*Responsible AI & Professional Ethics*) serta selebrasi kelulusan di Kampus BINUS Kemanggisan.
 
-4. **Designed for Full-Time Working Professionals:**
+---
 
-   * Jadwal fleksibel di malam hari (*weekday evenings* 19.30 - 21.30 WIB) sehingga tidak mengganggu jam kerja operasional.
+## 5. CAPSTONE PROJECT & ALUR PENGEMBANGAN
+Peserta membawa masalah nyata dari tempat kerja mereka:
+* **Alur Capstone 3 Langkah:**
+  1. **Identify Bottleneck:** Memetakan proses kerja operasional yang paling memakan waktu dan berulang (*repetitive*).
+  2. **Build AI System:** Membangun otomasi live *end-to-end* yang memadukan n8n dan AI.
+  3. **Deliver Implementation-Ready AI Use Case:** Menyerahkan solusi lengkap beserta workflow teknis, dokumentasi SOP, dan rencana implementasi bisnis.
+* Proyek terbaik dipresentasikan langsung di depan panel pakar industri pada Graduation Day.
 
-## 3. PROFIL CALON PESERTA & SYARAT PENDAFTARAN (PREREQUISITES & AUDIENCE)
-
-### Syarat Prasyarat (Prerequisites):
-
-* **TIDAK MEMBUTEHKAN KODING (NO CODING REQUIRED).**
-
-* Syarat minimal: Bisa menggunakan *spreadsheet* (Excel/Google Sheets) dan mampu mengartikulasikan masalah bisnis yang ingin diselesaikan.
-
-### Target Peserta Utama (Target Audience):
-
-1. **Working Professionals:** Karyawan purna waktu yang ingin menjadikan AI sebagai alat bantu kerja harian secara nyata, bukan sekadar teori.
-
-2. **Career Accelerators:** Profesional yang mengincar promosi, *career pivot*, atau posisi tawar lebih tinggi di pasar kerja dengan keterampilan AI terapan.
-
-3. **Business & Function Leaders:** Manager/Leader di bidang *Marketing, Operations, HR, Finance,* atau *Product* yang ingin mengarahkan dan menerapkan solusi AI di timnya tanpa harus menjadi *software engineer*.
-
-## 4. KURIKULUM & MATERI MINGGUAN (PROGRAM SYLLABUS)
-
-### MINGGU 1-3 | Data & Business Foundations (Data-Driven Problem Solving)
-
-* **Minggu 1:** *Program Onboarding*, Filosofi *Data-First*, *Problem-Solving Frameworks & Prioritization*, Masa Depan Data & AI dalam Bisnis.
-
-* **Minggu 2:** *Problem Solving & Data Quality*, Analisis Bisnis Dasar, *Practical Data Handling*, *Data Quality for AI*.
-
-* **Minggu 3:** *Data Preparation*, Exploratory Data Analysis (EDA) Pertama untuk Capstone, Visualisasi Data, *Data Storytelling*, dan *Turning Insights Into A Data Story*.
-
-### MINGGU 4-6 | AI Foundations, Custom AI & Product Thinking
-
-* **Minggu 4 (AI Foundations):** Dasar-dasar AI & Aplikasi Bisnis, *Prompt Engineering*, Wawasan Industri AI, serta Sesi Networking.
-
-* **Minggu 5 (Custom AI & Analytics):** Membangun *Custom AI Assistants*, AI dalam Analitik, Simulasi Pembuatan AI Assistant untuk Capstone.
-
-* **Minggu 6 (Product Thinking & Automation):** *Data Product Management 101*, Dasar Otomatisasi Workflow (n8n), Desain Otomatisasi & Blueprint Capstone.
-
-### MINGGU 7-9 | AI Automation, Agentic AI, & Claude Code
-
-* **Minggu 7 (AI Automation & Workflow):** *AI-Enhanced Automation*, Integrasi API untuk AI Assistants, Implementasi Workflow Berbasis AI, Otomatisasi Insight Capstone.
-
-* **Minggu 8 (Agentic AI):** *AI Agents & Autonomous Workflows*, *Multi-Agent Systems & Orchestration*, Pengembangan AI Agent Hands-On, Prototipe Capstone Agentic.
-
-* **Minggu 9 (Claude Code for AI Automation):** Dasar *Claude Code & Automation*, *Agentic Workflows & Integrations*, Hands-On *AI Automation Development*, Pemilihan *Tools* Capstone.
-
-### MINGGU 10-12 | Capstone Build & Graduation
-
-* **Minggu 10:** Kickoff Capstone & Perencanaan Produk, Sesi Mentorship & Pempertajam Produk, *Build Sprint Execution*, Kemampuan *Pitching & Presentation*.
-
-* **Minggu 11:** Pengembangan Capstone, Pengujian Solusi & Optimasi UX, Pelatihan Presentasi & Simulasi *Pitch*, Persiapan Produk Akhir.
-
-* **Minggu 12:** Presentasi Akhir Capstone & Demo Produk di hadapan Panel Evaluasi Industri, Pembahasan Etika AI (*Responsible AI*), serta *Graduation Showcase & Networking* di Kampus BINUS Kemanggisan.
-
-## 5. CAPSTONE PROJECT (PROYEK AKHIR)
-
-### Konsep Capstone:
-
-* Peserta membawa **masalah bisnis nyata** dari lingkungan kerja mereka masing-masing.
-
-* Dibimbing intensif oleh mentor industri untuk memvalidasi arsitektur teknis dan mempertajam dampak bisnisnya.
-
-* Luaran akhir (*deliverable*): Sistem AI *live end-to-end* yang menggabungkan n8n, AI Agent, dokumentasi, dan rencana implementasi bisnis.
-
-* Proyek Capstone terbaik akan diundang untuk mempresentasikan solusinya pada *Graduation Day* di depan panel pakar industri dan akademisi BINUS.
+---
 
 ## 6. TIM PENGAJAR & MENTORSHIP
 
-### Pengajar Akademis (BINUS University Faculty):
+### BINUS University Faculty:
+* **Prof. Dr. Ir. Derwin Suhartono, S.Kom., MTI:** Dekan *School of Computer Science* BINUS University, Guru Besar Artificial Intelligence, 15+ tahun pengalaman akademik, pakar Natural Language Processing (NLP) & Personality Computation.
+* **Jajaran Instruktur Akademis BINUS:** *Dewa Ayu Defina Audrey, Muhammad Alfhi Saputra, Rilo Chandra Pradana, Rico Halim, Stefanus Benhard, Samson Ndruru, Arya Krisna Putra, Fiqri Ramadhan Tambunan, Satriadi Putra Santika, Franz Adeta.*
 
-* **Prof. Dr. Ir. Derwin Suhartono, S.Kom., MTI** — Dekan *School of Computer Science* BINUS University (Profesor AI dengan pengalaman 15+ tahun, Pakar NLP & Personality Computation).
+### RevoU Industry Expert Instructors:
+* **Brandy:** Data & Analytics Senior Manager L'Oréal | Founder AltraByte.
+* **Gabriel Handowo:** Lead Data Analyst EDTS.
+* **Cornellius Yudha Wijaya:** Chief Product Officer ARIF Analytics.
+* **Husein Indra Kusuma:** Head of Technology & Product Forewave.
 
-* Didukung oleh jajaran instruktur BINUS University: *Dewa Ayu Defina Audrey, Rilo Chandra Pradana, Stefanus Benhard, Arya Krisna Putra, Satriadi Putra Santika, Muhammad Alfhi Saputra, Rico Halim, Samson Ndruru, Fiqri Ramadhan Tambunan, Franz Adeta.*
+---
 
-### Pengajar Praktisi Industri (RevoU Industry Instructors):
+## 7. INVESTASI, DISKON ALUMNI & PAKET PERUSAHAAN
+* **Biaya Program (Normal Price):** **Rp 15.000.000 / orang**
+* **Diskon Khusus Alumni (Mahasiswa BINUS & Alumni RevoU):** **Rp 12.750.000 / orang** (Potongan diskon 15%)
+* **Skema Cicilan:** Tersedia opsi cicilan bulanan ringan via kartu kredit atau lembaga pembiayaan resmi.
+* **Paket Perusahaan (Teams & Organizations):**
+  - **Group (3+ peserta): Diskon 15%** otomatis untuk seluruh kursi, satu tagihan perusahaan (*single company invoice*), jadwal sama dengan kelas reguler, dokumen pengajuan sponsor kantor tersedia.
+  - **Enterprise (30+ peserta): Dedicated Closed Cohort**, kurikulum dan studi kasus disesuaikan fungsi dan industri perusahaan, presentasi Demo Day ke C-level, kerangka kerja kerahasiaan *NDA-ready*, harga khusus korporat.
 
-* **Brandy** — Data & Analytics Senior Manager L'Oréal & Founder AltraByte.
+---
 
-* **Cornellius Yudha Wijaya** — Chief Product Officer ARIF Analytics.
+## 8. TESTIMONI RESMI ALUMNI & PERUSAHAAN ASAL PESERTA
+* **Harry Farhan** (Financial Data & Automation Analyst, Sinarmas): *"Sebagai orang dengan latar belakang Accounting, program ini menyadarkan saya bahwa AI bukan sekadar alat searching atau brainstorming, melainkan skill otomasi wajib untuk efisiensi dan ketajaman analisis data kantor."*
+* **Rafi Darmawan** (Pfizer Supply Chain Documentation, Extern US): *"Sangat terkesan dengan use case prompting AI dan transcription tools yang mampu memangkas waktu root cause analysis dari berhari-hari menjadi hitungan menit."*
+* **Emir Zulkifli Arifin** (Marketing Executive, Casio Singapore Pte. Ltd.): *"Belajar pentingnya analisis data/EDA sebelum mengambil keputusan; data yang bersih dan analisa yang tepat sama pentingnya dengan kecanggihan AI itu sendiri."*
+* **Perusahaan Peserta:** *Sinarmas, detikcom, Casio, Tower Bersama Group, Wärtsilä, Kärcher, FKS Group, Swisscontact, Extern, serta para pelaku wirausaha/pemilik bisnis mandiri.*
 
-* **Gabriel Handowo** — Lead Data Analyst EDTS.
+---
 
-* **Husein Indra Kusuma** — Head of Technology & Product Forewave.
-
-## 7. PROFIL MITRA (ABOUT THE PARTNERS)
-
-* **BINUS University:** Salah satu universitas swasta terkemuka di Indonesia (Berdiri sejak 1981). Masuk Peringkat Top 450 Dunia untuk *Computer Science & Information Systems* (QS 2026) dan terakreditasi internasional (ABET, AACSB, ASIIN).
-
-* **GreatNusa:** Platform pembelajaran profesional dari BINUS University yang menghubungkan kepakaran akademis kampus dengan kebutuhan dunia kerja.
-
-* **RevoU:** Platform akselerasi karir & keterampilan terdepan di Indonesia dengan 2.7+ juta *learners* dan 15.000+ alumni di bidang Data, Marketing, Software Engineering, dan AI.
-
-## 8. FAQ OPERASIONAL ADMISSION (PETUNJUK UNTUK ADMISSION ASSISTANT)
-
-**Q: Apakah saya harus bisa koding untuk mengikuti program ini?**
-
-> *A:* Sama sekali **TIDAK PERLU**. Program ini dirancang menggunakan pendekatan *No-Code/Low-Code*. Selama Anda familiar dengan *spreadsheet* (Excel/Google Sheets) dan memahami masalah bisnis di tempat kerja Anda, Anda sudah memenuhi kualifikasi.
-
-**Q: Kapan dan di mana kelas dilaksanakan?**
-
-> *A:* Sesi *Live Online* diadakan 3 kali seminggu setiap hari **Senin, Selasa, & Kamis (19.30 - 21.30 WIB)**. Selain itu, terdapat 2 kali sesi tatap muka (*On-Campus Sessions*) di Kampus **BINUS Kemanggisan, Jakarta** untuk sesi *networking* dan presentasi kelulusan.
-
-**Q: Sertifikat apa yang akan saya dapatkan setelah lulus?**
-
-> *A:* Anda akan mendapatkan **Professional Certificate of Achievement** resmi berdurasi 72 jam pembelajaran yang diakui dan ditandatangani bersama oleh **BINUS University, GreatNusa, dan RevoU**.
-
-**Q: Apakah saya bisa menyelesaikan masalah pekerjaan saya sendiri dalam program ini?**
-
-> *A:* Ya, sangat bisa. Bahkan Proyek Capstone dirancang wajib menggunakan masalah bisnis nyata dari tempat kerja Anda sendiri. Anda akan lulus membawa sistem AI otomatisasi yang siap diimplementasikan langsung di kantor.
-
-**Q: Bagaimana jika saya tidak bisa hadir di Kampus BINUS Kemanggisan secara fisik?**
-
-> *A:* Sesi mingguan utama berkonsep *Online-first*. Sesi *On-Campus* sangat direkomendasikan untuk membangun jejaring (*networking*) secara langsung dengan Dosen BINUS, praktisi, dan sesama profesional. *(Dapat disesuaikan oleh tim Admission jika calon pendaftar berada di luar Jabodetabek)*.
-
-```
-
-***
-
-### Ringkasan Penyesuaian Pengetahuan
-1. **Diferensiasi Jelas:** Berbeda dari program ITB sebelumnya yang fokus pada *statistical rigor* dan koding Python/SQL (*predictive modeling*), program BINUS x RevoU ini berfokus penuh pada **No-Code/Low-Code, AI Automation, n8n, dan Agentic AI**.
-2. **Kesesuaian Target Pendaftar:** Memudahkan AI Assistant Anda mengarahkan calon mahasiswa yang *non-technical* (pemasaran, HR, operasional, manager) yang takut koding untuk masuk ke program BINUS ini.
-
-```
+## 9. FAQ OPERASIONAL ADMISSION
+* **Q: Apakah harus bisa koding untuk ikut program ini?**
+  > *A:* Sama sekali **TIDAK PERLU**. Pendekatannya 100% No-Code/Low-Code menggunakan n8n, AI Assistants, dan agen otomatis. Asalkan nyaman dengan spreadsheet (Excel/Google Sheets), Anda siap bergabung.
+* **Q: Apakah bisa diikuti sambil bekerja full-time?**
+  > *A:* Sangat bisa. Seluruh sesi live online diadakan malam hari (19.30–21.30 WIB) sehingga tidak mengganggu jam kerja reguler.
+* **Q: Apakah sesi tatap muka di BINUS Kemanggisan bersifat wajib?**
+  > *A:* Sesi on-campus (2 kali selama 12 minggu) berfokus pada networking dan wisuda. Sesi ini opsional namun sangat disarankan. Bagi peserta luar Jabodetabek, tersedia opsi live streaming.

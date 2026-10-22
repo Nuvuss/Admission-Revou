@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
-import { motion } from "motion/react";
+import React, { useState, useMemo, useRef, useEffect } from "react";
+import { motion, AnimatePresence } from "motion/react";
 import {
   Scale,
   Check,
@@ -52,9 +52,9 @@ const BATTLECARDS: CompetitorBattlecard[] = [
     tagline: "Kuat di coding murni JavaScript & Golang, opsi Full-Day intensif 09:00–18:00 & Night Bootcamp",
     price: "Full-Day: Rp 35.000.000 – Rp 45.000.000 (Early Bird Rp 33jt–43jt) | Night: Rp 18.000.000 – Rp 25.000.000. Reg fee Rp 100.000 non-refundable. Bayar upfront 2 tahap, cicilan 0% (Danacita/CIMB), atau Study Now Pay Later.",
     duration: "Full-Day: 12–16 minggu (Senin–Jumat 09:00–18:00 WIB) | Night: 12–16 minggu (Senin–Jumat 19:00–22:00 WIB, ±15 jam/minggu).",
-    format: "Tersedia kampus offline Jakarta (Kebayoran/Sultan Iskandar Muda) & remote online live coding.",
-    careerSupport: "Career class, latihan interview, Job Portal, Career Buddy. Klaim 87–88% direkrut <3 bulan, rerata gaji Rp 7jt – Rp 8jt.",
-    certification: "Sertifikat Kelulusan Hacktiv8 & BNSP (pada program tertentu).",
+    format: "Full-Day Bootcamp & Night Bootcamp; lokasi Jakarta, Tangerang, dan Remote.",
+    careerSupport: "Career Class (CV & LinkedIn), latihan interview HR, peluang interview langsung dengan 1.000+ hiring partner tanpa placement fee, Career Buddy grup & 1-on-1. Outcome: 90% kerja full-time dalam 90 hari, 96% relevan IT & Data.",
+    certification: "Sertifikat Kelulusan Hacktiv8 & BNSP (pada program tertentu); tidak ada kemitraan kampus.",
     honestStrength: "Sangat kuat dan terspesialisasi di bidang Software Engineering teknis murni (JavaScript stack & Golang) dengan format full-day immersion pagi-sore yang cocok bagi yang bisa komitmen 100% waktu penuh.",
     revouWins: [
       "Jadwal kelas malam (19:00–21:00 WIB) yang fleksibel — peserta tidak perlu resign dari kantor saat masa belajar.",
@@ -62,8 +62,8 @@ const BATTLECARDS: CompetitorBattlecard[] = [
       "Ekosistem program multi-disiplin terlengkap (Digital Marketing, Data Analytics, Software Engineering, AI Academy).",
       "Garansi refund biaya s.d. 100% dengan syarat transparan dan realistis (10 lamaran/minggu)."
     ],
-    proofPoint: "93% Completion & Employment Rate: Laporan transparansi karir RevoU menunjukkan 93% peserta menyelesaikan program dan mayoritas hired dalam 3–6 bulan pasca lulus di unicorn/multinasional.",
-    acScriptTemplate: "Wah menarik banget kak! Hacktiv8 memang punya reputasi bagus untuk bootcamp coding seharian terutama kalau kakak siap komitmen full-day dari jam 9 pagi sampai 6 sore. Nah, di RevoU kelas kita di ain khusus jam 19.00 WIB malam, jadi kakak tetap bisa belajar dan bangun karir baru tanpa harus mengorbankan pekerjaan atau resign duluan. Plus, di RevoU ada 3 bulan RevoU Labs mengerjakan real project perusahaan dan didukung sertifikasi resmi. Kakak saat ini lebih nyaman belajar full-day seharian atau kelas malam di luar jam kerja kak? :)"
+    proofPoint: "3.500+ lulusan di industri tech. Completion rate belajar tidak dipublikasi resmi di web (Outcome: 90% kerja full-time <90 hari). RevoU transparan mempublikasikan 93% completion rate & 93% placement rate resmi.",
+    acScriptTemplate: "Wah menarik banget kak! Hacktiv8 memang punya reputasi bagus untuk bootcamp coding seharian terutama kalau kakak siap komitmen full-day dari jam 9 pagi sampai 6 sore. Nah, di RevoU kelas kita didesain khusus jam 19.00 WIB malam, jadi kakak tetap bisa belajar dan bangun karir baru tanpa harus mengorbankan pekerjaan atau resign duluan. Plus, di RevoU ada 3 bulan RevoU Labs mengerjakan real project perusahaan dan didukung sertifikasi resmi. Kakak saat ini lebih nyaman belajar full-day seharian atau kelas malam di luar jam kerja kak? :)"
   },
   {
     id: "purwadhika",
@@ -71,9 +71,9 @@ const BATTLECARDS: CompetitorBattlecard[] = [
     tagline: "Pilihan bagi yang mencari fasilitas kampus fisik BSD/Jakarta, ada 10 program Job Connector",
     price: "Tiered Pricing: Early Bird Rp 13jt–20jt | Term 1 Rp 15jt–25jt | Term 2 Rp 17jt–30jt | Promo 39th Anniv Rp 14,5jt–27,5jt | Scholarship Sinarmas Rp 10jt–17,5jt | Harga normal Rp 20jt–35jt (Tools premium tertentu ditanggung peserta).",
     duration: "Batch kalender 20–28 minggu (modul 6–15 minggu + final project 4–5 minggu). Pilihan After Hours (Sen–Kam 19:00–22:00 / Sel & Kam) & Office Hours (09:00–12:00).",
-    format: "Kampus fisik (On-campus BSD Green Office Park, Jakarta, Batam) & Online Livestream via Zoom, serta opsi Video Learning.",
-    careerSupport: "Purwadhika Hiring Network & Career Network (job connector portal). Klaim 92% alumni DS&ML berkarir di data.",
-    certification: "Sertifikat Purwadhika Digital Technology School.",
+    format: "On campus (BSD Green Office Park, Jakarta, Batam) atau online livestream.",
+    careerSupport: "Bimbingan CV & LinkedIn, persiapan interview, 1-on-1 career counseling, Purwadhika Hiring Network ke 1.000+ hiring partner (syarat koneksi kerja full-time: maks. usia 30 tahun & min. S1).",
+    certification: "Sertifikat Purwadhika Digital Technology School, Terdaftar Kemendikbud & Certified Google Partner (tidak ada kemitraan kampus).",
     honestStrength: "Memiliki fasilitas kampus offline fisik yang megah di BSD & Jakarta bagi siswa yang memprioritaskan kehadiran fisik tatap muka di ruang kelas.",
     revouWins: [
       "100% Live Online dua arah hemat biaya akomodasi hingga puluhan juta rupiah bagi siswa luar kota.",
@@ -81,7 +81,7 @@ const BATTLECARDS: CompetitorBattlecard[] = [
       "Kemitraan resmi universitas terkemuka (ITB untuk Leaders, BINUS untuk AI & Analytics, UI untuk Strategic Finance).",
       "Persyaratan fleksibel (terbuka untuk seluruh jenjang vs Purwadhika yang mayoritas mewajibkan minimal S1)."
     ],
-    proofPoint: "RevoU Labs Real Project Experience: Peserta RevoU Digital Marketing memegang anggaran riil jutaan rupiah langsung untuk running campaign live, dan peserta Data menganalisa dataset bisnis skala enterprise.",
+    proofPoint: "30.000–40.000+ alumni & Alumni Club berbasis tribe. Completion rate belajar tidak dipublikasi di web. RevoU transparan dengan 93% completion rate dan 3 bulan RevoU Labs mengerjakan data/anggaran riil.",
     acScriptTemplate: "Purwadhika reputasinya memang sangat baik kak, terutama untuk teman-teman yang berdomisili di BSD/Jakarta dan ingin merasakan suasana kampus fisik. Kalau di RevoU, kita fokus 100% live interaktif online agar teman-teman dari seluruh Indonesia bisa belajar langsung dari praktisi top company tanpa perlu keluar biaya sewa kos/transportasi puluhan juta. Di RevoU juga ada RevoU Labs selama 3 bulan untuk ngerjain project riil dengan client beneran. Kakak sendiri lebih mempertimbangkan fleksibilitas online atau tatap muka fisik kak? :)"
   },
   {
@@ -90,9 +90,9 @@ const BATTLECARDS: CompetitorBattlecard[] = [
     tagline: "Opsi budget-friendly & pilihan 14 program (Data, IT, Marketing, HR, Supply Chain, ESG, Legal)",
     price: "Rp 7.000.000 – Rp 15.000.000 (Harga ekonomis, banyak diskon promo, opsi cicilan fleksibel, garansi gratis mengulang batch seumur hidup).",
     duration: "Pre-bootcamp mandiri + 24 minggu bootcamp + 2 minggu post-bootcamp + 4 minggu Job Connect (total ±7 bulan). Frekuensi 2–3 sesi per minggu (weekday atau weekend).",
-    format: "Kombinasi materi video rekaman LMS + sesi Live Zoom tanya jawab / mentoring mingguan (Online, Offline Jakarta/Surabaya, Private).",
-    careerSupport: "Penyaluran kerja ke 1.100+ hiring partner, konsultasi 1-on-1, review CV & LinkedIn, latihan interview, talent showcase. Klaim 96% alumni dapat kerja.",
-    certification: "Sertifikat Kelulusan Dibimbing.",
+    format: "Online & offline, supported with AI.",
+    careerSupport: "Konsultasi karier & portofolio 1-on-1, review CV & LinkedIn, latihan interview, Talent Showcase ke 1.100+ partner (hanya lulusan berpredikat eligible). Klaim 96% alumni dapat kerja.",
+    certification: "Sertifikat Kelulusan Dibimbing, Terakui Kemendikti; layanan BNSP & placement program untuk universitas; Forbes 30 Under 30 Asia 2025.",
     honestStrength: "Pilihan kategori program sangat luas dan variatif (mencakup HR, Supply Chain, ESG, Legal) dengan biaya masuk lebih ekonomis (budget-friendly) dan benefit gratis mengulang batch.",
     revouWins: [
       "Kedalaman kurikulum & jam terbang praktik 2x lebih intensif (>80 sesi live interaktif harian vs <40 sesi rekaman/campuran).",
@@ -100,7 +100,7 @@ const BATTLECARDS: CompetitorBattlecard[] = [
       "Standar seleksi ketat menjamin circle belajar ambisius dan suportif (tingkat penerimaan <10%).",
       "Track record alumni terbukti di multinational & top tech companies (Gojek, Tokopedia, Traveloka, Shopee, Big 4, BUMN)."
     ],
-    proofPoint: "Standar Portofolio & Reputasi Recruiter: Hiring Partner RevoU telah mencapai ratusan perusahaan di Asia Tenggara, dan kurikulum RevoU diakui setara standar profesional associate di tech unicorn.",
+    proofPoint: "10K+ lulusan & 100.000+ digital learners. Completion rate belajar tidak dipublikasi resmi di web. RevoU transparan mempublikasikan 93% completion rate & >80 sesi intensif live harian.",
     acScriptTemplate: "Dibimbing pilihan yang bagus kak kalau kakak mencari opsi belajar yang terjangkau dan memiliki variasi program yang luas seperti HR atau Legal. Namun kalau tujuan kakak adalah career switch total atau naik level karir di tech company papan atas, RevoU memberikan 100% live class interaktif setiap hari (bukan video rekaman), bimbingan karir 1-on-1 intensif, dan 3 bulan RevoU Labs portofolio riil. Boleh tau tujuan utama kakak ambil program ini apakah untuk eksplorasi dasar atau persiapan karir jangka panjang kak? :)"
   },
   {
@@ -109,9 +109,9 @@ const BATTLECARDS: CompetitorBattlecard[] = [
     tagline: "Kursus kilat live Zoom modular, persiapan sertifikasi resmi BNSP & Pearson VUE dengan budget ekonomis",
     price: "Rp 699.000 – Rp 3.800.000 (Bootcamp Single Rp 699rb–2,5jt; Ujian Sertifikasi BNSP/Pearson VUE Rp 1,68jt–2,8jt; Bundle Program Rp 1,2jt–3,8jt).",
     duration: "10 – 17 sesi singkat (durasi 1,5 – 2,5 bulan), jadwal 2x seminggu malam (19:00–21:30 WIB) atau weekend.",
-    format: "Live Class via Zoom interaktif singkat + modul platform mandiri (Level Beginner hingga Intermediate).",
-    careerSupport: "Terfokus pada bimbingan persiapan ujian sertifikasi BNSP & Pearson VUE; tidak ada pendampingan karir 1-on-1 intensif atau penyaluran kerja langsung.",
-    certification: "Ujian Sertifikasi Resmi BNSP (KKNI 6 Data/BI Analyst & KKNI 7 Data Scientist/Engineer) & Pearson VUE AI.",
+    format: "Bootcamp live class virtual + belajar mandiri via modul.",
+    careerSupport: "DQLab Career: portofolio terbaik berpeluang interview dengan 30+ mitra hiring & corporate training (CV review tidak tercantum di website).",
+    certification: "E-certificate per modul; program Sertifikasi BNSP Data Analyst; dimiliki Yayasan Multimedia Nusantara & Xeratic.",
     honestStrength: "Biaya sangat terjangkau dengan format kursus singkat terfokus untuk memperoleh sertifikat BNSP/Pearson VUE tanpa komitmen waktu atau biaya besar.",
     revouWins: [
       "Program karir end-to-end 6–9 bulan dari nol hingga siap kerja profesional dengan kurikulum industri mendalam, bukan sekadar lulus ujian tertulis.",
@@ -119,7 +119,7 @@ const BATTLECARDS: CompetitorBattlecard[] = [
       "Bimbingan karir intensif RevoU NEXT 1-on-1 bersama Career Coach profesional + jaminan refund 100% transparan.",
       "Ekosistem 6.000+ alumni aktif di 1.000+ top company dan komunitas pelajar 550.000+ member."
     ],
-    proofPoint: "93% Penyerapan Karir & Kenaikan Gaji Up to 100%+: Alumni FSDA RevoU banyak yang melipatgandakan gajinya dan bekerja di Gojek, Tokopedia, Traveloka, Shopee, Big 4, dan perbankan terkemuka.",
+    proofPoint: "500.000+ pengguna. Completion rate tidak dipublikasi di web. RevoU mendampingi 6–9 bulan komprehensif dari nol dengan 3 bulan RevoU Labs dan garansi refund 100% transparan.",
     acScriptTemplate: "DQLab itu opsi yang oke banget kak kalau kakak sekadar ingin mengambil ujian sertifikasi BNSP atau kursus kilat Excel/Python dalam durasi 1-2 bulan dengan budget terjangkau. Namun kalau tujuan kakak ingin career switch menjadi Data Analyst profesional yang siap kerja di top company, di RevoU kakak akan belajar 6–9 bulan komprehensif, menguasai SQL, Python, Tableau, Looker Studio, dan 3 bulan RevoU Labs menganalisis real dataset bisnis riil, plus bimbingan karir 1-on-1 sampai dapat kerja. Kakak saat ini lebih butuh sertifikasi singkat atau persiapan karir menyeluruh sampai siap kerja kak? :)"
   }
 ];
@@ -395,7 +395,7 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
         {
           parameter: "Biaya & Kredensial Universitas",
           categoryTag: "INVESTASI & SERTIFIKAT",
-          revouValue: "Investasi kompetitif program eksekutif (opsi cicilan 0% & corporate invoice) + Sertifikasi Resmi Institut Teknologi Bandung (**ITB**).",
+          revouValue: "Rp 15.000.000 (Alumni ITB/RevoU: **Rp 12.750.000** / Diskon 15%), opsi cicilan 0% & corporate invoice + ITB Certificate of Completion & Digital Badge resmi.",
           competitorValue: "Rp 20.000.000 (Harga normal Rp 25.000.000). Sertifikat kelulusan internal Hacktiv8.",
           highlight: true
         },
@@ -437,7 +437,7 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
         {
           parameter: "Biaya & Kredensial Universitas",
           categoryTag: "INVESTASI & SERTIFIKAT",
-          revouValue: "Investasi all-in transparan (opsi cicilan 0% s.d. 12-18 bulan via kartu kredit/Danacita) + Professional Certificate resmi **BINUS University** & GreatNusa.",
+          revouValue: "Rp 15.000.000 (Mahasiswa BINUS & Alumni RevoU: **Rp 12.750.000** / Diskon 15%), opsi cicilan 0% s.d. 12-18 bulan via kartu kredit/Danacita + Professional Certificate resmi **BINUS University** & RevoU (72 jam pembelajaran).",
           competitorValue: "Rp 20.000.000 (Harga normal Rp 25.000.000). Sertifikat kelulusan internal Hacktiv8.",
           highlight: true
         },
@@ -525,21 +525,21 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
         {
           parameter: "Biaya & Struktur Promo",
           categoryTag: "INVESTASI & BIAYA",
-          revouValue: "Biaya all-in transparan, opsi cicilan 0% hingga 18 bulan, sudah termasuk kredensial resmi universitas.",
+          revouValue: "Rp 15.000.000 (Mahasiswa BINUS & Alumni RevoU: **Rp 12.750.000** / Diskon 15%), opsi cicilan 0% hingga 18 bulan, sudah termasuk kredensial resmi universitas.",
           competitorValue: "Early Bird Rp 13jt | Term 1 Rp 15jt | Promo 39th Rp 14,5jt | Scholarship Sinarmas Land Rp 10jt | Normal Rp 20jt.",
           highlight: false
         },
         {
           parameter: "Kredensial & Akreditasi",
           categoryTag: "KREDENSIAL KAMPUS",
-          revouValue: "Sertifikat & Kredensial Resmi dari **BINUS University** (perguruan tinggi swasta top Indonesia) + RevoU Certified.",
+          revouValue: "Professional Certificate of Achievement resmi dari **BINUS University** & RevoU (72 jam durasi pembelajaran diakui) + sesi tatap muka Kampus BINUS Kemanggisan.",
           competitorValue: "Sertifikat kelulusan internal Purwadhika Digital Technology School (tanpa akreditasi kampus perguruan tinggi).",
           highlight: true
         },
         {
           parameter: "Durasi Modul Belajar",
           categoryTag: "DURASI MODUL",
-          revouValue: "3 Bulan komprehensif pendampingan praktisi global & dosen ahli universitas.",
+          revouValue: "3 Bulan (12 Minggu) komprehensif pendampingan praktisi industri & dosen ahli universitas.",
           competitorValue: "6 minggu modul materi (24 sesi) + 3–4 minggu final project (total batch kalender ±20 minggu).",
           highlight: true
         },
@@ -574,7 +574,7 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
         {
           parameter: "Biaya & Kredensial Kampus",
           categoryTag: "INVESTASI & BIAYA",
-          revouValue: "Investasi sangat bersahabat dengan Kredensial Resmi Perguruan Tinggi Terbaik (**ITB & BINUS**).",
+          revouValue: "Rp 15.000.000 (Alumni ITB/RevoU: **Rp 12.750.000** / Diskon 15%) vs Purwadhika normal Rp 35.000.000. Sertifikasi Resmi **ITB** & Digital Badge.",
           competitorValue: "Early Bird Rp 20jt | Term 1 Rp 25jt | Promo 39th Rp 27,5jt | Scholarship Rp 17,5jt | Normal Rp 35.000.000 (sertifikat internal).",
           highlight: true
         },
@@ -715,6 +715,48 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
       competitorLimitation: "Tidak ada garansi refund biaya 100% jika peserta tidak bekerja, dan pendampingan career support terpusat pada job portal pasif.",
       revouEdge: "Pendampingan intensif harian dengan Section Manager dan Team Lead, review kode baris-per-baris oleh Senior Engineer, 3 bulan RevoU Labs, dan garansi refund 100% transparan.",
       acTalkingPoint: "Kurikulum Fullstack Purwadhika cukup lengkap kak, namun di RevoU FSSE kakak mendapatkan pendampingan lebih intensif harian dari Section Manager dan mentor, 3 bulan RevoU Labs membangun produk riil perusahaan, serta jaminan refund 100% transparan jika tidak terserap kerja."
+    },
+    {
+      id: "pwd-cyber",
+      competitorId: "purwadhika",
+      competitorName: "Purwadhika",
+      programTitle: "Cybersecurity",
+      badge: "Job Connector (Online Livestream)",
+      revouMatchProgram: "x BINUS: Applied Cybersecurity with AI",
+      revouMatchBadge: "BINUS",
+      tableRows: [
+        {
+          parameter: "Biaya & Kredensial Resmi",
+          categoryTag: "INVESTASI & BIAYA",
+          revouValue: "Online: Rp 15.000.000 / On-Campus: Rp 16.500.000 (cicilan tersedia) + Professional Certificate resmi kolaborasi **BINUS University, AWS, dan RevoU**.",
+          competitorValue: "Early Bird Rp 15jt | Term 1 Rp 18jt | Promo 39th Rp 18,5jt | Normal Rp 25.000.000 (sertifikat internal Purwadhika).",
+          highlight: true
+        },
+        {
+          parameter: "Fasilitas Cloud Lab Praktis",
+          categoryTag: "LABS PRAKTIK",
+          revouValue: "3 Live Cloud Infrastructure Labs di lingkungan resmi **Amazon Web Services (AWS)** + 5 sesi on-campus di BINUS Kemanggisan.",
+          competitorValue: "Sesi live stream Zoom umum tanpa dedicated enterprise cloud labs di AWS.",
+          highlight: true
+        },
+        {
+          parameter: "Fokus Kurikulum Pertahanan",
+          categoryTag: "KURIKULUM",
+          revouValue: "Mendalam pada **Defensive Cybersecurity (Blue Team)**: threat triage, monitoring, incident response, dan integrasi AI security agent sejak Day One.",
+          competitorValue: "Campuran pengantar umum Blue Team & Red Team (ethical hacking) tanpa spesialisasi lab AWS enterprise.",
+          highlight: true
+        },
+        {
+          parameter: "Deliverables Portofolio",
+          categoryTag: "PORTOFOLIO AKHIR",
+          revouValue: "5 Portofolio Artifacts + Capstone working security tool dengan workflow modern (*vibe coding*).",
+          competitorValue: "Final project kelompok 4–5 minggu.",
+          highlight: false
+        }
+      ],
+      competitorLimitation: "Biaya mencapai Rp 25 juta untuk sertifikat internal, materi campuran umum tanpa live cloud labs AWS resmi bersertifikasi kampus.",
+      revouEdge: "Kolaborasi resmi BINUS University, AWS, dan RevoU, fokus mendalam pada Defensive Cybersecurity (Blue Team), 3 hari live lab AWS, dan sertifikasi resmi institusi dengan biaya mulai Rp 15 juta.",
+      acTalkingPoint: "Purwadhika Cybersecurity biaya normalnya mencapai Rp 25jt untuk sertifikat internal sekolah kursus kak. Di RevoU x BINUS Applied Cybersecurity with AI, kakak belajar 12 minggu langsung praktek di 3 live labs infrastruktur cloud AWS asli, fokus di Defensive Security (Blue Team) yang paling dicari industri saat ini, dan mendapatkan Professional Certificate resmi dari BINUS University & AWS dengan biaya mulai Rp 15 juta saja!"
     }
   ],
 
@@ -796,6 +838,41 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
       competitorLimitation: "Sebagian materi berupa rekaman video mandiri LMS dan pertemuan live hanya 2–3x seminggu; anggaran ads latihan sangat terbatas dibanding RevoU.",
       revouEdge: "100% Live Instruction interaktif harian (5x seminggu), alokasi real ads budget jutaan rupiah untuk setiap siswa, dan 3 bulan RevoU Labs klien riil.",
       acTalkingPoint: "Dibimbing memang opsi yang ramah kantong untuk belajar santai 2-3x seminggu via video LMS kak. Tapi kalau tujuan kakak ingin career switch menjadi Digital Marketer handal di perusahaan top, RevoU memberikan 100% live class interaktif setiap hari, real ads budget jutaan rupiah, dan 3 bulan RevoU Labs bersama real client."
+    },
+    {
+      id: "db-cyber",
+      competitorId: "dibimbing",
+      competitorName: "Dibimbing",
+      programTitle: "Cyber Security Bootcamp",
+      badge: "Bootcamp ±4 Bulan",
+      revouMatchProgram: "x BINUS: Applied Cybersecurity with AI",
+      revouMatchBadge: "BINUS",
+      tableRows: [
+        {
+          parameter: "Biaya & Kredensial Resmi",
+          categoryTag: "INVESTASI & BIAYA",
+          revouValue: "Online: Rp 15.000.000 / On-Campus: Rp 16.500.000 (cicilan tersedia) + Professional Certificate resmi **BINUS University, AWS, dan RevoU**.",
+          competitorValue: "Rp 7.000.000 – Rp 15.000.000 (Sertifikat kelulusan internal Dibimbing).",
+          highlight: true
+        },
+        {
+          parameter: "Fasilitas Cloud Lab Praktis",
+          categoryTag: "LABS PRAKTIK",
+          revouValue: "3 Live Cloud Infrastructure Labs di lingkungan resmi **Amazon Web Services (AWS)** + 5 sesi on-campus di BINUS Kemanggisan.",
+          competitorValue: "Sesi Zoom dan tugas akhir mandiri tanpa dedicated cloud labs di AWS.",
+          highlight: true
+        },
+        {
+          parameter: "Fokus Kurikulum Pertahanan",
+          categoryTag: "KURIKULUM",
+          revouValue: "Mendalam pada **Defensive Cybersecurity (Blue Team)**: threat detection, triage, respons insiden, dan integrasi AI security agent sejak Day One.",
+          competitorValue: "Materi umum campuran rekaman video LMS tanpa live AWS cloud lab terintegrasi.",
+          highlight: true
+        }
+      ],
+      competitorLimitation: "Materi sebagian besar berupa rekaman video LMS dan tidak memiliki fasilitas hands-on lab di cloud AWS enterprise resmi.",
+      revouEdge: "Kolaborasi resmi BINUS University, AWS, dan RevoU, fokus mendalam pada Defensive Cybersecurity (Blue Team), 3 hari live lab AWS, dan sertifikasi resmi institusi.",
+      acTalkingPoint: "Dibimbing opsi ekonomis via video LMS rekaman kak. Namun di bidang cybersecurity, industri mencari analis Blue Team yang sudah terbiasa dengan environment cloud nyata. Di RevoU x BINUS, kakak praktek langsung di 3 AWS Live Labs asli dan dibimbing langsung oleh faculty BINUS serta Solutions Architect AWS!"
     }
   ],
 
@@ -853,23 +930,23 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
       revouMatchBadge: "BINUS",
       tableRows: [
         {
-          parameter: "Kredensial & Akreditasi",
-          categoryTag: "KREDENSIAL",
-          revouValue: "Kredensial & Sertifikat Resmi dari **BINUS University** / **ITB**.",
-          competitorValue: "Sertifikat kelulusan kelas Zoom DQLab.",
+          parameter: "Biaya & Kredensial Resmi",
+          categoryTag: "INVESTASI & KREDENSIAL",
+          revouValue: "Rp 15.000.000 (Mahasiswa BINUS & Alumni RevoU: **Rp 12.750.000** / Diskon 15%) + Professional Certificate resmi **BINUS University** & RevoU (72 jam durasi pembelajaran).",
+          competitorValue: "Rp 2.500.000 (Sertifikat kelulusan kelas Zoom singkat internal DQLab).",
           highlight: true
         },
         {
           parameter: "Durasi & Kedalaman Materi",
           categoryTag: "DURASI BELAJAR",
-          revouValue: "3 Bulan komprehensif membedah strategi AI korporat dan otomasi workflow bisnis.",
+          revouValue: "3 Bulan (12 Minggu) komprehensif membedah strategi AI korporat, otomasi workflow bisnis (n8n), AI Agents, dan Claude Code.",
           competitorValue: "10 sesi ringkas (total 20 jam, 2x seminggu malam).",
           highlight: true
         }
       ],
       competitorLimitation: "Hanya kursus ringkas 20 jam tanpa pendampingan manajerial dan tanpa akreditasi kampus ternama.",
       revouEdge: "Program Executive RevoU x BINUS memadukan otomatisasi n8n dengan strategic thinking manajerial, keamanan data korporasi, dan kredensial resmi institusi BINUS.",
-      acTalkingPoint: "Kelas DQLab ini ringkas 20 jam. Di program Executive RevoU x BINUS, otomatisasi dipadukan dengan strategic thinking manajerial, keamanan data korporasi, dan kredensial resmi institusi BINUS."
+      acTalkingPoint: "Kelas DQLab ini ringkas 20 jam kak. Di program Executive RevoU x BINUS, otomatisasi dipadukan dengan strategic thinking manajerial, keamanan data korporasi, dan kredensial resmi institusi BINUS berdurasi 72 jam pembelajaran dengan biaya terjangkau!"
     }
   ]
 };
@@ -897,10 +974,10 @@ const GENERAL_COMPARISON_DATA: GeneralComparisonRow[] = [
     feature: "Format Pembelajaran",
     revou: "100% Live Online (+ Akses rekaman & materi ajar selamanya)",
     general: "Kombinasi kelas live dengan rekaman video",
-    hacktiv8: "Kampus Offline Jakarta (Kebayoran) & Remote Online live coding intensif",
-    purwadhika: "Kampus Fisik (BSD/Jakarta/Batam) & Online Livestream / Video Learning",
-    dibimbing: "Kombinasi materi video rekaman LMS + sesi Live Zoom tanya jawab / mentoring mingguan",
-    dqlab: "Live Class Zoom interaktif singkat (10–17 sesi) + modul platform mandiri",
+    hacktiv8: "Full-Day Bootcamp & Night Bootcamp; lokasi Jakarta, Tangerang, dan Remote",
+    purwadhika: "On campus atau online livestream",
+    dibimbing: "Online & offline, supported with AI",
+    dqlab: "Bootcamp live class virtual + belajar mandiri via modul",
     selfPaced: "100% rekaman video mandiri",
     revouHighlight: true
   },
@@ -945,10 +1022,10 @@ const GENERAL_COMPARISON_DATA: GeneralComparisonRow[] = [
     feature: "Sesi Tanya Jawab & Diskusi",
     revou: "5x per minggu live interaktif dua arah bersama praktisi",
     general: "1 – 3x per minggu",
-    hacktiv8: "Harian intensif di jam kelas full-day atau 15 jam/minggu night",
-    purwadhika: "Sesuai jadwal sesi kelas (Sen–Kam malam / siang)",
-    dibimbing: "1 – 2x per minggu sesi tanya jawab mentor",
-    dqlab: "Tanya jawab singkat di akhir sesi Zoom (2x seminggu)",
+    hacktiv8: "1-on-1 mentoring dengan instruktur berpengalaman",
+    purwadhika: "Final project didampingi mentor; rekaman kelas & materi tersedia di LMS",
+    dibimbing: "Dedicated class manager untuk kebutuhan di dalam & luar kelas",
+    dqlab: "Forum belajar dibantu tim data; Data Mentoring dengan praktisi minimal 1x/bulan",
     selfPaced: "Forum diskusi mandiri / tidak ada",
     revouHighlight: true
   },
@@ -957,10 +1034,10 @@ const GENERAL_COMPARISON_DATA: GeneralComparisonRow[] = [
     feature: "Kurikulum & Case Study",
     revou: "Disesuaikan kebutuhan industri di Indonesia & Asia Tenggara",
     general: "Sebagian teori umum atau materi luar tanpa konteks lokal",
-    hacktiv8: "Coding stack murni (JS/Node/React/Go/Python)",
-    purwadhika: "Modul industri umum (termasuk modul no-code & AI tools)",
-    dibimbing: "Modul praktis terstandar di berbagai bidang (tech & non-tech)",
-    dqlab: "Modul sintaks dasar koding data dan persiapan uji SKKNI",
+    hacktiv8: "Kurikulum berbasis AI-powered sesuai kebutuhan industri",
+    purwadhika: "Kurikulum teruji industri dengan capstone project di tiap modul + AI Boost",
+    dibimbing: "Tugas & project menantang untuk portofolio, plus pengalaman magang nyata",
+    dqlab: "Metode HERO (Hands-On, Experiential Learning, Outcome-based); studi kasus relevan industri",
     selfPaced: "Terjemahan materi luar negeri tanpa konteks lokal"
   },
   {
@@ -968,10 +1045,10 @@ const GENERAL_COMPARISON_DATA: GeneralComparisonRow[] = [
     feature: "Support System Belajar",
     revou: "Pengajar Praktisi + Section Manager + Team Lead + Mentor + Konselor",
     general: "Pengajar + Admin Kelas",
-    hacktiv8: "Instructor + Buddy + Admin",
-    purwadhika: "Instructor + Class Admin + Mentor",
-    dibimbing: "Mentor + Class Admin (ada fasilitas gratis ulang kelas)",
-    dqlab: "Instruktur Zoom + Komunitas Discord/Telegram",
+    hacktiv8: "Sesi growth mindset; Career Buddy untuk konsultasi grup & 1-on-1",
+    purwadhika: "LMS dengan video tambahan tanpa batas; soft skill development by innergy",
+    dibimbing: "475+ mentor yang dievaluasi berkala; Talent Support selama & setelah bootcamp",
+    dqlab: "ChatGPT terintegrasi di semua modul; real-time feedback",
     selfPaced: "Pengajar saja / Forum mandiri",
     revouHighlight: true
   },
@@ -994,10 +1071,10 @@ const GENERAL_COMPARISON_DATA: GeneralComparisonRow[] = [
     feature: "Kelas Pengembangan Karir & Review CV",
     revou: "16 sesi LIVE bersama Career Coach + 1-on-1 Personalized Coaching",
     general: "< 10 sesi, mayoritas rekaman",
-    hacktiv8: "Career class, latihan interview, Job Portal, Career Buddy",
-    purwadhika: "Purwadhika Hiring Network portal & review CV/portofolio",
-    dibimbing: "Konsultasi 1-on-1, review CV & LinkedIn, latihan interview",
-    dqlab: "Terfokus bimbingan ujian sertifikasi (tanpa pendampingan karir 1-on-1)",
+    hacktiv8: "Career Class (CV & LinkedIn), latihan interview HR, peluang interview langsung partner",
+    purwadhika: "Bimbingan CV & LinkedIn, persiapan interview, 1-on-1 career counseling",
+    dibimbing: "Konsultasi karier & portofolio 1-on-1, review CV & LinkedIn, latihan interview, Talent Showcase",
+    dqlab: "DQLab Career: portofolio berpeluang interview partner (CV review tidak tercantum)",
     selfPaced: "Tergantung penyedia / tidak ada",
     revouHighlight: true
   },
@@ -1018,12 +1095,12 @@ const GENERAL_COMPARISON_DATA: GeneralComparisonRow[] = [
   {
     category: "Jaminan Kerja",
     feature: "Sertifikasi & Kemitraan Kampus",
-    revou: "RevoU Certificate bertaraf internasional + Sertifikasi Resmi Kemitraan Universitas Top (ITB, BINUS, UI)",
+    revou: "RevoU Certificate of Completion bertaraf internasional + Sertifikasi Resmi Kemitraan Universitas Top (ITB, BINUS x AWS, UI)",
     general: "Sertifikat internal lembaga kursus biasa",
-    hacktiv8: "Sertifikat Kelulusan Hacktiv8 & BNSP (pada program tertentu)",
-    purwadhika: "Sertifikat Purwadhika Digital Technology School",
-    dibimbing: "Sertifikat Kelulusan Dibimbing",
-    dqlab: "Ujian Sertifikasi Resmi BNSP (KKNI 6 & 7) & Pearson VUE AI",
+    hacktiv8: "Sertifikat kelulusan Hacktiv8; tidak ada kemitraan kampus",
+    purwadhika: "Terdaftar Kemendikbud; Certified Google Partner; tidak ada kemitraan kampus",
+    dibimbing: "Terakui Kemendikti; layanan BNSP & placement program universitas; Forbes 30 Under 30 Asia 2025",
+    dqlab: "E-certificate per modul; Sertifikasi BNSP DA; naungan Yayasan Multimedia Nusantara & Xeratic",
     selfPaced: "Certificate of completion otomatis platform",
     revouHighlight: true
   },
@@ -1034,10 +1111,10 @@ const GENERAL_COMPARISON_DATA: GeneralComparisonRow[] = [
     feature: "Jumlah Komunitas Alumni & Network",
     revou: "6.000+ Alumni Aktif di 1.000+ top company & 550.000+ member pelajar",
     general: "< 2.000 alumni / < 200.000 member",
-    hacktiv8: "Alumni network coding tech di Jabodetabek & kota besar",
-    purwadhika: "Alumni Purwadhika network di Jabodetabek & BSD",
-    dibimbing: "10.000+ lulusan & 1.100+ partner perusahaan",
-    dqlab: "Komunitas data learners DQLab se-Indonesia",
+    hacktiv8: "3.500+ lulusan di industri tech; 1.000+ hiring partner tanpa placement fee",
+    purwadhika: "30.000–40.000+ alumni; Alumni Club berbasis tribe; 1.000+ hiring partner",
+    dibimbing: "10K+ lulusan; 100.000+ digital learners; 1.100+ hiring partners",
+    dqlab: "500.000+ pengguna; 30+ mitra hiring & corporate training",
     selfPaced: "0 / tidak terpusat",
     revouHighlight: true
   },
@@ -1046,10 +1123,10 @@ const GENERAL_COMPARISON_DATA: GeneralComparisonRow[] = [
     feature: "Tingkat Seleksi Masuk",
     revou: "Kurang dari 10% (Tes dasar + wawancara untuk jamin circle terbaik), terbuka SMA/SMK/S1",
     general: "Mayoritas tanpa seleksi ketat",
-    hacktiv8: "Screening test dasar; program AI wajib min. 1 tahun di IT",
-    purwadhika: "Mayoritas program mewajibkan minimal lulusan S1",
-    dibimbing: "Terbuka untuk umum tanpa seleksi ketat",
-    dqlab: "Terbuka untuk umum tanpa seleksi",
+    hacktiv8: "Form + reg fee Rp100rb, validasi; syarat motivasi, komitmen, laptop, English dasar",
+    purwadhika: "Tidak ada tes masuk; koneksi kerja full-time maks. usia 30 tahun & min. S1",
+    dibimbing: "Tes masuk tidak tercantum; Job Connect hanya untuk lulusan berpredikat eligible",
+    dqlab: "Tidak ada; tidak perlu background IT",
     selfPaced: "Tanpa seleksi",
     revouHighlight: true
   },
@@ -1058,17 +1135,120 @@ const GENERAL_COMPARISON_DATA: GeneralComparisonRow[] = [
     feature: "Completion Rate Peserta",
     revou: "93% peserta berhasil menyelesaikan program sampai akhir",
     general: "30% – 60% completion rate",
-    hacktiv8: "88% direkrut <3 bulan bagi yang lulus",
-    purwadhika: "92% lulusan DS&ML berkarir di data",
-    dibimbing: "96% alumni dapat kerja",
-    dqlab: "Tingkat kelulusan sertifikasi BNSP",
+    hacktiv8: "Tidak ada di halaman web (Outcome: 90% kerja full-time <90 hari, 96% di pekerjaan relevan IT & Data)",
+    purwadhika: "Tidak dipublikasi di halaman website resmi",
+    dibimbing: "Tidak dipublikasi di web (klaim 96% alumni dapat kerja)",
+    dqlab: "Tidak dipublikasi di halaman website resmi",
     selfPaced: "< 15% completion rate",
     revouHighlight: true
   }
 ];
 
+interface AnimatedSelectProps {
+  value: string;
+  onChange: (val: string) => void;
+  options: { value: string; label: string; badge?: string }[];
+  placeholder?: string;
+  buttonClassName?: string;
+}
+
+function AnimatedSelect({
+  value,
+  onChange,
+  options,
+  placeholder = "Pilih opsi...",
+  buttonClassName = "",
+}: AnimatedSelectProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    }
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen]);
+
+  const selectedOption = options.find((opt) => opt.value === value && opt.value !== "");
+
+  return (
+    <div ref={containerRef} className="relative w-full min-w-0">
+      <button
+        type="button"
+        onClick={() => setIsOpen((prev) => !prev)}
+        className={`w-full min-w-0 flex items-center justify-between text-left transition-all duration-200 cursor-pointer select-none ${buttonClassName} ${isOpen ? "ring-2 ring-[#FFD84D]/60 border-[#FFD84D] shadow-xs" : ""
+          }`}
+        title={selectedOption ? selectedOption.label : placeholder}
+      >
+        <span className={`truncate min-w-0 mr-2 flex-1 block ${!selectedOption ? "text-[#73736C]" : "text-[#141412]"}`}>
+          {selectedOption ? selectedOption.label : placeholder}
+        </span>
+        <ChevronDown
+          className={`w-4 h-4 text-[#141412] stroke-[2.5] shrink-0 transition-transform duration-250 ease-out ${isOpen ? "rotate-180" : "rotate-0"
+            }`}
+        />
+      </button>
+
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -8, scaleY: 0.94 }}
+            animate={{ opacity: 1, y: 0, scaleY: 1 }}
+            exit={{ opacity: 0, y: -6, scaleY: 0.94 }}
+            transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            style={{ transformOrigin: "top center" }}
+            className="absolute z-50 left-0 right-0 mt-1.5 bg-white border border-[#141412] rounded-xl shadow-xl py-1 max-h-60 overflow-y-auto"
+          >
+            {options.map((opt) => {
+              const isSelected = opt.value === value;
+              const isPlaceholder = opt.value === "";
+              return (
+                <button
+                  key={opt.value || "__placeholder__"}
+                  type="button"
+                  onClick={() => {
+                    onChange(opt.value);
+                    setIsOpen(false);
+                  }}
+                  className={`w-full min-w-0 text-left px-3.5 py-2 text-xs sm:text-sm flex items-center justify-between gap-2 transition-colors cursor-pointer select-none ${isPlaceholder
+                    ? "text-[#73736C] hover:bg-[#F5F5F2] italic border-b border-[#E8E8E4] mb-0.5"
+                    : isSelected
+                      ? "bg-[#FFF6D1] text-[#141412] font-bold"
+                      : "text-[#2A2A26] hover:bg-[#F5F5F2] font-medium"
+                    }`}
+                  title={opt.label}
+                >
+                  <span className="truncate min-w-0 flex-1">{opt.label}</span>
+                  <div className="flex items-center gap-1.5 shrink-0 ml-2">
+                    {opt.badge && !isPlaceholder && (
+                      <span className="text-[10px] font-mono font-semibold px-1.5 py-0.5 rounded bg-[#EDEDEA] text-[#4B4B46]">
+                        {opt.badge}
+                      </span>
+                    )}
+                    {isSelected && !isPlaceholder && (
+                      <Check className="w-3.5 h-3.5 text-[#A15C00] stroke-[2.5]" />
+                    )}
+                  </div>
+                </button>
+              );
+            })}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
 export default function ComparisonView() {
   const [activeTab, setActiveTab] = useState<"bootcamp" | "general" | "battlecards">("bootcamp");
+  const [institutionViewMode, setInstitutionViewMode] = useState<"headToHead" | "allCompetitors">("headToHead");
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
   // ── DUAL DROPDOWN STATES (RevoU vs [Kompetitor] -> [Pilih Program]) ──
@@ -1127,8 +1307,6 @@ export default function ComparisonView() {
     setTimeout(() => setCopiedId(null), 2000);
   };
 
-  const filteredGeneralRows = GENERAL_COMPARISON_DATA;
-
   const competitorDisplayNames: Record<string, string> = {
     hacktiv8: "Hacktiv8",
     purwadhika: "Purwadhika",
@@ -1136,51 +1314,32 @@ export default function ComparisonView() {
     dqlab: "DQLab"
   };
 
+  const competitorOptions = useMemo(() => [
+    { value: "hacktiv8", label: "Hacktiv8" },
+    { value: "purwadhika", label: "Purwadhika" },
+    { value: "dibimbing", label: "Dibimbing" },
+    { value: "dqlab", label: "DQLab" },
+  ], []);
+
+  const revouProgramOptions = useMemo(() => [
+    { value: "", label: "— Pilih Program RevoU —" },
+    ...uniqueRevoUProgramsForComp.map((p) => ({
+      value: p.badge,
+      label: p.title,
+      badge: p.badge,
+    })),
+  ], [uniqueRevoUProgramsForComp]);
+
+  const compProgramOptions = useMemo(() => [
+    { value: "", label: `— Pilih Program ${competitorDisplayNames[selectedCompetitorKey]} —` },
+    ...availableProgramsForSelectedComp.map((prog) => ({
+      value: prog.id,
+      label: `${prog.programTitle} — [${prog.badge}]`,
+      badge: prog.badge,
+    })),
+  ], [availableProgramsForSelectedComp, competitorDisplayNames, selectedCompetitorKey]);
+
   const activeBattlecard = BATTLECARDS.find((b) => b.id === selectedCompetitorKey) || BATTLECARDS[0];
-
-  // Helper to dynamically integrate row data combining general benchmarks with activeProgramDetail specifics
-  const getIntegratedRowData = (row: GeneralComparisonRow) => {
-    if (!activeProgramDetail) {
-      return {
-        revouText: row.revou,
-        compText: row[selectedCompetitorKey] || row.general,
-        isSpecificMatch: false
-      };
-    }
-
-    const matchingDetailRow = activeProgramDetail.tableRows.find((detailRow) => {
-      const p1 = detailRow.parameter.toLowerCase();
-      const p2 = row.feature.toLowerCase();
-      return (
-        p1.includes(p2) ||
-        p2.includes(p1) ||
-        (p2.includes("biaya") && p1.includes("biaya")) ||
-        (p2.includes("jadwal") && p1.includes("jadwal")) ||
-        (p2.includes("durasi") && p1.includes("durasi")) ||
-        (p2.includes("proyek") && (p1.includes("portofolio") || p1.includes("proyek"))) ||
-        (p2.includes("portofolio") && (p1.includes("portofolio") || p1.includes("proyek"))) ||
-        (p2.includes("kurikulum") && p1.includes("kurikulum")) ||
-        (p2.includes("refund") && p1.includes("refund")) ||
-        (p2.includes("jaminan") && p1.includes("jaminan")) ||
-        (p2.includes("karir") && p1.includes("karir")) ||
-        (p2.includes("sertifikasi") && p1.includes("sertifikasi"))
-      );
-    });
-
-    if (matchingDetailRow) {
-      return {
-        revouText: matchingDetailRow.revouValue,
-        compText: matchingDetailRow.competitorValue,
-        isSpecificMatch: true
-      };
-    }
-
-    return {
-      revouText: row.revou,
-      compText: row[selectedCompetitorKey] || row.general,
-      isSpecificMatch: false
-    };
-  };
 
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
@@ -1195,134 +1354,108 @@ export default function ComparisonView() {
       {/* Baris 2: Program kami [RevoU] vs Program kompetitor            */}
       {/* ───────────────────────────────────────────────────────────── */}
       <motion.div
-        initial={{ opacity: 0, y: 12 }}
+        initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-        className="bg-white border-2 border-[#141412] rounded-2xl p-5 sm:p-7 shadow-2xs space-y-6 card-interactive"
+        transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+        className="bg-white border-2 border-[#141412] rounded-xl p-4 sm:p-5 shadow-xs space-y-4 card-interactive"
       >
 
         {/* ── BARIS 1: LEMBAGA KAMI vs PILIH KOMPETITOR ── */}
-        <div className="grid grid-cols-1 md:grid-cols-[1fr,auto,1fr] gap-4 sm:gap-6 items-center">
+        <div className="grid grid-cols-1 md:grid-cols-[minmax(0,1fr),auto,minmax(0,1fr)] gap-3 sm:gap-4 items-center">
           {/* Sisi Kiri: Lembaga kami */}
-          <div>
-            <label className="block text-sm sm:text-base font-bold text-[#141412] mb-1.5 flex items-center justify-between">
+          <div className="min-w-0">
+            <label className="block text-xs sm:text-sm font-bold text-[#141412] mb-1.5 flex items-center justify-between">
               <span>Lembaga kami</span>
-              <span className="font-mono text-[10.5px] uppercase font-bold text-[#1F7A4D] bg-[#EBF7EE] px-2 py-0.5 rounded-full border border-[#D4EDDA]">
+              <span className="font-mono text-[10px] uppercase font-bold text-[#1F7A4D] bg-[#EBF7EE] px-2 py-0.5 rounded-full border border-[#D4EDDA]">
                 Utama
               </span>
             </label>
-            <div className="dropdown-wrapper group">
-              <select
-                disabled
-                className="w-full appearance-none bg-[#F5F5F2] text-[#141412] font-display font-extrabold text-base sm:text-lg rounded-2xl px-5 py-3.5 pr-12 cursor-default border-2 border-transparent transition-all"
-              >
-                <option value="revou">RevoU</option>
-              </select>
-              <ChevronDown className="dropdown-chevron-animated w-6 h-6 text-[#141412] stroke-[3] absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none drop-shadow-xs" />
+            <div className="w-full min-w-0 flex items-center justify-between bg-[#F5F5F2] text-[#141412] font-display font-bold text-sm sm:text-base rounded-xl px-3.5 py-2.5 border border-[#E8E8E4] cursor-default select-none shadow-2xs">
+              <span className="truncate">RevoU</span>
+              <CheckCircle2 className="w-4 h-4 text-[#1F7A4D] shrink-0" />
             </div>
           </div>
 
           {/* Tengah: vs */}
-          <div className="flex items-center justify-center pt-1 md:pt-6">
-            <span className="font-display font-bold text-lg sm:text-xl text-[#141412] lowercase select-none px-3 py-1 bg-[#F5F5F2] rounded-full border border-[#E8E8E4]">
+          <div className="flex items-center justify-center pt-0 md:pt-5 shrink-0">
+            <span className="font-display font-bold text-xs uppercase tracking-wider text-[#73736C] select-none px-2.5 py-1 bg-[#F5F5F2] rounded-md border border-[#E8E8E4]">
               vs
             </span>
           </div>
 
           {/* Sisi Kanan: Pilih Kompetitor */}
-          <div>
-            <label className="block text-sm sm:text-base font-bold text-[#141412] mb-1.5 flex items-center justify-between">
+          <div className="min-w-0">
+            <label className="block text-xs sm:text-sm font-bold text-[#141412] mb-1.5 flex items-center justify-between">
               <span>Pilih Kompetitor</span>
-              <span className="font-mono text-[10.5px] uppercase font-bold text-[#A15C00] bg-[#FFF6D1] px-2 py-0.5 rounded-full border border-[#FFD84D]/60 animate-pulse">
+              <span className="font-mono text-[10px] uppercase font-bold text-[#A15C00] bg-[#FFF6D1] px-2 py-0.5 rounded-full border border-[#FFD84D]/60 animate-pulse">
                 Pilih
               </span>
             </label>
-            <div className="dropdown-wrapper group">
-              <select
-                value={selectedCompetitorKey}
-                onChange={(e) => handleCompetitorChange(e.target.value as any)}
-                className="w-full appearance-none bg-[#E0E0E0] hover:bg-[#D6D6D6] text-[#141412] font-display font-extrabold text-base sm:text-lg rounded-2xl px-5 py-3.5 pr-12 cursor-pointer shadow-xs transition-all duration-200 border-2 border-transparent hover:border-[#FFD84D] focus:border-[#FFD84D] focus:ring-4 focus:ring-[#FFD84D]/35 focus:outline-none"
-              >
-                <option value="hacktiv8">Hacktiv8</option>
-                <option value="purwadhika">Purwadhika</option>
-                <option value="dibimbing">Dibimbing</option>
-                <option value="dqlab">DQLab</option>
-              </select>
-              <ChevronDown className="dropdown-chevron-animated w-6 h-6 text-[#141412] stroke-[3] absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none drop-shadow-xs" />
-            </div>
+            <AnimatedSelect
+              value={selectedCompetitorKey}
+              onChange={(val) => handleCompetitorChange(val as any)}
+              options={competitorOptions}
+              buttonClassName="bg-[#EAEAE6] hover:bg-[#E0E0DC] text-[#141412] font-display font-bold text-sm sm:text-base rounded-xl px-3.5 py-2.5 border border-[#D4D4CE] hover:border-[#FFD84D] shadow-2xs"
+            />
           </div>
         </div>
 
         {/* ── BARIS 2 (DI BAWAHNYA): PROGRAM KAMI vs PROGRAM KOMPETITOR ── */}
-        <div className="pt-4 border-t border-[#E8E8E4]">
-          <div className="grid grid-cols-1 md:grid-cols-[1fr,auto,1fr] gap-4 sm:gap-6 items-center">
+        <div className="pt-3.5 border-t border-[#E8E8E4]">
+          {activeTab === "general" && (
+            <div className="mb-3 px-3 py-1.5 rounded-lg bg-[#EBF7EE] border border-[#D4EDDA] flex items-center gap-2 text-[11.5px] text-[#1F7A4D]">
+              <Info className="w-3.5 h-3.5 shrink-0 text-[#1F7A4D]" />
+              <span>
+                <strong>Mode Makro Lembaga:</strong> Tab Matriks Komparasi Lembaga langsung menampilkan standar institusi secara menyeluruh. Pilihan program di bawah ini digunakan saat Anda membuka tab <strong>Komparasi Spesifik Program</strong>.
+              </span>
+            </div>
+          )}
+          <div className="grid grid-cols-1 md:grid-cols-[minmax(0,1fr),auto,minmax(0,1fr)] gap-3 sm:gap-4 items-center">
             {/* Sisi Kiri: Program kami */}
-            <div>
-              <label className="block text-sm sm:text-base font-bold text-[#141412] mb-1.5 flex items-center justify-between">
+            <div className="min-w-0">
+              <label className="block text-xs sm:text-sm font-bold text-[#141412] mb-1.5 flex items-center justify-between">
                 <span>Program kami</span>
-                <span className={`font-mono text-[10.5px] uppercase font-bold px-2 py-0.5 rounded-full border ${activeProgramDetail ? "text-[#1F7A4D] bg-[#EBF7EE] border-[#D4EDDA]" : "text-[#A15C00] bg-[#FFF6D1] border-[#FFD84D]/60 animate-pulse"}`}>
+                <span className={`font-mono text-[10px] uppercase font-bold px-2 py-0.5 rounded-full border ${activeProgramDetail ? "text-[#1F7A4D] bg-[#EBF7EE] border-[#D4EDDA]" : "text-[#A15C00] bg-[#FFF6D1] border-[#FFD84D]/60 animate-pulse"}`}>
                   {activeProgramDetail ? "Terpilih" : "Wajib Pilih"}
                 </span>
               </label>
-              <div className="dropdown-wrapper group">
-                <select
-                  value={activeProgramDetail?.revouMatchBadge || ""}
-                  onChange={(e) => handleRevoUMatchChange(e.target.value)}
-                  className="w-full appearance-none bg-[#E8E8E8] hover:bg-[#DFDFDF] text-[#141412] font-display font-bold text-sm sm:text-base rounded-2xl px-5 py-3.5 pr-12 cursor-pointer shadow-xs transition-all duration-200 border-2 border-transparent hover:border-[#FFD84D] focus:border-[#FFD84D] focus:ring-4 focus:ring-[#FFD84D]/35 focus:outline-none truncate"
-                >
-                  <option value="">— Pilih Program RevoU —</option>
-                  {uniqueRevoUProgramsForComp.map((p) => (
-                    <option key={p.badge} value={p.badge}>
-                      {p.title}
-                    </option>
-                  ))}
-                </select>
-                <ChevronDown className="dropdown-chevron-animated w-6 h-6 text-[#141412] stroke-[3] absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none drop-shadow-xs" />
-              </div>
-              <p className="text-xs text-[#60605B] mt-1.5 font-medium truncate">
-                {activeProgramDetail ? (activeProgramDetail.revouMatchProgram.startsWith("x ") ? `RevoU ${activeProgramDetail.revouMatchProgram}` : activeProgramDetail.revouMatchProgram) : "Pilih program RevoU untuk membuka tabel"}
-              </p>
+              <AnimatedSelect
+                value={activeProgramDetail?.revouMatchBadge || ""}
+                onChange={(val) => handleRevoUMatchChange(val)}
+                options={revouProgramOptions}
+                placeholder="— Pilih Program RevoU —"
+                buttonClassName="bg-[#F5F5F2] hover:bg-[#EDEDEA] text-[#141412] font-display font-medium text-xs sm:text-sm rounded-xl px-3.5 py-2.5 border border-[#D4D4CE] hover:border-[#FFD84D] shadow-2xs"
+              />
             </div>
 
             {/* Tengah: vs */}
-            <div className="flex items-center justify-center pt-1 md:pt-6">
-              <span className="font-display font-bold text-lg sm:text-xl text-[#141412] lowercase select-none px-3 py-1 bg-[#F5F5F2] rounded-full border border-[#E8E8E4]">
+            <div className="flex items-center justify-center pt-0 md:pt-4 shrink-0">
+              <span className="font-display font-bold text-xs uppercase tracking-wider text-[#73736C] select-none px-2.5 py-1 bg-[#F5F5F2] rounded-md border border-[#E8E8E4]">
                 vs
               </span>
             </div>
 
             {/* Sisi Kanan: Program kompetitor */}
-            <div>
-              <label className="block text-sm sm:text-base font-bold text-[#141412] mb-1.5 flex items-center justify-between">
+            <div className="min-w-0">
+              <label className="block text-xs sm:text-sm font-bold text-[#141412] mb-1.5 flex items-center justify-between">
                 <span>Program {competitorDisplayNames[selectedCompetitorKey]}</span>
-                <span className={`font-mono text-[10.5px] uppercase font-bold px-2 py-0.5 rounded-full border ${activeProgramDetail ? "text-[#1F7A4D] bg-[#EBF7EE] border-[#D4EDDA]" : "text-[#A15C00] bg-[#FFF6D1] border-[#FFD84D]/60 animate-pulse"}`}>
+                <span className={`font-mono text-[10px] uppercase font-bold px-2 py-0.5 rounded-full border ${activeProgramDetail ? "text-[#1F7A4D] bg-[#EBF7EE] border-[#D4EDDA]" : "text-[#A15C00] bg-[#FFF6D1] border-[#FFD84D]/60 animate-pulse"}`}>
                   {activeProgramDetail ? "Terpilih" : "Wajib Pilih"}
                 </span>
               </label>
-              <div className="dropdown-wrapper group">
-                <select
-                  value={selectedProgramId}
-                  onChange={(e) => setSelectedProgramId(e.target.value)}
-                  className="w-full appearance-none bg-[#E8E8E8] hover:bg-[#DFDFDF] text-[#141412] font-display font-bold text-sm sm:text-base rounded-2xl px-5 py-3.5 pr-12 cursor-pointer shadow-xs transition-all duration-200 border-2 border-transparent hover:border-[#FFD84D] focus:border-[#FFD84D] focus:ring-4 focus:ring-[#FFD84D]/35 focus:outline-none truncate"
-                >
-                  <option value="">— Pilih Program {competitorDisplayNames[selectedCompetitorKey]} —</option>
-                  {availableProgramsForSelectedComp.map((prog) => (
-                    <option key={prog.id} value={prog.id}>
-                      {prog.programTitle} — [{prog.badge}]
-                    </option>
-                  ))}
-                </select>
-                <ChevronDown className="dropdown-chevron-animated w-6 h-6 text-[#141412] stroke-[3] absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none drop-shadow-xs" />
-              </div>
-              <p className="text-xs text-[#A15C00] mt-1.5 font-medium truncate">
-                {activeProgramDetail ? `Format: ${activeProgramDetail.badge}` : `Pilih program ${competitorDisplayNames[selectedCompetitorKey]} untuk membuka tabel`}
-              </p>
+              <AnimatedSelect
+                value={selectedProgramId}
+                onChange={(val) => setSelectedProgramId(val)}
+                options={compProgramOptions}
+                placeholder={`— Pilih Program ${competitorDisplayNames[selectedCompetitorKey]} —`}
+                buttonClassName="bg-[#F5F5F2] hover:bg-[#EDEDEA] text-[#141412] font-display font-medium text-xs sm:text-sm rounded-xl px-3.5 py-2.5 border border-[#D4D4CE] hover:border-[#FFD84D] shadow-2xs"
+              />
             </div>
           </div>
 
           {/* Quick Pill Buttons untuk Program Kompetitor */}
-          <div className="pt-4 flex flex-wrap items-center gap-1.5">
-            <span className="font-mono text-[11px] text-[#8A8A84] font-bold uppercase shrink-0">
+          <div className="pt-3 flex flex-wrap items-center gap-1.5">
+            <span className="font-mono text-[10.5px] text-[#8A8A84] font-bold uppercase shrink-0">
               Pilihan Cepat:
             </span>
             {availableProgramsForSelectedComp.map((p) => {
@@ -1332,7 +1465,7 @@ export default function ComparisonView() {
                   key={p.id}
                   type="button"
                   onClick={() => setSelectedProgramId(p.id)}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap select-none border ${isSelected
+                  className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer whitespace-nowrap select-none border ${isSelected
                     ? "bg-[#141412] text-[#FFD84D] border-[#141412] shadow-xs active:scale-95"
                     : "bg-[#F5F5F2] text-[#4B4B46] border-[#E8E8E4] hover:border-[#141412] hover:bg-[#EAEAEA] active:scale-95"
                     }`}
@@ -1346,7 +1479,7 @@ export default function ComparisonView() {
       </motion.div>
 
       {/* ───────────────────────────────────────────────────────────── */}
-      {/* SUB-NAVIGATION TABS (Tabel Spesifik, Tabel General, Battlecard)*/}
+      {/* SUB-NAVIGATION TABS (Komparasi Spesifik, Matriks Lembaga, Battlecard) */}
       {/* ───────────────────────────────────────────────────────────── */}
       <div className="grid grid-cols-3 gap-1 sm:gap-2 border-b-2 border-[#E8E8E4] -mb-[2px]">
         <button
@@ -1358,33 +1491,30 @@ export default function ComparisonView() {
             }`}
         >
           <Layers className={`w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 ${activeTab === "bootcamp" ? "text-[#A15C00]" : "text-[#8A8A84]"}`} />
-          <span className="truncate">Tabel Komparasi Spesifik</span>
-          <span className="font-mono text-[9px] sm:text-[10px] bg-[#141412] text-white px-1.5 py-0.5 rounded-full shrink-0 hidden lg:inline-block">
-            Head-to-Head
-          </span>
+          <span className="truncate">Spesific Comparison</span>
         </button>
 
         <button
           type="button"
           onClick={() => setActiveTab("general")}
           className={`group flex items-center justify-center gap-1.5 sm:gap-2 px-2 sm:px-3 md:px-4 py-2.5 sm:py-3 text-[11.5px] sm:text-xs md:text-sm font-bold rounded-t-xl transition-all border-b-[3px] cursor-pointer select-none min-w-0 ${activeTab === "general"
-            ? "bg-[#F5F5F0] text-[#141412] border-[#FFD84D]"
+            ? "bg-[#F5F5F0] text-[#141412] border-[#1F7A4D]"
             : "bg-transparent text-[#7A7A74] border-transparent hover:text-[#141412] hover:bg-[#F5F5F0]/60"
             }`}
         >
-          <Scale className={`w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 ${activeTab === "general" ? "text-[#A15C00]" : "text-[#8A8A84]"}`} />
-          <span className="truncate">Tabel General RevoU</span>
+          <Scale className={`w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 ${activeTab === "general" ? "text-[#1F7A4D]" : "text-[#8A8A84]"}`} />
+          <span className="truncate">General Comparison</span>
         </button>
 
         <button
           type="button"
           onClick={() => setActiveTab("battlecards")}
           className={`group flex items-center justify-center gap-1.5 sm:gap-2 px-2 sm:px-3 md:px-4 py-2.5 sm:py-3 text-[11.5px] sm:text-xs md:text-sm font-bold rounded-t-xl transition-all border-b-[3px] cursor-pointer select-none min-w-0 ${activeTab === "battlecards"
-            ? "bg-[#F5F5F0] text-[#141412] border-[#FFD84D]"
+            ? "bg-[#F5F5F0] text-[#141412] border-[#B76E00]"
             : "bg-transparent text-[#7A7A74] border-transparent hover:text-[#141412] hover:bg-[#F5F5F0]/60"
             }`}
         >
-          <Award className={`w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 ${activeTab === "battlecards" ? "text-[#A15C00]" : "text-[#8A8A84]"}`} />
+          <Award className={`w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 ${activeTab === "battlecards" ? "text-[#B76E00]" : "text-[#8A8A84]"}`} />
           <span className="truncate">
             <span className="hidden xl:inline">One-Pager </span>Battlecard {competitorDisplayNames[selectedCompetitorKey]}
           </span>
@@ -1406,8 +1536,8 @@ export default function ComparisonView() {
             {/* Header Info Komparasi Spesifik */}
             <div className="bg-white p-4 sm:p-5 rounded-2xl border border-[#E8E8E4] shadow-2xs space-y-1">
               <div className="flex flex-wrap items-center gap-2">
-                <span className="font-mono text-xs font-bold px-2.5 py-0.5 rounded-full bg-[#141412] text-white">
-                  Tabel Komparasi Spesifik
+                <span className="font-mono text-xs font-bold px-2.5 py-0.5 rounded-full bg-[#141412] text-[#FFD84D]">
+                  MIKRO · PROGRAM HEAD-TO-HEAD
                 </span>
                 <span className="font-mono text-xs bg-[#FFF4E5] text-[#B76E00] border border-[#FFE2B8] font-bold px-2.5 py-0.5 rounded-full">
                   {activeProgramDetail.competitorName}
@@ -1432,10 +1562,7 @@ export default function ComparisonView() {
                 >
                   <div className="flex items-center gap-2">
                     <span className="font-mono text-[9.5px] sm:text-[10px] font-bold uppercase tracking-wider text-[#141412] bg-[#E8E8E4] px-2 py-0.5 rounded">
-                      BENCHMARK REPORT // HEAD-TO-HEAD
-                    </span>
-                    <span className="font-mono text-[10.5px] text-[#7A7A74] hidden sm:inline">
-                      Evaluasi Kurikulum &amp; ROI Program
+                      MATCHING PROGRAM
                     </span>
                   </div>
                   <div className="flex items-center gap-1.5 font-mono text-[9.5px] sm:text-[10px] text-[#1F7A4D] font-bold bg-[#EBF7EE] border border-[#D4EDDA] px-2 py-0.5 rounded">
@@ -1517,8 +1644,6 @@ export default function ComparisonView() {
                   className="mt-2.5 pt-2 border-t border-[#E8E8E4] flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[11px] text-[#4B4B46]"
                 >
                   <div className="flex items-center gap-1.5">
-                    <span className="font-mono font-bold text-[#141412]">PANDUAN ADMISSION:</span>
-                    <span className="text-[#60605B]">Kupas tuntas parameter live mentorship, durasi praktik, dan jaminan karir.</span>
                   </div>
                   <span className="font-mono text-[10px] text-[#8A8A84] shrink-0">
                     Sistem Perbandingan Resmi
@@ -1526,7 +1651,7 @@ export default function ComparisonView() {
                 </motion.div>
               </motion.div>
               <p className="text-xs text-[#8A8A84] mt-0.5">
-                Perbandingan rinci parameter kurikulum, biaya resmi per 20 Oktober 2026, jadwal, dan keunggulan RevoU.
+                Perbandingan rinci kurikulum spesifik, silabus, biaya resmi, jadwal sesi, tools, dan fasilitas hands-on lab program ini.
               </p>
             </div>
 
@@ -1616,36 +1741,6 @@ export default function ComparisonView() {
                 </p>
               </div>
             </div>
-
-            {/* Template Jawaban AC WhatsApp */}
-            <div className="p-4 sm:p-5 rounded-xl border border-[#0E62FE]/30 bg-[#EDF5FF] space-y-2.5 card-interactive">
-              <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-1.5 font-display font-bold text-xs uppercase tracking-wider text-[#0E62FE]">
-                  <Sparkles className="w-4 h-4 text-[#0E62FE]" />
-                  <span>Template Jawaban AC Siap Salin untuk Program Ini</span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => handleCopyText(activeProgramDetail.acTalkingPoint, `pt-${activeProgramDetail.id}`)}
-                  className="font-mono text-[11px] font-bold px-2.5 py-1 rounded-lg bg-[#0E62FE] text-white hover:bg-[#004ECC] transition-all cursor-pointer flex items-center gap-1 shadow-2xs"
-                >
-                  {copiedId === `pt-${activeProgramDetail.id}` ? (
-                    <>
-                      <Check className="w-3 h-3 text-white" />
-                      <span>Tersalin</span>
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="w-3 h-3 text-white" />
-                      <span>Salin Pesan</span>
-                    </>
-                  )}
-                </button>
-              </div>
-              <blockquote className="text-xs sm:text-[13px] text-[#141412] leading-relaxed bg-white/80 p-3.5 rounded-lg border border-[#0E62FE]/15 whitespace-pre-line font-normal">
-                {activeProgramDetail.acTalkingPoint}
-              </blockquote>
-            </div>
           </motion.div>
         ) : (
           <motion.div
@@ -1684,307 +1779,262 @@ export default function ComparisonView() {
         ))}
 
       {/* ───────────────────────────────────────────────────────────── */}
-      {/* 2. TAB: TABEL GENERAL REVOU (TERINTEGRASI PROGRAM)            */}
+      {/* 2. TAB: MATRIKS KOMPARASI LEMBAGA (MAKRO EKOSISTEM BELAJAR)  */}
       {/* ───────────────────────────────────────────────────────────── */}
       {activeTab === "general" && (
-        activeProgramDetail ? (
-          <motion.div
-            key={activeProgramDetail.id}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            className="space-y-4"
-          >
-            <div className="bg-white p-4 sm:p-5 rounded-2xl border border-[#E8E8E4] shadow-2xs space-y-1">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="font-mono text-xs font-bold px-2.5 py-0.5 rounded-full bg-[#141412] text-white">
-                    Tabel Komparasi Terintegrasi Program
-                  </span>
-                  <span className="font-mono text-xs bg-[#EBF7EE] text-[#1F7A4D] font-bold px-2.5 py-0.5 rounded-full border border-[#D4EDDA]">
-                    {activeProgramDetail.revouMatchBadge}
-                  </span>
-                  <span className="font-mono text-xs bg-[#FFF4E5] text-[#A15C00] font-bold px-2.5 py-0.5 rounded-full border border-[#FFE2B8]">
-                    {activeProgramDetail.badge}
-                  </span>
-                </div>
-                {/* ── BLOOMBERG / FT SCORECARD DUEL BANNER (EXECUTIVE STAGGER MOTION) ── */}
-                <motion.div
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-                  className="mt-3 rounded-xl border border-[#D9D9D4] bg-[#FAFAF8] p-3 sm:p-4 shadow-2xs overflow-hidden"
-                >
-                  {/* Top Overline Bar */}
-                  <motion.div
-                    initial={{ opacity: 0, y: -4 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3, delay: 0.05 }}
-                    className="flex flex-wrap items-center justify-between gap-2 pb-2.5 mb-2.5 border-b border-[#E8E8E4]"
-                  >
-                    <div className="flex items-center gap-2">
-                      <span className="font-mono text-[9.5px] sm:text-[10px] font-bold uppercase tracking-wider text-[#141412] bg-[#E8E8E4] px-2 py-0.5 rounded">
-                        BENCHMARK REPORT // HEAD-TO-HEAD
-                      </span>
-                      <span className="font-mono text-[10.5px] text-[#7A7A74] hidden sm:inline">
-                        Sinkronisasi Terintegrasi Program
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-1.5 font-mono text-[9.5px] sm:text-[10px] text-[#1F7A4D] font-bold bg-[#EBF7EE] border border-[#D4EDDA] px-2 py-0.5 rounded">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#1F7A4D]"></span>
-                      <span>VERIFIED METRICS · OKT 2026</span>
-                    </div>
-                  </motion.div>
-
-                  {/* Duel Scorecard Grid */}
-                  <div className="grid grid-cols-1 md:grid-cols-[1fr,auto,1fr] items-center gap-2">
-                    {/* Left Contender: RevoU (Slide in from Left + Micro-lift on hover) */}
-                    <motion.div
-                      key={`revou-gen-${activeProgramDetail.id}`}
-                      initial={{ opacity: 0, x: -16 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
-                      whileHover={{ y: -2, transition: { duration: 0.2 } }}
-                      className="bg-white rounded-lg border-l-4 border-l-[#1F7A4D] border border-[#E8E8E4] p-3 shadow-2xs hover:shadow-xs hover:border-[#D0D0CB] transition-colors cursor-default"
-                    >
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="font-mono text-[9.5px] uppercase tracking-wider font-bold text-[#1F7A4D]">
-                          [01] PROGRAM RevoU
-                        </span>
-                        <span className="font-mono text-[9.5px] font-bold bg-[#EBF7EE] text-[#1F7A4D] px-1.5 py-0.5 rounded">
-                          {activeProgramDetail.revouMatchBadge || "RevoU"}
-                        </span>
-                      </div>
-                      <h3 className="font-display font-bold text-xs sm:text-[13.5px] text-[#141412] leading-snug">
-                        RevoU {activeProgramDetail.revouMatchProgram}
-                      </h3>
-                    </motion.div>
-
-                    {/* Center VS Connector (Crisp Spring Pop-in + Micro-tilt on hover) */}
-                    <div className="flex items-center justify-center my-0.5 md:my-0">
-                      <div className="flex md:flex-col items-center justify-center gap-1">
-                        <div className="hidden md:block w-px h-2 bg-[#D9D9D4]"></div>
-                        <motion.div
-                          initial={{ opacity: 0, scale: 0.6 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          transition={{ type: "spring", stiffness: 400, damping: 25, delay: 0.18 }}
-                          whileHover={{ scale: 1.15, rotate: 3, transition: { duration: 0.15 } }}
-                          className="w-7 h-7 rounded-full bg-[#141412] text-[#FFD84D] font-mono text-[10px] font-black flex items-center justify-center border-2 border-white shadow-2xs shrink-0 select-none cursor-pointer"
-                          title="Head-to-head matchup"
-                        >
-                          VS
-                        </motion.div>
-                        <div className="hidden md:block w-px h-2 bg-[#D9D9D4]"></div>
-                      </div>
-                    </div>
-
-                    {/* Right Contender: Competitor (Slide in from Right + Micro-lift on hover) */}
-                    <motion.div
-                      key={`comp-gen-${activeProgramDetail.id}`}
-                      initial={{ opacity: 0, x: 16 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1], delay: 0.14 }}
-                      whileHover={{ y: -2, transition: { duration: 0.2 } }}
-                      className="bg-white rounded-lg border-l-4 border-l-[#B76E00] border border-[#E8E8E4] p-3 shadow-2xs hover:shadow-xs hover:border-[#D0D0CB] transition-colors cursor-default"
-                    >
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="font-mono text-[9.5px] uppercase tracking-wider font-bold text-[#8A8A84]">
-                          [02] PROGRAM KOMPETITOR YANG SESUAI
-                        </span>
-                        <span className="font-mono text-[9.5px] font-bold bg-[#FFF4E5] text-[#B76E00] px-1.5 py-0.5 rounded">
-                          {activeProgramDetail.competitorName}
-                        </span>
-                      </div>
-                      <div className="font-display font-bold text-xs sm:text-[13.5px] text-[#141412] leading-snug">
-                        {activeProgramDetail.competitorName} – {activeProgramDetail.programTitle}
-                      </div>
-                    </motion.div>
-                  </div>
-
-                  {/* Bottom Analytical Pitch Insight */}
-                  <motion.div
-                    initial={{ opacity: 0, y: 4 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3, delay: 0.22 }}
-                    className="mt-2.5 pt-2 border-t border-[#E8E8E4] flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[11px] text-[#4B4B46]"
-                  >
-                    <div className="flex items-center gap-1.5">
-                      <span className="font-mono font-bold text-[#141412]">PANDUAN ADMISSION:</span>
-                      <span className="text-[#60605B]">Data parameter kurikulum, biaya, dan portofolio disinkronkan otomatis.</span>
-                    </div>
-                    <span className="font-mono text-[10px] text-[#8A8A84] shrink-0">
-                      Tabel Komparasi Terintegrasi
-                    </span>
-                  </motion.div>
-                </motion.div>
-                <p className="text-xs text-[#8A8A84] mt-0.5">
-                  Data parameter kurikulum, biaya, durasi, dan portofolio disinkronkan langsung dengan program <strong className="text-[#141412]">{activeProgramDetail.programTitle}</strong> yang Anda pilih di atas.
-                </p>
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+          className="space-y-5"
+        >
+          {/* Header Info & View Mode Toggle */}
+          <div className="bg-white p-4 sm:p-5 rounded-2xl border border-[#E8E8E4] shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="space-y-1">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="font-mono text-xs font-bold px-2.5 py-0.5 rounded-full bg-[#1F7A4D] text-white">
+                  MAKRO EKOSISTEM BELAJAR
+                </span>
+                <span className="font-mono text-xs bg-[#EBF7EE] text-[#1F7A4D] font-bold px-2.5 py-0.5 rounded-full border border-[#D4EDDA]">
+                  Level Institusi
+                </span>
+                <span className="font-mono text-xs bg-[#F5F5F2] text-[#4B4B46] font-semibold px-2 py-0.5 rounded-md">
+                  Data Terverifikasi Website Resmi Okt 2026
+                </span>
+              </div>
+              <h3 className="font-display font-bold text-base sm:text-lg text-[#141412] pt-1">
+                Matriks Perbandingan Standar Mutu Lembaga
+              </h3>
+              <p className="text-xs text-[#60605B] max-w-[72ch] leading-relaxed">
+                Perbandingan makro sistem pendidikan, support system belajar, jaminan refund, sertifikasi universitas, tingkat seleksi, dan completion rate RevoU vs kompetitor.
+              </p>
             </div>
 
-            {/* Responsive Comparison Table */}
+            {/* Toggle Mode: Head-to-Head vs Semua Lembaga */}
+            <div className="flex items-center gap-1 bg-[#F5F5F2] p-1 rounded-xl border border-[#E8E8E4] shrink-0 self-start md:self-center">
+              <button
+                type="button"
+                onClick={() => setInstitutionViewMode("headToHead")}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${institutionViewMode === "headToHead"
+                  ? "bg-[#141412] text-[#FFD84D] shadow-2xs"
+                  : "text-[#60605B] hover:text-[#141412]"
+                  }`}
+              >
+                <span>RevoU vs {competitorDisplayNames[selectedCompetitorKey]}</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setInstitutionViewMode("allCompetitors")}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${institutionViewMode === "allCompetitors"
+                  ? "bg-[#141412] text-[#FFD84D] shadow-2xs"
+                  : "text-[#60605B] hover:text-[#141412]"
+                  }`}
+              >
+                <Layers className="w-3.5 h-3.5" />
+                <span>Semua Lembaga (Bird&apos;s-Eye)</span>
+              </button>
+            </div>
+          </div>
+
+          {/* ── TABEL MATRIKS ── */}
+          {institutionViewMode === "headToHead" ? (
+            /* Mode 1: Head-to-Head Lembaga (RevoU vs Selected Competitor) */
             <div className="overflow-x-auto rounded-xl border border-[#E8E8E4] bg-white shadow-2xs">
               <table className="w-full text-left text-xs border-collapse">
                 <thead>
                   <tr className="bg-[#141412] text-white font-display text-xs sm:text-sm">
-                    <th className="p-3.5 sm:p-4 w-1/4 font-bold border-r border-white/10">Fitur & Parameter</th>
+                    <th className="p-3.5 sm:p-4 w-1/4 font-bold border-r border-white/10">
+                      Parameter &amp; Standar Lembaga
+                    </th>
                     <th className="p-3.5 sm:p-4 w-3/8 font-bold bg-[#1F7A4D] border-r border-white/10 text-white">
                       <div className="flex items-center gap-1.5">
                         <Sparkles className="w-3.5 h-3.5 text-[#FEF08A]" />
-                        <span>RevoU ({activeProgramDetail.revouMatchBadge})</span>
+                        <span>RevoU (Standar Mutu Utama)</span>
                       </div>
                     </th>
-                    <th className="p-3.5 sm:p-4 w-3/8 font-semibold text-white/95 border-r border-white/10 bg-[#2A2A26]">
+                    <th className="p-3.5 sm:p-4 w-3/8 font-bold bg-[#2A2A26] border-r border-white/10 text-white">
                       <div className="flex items-center gap-1.5">
                         <Building2 className="w-3.5 h-3.5 text-[#FFD84D]" />
-                        <span>{activeProgramDetail.competitorName} – {activeProgramDetail.programTitle}</span>
+                        <span>{competitorDisplayNames[selectedCompetitorKey]} (Data Website Resmi)</span>
                       </div>
                     </th>
                     <th className="p-3.5 sm:p-4 w-1/5 font-semibold text-white/70">
-                      Program Mandiri / Luar
+                      Kursus Mandiri / Luar
                     </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#E8E8E4]">
-                  {filteredGeneralRows.map((row, idx) => {
-                    const integrated = getIntegratedRowData(row);
-                    return (
-                      <tr
-                        key={idx}
-                        className={`transition-colors ${row.revouHighlight ? "bg-[#FFFDF5]/70 hover:bg-[#FFF9E6]" : "hover:bg-[#F5F5F2]/50"
-                          }`}
-                      >
-                        <td className="p-3 sm:p-3.5 font-semibold text-[#141412] border-r border-[#E8E8E4]/70 align-top">
-                          <div>
-                            <div className="flex items-center gap-1.5">
-                              <span>{row.feature}</span>
-                              {integrated.isSpecificMatch && (
-                                <span className="font-mono text-[9px] bg-[#EBF7EE] text-[#1F7A4D] font-bold px-1.5 py-0.2 rounded border border-[#D4EDDA]">
-                                  Sesuai Program
-                                </span>
-                              )}
-                            </div>
-                            <span className="block font-mono text-[10px] text-[#8A8A84] font-normal uppercase mt-0.5">
-                              {row.category}
-                            </span>
-                          </div>
-                        </td>
-                        <td className="p-3 sm:p-3.5 text-[#141412] font-medium border-r border-[#E8E8E4]/70 bg-[#EBF7EE]/40 align-top">
-                          <div className="flex items-start gap-1.5">
-                            <CheckCircle2 className="w-3.5 h-3.5 text-[#1F7A4D] shrink-0 mt-0.5" />
-                            <span className="leading-relaxed font-semibold text-[#1F7A4D]">{integrated.revouText}</span>
-                          </div>
-                        </td>
-                        <td className="p-3 sm:p-3.5 text-[#141412] border-r border-[#E8E8E4]/70 align-top leading-relaxed font-normal bg-[#FAFAF8]/60">
-                          {integrated.compText}
-                        </td>
-                        <td className="p-3 sm:p-3.5 text-[#8A8A84] align-top leading-relaxed">
-                          {row.selfPaced}
-                        </td>
-                      </tr>
-                    );
-                  })}
+                  {GENERAL_COMPARISON_DATA.map((row, idx) => (
+                    <tr
+                      key={idx}
+                      className={`transition-colors ${row.revouHighlight ? "bg-[#FFFDF5]/70 hover:bg-[#FFF9E6]" : "hover:bg-[#F5F5F2]/50"}`}
+                    >
+                      <td className="p-3.5 sm:p-4 font-semibold text-[#141412] border-r border-[#E8E8E4]/70 align-top">
+                        <div>
+                          <span className="text-xs sm:text-[13px]">{row.feature}</span>
+                          <span className="block font-mono text-[10px] text-[#8A8A84] font-normal uppercase mt-0.5">
+                            {row.category}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="p-3.5 sm:p-4 text-[#141412] font-medium border-r border-[#E8E8E4]/70 bg-[#EBF7EE]/40 align-top">
+                        <div className="flex items-start gap-1.5">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-[#1F7A4D] shrink-0 mt-0.5" />
+                          <span className="leading-relaxed font-semibold text-[#1F7A4D] text-xs sm:text-[13px]">
+                            {row.revou}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="p-3.5 sm:p-4 text-[#141412] border-r border-[#E8E8E4]/70 align-top leading-relaxed font-normal bg-[#FAFAF8]/60 text-xs sm:text-[13px]">
+                        {row[selectedCompetitorKey] || row.general}
+                      </td>
+                      <td className="p-3.5 sm:p-4 text-[#8A8A84] align-top leading-relaxed text-xs">
+                        {row.selfPaced}
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
-
-            {/* ── ANALISIS KRITIS & JAWABAN AC TERINTEGRASI SESUAI PROGRAM YANG DIPILIH ── */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Keunggulan Mutlak RevoU pada Program Ini */}
-              <div className="p-4 sm:p-5 rounded-xl border border-[#D4EDDA] bg-[#EBF7EE]/60 space-y-2.5">
-                <div className="flex items-center gap-2 font-display font-bold text-xs uppercase tracking-wider text-[#1F7A4D]">
-                  <CheckCircle2 className="w-4 h-4 text-[#1F7A4D]" />
-                  <span>Keunggulan Mutlak RevoU ({activeProgramDetail.revouMatchProgram})</span>
-                </div>
-                <p className="text-xs sm:text-[13px] text-[#141412] font-medium leading-relaxed">
-                  {activeProgramDetail.revouEdge}
-                </p>
-                <div className="text-[11.5px] text-[#1F7A4D] space-y-1 pt-2 border-t border-[#D4EDDA]/80">
-                  <p>✓ 100% Live Instruction malam (19:00–21:00 WIB) — tidak perlu resign kerja</p>
-                  <p>✓ 3 Bulan RevoU Labs mengerjakan real client & real budget (bukan simulasi dummy)</p>
-                  <p>✓ Garansi Refund Biaya s.d. 100% transparan (cukup 10 lamaran/minggu)</p>
-                </div>
-              </div>
-
-              {/* Keterbatasan Program Kompetitor yang Dipilih */}
-              <div className="p-4 sm:p-5 rounded-xl border border-[#FFD84D]/80 bg-[#FFFDF0] space-y-2.5">
-                <div className="flex items-center gap-2 font-display font-bold text-xs uppercase tracking-wider text-[#A15C00]">
-                  <AlertTriangle className="w-4 h-4 text-[#A15C00]" />
-                  <span>Keterbatasan {activeProgramDetail.competitorName} ({activeProgramDetail.programTitle})</span>
-                </div>
-                <p className="text-xs sm:text-[13px] text-[#141412] leading-relaxed">
-                  {activeProgramDetail.competitorLimitation}
-                </p>
-                <p className="text-[11px] text-[#8A8A84] italic pt-1 border-t border-[#FFD84D]/40">
-                  💡 Gunakan poin ini secara elegan saat calon siswa menanyakan perbandingan program ini.
-                </p>
-              </div>
+          ) : (
+            /* Mode 2: Matriks Semua Lembaga (RevoU vs Hacktiv8 vs Purwadhika vs Dibimbing vs DQLab) */
+            <div className="overflow-x-auto rounded-xl border border-[#E8E8E4] bg-white shadow-2xs">
+              <table className="w-full text-left text-xs border-collapse min-w-[950px]">
+                <thead>
+                  <tr className="bg-[#141412] text-white font-display text-xs sm:text-sm">
+                    <th className="p-3.5 sm:p-4 w-1/6 font-bold border-r border-white/10 sticky left-0 bg-[#141412] z-10">
+                      Parameter Lembaga
+                    </th>
+                    <th className="p-3.5 sm:p-4 w-1/5 font-bold bg-[#1F7A4D] border-r border-white/10 text-white">
+                      <div className="flex items-center gap-1">
+                        <Sparkles className="w-3.5 h-3.5 text-[#FEF08A]" />
+                        <span>RevoU</span>
+                      </div>
+                    </th>
+                    <th className="p-3.5 sm:p-4 w-1/6 font-semibold border-r border-white/10 bg-[#2A2A26] text-white">
+                      Hacktiv8
+                    </th>
+                    <th className="p-3.5 sm:p-4 w-1/6 font-semibold border-r border-white/10 bg-[#2A2A26] text-white">
+                      Purwadhika
+                    </th>
+                    <th className="p-3.5 sm:p-4 w-1/6 font-semibold border-r border-white/10 bg-[#2A2A26] text-white">
+                      Dibimbing
+                    </th>
+                    <th className="p-3.5 sm:p-4 w-1/6 font-semibold bg-[#2A2A26] text-white">
+                      DQLab
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#E8E8E4]">
+                  {GENERAL_COMPARISON_DATA.map((row, idx) => (
+                    <tr
+                      key={idx}
+                      className={`transition-colors ${row.revouHighlight ? "bg-[#FFFDF5]/70 hover:bg-[#FFF9E6]" : "hover:bg-[#F5F5F2]/50"}`}
+                    >
+                      <td className="p-3 sm:p-3.5 font-semibold text-[#141412] border-r border-[#E8E8E4]/70 align-top sticky left-0 bg-white z-10 shadow-2xs">
+                        <span className="text-xs sm:text-[12.5px]">{row.feature}</span>
+                        <span className="block font-mono text-[9.5px] text-[#8A8A84] font-normal uppercase mt-0.5">
+                          {row.category}
+                        </span>
+                      </td>
+                      <td className="p-3 sm:p-3.5 text-[#141412] font-medium border-r border-[#E8E8E4]/70 bg-[#EBF7EE]/40 align-top">
+                        <div className="flex items-start gap-1">
+                          <CheckCircle2 className="w-3 h-3 text-[#1F7A4D] shrink-0 mt-0.5" />
+                          <span className="leading-relaxed font-semibold text-[#1F7A4D] text-xs">
+                            {row.revou}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="p-3 sm:p-3.5 text-[#141412] border-r border-[#E8E8E4]/70 align-top leading-relaxed text-xs">
+                        {row.hacktiv8}
+                      </td>
+                      <td className="p-3 sm:p-3.5 text-[#141412] border-r border-[#E8E8E4]/70 align-top leading-relaxed text-xs">
+                        {row.purwadhika}
+                      </td>
+                      <td className="p-3 sm:p-3.5 text-[#141412] border-r border-[#E8E8E4]/70 align-top leading-relaxed text-xs">
+                        {row.dibimbing}
+                      </td>
+                      <td className="p-3 sm:p-3.5 text-[#141412] align-top leading-relaxed text-xs">
+                        {row.dqlab}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
+          )}
 
-            {/* Template Jawaban AC WhatsApp Siap Salin untuk Program Ini */}
-            <div className="p-4 sm:p-5 rounded-xl border border-[#0E62FE]/30 bg-[#EDF5FF] space-y-2.5">
-              <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-1.5 font-display font-bold text-xs uppercase tracking-wider text-[#0E62FE]">
-                  <Sparkles className="w-4 h-4 text-[#0E62FE]" />
-                  <span>Template Jawaban AC Siap Salin ({activeProgramDetail.programTitle})</span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => handleCopyText(activeProgramDetail.acTalkingPoint, `gen-prog-${activeProgramDetail.id}`)}
-                  className="font-mono text-[11px] font-bold px-2.5 py-1 rounded-lg bg-[#0E62FE] text-white hover:bg-[#004ECC] transition-all cursor-pointer flex items-center gap-1 shadow-2xs"
-                >
-                  {copiedId === `gen-prog-${activeProgramDetail.id}` ? (
-                    <>
-                      <Check className="w-3 h-3 text-white" />
-                      <span>Tersalin</span>
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="w-3 h-3 text-white" />
-                      <span>Salin Pesan</span>
-                    </>
-                  )}
-                </button>
-              </div>
-              <blockquote className="text-xs sm:text-[13px] text-[#141412] leading-relaxed bg-white/80 p-3.5 rounded-lg border border-[#0E62FE]/15 whitespace-pre-line font-normal">
-                {activeProgramDetail.acTalkingPoint}
-              </blockquote>
+          {/* Catatan Verifikasi Data Kompetitor */}
+          <div className="flex items-start gap-2.5 p-3.5 rounded-xl border border-[#E8E8E4] bg-[#FAFAF8] text-xs text-[#60605B] leading-relaxed">
+            <Info className="w-4 h-4 text-[#A15C00] shrink-0 mt-0.5" />
+            <div>
+              <strong className="text-[#141412] font-semibold">Catatan Transparansi &amp; Validasi Data (Audit Website Resmi Okt 2026): </strong>
+              Completion rate tidak dipublikasikan oleh satu pun kompetitor di halaman website resmi mereka (kandidat sumber sekunder: laporan CIRR Hacktiv8 PDF dan Outcomes Report Dibimbing). RevoU transparan mempublikasikan 93% completion rate dan 93% career placement rate resmi. Untuk perbandingan detail teknis kurikulum, biaya paket, dan modul per program, silakan buka tab <strong>Komparasi Spesifik Program</strong>.
             </div>
-          </motion.div>
-        ) : (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.98, y: 8 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            className="bg-white border-2 border-dashed border-[#D9D9D4] rounded-2xl p-8 sm:p-12 text-center space-y-4 shadow-2xs card-interactive"
-          >
-            <div className="w-14 h-14 rounded-2xl bg-[#EBF7EE] text-[#1F7A4D] mx-auto flex items-center justify-center border border-[#D4EDDA] shadow-2xs">
-              <Scale className="w-7 h-7" />
-            </div>
-            <div className="space-y-1">
-              <h4 className="font-display font-bold text-lg sm:text-xl text-[#141412]">
-                Pilih Program untuk Membuka Tabel General RevoU
+          </div>
+
+          {/* ── 5 PILAR STANDAR KEUNGGULAN LEMBAGA REVOU (MAKRO SELLING POINTS) ── */}
+          <div className="bg-white rounded-2xl border border-[#E8E8E4] p-5 sm:p-6 shadow-2xs space-y-4">
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-[#A15C00]" />
+              <h4 className="font-display font-bold text-sm sm:text-base text-[#141412]">
+                5 Pilar Standar Mutu Lembaga RevoU (Kunci Diferensiasi Makro AC)
               </h4>
-              <p className="text-sm text-[#8A8A84] max-w-[56ch] mx-auto leading-relaxed">
-                Tabel general akan langsung disinkronkan secara otomatis sesuai dengan program spesifik yang Anda pilih untuk membandingkan parameter pembelajaran RevoU vs {competitorDisplayNames[selectedCompetitorKey]}.
-              </p>
             </div>
-            <div className="flex flex-wrap justify-center items-center gap-2 pt-2">
-              <span className="font-mono text-xs text-[#8A8A84] font-bold uppercase w-full mb-1">
-                Pilihan Cepat Program {competitorDisplayNames[selectedCompetitorKey]}:
-              </span>
-              {availableProgramsForSelectedComp.map((p) => (
-                <button
-                  key={p.id}
-                  type="button"
-                  onClick={() => setSelectedProgramId(p.id)}
-                  className="px-3.5 py-2 rounded-xl text-xs font-bold bg-[#F5F5F2] hover:bg-[#FFD84D] hover:text-[#141412] text-[#4B4B46] border border-[#E8E8E4] transition-all cursor-pointer shadow-2xs active:scale-95"
-                >
-                  {p.programTitle} →
-                </button>
-              ))}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+              <div className="p-3.5 rounded-xl border border-[#D4EDDA] bg-[#EBF7EE]/60 space-y-1.5">
+                <div className="flex items-center gap-2 font-display font-bold text-xs text-[#1F7A4D]">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-[#1F7A4D]" />
+                  <span>1. Seleksi Ketat (&lt;10% Penerimaan)</span>
+                </div>
+                <p className="text-xs text-[#4B4B46] leading-relaxed">
+                  Menjamin peer group dan circle belajar yang memiliki komitmen tinggi, saling memotivasi, dan suportif hingga lulus.
+                </p>
+              </div>
+
+              <div className="p-3.5 rounded-xl border border-[#D4EDDA] bg-[#EBF7EE]/60 space-y-1.5">
+                <div className="flex items-center gap-2 font-display font-bold text-xs text-[#1F7A4D]">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-[#1F7A4D]" />
+                  <span>2. 100% Live Instruction Interaktif 5x/Minggu</span>
+                </div>
+                <p className="text-xs text-[#4B4B46] leading-relaxed">
+                  Bukan menonton video rekaman mandiri. Setiap malam dipandu praktisi aktif industri dengan sesi tanya-jawab langsung dua arah.
+                </p>
+              </div>
+
+              <div className="p-3.5 rounded-xl border border-[#D4EDDA] bg-[#EBF7EE]/60 space-y-1.5">
+                <div className="flex items-center gap-2 font-display font-bold text-xs text-[#1F7A4D]">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-[#1F7A4D]" />
+                  <span>3. 3 Bulan RevoU Labs (Real Client &amp; Budget)</span>
+                </div>
+                <p className="text-xs text-[#4B4B46] leading-relaxed">
+                  Bukan tugas dummy simulasi internal. Peserta memegang anggaran iklan jutaan rupiah riil atau menganalisis dataset bisnis skala enterprise.
+                </p>
+              </div>
+
+              <div className="p-3.5 rounded-xl border border-[#D4EDDA] bg-[#EBF7EE]/60 space-y-1.5">
+                <div className="flex items-center gap-2 font-display font-bold text-xs text-[#1F7A4D]">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-[#1F7A4D]" />
+                  <span>4. Kemitraan Kampus Top (ITB, BINUS, UI)</span>
+                </div>
+                <p className="text-xs text-[#4B4B46] leading-relaxed">
+                  Kredensial dan sertifikat resmi universitas teknik &amp; bisnis nomor satu di Indonesia yang diakui luas oleh para perekrut.
+                </p>
+              </div>
+
+              <div className="p-3.5 rounded-xl border border-[#D4EDDA] bg-[#EBF7EE]/60 space-y-1.5 sm:col-span-2 lg:col-span-2">
+                <div className="flex items-center gap-2 font-display font-bold text-xs text-[#1F7A4D]">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-[#1F7A4D]" />
+                  <span>5. Garansi Refund s.d. 100% Transparan</span>
+                </div>
+                <p className="text-xs text-[#4B4B46] leading-relaxed">
+                  Komitmen penuh pada hasil karir alumni: jika belum mendapatkan pekerjaan dengan syarat realistis (10 lamaran/minggu), biaya dikembalikan hingga 100%.
+                </p>
+              </div>
             </div>
-          </motion.div>
-        ))}
+          </div>
+        </motion.div>
+      )}
 
       {/* ───────────────────────────────────────────────────────────── */}
       {/* 3. TAB: ONE-PAGER BATTLECARD                                  */}
@@ -2141,35 +2191,13 @@ export default function ComparisonView() {
               </p>
             </div>
 
-            {/* Ready-to-use AC Script Blueprint */}
-            <div className="space-y-2.5 pt-2">
-              <div className="flex items-center justify-between gap-2">
-                <span className="font-mono text-xs uppercase tracking-wider text-[#8A8A84] font-bold flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5 text-[#A15C00]" />
-                  <span>Template Jawaban AC Siap Salin (Sesuai Shared Answer Pattern)</span>
-                </span>
-                <button
-                  type="button"
-                  onClick={() => handleCopyText(activeBattlecard.acScriptTemplate, `comp-${activeBattlecard.id}`)}
-                  className="font-mono text-[11px] font-bold px-2.5 py-1 rounded-lg bg-[#FFD84D] text-[#141412] hover:bg-[#FFCC1A] transition-all cursor-pointer flex items-center gap-1 shadow-2xs"
-                >
-                  {copiedId === `comp-${activeBattlecard.id}` ? (
-                    <>
-                      <Check className="w-3 h-3 text-[#141412]" />
-                      <span>Tersalin</span>
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="w-3 h-3 text-[#141412]" />
-                      <span>Salin Pesan</span>
-                    </>
-                  )}
-                </button>
+            {/* Catatan Verifikasi Data Kompetitor */}
+            <div className="flex items-start gap-2.5 p-3.5 rounded-xl border border-[#E8E8E4] bg-[#FAFAF8] text-xs text-[#60605B] leading-relaxed">
+              <Info className="w-4 h-4 text-[#A15C00] shrink-0 mt-0.5" />
+              <div>
+                <strong className="text-[#141412] font-semibold">Catatan Data Website Resmi Kompetitor (Okt 2026): </strong>
+                Completion rate tidak dipublikasikan oleh satu pun kompetitor di halaman website resmi mereka (kandidat sumber sekunder: laporan CIRR Hacktiv8 PDF dan Outcomes Report Dibimbing). Parameter spesifik program seperti biaya, jadwal, dan kurikulum disinkronkan otomatis sesuai pilihan.
               </div>
-
-              <blockquote className="bg-[#F5F5F2] border border-[#E8E8E4] rounded-xl p-4 text-xs sm:text-sm text-[#141412] leading-relaxed whitespace-pre-line font-normal">
-                {activeBattlecard.acScriptTemplate}
-              </blockquote>
             </div>
           </div>
         </div>
