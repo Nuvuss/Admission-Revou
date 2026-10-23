@@ -6,7 +6,6 @@
 * **Rating:** 4.94/5 (Course Report), 4.93/5 (SwitchUp), 4.8/5 (Google).
 * **Durasi Total:** 7 Bulan (Bulan 1-4: Pembelajaran Modul LIVE; Bulan 5-7: Virtual Internship & Career Track; Lifetime Community).
 * **Prospek & Alasan Belajar:**
-  * Rata-rata gaji alumni RevoU Digital Marketing: Rp 7.100.000 / bulan.
   * Potensi kerja WFA (Work From Anywhere).
   * Membekali skill eksekusi modern dengan dukungan perangkat AI (meningkatkan efisiensi kerja hingga 10x lipat).
 

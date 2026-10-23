@@ -6,7 +6,6 @@
 * **Durasi Total:** 7 Bulan (Bulan 1-4: Class Modules; Bulan 5-7: Virtual Internship & Career Track; Lifetime Community).
 * **Prospek & Alasan Belajar:**
   * Proyeksi 11,5 juta lowongan kerja Data Analytics secara global hingga 2026 (US Bureau of Labor Statistics).
-  * Gaji rata-rata alumni RevoU Data Analytics: Rp 9.800.000 / bulan.
   * Jenjang Karir: Junior Data Analyst -> Mid/Senior Analyst -> Business Intelligence Lead -> Head/VP of Analytics / Chief Data Officer.
 
 ---

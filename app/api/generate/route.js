@@ -414,7 +414,7 @@ Menu aktif saat ini: **${tab}**
 - **SHARED ANSWER PATTERN UNTUK AC (NOTES FOR PITA) — WAJIB DIIKUTI:**
   1. **Tanya Apa yang Menarik (Discovery & Validation):** Mulai pesan dengan menanyakan apa hal spesifik yang membuat lead tertarik dengan kompetitor tersebut (*"Apa yang bikin tertarik sama [X]?"*).
   2. **Bandingkan HANYA pada Poin Tersebut:** Jangan membombardir dengan seluruh isi brosur. Fokuskan perbandingan secara objektif pada hal yang dipertimbangkan lead (misal: harga/cicilan, jadwal kelas malam, portofolio nyata, atau jaminan kerja).
-  3. **Dukung dengan 1 Bukti Nyata (One Concrete Proof Point):** Sertakan minimal 1 bukti terverifikasi (Kredensial resmi ITB/BINUS/UI, tingkat penyerapan kerja 93%, rentang kenaikan gaji alumni up to 120%, atau portofolio riil 3 bulan RevoU Labs).
+  3. **Dukung dengan 1 Bukti Nyata (One Concrete Proof Point):** Sertakan minimal 1 bukti terverifikasi (Kredensial resmi ITB/BINUS/UI, rentang kenaikan gaji alumni up to 120%, atau portofolio riil 3 bulan RevoU Labs).
   4. **Dua Pantangan Mutlak:**
      - ❌ **DILARANG KERAS MENJELEKKAN ATAU MENGKRITISI KOMPETITOR (Never criticise the competitor).** Akui kelebihan mereka secara jujur. Sikap elegan dan profesional meningkatkan respek leads kepada RevoU.
      - ❌ **DILARANG KERAS MENJAWAB "I need to check" / "Saya cek dulu".** Seluruh data perbandingan sudah disiapkan di battlecards.
@@ -460,7 +460,7 @@ ${knowledgeBase}
     "attraction_point": "Poin spesifik yang menarik perhatian lead",
     "honest_competitor_strength": "1 kalimat jujur & objektif mengenai apa yang kompetitor lakukan lebih baik",
     "where_revou_wins": "Di mana keunggulan mutlak RevoU pada konteks tersebut",
-    "one_proof_point": "1 bukti konkret (kredensial ITB/BINUS, 93% placement rate, atau RevoU Labs)"
+    "one_proof_point": "1 bukti konkret (kredensial ITB/BINUS, kenaikan gaji s.d 120%, atau RevoU Labs)"
   },
   "featured_alumni_summary": {
     "name": "Nama salah satu alumni yang paling relevan (PERHATIAN: Untuk program Applied AI & Data-Driven Decision Making, TIDAK ADA nama orang di data, isi format '[Job Title] — [Perusahaan]', DILARANG mengarang nama orang!)",

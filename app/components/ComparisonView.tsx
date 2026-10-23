@@ -50,7 +50,7 @@ const BATTLECARDS: CompetitorBattlecard[] = [
     id: "hacktiv8",
     name: "Hacktiv8",
     tagline: "Kuat di coding murni JavaScript & Golang, opsi Full-Day intensif 09:00–18:00 & Night Bootcamp",
-    price: "Full-Day: Rp 35.000.000 – Rp 45.000.000 (Early Bird Rp 33jt–43jt) | Night: Rp 18.000.000 – Rp 25.000.000. Reg fee Rp 100.000 non-refundable. Bayar upfront 2 tahap, cicilan 0% (Danacita/CIMB), atau Study Now Pay Later.",
+    price: "Full-Day: Rp 35jt – Rp 45jt (Early Bird Rp 33jt–43jt) | Night: Rp 18jt – Rp 25jt. Reg fee Rp 100.000 (Non-refundable).\nOpsi Pembayaran Resmi:\n• Upfront (Best Choice): Pembayaran 2 tahap sebelum kelas dimulai (tanpa admin fee & bunga)\n• Cicilan 0%: Melalui partner OJK: Danacita & CIMB Niaga / CIMB Niaga Syariah\n• Study Now Pay Later (SNPL): Penangguhan bayar s.d. 4 bulan via Danacita",
     duration: "Full-Day: 12–16 minggu (Senin–Jumat 09:00–18:00 WIB) | Night: 12–16 minggu (Senin–Jumat 19:00–22:00 WIB, ±15 jam/minggu).",
     format: "Full-Day Bootcamp & Night Bootcamp; lokasi Jakarta, Tangerang, dan Remote.",
     careerSupport: "Career Class (CV & LinkedIn), latihan interview HR, peluang interview langsung dengan 1.000+ hiring partner tanpa placement fee, Career Buddy grup & 1-on-1. Outcome: 90% kerja full-time dalam 90 hari, 96% relevan IT & Data.",
@@ -62,7 +62,7 @@ const BATTLECARDS: CompetitorBattlecard[] = [
       "Indonesia's 1st AI-Native Software Engineering Program (Kemitraan eksklusif AWS, kurikulum 4 fase: Algorithm HackerRank, Python/Flask, Next.js/TypeScript, AI Kiro/Claude).",
       "Dukungan karir intensif Career+ (1:1 Personal Career Coach, AI Career Engine, dan Mock Interview dengan Hiring Manager)."
     ],
-    proofPoint: "15.000+ alumni RevoU di 11+ kota & 1.000+ top company. Completion rate belajar Hacktiv8 tidak dipublikasi resmi di web. RevoU transparan mempublikasikan 93% completion rate & 93% placement rate resmi.",
+    proofPoint: "15.000+ alumni RevoU di 11+ kota & 1.000+ top company. Completion rate belajar Hacktiv8 tidak dipublikasi resmi di web. RevoU transparan mempublikasikan 93% completion rate resmi.",
     acScriptTemplate: "Wah menarik banget kak! Hacktiv8 memang punya reputasi bagus untuk bootcamp coding seharian terutama kalau kakak siap komitmen full-day dari jam 9 pagi sampai 6 sore. Nah, di RevoU kelas kita didesain khusus jam 19.00 WIB malam, jadi kakak tetap bisa belajar dan bangun karir baru tanpa harus resign kantor. Plus, RevoU adalah Indonesia's 1st AI-Native Program bermitra eksklusif dengan AWS, ada 12 minggu Virtual Internship mengerjakan real project perusahaan, dan bimbingan karir intensif 1-on-1 Career+ sampai dapat kerja. Kakak saat ini lebih nyaman belajar full-day seharian atau kelas malam di luar jam kerja kak? :)"
   },
   {
@@ -119,8 +119,8 @@ const BATTLECARDS: CompetitorBattlecard[] = [
       "Bimbingan karir intensif Career+ 1-on-1 bersama Career Coach profesional selama 7 bulan penuh + simulasi interview hiring manager.",
       "Ekosistem 15.000+ alumni aktif di 1.000+ top company dan komunitas pelajar 550.000+ member."
     ],
-    proofPoint: "550.000+ komunitas pelajar RevoU & 15.000+ alumni. Completion rate DQLab tidak dipublikasi di web. RevoU mendampingi 7 bulan komprehensif dari nol dengan 12 minggu Virtual Internship dan 93% placement rate resmi.",
-    acScriptTemplate: "DQLab itu opsi yang oke banget kak kalau kakak sekadar ingin mengambil ujian sertifikasi BNSP atau kursus kilat Excel/Python dalam durasi 1-2 bulan dengan budget terjangkau. Namun kalau tujuan kakak ingin career switch menjadi Data Analyst profesional yang siap kerja di top company (rata-rata gaji alumni RevoU Rp 9,8jt/bln), di RevoU kakak akan belajar 7 bulan komprehensif, menguasai SQL, Python, Tableau, Looker Studio, Apache Airflow ETL, dan 12 minggu Virtual Internship menganalisis dataset bisnis riil, plus bimbingan karir 1-on-1 sampai dapat kerja. Kakak saat ini lebih butuh sertifikasi singkat atau persiapan karir menyeluruh sampai siap kerja kak? :)"
+    proofPoint: "550.000+ komunitas pelajar RevoU & 15.000+ alumni. Completion rate DQLab tidak dipublikasi di web. RevoU mendampingi 7 bulan komprehensif dari nol dengan 12 minggu Virtual Internship portofolio riil.",
+    acScriptTemplate: "DQLab itu opsi yang oke banget kak kalau kakak sekadar ingin mengambil ujian sertifikasi BNSP atau kursus kilat Excel/Python dalam durasi 1-2 bulan dengan budget terjangkau. Namun kalau tujuan kakak ingin career switch menjadi Data Analyst profesional yang siap kerja di top company, di RevoU kakak akan belajar 7 bulan komprehensif, menguasai SQL, Python, Tableau, Looker Studio, Apache Airflow ETL, dan 12 minggu Virtual Internship menganalisis dataset bisnis riil, plus bimbingan karir 1-on-1 sampai dapat kerja. Kakak saat ini lebih butuh sertifikasi singkat atau persiapan karir menyeluruh sampai siap kerja kak? :)"
   }
 ];
 
@@ -170,14 +170,14 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
         {
           parameter: "Biaya & Skema Pembayaran",
           categoryTag: "INVESTASI & BIAYA",
-          revouValue: "Rp 16.000.000 – Rp 25.000.000-an (Opsi cicilan bunga 0% s.d. 12-18 bulan via kartu kredit/Danacita, tanpa biaya kos/transport).",
-          competitorValue: "Rp 45.000.000 (Early Bird Rp 43.000.000 lunas H-14). Registration fee Rp 100.000. Opsi cicilan Danacita/CIMB Niaga atau Study Now Pay Later.",
+          revouValue: "• Biaya Program: Rp 19.500.000 – Rp 22.500.000 (Rp 19.5jt – 22.5jt all-in sudah termasuk kurikulum AI, 3 bulan Virtual Internship, & Career+ sampai hired).\n• Upfront: Lunas di awal tanpa admin fee & tanpa bunga.\n• Cicilan: Opsi cicilan fleksibel 3x sampai 12x via kartu kredit & mitra resmi (Danacita).\n• Tanpa Biaya Tambahan: Bebas biaya registrasi tersembunyi & tanpa biaya akomodasi/transportasi (100% Live Online).",
+          competitorValue: "• Biaya Program: Rp 45.000.000 (Early Bird Rp 43.000.000 lunas H-14).\n• Registration Fee: Rp 100.000 (Non-refundable).\n• Opsi Pembayaran Resmi:\n  • Upfront (Best Choice): Pembayaran 2 tahap sebelum kelas dimulai (tanpa admin fee & bunga).\n  • Cicilan 0%: Melalui financial partner terdaftar OJK: Danacita & CIMB Niaga / CIMB Niaga Syariah.\n  • Study Now Pay Later (SNPL): Bayar biaya pendidikan dengan masa penangguhan hingga 4 bulan via Danacita.",
           highlight: true
         },
         {
           parameter: "Jadwal & Komitmen Waktu",
           categoryTag: "JADWAL KELAS",
-          revouValue: "Malam hari (19:00–21:00 WIB) Senin–Kamis (LIVE Lecture & Simulation) + Sesi Review Tugas Opsional: Sabtu 13:00–15:30 WIB — ramah pekerja & mahasiswa (TIDAK perlu resign).",
+          revouValue: "Malam hari (19:00–21:00 WIB) Senin–Kamis (LIVE Lecture & Simulation) + Sesi Review Tugas Opsional: Sabtu 13:00–15:30 WIB — ramah pekerja & mahasiswa (tidak perlu resign).",
           competitorValue: "Senin–Jumat 09:00–18:00 WIB (Wajib komitmen seharian penuh di jam kantor — harus cuti atau resign kerja).",
           highlight: true
         },
@@ -198,8 +198,8 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
         {
           parameter: "Kurikulum & Modul Utama",
           categoryTag: "KURIKULUM",
-          revouValue: "Indonesia's 1st AI-Native Software Engineering Program (Eksklusif AWS). 4 Fase: Phase 1 Algorithm (Flowchart, Search/Sort), Phase 2 Backend (Python, Flask, PostgreSQL, API testing), Phase 3 Frontend (Next.js App Router, TypeScript, Tailwind, React, Playwright E2E), Phase 4 AI-Driven Dev (Kiro, Claude, Vercel). HackerRank Challenge di tiap fase.",
-          competitorValue: "Fase 0 (HTML/CSS/JS) -> Fase 1 (Express.js, PostgreSQL, Sequelize) -> Fase 2 (API, React.js, Redux, Copilot) -> Fase 3 (Microservices, NoSQL, Next.js, TypeScript, Docker, Cursor).",
+          revouValue: "Indonesia's 1st AI-Native Software Engineering Program (Eksklusif AWS):\n• Phase 1 - Algorithm & Problem Solving: Flowchart, pseudocode, searching/sorting algorithms, & tantangan HackerRank.\n• Phase 2 - Backend Engineering: Python, Flask, arsitektur PostgreSQL, RESTful API design, & automated testing.\n• Phase 3 - Modern Frontend: Next.js (App Router), TypeScript, TailwindCSS, React state management, & Playwright E2E testing.\n• Phase 4 - AI-Driven Production & DevOps: Spec-driven dev Kiro, Claude, Locust load testing, Docker, & AWS Cloud deployment.\n• Virtual Internship (3 Bulan): Proyek riil memecahkan problem software partner korporasi nyata.",
+          competitorValue: "4 Fase Kurikulum Berbasis JavaScript & Full-Stack Web:\n• Fase 0 - Programming Foundation: Logika dasar coding, algoritma, HTML5, CSS3, & vanilla JavaScript modern.\n• Fase 1 - Backend & Database: Node.js runtime, Express.js server, PostgreSQL RDBMS, Sequelize ORM, & JWT authentication.\n• Fase 2 - Frontend & State: Single Page Application (SPA) React.js, Redux state management, integrasi REST API, & GitHub Copilot.\n• Fase 3 - Microservices & Scalability: Microservices, MongoDB (NoSQL), Next.js, TypeScript, Docker container, & Cursor AI.",
           highlight: false
         },
         {
@@ -217,20 +217,6 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
           highlight: true
         },
         {
-          parameter: "Kebijakan Biaya & Dukungan Karir",
-          categoryTag: "DUKUNGAN KARIR",
-          revouValue: "Biaya non-refundable (tidak ada garansi refund). Komitmen investasi difokuskan penuh ke pendampingan intensif Career+ (1:1 Personal Career Coach selama 8 bulan, AI Career Engine, dan 3 bulan Virtual Internship) dengan 93% placement rate resmi.",
-          competitorValue: "NON-REFUNDABLE (Tidak ada garansi refund pengembalian uang sama sekali jika tidak mendapatkan pekerjaan).",
-          highlight: false
-        },
-        {
-          parameter: "Bimbingan Karir & Job Placement",
-          categoryTag: "PERSIAPAN KERJA",
-          revouValue: "Career+ (1:1 Personal Career Coach selama 8 bulan penuh, AI Career Engine untuk CV/LinkedIn, Monthly Career Clinics, Mock Interview Hiring Manager). 414+ alumni SE di Astra, JPMorgan Chase, BNI, Sea, Citilink, dll.",
-          competitorValue: "Career class, latihan interview, Job Portal, Career Buddy. Klaim 88% direkrut <3 bulan, rerata gaji Rp 7,2 jt.",
-          highlight: false
-        },
-        {
           parameter: "Sertifikasi Resmi",
           categoryTag: "KREDENSIAL",
           revouValue: "RevoU Certificate of Completion bertaraf internasional + Kemitraan Eksklusif Amazon Web Services (AWS) Partner.",
@@ -239,7 +225,7 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
         }
       ],
       competitorLimitation: "Biaya sangat tinggi (Rp 45.000.000), mewajibkan cuti/resign karena jam belajar seharian 09:00–18:00 WIB, dan biaya pendaftaran/kursus bersifat non-refundable (tanpa refund).",
-      revouEdge: "RevoU FSSE adalah program AI-Native pertama di Indonesia bermitra eksklusif dengan AWS, berdurasi 8 bulan (210+ jam live) malam hari (19:00–21:00 WIB), mengajarkan Python/Flask + Next.js/TypeScript, portofolio riil Virtual Internship, dan 93% placement rate resmi.",
+      revouEdge: "RevoU FSSE adalah program AI-Native pertama di Indonesia bermitra eksklusif dengan AWS, berdurasi 8 bulan (210+ jam live) malam hari (19:00–21:00 WIB), mengajarkan Python/Flask + Next.js/TypeScript, dan portofolio riil Virtual Internship.",
       acTalkingPoint: "Hacktiv8 memang bagus untuk coding seharian kak, tapi biayanya Rp 45 jt dan jam belajarnya 09:00–18:00 sehingga kakak harus resign duluan. Di RevoU FSSE, kita adalah Indonesia's 1st AI-Native Program bermitra eksklusif dengan AWS, kelas jam 19.00 malam (tidak perlu resign), diajarkan Python/Flask dan Next.js/TypeScript, 3 bulan Virtual Internship mengerjakan masalah nyata perusahaan, dan didampingi Career Coach 1-on-1 sampai dapat kerja."
     },
     {
@@ -252,17 +238,17 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
       revouMatchBadge: "FSSE",
       tableRows: [
         {
-          parameter: "Biaya & Skema Bayar",
+          parameter: "Biaya & Skema Pembayaran",
           categoryTag: "INVESTASI & BIAYA",
-          revouValue: "Rp 16.000.000 – Rp 25.000.000-an (Cicilan 0% s.d. 12-18 bulan via kartu kredit/Danacita).",
-          competitorValue: "Rp 22.000.000 (Early Bird Rp 20.000.000). Non-refundable.",
+          revouValue: "• Biaya Program: Rp 19.500.000 – Rp 22.500.000 (Rp 19.5jt – 22.5jt all-in sudah termasuk materi Full-Stack, 3 bulan Virtual Internship, & Career+).\n• Upfront: Lunas di awal tanpa admin fee & tanpa bunga.\n• Cicilan: Opsi cicilan fleksibel 3x sampai 12x via kartu kredit & mitra resmi (Danacita).\n• Tanpa Biaya Tambahan: Bebas biaya registrasi tersembunyi & tanpa biaya akomodasi (100% Live Online).",
+          competitorValue: "• Biaya Program: Rp 22.000.000 (Early Bird Rp 20.000.000).\n• Registration Fee: Rp 100.000 (Non-refundable).\n• Opsi Pembayaran Resmi:\n  • Upfront (Best Choice): Pembayaran 2 tahap sebelum kelas dimulai (tanpa admin fee & bunga).\n  • Cicilan 0%: Melalui financial partner terdaftar OJK: Danacita & CIMB Niaga / CIMB Niaga Syariah.\n  • Study Now Pay Later (SNPL): Bayar biaya pendidikan dengan masa penangguhan hingga 4 bulan via Danacita.",
           highlight: false
         },
         {
-          parameter: "Durasi & Jadwal Belajar",
+          parameter: "Jadwal & Durasi Belajar",
           categoryTag: "DURASI PROGRAM",
           revouValue: "8 Bulan komprehensif (210+ Jam Kelas LIVE malam 19:00–21:00 WIB + 3 Bulan Virtual Internship real project).",
-          competitorValue: "16 minggu (Senin–Jumat 19:00–22:00 WIB).",
+          competitorValue: "16 minggu (Senin–Jumat 19:00–22:00 WIB, ±15 jam/minggu).",
           highlight: true
         },
         {
@@ -273,6 +259,13 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
           highlight: true
         },
         {
+          parameter: "Kurikulum & Modul Utama",
+          categoryTag: "KURIKULUM",
+          revouValue: "Kurikulum Full Stack AI-Native (Frontend + Backend + Cloud):\n• Phase 1 - Algorithm: Dasar logika komputasional, flowchart, data structures, & tantangan HackerRank.\n• Phase 2 - Backend Skalabel: Python, Flask REST API, PostgreSQL database modeling, & automated backend testing.\n• Phase 3 - Modern Frontend: Next.js App Router, TypeScript, React component lifecycle, & Playwright E2E testing.\n• Phase 4 - AI Engineering & Cloud DevOps: Kiro Spec Mode, Claude AI agent, Locust load testing, Docker, & AWS Cloud deployment.\n• Virtual Internship (3 Bulan): Proyek software skala enterprise bersama partner korporasi nyata.",
+          competitorValue: "Spesialisasi Arsitektur Backend Microservices Golang:\n• Go Fundamentals: Syntax dasar, pointer, struct, interface, data structures, concurrency (Goroutine & Channel).\n• RESTful API Development: Framework Gin / Echo, middleware handling, JWT authentication, & validation.\n• Databases Architecture: PostgreSQL (relational) & NoSQL database, connection pooling, & query tuning.\n• Microservices Architecture: Komunikasi antar service via gRPC protocol & Protocol Buffers (protobuf).\n• Testing, DevOps & Cloud: Load testing Grafana k6, containerisasi Docker, Kubernetes (K8s), & deployment Railway.",
+          highlight: true
+        },
+        {
           parameter: "Database, Testing & Cloud Tooling",
           categoryTag: "DATABASE & DEVOPS",
           revouValue: "PostgreSQL RDBMS design, 3-layer automated testing (pytest unit test, Locust performance/stress test, Playwright E2E), AI engineering dengan Kiro spec mode & Claude, serta Cloud Infrastructure bersama Amazon Web Services (AWS) Partner & Vercel/Railway.",
@@ -280,22 +273,15 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
           highlight: false
         },
         {
-          parameter: "Portofolio Proyek",
+          parameter: "Portofolio Proyek (Virtual Internship)",
           categoryTag: "PROYEK NYATA",
           revouValue: "2 Proyek Full-Stack berskala produksi (konvensional & AI-driven) + 3 Bulan Virtual Internship memecahkan masalah bisnis nyata perusahaan mitra.",
-          competitorValue: "Final project web API real-time microservices di akhir batch.",
+          competitorValue: "Final project web API real-time microservices di akhir batch (pengerjaan project backend murni).",
           highlight: true
-        },
-        {
-          parameter: "Dukungan Karir & Kebijakan Biaya",
-          categoryTag: "DUKUNGAN KARIR",
-          revouValue: "Biaya non-refundable (tidak ada garansi refund). Didampingi Career+ (1:1 Career Coach harian, AI Career Engine, dan mock interview) dengan 93% placement rate resmi.",
-          competitorValue: "Non-refundable (Tidak ada garansi refund).",
-          highlight: false
         }
       ],
       competitorLimitation: "Fokus kurikulum sangat spesifik pada backend Golang dengan PostgreSQL, NoSQL, Grafana k6, dan deployment Railway tanpa penguasaan frontend Next.js/React modern, sehingga cakupan peluang kerja bagi pemula/career switcher lebih terbatas dibanding Full Stack.",
-      revouEdge: "RevoU FSSE melatih Full Stack AI-Native (Next.js/TypeScript + Python/Flask/PostgreSQL + AWS) yang mencakup 3-layer testing (Playwright & Locust) dan deployment, lengkap dengan 3 bulan Virtual Internship dan 93% placement rate resmi.",
+      revouEdge: "RevoU FSSE melatih Full Stack AI-Native (Next.js/TypeScript + Python/Flask/PostgreSQL + AWS) yang mencakup 3-layer testing (Playwright & Locust) dan deployment, lengkap dengan 3 bulan Virtual Internship riil.",
       acTalkingPoint: "Golang di Hacktiv8 sangat bagus jika kakak sudah pasti ingin berkarir spesifik di backend microservices dengan PostgreSQL, NoSQL, Grafana k6, dan Railway. Namun bagi pemula atau career switcher, lowongan kerja Software Engineer terbesar di Indonesia mencari Full Stack (Next.js + Python/Flask). Di RevoU FSSE kakak belajar end-to-end frontend dan backend lengkap dengan portofolio riil Virtual Internship dan kemitraan resmi AWS."
     },
     {
@@ -310,15 +296,15 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
         {
           parameter: "Biaya & Skema Pembayaran",
           categoryTag: "INVESTASI & BIAYA",
-          revouValue: "Rp 16.000.000 – Rp 25.000.000-an (Cicilan 0% s.d. 12-18 bulan via kartu kredit/Danacita).",
-          competitorValue: "Rp 35.000.000 (Early Bird Rp 33.000.000). Non-refundable. Upfront 2 tahap atau cicilan Danacita.",
+          revouValue: "• Biaya Program: Rp 17.900.000 – Rp 20.900.000 (Rp 17.9jt – 20.9jt all-in sudah termasuk 8 modul + Apache Airflow ETL, 12 minggu Virtual Internship, & Career+).\n• Upfront: Lunas di awal tanpa bunga/biaya admin.\n• Cicilan: Opsi cicilan fleksibel 3x sampai 12x via kartu kredit & mitra resmi (Danacita).\n• Tanpa Biaya Tambahan: Bebas biaya registrasi tersembunyi & hemat biaya kos (100% Live Online).",
+          competitorValue: "• Biaya Program: Rp 35.000.000 (Early Bird Rp 33.000.000).\n• Registration Fee: Rp 100.000 (Non-refundable).\n• Opsi Pembayaran Resmi:\n  • Upfront (Best Choice): Pembayaran 2 tahap sebelum kelas dimulai (tanpa admin fee & bunga).\n  • Cicilan 0%: Melalui financial partner terdaftar OJK: Danacita & CIMB Niaga / CIMB Niaga Syariah.\n  • Study Now Pay Later (SNPL): Bayar biaya pendidikan dengan masa penangguhan hingga 4 bulan via Danacita.",
           highlight: true
         },
         {
           parameter: "Jadwal & Jam Kelas",
           categoryTag: "JADWAL KELAS",
-          revouValue: "Pilihan Fleksibel: Option A Weekday Evening (Senin–Kamis 19:00–21:00 WIB + Review Sabtu) atau Option B Weekend (Sabtu–Minggu 10:00–12:00 & 13:00–15:00 WIB + Review Jumat).",
-          competitorValue: "Senin–Jumat 09:00–18:00 WIB (Wajib komitmen seharian penuh).",
+          revouValue: "Malam hari (19:00–21:00 WIB) Senin–Kamis (LIVE Lecture & Simulation) + Sesi Review Tugas Opsional: Sabtu 13:00–15:30 WIB — ramah pekerja & mahasiswa (tidak perlu resign).",
+          competitorValue: "Senin–Jumat 09:00–18:00 WIB (Wajib komitmen seharian penuh di jam kantor).",
           highlight: true
         },
         {
@@ -329,10 +315,10 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
           highlight: true
         },
         {
-          parameter: "Fokus Kurikulum & Silabus",
+          parameter: "Kurikulum & Modul Utama",
           categoryTag: "KURIKULUM",
-          revouValue: "8 Modules + AI: Business Problem Solving (Issue Tree, RCA), Statistics & Spreadsheet AI, SQL BigQuery AI, Python Pandas & PandasAI, Data Visualization (Tableau/PowerBI/Looker), Data Communication & Executive Storytelling, dan modul baru Production-Ready Analytics (Apache Airflow & Automated ETL).",
-          competitorValue: "Fokus berat pada matematika koding teknis: Scikit-Learn, Deep Learning, TensorFlow, AWS Big Data, Airflow, Spark, Docker.",
+          revouValue: "8 Modul Analisis Data + AI & Automated ETL:\n• Modul 1-2 - Problem Solving & Spreadsheet AI: Issue Tree, Root Cause Analysis, Google Sheets AI, & financial modeling.\n• Modul 3-4 - SQL & Enterprise Database: BigQuery AI, window functions, CTE, complex data joins, & query optimization.\n• Modul 5 - Python for Data Analytics: Pandas, NumPy, PandasAI, otomatisasi data cleaning, & exploratory data analysis (EDA).\n• Modul 6 - Visual Analytics & BI: Tableau, Looker Studio, & executive dashboard design.\n• Modul 7 - Executive Storytelling: Menerjemahkan data menjadi insight & strategi bisnis ke jajaran C-Level.\n• Modul 8 - Production-Ready Analytics: Apache Airflow & Automated ETL pipeline.\n• Virtual Internship (12 Minggu): Menganalisis dataset riil klien industri (Telkom OCA, Zurich).",
+          competitorValue: "Fokus Berat Matematika Koding & Deep Learning Machine Learning:\n• Python & Data Wrangling: Python scripting, SQL database querying, pandas, & data preprocessing.\n• Applied Machine Learning: Regresi linear/logistik, decision tree, clustering, & evaluasi model via Scikit-Learn.\n• Deep Learning & Computer Vision: TensorFlow, Keras, convolutional neural network (CNN), & NLP dasar.\n• Big Data Engineering: Apache Spark, AWS Big Data ecosystem, & orkestrasi pipeline data Airflow.\n• Model Deployment: Containerisasi Docker & deploy model AI ke production API.",
           highlight: true
         },
         {
@@ -341,25 +327,60 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
           revouValue: "7 Portfolio Projects standar industri (6 Skill-Specific Projects + 1 End-to-End Capstone Project di Banking, Retail, Telco, atau E-Commerce) + 12 Minggu Virtual Internship (mitra nyata seperti Telkom Indonesia OCA, Zurich, dll).",
           competitorValue: "Capstone project pipeline data & model deployment di akhir minggu bootcamp.",
           highlight: true
-        },
-        {
-          parameter: "Bimbingan Karir & Hasil Alumni",
-          categoryTag: "PERSIAPAN KERJA",
-          revouValue: "Career+ (1:1 Career Coach selama 7 bulan penuh, AI Career Engine untuk CV/LinkedIn, dan Mock Interview langsung bersama Hiring Manager industri). Rata-rata gaji alumni Rp 9.800.000/bulan.",
-          competitorValue: "Career class, latihan interview, Job Portal. Klaim 87% bekerja di 2025, rerata gaji Rp 8 jt.",
-          highlight: false
-        },
-        {
-          parameter: "Dukungan Karir & Kebijakan Biaya",
-          categoryTag: "DUKUNGAN KARIR",
-          revouValue: "Biaya non-refundable (tidak ada garansi refund). Pendampingan penuh Career+ (1:1 Career Coach selama 7 bulan, AI Career Engine, dan simulasi interview hiring manager) dengan 93% placement rate resmi.",
-          competitorValue: "Non-refundable (Tidak ada pengembalian uang sama sekali).",
-          highlight: false
         }
       ],
       competitorLimitation: "Jadwal seharian penuh (09:00–18:00) menyulitkan pekerja, biaya non-refundable, dan fokus dominan matematika koding tanpa latihan business communication ke direksi.",
-      revouEdge: "RevoU FSDA fokus melatih Business Communication & Problem Solving C-level, 8 modul lengkap dengan Apache Airflow & Automated ETL, jadwal fleksibel weekday malam / weekend, 12 minggu Virtual Internship studi kasus riil (Telkom OCA, Zurich), dan 93% placement rate resmi.",
-      acTalkingPoint: "Hacktiv8 DS&ML mewajibkan waktu seharian dari pagi sampai jam 6 sore kak. Kalau di RevoU FSDA, kita ada opsi kelas malam 19.00 WIB atau weekend, jadi kakak tidak perlu resign. Di RevoU juga fokus melatih cara mempresentasikan data ke bos dan manajemen bisnis, ada modul Apache Airflow ETL terbaru, 12 minggu Virtual Internship menganalisis real dataset bisnis mitra, dan didampingi Career Coach 1-on-1 sampai dapat kerja."
+      revouEdge: "RevoU FSDA fokus melatih Business Communication & Problem Solving C-level, 8 modul lengkap dengan Apache Airflow & Automated ETL, jadwal kelas malam 19:00–21:00 WIB (ramah pekerja tanpa resign), dan 12 minggu Virtual Internship studi kasus riil (Telkom OCA, Zurich).",
+      acTalkingPoint: "Hacktiv8 DS&ML mewajibkan waktu seharian dari pagi sampai jam 6 sore kak. Kalau di RevoU FSDA, kelas berlangsung malam hari 19.00–21.00 WIB Senin–Kamis (+ Review Sabtu opsional), jadi kakak tidak perlu resign kerja. Di RevoU juga fokus melatih cara mempresentasikan data ke bos dan manajemen bisnis, ada modul Apache Airflow ETL terbaru, 12 minggu Virtual Internship menganalisis real dataset bisnis mitra, dan didampingi Career Coach 1-on-1 sampai dapat kerja."
+    },
+    {
+      id: "h8-dsml-ads",
+      competitorId: "hacktiv8",
+      competitorName: "Hacktiv8",
+      programTitle: "Data Science & AI Machine Learning (vs RevoU x ITB ADS)",
+      badge: "Full-Day (09:00–18:00)",
+      revouMatchProgram: "x ITB: Applied Data Science with AI",
+      revouMatchBadge: "ITB",
+      tableRows: [
+        {
+          parameter: "Biaya & Kredensial Universitas",
+          categoryTag: "INVESTASI & KREDENSIAL",
+          revouValue: "• Biaya Program: Rp 16.999.000 (Alumni ITB/RevoU Diskon 15% jadi Rp 14.449.150).\n• Sertifikasi Resmi: Certificate of Completion resmi Institut Teknologi Bandung (FTI ITB).\n• Opsi Transfer Kredit: Microcredential 1 SKS FTI ITB (Mata Kuliah Metode Statistika) dapat ditransfer ke Magister ITB.\n• Opsi Cicilan: Cicilan fleksibel via kartu kredit / Danacita & invoice perusahaan.",
+          competitorValue: "• Biaya Program: Rp 35.000.000 (Early Bird Rp 33.000.000) + Reg fee Rp 100.000.\n• Non-refundable (tanpa refund dana).\n• Sertifikat: Sertifikat kelulusan Hacktiv8 (tanpa kemitraan perguruan tinggi negeri).",
+          highlight: true
+        },
+        {
+          parameter: "Jadwal & Komitmen Waktu",
+          categoryTag: "JADWAL KELAS",
+          revouValue: "Hybrid 13 Minggu: Live Online Sessions malam hari (Selasa & Kamis 19:30–21:30 WIB) — ramah pekerja/profesional tanpa perlu resign kerja + 2 Hari On-Campus Immersion di Kampus ITB Ganesha Bandung.",
+          competitorValue: "Senin–Jumat 09:00–18:00 WIB (Wajib komitmen seharian penuh di jam kantor — harus cuti atau resign kerja).",
+          highlight: true
+        },
+        {
+          parameter: "Pengajar & Instruktur Praktisi",
+          categoryTag: "PENGAJAR",
+          revouValue: "Kolaborasi Dosen FTI ITB (Statistical Rigor) & Praktisi Senior Aktif: Rahmat Hidayatullah (Head of Data Science, XLSMART) — kurikulum mutakhir data product terapan.",
+          competitorValue: "Instruktur coding internal Hacktiv8 & mentor praktisi industri.",
+          highlight: true
+        },
+        {
+          parameter: "Kurikulum & Modern AI Tooling",
+          categoryTag: "KURIKULUM",
+          revouValue: "Modern Data Science: Predictive modelling (regresi, klasifikasi), forecasting, ML clustering, AI coding agent via Claude Code Safety Gate (akselerasi koding aman berstandar ITB).",
+          competitorValue: "Python scripting, SQL, Scikit-Learn machine learning, deep learning TensorFlow/Keras, Apache Spark, & deployment API.",
+          highlight: true
+        },
+        {
+          parameter: "Deliverable Proyek Akhir",
+          categoryTag: "PROYEK AKHIR",
+          revouValue: "Working Live Data Product (model tervalidasi dengan interface interaktif Streamlit, misal Churn Decision App) yang diuji langsung di hadapan industry panel defense.",
+          competitorValue: "Capstone project pipeline data & model deployment di akhir minggu bootcamp.",
+          highlight: true
+        }
+      ],
+      competitorLimitation: "Biaya sangat tinggi (Rp 35.000.000), mewajibkan cuti/resign kerja karena jam belajar full-day 09:00–18:00 WIB, dan hanya menerbitkan sertifikat internal lembaga kursus.",
+      revouEdge: "Kredensial resmi universitas teknik nomor 1 di Indonesia (FTI ITB) dengan opsi transfer 1 SKS Magister, biaya separuh lebih terjangkau (Rp 16,99jt), jadwal malam ramah pekerja, bimbingan Head of Data Science XLSMART, dan AI coding agent Claude Code.",
+      acTalkingPoint: "Hacktiv8 DS&ML biayanya Rp 35 juta dan jam belajarnya full-day 09:00–18:00 WIB sehingga kakak harus resign duluan kak. Di program RevoU x ITB Applied Data Science with AI, biayanya jauh lebih terjangkau (Rp 16,99jt), jadwal kelas malam jam 19.30 WIB (tidak perlu resign kerja), dibimbing langsung oleh Head of Data Science XLSMART & Dosen FTI ITB, menggunakan AI coding agent Claude Code, dan mendapatkan sertifikat resmi ITB plus opsi 1 SKS Magister ITB. Jauh lebih prestigius dan fleksibel untuk karir kakak!"
     },
     {
       id: "h8-cda",
@@ -373,14 +394,14 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
         {
           parameter: "Biaya & Skema Pembayaran",
           categoryTag: "INVESTASI & BIAYA",
-          revouValue: "Rp 16.000.000 – Rp 25.000.000-an (Cicilan 0% s.d. 12-18 bulan via kartu kredit/Danacita).",
-          competitorValue: "Rp 18.000.000 (Early Bird Rp 16.000.000). Non-refundable. Cicilan Danacita/CIMB.",
+          revouValue: "• Biaya Program: Rp 17.900.000 – Rp 20.900.000 (Rp 17.9jt – 20.9jt all-in sudah termasuk 8 modul + Apache Airflow ETL, 12 minggu Virtual Internship, & Career+).\n• Upfront: Lunas di awal tanpa bunga/biaya admin.\n• Cicilan: Opsi cicilan fleksibel 3x sampai 12x via kartu kredit & mitra resmi (Danacita).\n• Tanpa Biaya Tambahan: Bebas biaya registrasi & hemat biaya kos (100% Live Online).",
+          competitorValue: "• Biaya Program: Rp 18.000.000 (Early Bird Rp 16.000.000).\n• Registration Fee: Rp 100.000 (Non-refundable).\n• Opsi Pembayaran Resmi:\n  • Upfront (Best Choice): Pembayaran 2 tahap sebelum kelas dimulai (tanpa admin fee & bunga).\n  • Cicilan 0%: Melalui financial partner terdaftar OJK: Danacita & CIMB Niaga / CIMB Niaga Syariah.\n  • Study Now Pay Later (SNPL): Bayar biaya pendidikan dengan masa penangguhan hingga 4 bulan via Danacita.",
           highlight: false
         },
         {
           parameter: "Jadwal Belajar",
           categoryTag: "JADWAL KELAS",
-          revouValue: "Pilihan Fleksibel: Option A Weekday Evening (Senin–Kamis 19:00–21:00 WIB + Review Sabtu) atau Option B Weekend (Sabtu–Minggu 10:00–12:00 & 13:00–15:00 WIB + Review Jumat).",
+          revouValue: "Malam hari (19:00–21:00 WIB) Senin–Kamis (LIVE Lecture & Simulation) + Sesi Review Tugas Opsional: Sabtu 13:00–15:30 WIB — ramah pekerja & mahasiswa (tidak perlu resign).",
           competitorValue: "Malam hari (19:00–22:00 WIB) Senin–Jumat (3 jam/hari cukup padat).",
           highlight: false
         },
@@ -392,10 +413,10 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
           highlight: true
         },
         {
-          parameter: "Kurikulum & Tools Dipelajari",
+          parameter: "Kurikulum & Modul Utama",
           categoryTag: "KURIKULUM",
-          revouValue: "8 Modules + AI: Business Problem Solving (Issue Tree, RCA), Advanced Spreadsheet, SQL BigQuery AI, Python Pandas & PandasAI, Tableau, Looker Studio, Data Storytelling, serta Production-Ready Analytics (Apache Airflow & Automated ETL).",
-          competitorValue: "3 Fase Stack Lengkap: (1) Analytics & Viz: Python, Pandas, SQL, Google Sheets, Looker Studio, Tableau; (2) Data Scraping & API: PostgreSQL, Selenium, BeautifulSoup, FastAPI, Git, GitHub, Vercel; (3) Big Data & GenAI: Apache Spark, dbt, MongoDB, Great Expectations, Apache Airflow, AWS Glue, Docker, OpenAI, Gemini.",
+          revouValue: "8 Modul Analisis Data + AI & Automated ETL:\n• Modul 1-2 - Business Problem Solving & Advanced Spreadsheet: Issue Tree, Root Cause Analysis, Google Sheets AI, financial modeling.\n• Modul 3-4 - SQL & BigQuery AI: Window functions, CTE, complex joins, automated query analysis.\n• Modul 5 - Python for Data Analytics: Pandas, NumPy, PandasAI, automated data cleaning.\n• Modul 6 - Business Intelligence & Dashboards: Tableau, Looker Studio, visual KPI tracking.\n• Modul 7 - Executive Communication: Data storytelling & presentasi rekomendasi ke C-Level.\n• Modul 8 - Production-Ready Analytics: Apache Airflow & Automated ETL pipeline.\n• Virtual Internship (12 Minggu): Menganalisis dataset riil klien industri (Telkom OCA, Zurich).",
+          competitorValue: "3 Fase Kurikulum Analytics & Data Engineering:\n• Fase 1 - Analytics & Visualization: Python, Pandas, SQL, Google Sheets, Looker Studio, & Tableau.\n• Fase 2 - Data Pipeline & REST API: Database PostgreSQL, web scraping (Selenium & BeautifulSoup), FastAPI, Git, GitHub, & Vercel deployment.\n• Fase 3 - Big Data, Data Engineering & GenAI: Apache Spark, dbt, MongoDB, Great Expectations, Apache Airflow, AWS Glue, Docker, OpenAI, & Gemini.",
           highlight: true
         },
         {
@@ -404,17 +425,10 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
           revouValue: "7 Portofolio Proyek standar industri + 12 Minggu Virtual Internship memegang dataset riil dari perusahaan partner nyata (Telkom OCA, Zurich, dll) dan presentasi langsung ke tim internal mitra.",
           competitorValue: "Latihan capstone project internal tanpa program lab klien terpisah.",
           highlight: true
-        },
-        {
-          parameter: "Dukungan Karir & Kebijakan Biaya",
-          categoryTag: "DUKUNGAN KARIR",
-          revouValue: "Biaya non-refundable (tidak ada garansi refund). Pendampingan intensif Career+ (1:1 Personal Career Coach, AI Career Engine, mock interview) dengan 93% placement rate resmi.",
-          competitorValue: "Non-refundable (Tidak ada refund sama sekali).",
-          highlight: false
         }
       ],
       competitorLimitation: "Biaya non-refundable (tidak ada pengembalian uang sama sekali jika tidak dapat kerja), durasi hanya 12 minggu tanpa program lab portofolio terpisah.",
-      revouEdge: "RevoU FSDA berdurasi 7 bulan komprehensif termasuk 8 modul + Apache Airflow ETL, 12 minggu Virtual Internship data nyata klien, dan didukung bimbingan karir 1-on-1 intensif Career+ dengan 93% placement rate resmi.",
+      revouEdge: "RevoU FSDA berdurasi 7 bulan komprehensif termasuk 8 modul + Apache Airflow ETL, 12 minggu Virtual Internship data nyata klien, dan didukung bimbingan karir 1-on-1 intensif Career+.",
       acTalkingPoint: "Hacktiv8 Comprehensive DA durasinya hanya 12 minggu kak. Di RevoU FSDA kakak belajar 7 bulan komprehensif, menguasai Apache Airflow ETL, ada 12 minggu Virtual Internship menganalisis dataset bisnis riil perusahaan, dan dibimbing langsung oleh Career Coach 1-on-1 sampai dapat kerja. Tentu jauh lebih matang untuk persiapan karir kakak :)",
       referenceImages: [
         {
@@ -447,24 +461,24 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
       revouMatchBadge: "ITB",
       tableRows: [
         {
-          parameter: "Biaya & Kredensial Universitas",
-          categoryTag: "INVESTASI & SERTIFIKAT",
-          revouValue: "Rp 15.000.000 (Alumni ITB/RevoU: **Rp 12.750.000** / Diskon 15%), opsi cicilan 0% & corporate invoice + ITB Certificate of Completion & Digital Badge resmi.",
-          competitorValue: "Rp 20.000.000 (Harga normal Rp 25.000.000). Sertifikat kelulusan internal Hacktiv8.",
+          parameter: "Biaya & Skema Pembayaran",
+          categoryTag: "INVESTASI & BIAYA",
+          revouValue: "• Biaya Program: Rp 15.000.000 (Alumni ITB/RevoU: Rp 12.750.000 / Diskon 15%).\n• Upfront / Corporate Invoice: Pembayaran lunas atau penagihan B2B/reimbursement kantor.\n• Cicilan 0%: Tenor fleksibel s.d. 12-18 bulan via kartu kredit/Danacita.\n• Sudah Termasuk: Certificate of Completion & Digital Badge resmi Institut Teknologi Bandung (ITB) + sesi tatap muka kampus.",
+          competitorValue: "• Biaya Program: Rp 20.000.000 (Harga normal Rp 25.000.000).\n• Registration Fee: Rp 100.000 (Non-refundable).\n• Opsi Pembayaran Resmi:\n  • Upfront (Best Choice): Pembayaran 2 tahap sebelum kelas dimulai (tanpa admin fee & bunga).\n  • Cicilan 0%: Melalui financial partner terdaftar OJK: Danacita & CIMB Niaga / CIMB Niaga Syariah.\n  • Study Now Pay Later (SNPL): Bayar biaya pendidikan dengan masa penangguhan hingga 4 bulan via Danacita.",
           highlight: true
         },
         {
           parameter: "Target Peserta & Syarat Masuk",
           categoryTag: "SYARAT MASUK",
-          revouValue: "Para Leader, Manager, Business Head, dan Decision Maker (TIDAK ada syarat koding teknis).",
+          revouValue: "Para Leader, Manager, Business Head, dan Decision Maker (tidak ada syarat koding teknis).",
           competitorValue: "Wajib pengalaman IT min. 1 tahun & tes praktik koding Python/SQL yang ketat.",
           highlight: true
         },
         {
-          parameter: "Kurikulum & Fokus Pembelajaran",
+          parameter: "Kurikulum & Modul Utama",
           categoryTag: "KURIKULUM",
-          revouValue: "Decision making strategis berbasis data & AI, optimalisasi riset tim, workflow otomasi n8n, evaluasi model (Claude, ChatGPT, Gemini).",
-          competitorValue: "Koding pipeline data berat: Databricks, Apache Spark, RAG LangChain, CrewAI, Pinecone.",
+          revouValue: "Kurikulum Kepemimpinan Berbasis Data & AI untuk Leaders (Non-Coding):\n• Strategic Decision-Making: Framework analitis menguji intuisi bisnis dengan data valid.\n• AI-Assisted Business Intelligence: Pemanfaatan model LLM (Claude, ChatGPT, Gemini) untuk riset & benchmarking pasar kilat.\n• Workflow Automation: Otomasi alur kerja operasional tim tanpa koding menggunakan n8n & AI agents.\n• AI Governance & Risk Management: Mitigasi risiko halusinasi AI, keamanan data privasi korporat, & compliance.\n• Campus Networking: Sesi tatap muka eksklusif di Kampus ITB Bandung bersama para leader industri.",
+          competitorValue: "Pipeline Machine Learning & AI Engineering Teknis (Heavy Coding):\n• Data Engineering Pipeline: Databricks, Apache Spark, & arsitektur big data.\n• Vector Storage: Pinecone, Milvus, & embedding storage untuk data retrieval.\n• Advanced RAG: Retrieval-Augmented Generation menggunakan framework LangChain & LlamaIndex.\n• Autonomous AI Agents: Multi-agent system orchestration menggunakan CrewAI & AutoGen.\n• Model Serving: Containerisasi & microservices deployment untuk serving model AI.",
           highlight: true
         },
         {
@@ -489,10 +503,10 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
       revouMatchBadge: "BINUS",
       tableRows: [
         {
-          parameter: "Biaya & Kredensial Universitas",
-          categoryTag: "INVESTASI & SERTIFIKAT",
-          revouValue: "Rp 15.000.000 (Mahasiswa BINUS & Alumni RevoU: **Rp 12.750.000** / Diskon 15%), opsi cicilan 0% s.d. 12-18 bulan via kartu kredit/Danacita + Professional Certificate resmi **BINUS University** & RevoU (72 jam pembelajaran).",
-          competitorValue: "Rp 20.000.000 (Harga normal Rp 25.000.000). Sertifikat kelulusan internal Hacktiv8.",
+          parameter: "Biaya & Skema Pembayaran",
+          categoryTag: "INVESTASI & BIAYA",
+          revouValue: "• Biaya Program: Rp 15.000.000 (Mahasiswa BINUS & Alumni RevoU: Rp 12.750.000 / Diskon 15%).\n• Upfront / Corporate Invoice: Pembayaran lunas atau penagihan invoice B2B kantor.\n• Cicilan 0%: Tenor fleksibel s.d. 12-18 bulan via kartu kredit/Danacita.\n• Sudah Termasuk: Professional Certificate resmi BINUS University & RevoU (72 jam pembelajaran diakui) + 2x tatap muka kampus.",
+          competitorValue: "• Biaya Program: Rp 20.000.000 (Harga normal Rp 25.000.000).\n• Registration Fee: Rp 100.000 (Non-refundable).\n• Opsi Pembayaran Resmi:\n  • Upfront (Best Choice): Pembayaran 2 tahap sebelum kelas dimulai (tanpa admin fee & bunga).\n  • Cicilan 0%: Melalui financial partner terdaftar OJK: Danacita & CIMB Niaga / CIMB Niaga Syariah.\n  • Study Now Pay Later (SNPL): Bayar biaya pendidikan dengan masa penangguhan hingga 4 bulan via Danacita.",
           highlight: true
         },
         {
@@ -503,10 +517,10 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
           highlight: true
         },
         {
-          parameter: "Kurikulum & Otomasi AI",
+          parameter: "Kurikulum & Modul Utama",
           categoryTag: "KURIKULUM",
-          revouValue: "End-to-end AI Automation no-code: n8n, Claude Code, AI Agents untuk eliminasi tugas repetitif kantor.",
-          competitorValue: "Koding teknis pipeline machine learning Databricks, Spark, LangChain, server deployment.",
+          revouValue: "Kurikulum Practical No-Code / Low-Code AI Automation:\n• No-Code AI Automation: Membangun workflow otomatisasi proses bisnis lintas divisi menggunakan n8n & Zapier.\n• AI Coding & Agentic Workflow: Pemanfaatan Claude Code & prompt engineering untuk eliminasi tugas repetitif kantor.\n• Cross-Functional Implementation: Solusi otomasi nyata untuk efisiensi Marketing, HR, Finance, & Operasional bisnis.\n• Capstone Decision App: Membangun prototype otomasi fungsional siap pakai langsung di unit kerja.\n• Campus Showcase: 2x sesi tatap muka dan showcase di Kampus BINUS Kemanggisan Jakarta.",
+          competitorValue: "Kurikulum Berat Rekayasa Koding AI (Wajib Background IT):\n• Data Pipelines: Pemrosesan pipeline data terdistribusi via Apache Spark & Databricks.\n• Vector Storage: Integrasi Pinecone database untuk pencarian semantik berkecepatan tinggi.\n• Generative AI Systems: Rekayasa RAG berbasis LangChain & integrasi LLM API.\n• Multi-Agent Systems: Desain AI agent berbasis CrewAI untuk koding otomasi teknikal.\n• DevOps for AI: Deployment pipeline container di server cloud.",
           highlight: true
         },
         {
@@ -531,10 +545,10 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
       revouMatchBadge: "UI",
       tableRows: [
         {
-          parameter: "Biaya & Kredensial Universitas",
-          categoryTag: "INVESTASI & SERTIFIKAT",
-          revouValue: "Rp 15.000.000 (Reguler) / Rp 12.500.000 (Khusus Alumni RevoU/UI), cicilan 0% & corporate invoice + Sertifikat Resmi **Universitas Indonesia (FEB UI & FIA UI)**.",
-          competitorValue: "Rp 20.000.000 (Harga normal Rp 25.000.000). Sertifikat kelulusan internal Hacktiv8.",
+          parameter: "Biaya & Skema Pembayaran",
+          categoryTag: "INVESTASI & BIAYA",
+          revouValue: "• Biaya Program: Rp 15.000.000 (Reguler) / Rp 12.500.000 (Khusus Alumni RevoU/UI).\n• Upfront / Corporate Invoice: Pembayaran lunas atau penagihan invoice perusahaan.\n• Cicilan 0%: Tenor fleksibel s.d. 12-18 bulan via kartu kredit/Danacita.\n• Sudah Termasuk: Sertifikat Resmi Universitas Indonesia (FEB UI & FIA UI) + Capstone Defense di Kampus UI Depok.",
+          competitorValue: "• Biaya Program: Rp 20.000.000 (Harga normal Rp 25.000.000).\n• Registration Fee: Rp 100.000 (Non-refundable).\n• Opsi Pembayaran Resmi:\n  • Upfront (Best Choice): Pembayaran 2 tahap sebelum kelas dimulai (tanpa admin fee & bunga).\n  • Cicilan 0%: Melalui financial partner terdaftar OJK: Danacita & CIMB Niaga / CIMB Niaga Syariah.\n  • Study Now Pay Later (SNPL): Bayar biaya pendidikan dengan masa penangguhan hingga 4 bulan via Danacita.",
           highlight: true
         },
         {
@@ -545,10 +559,10 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
           highlight: true
         },
         {
-          parameter: "Kurikulum & Aplikasi AI",
+          parameter: "Kurikulum & Modul Utama",
           categoryTag: "KURIKULUM",
-          revouValue: "Corporate finance, transaksi multi-entitas holding, regulasi pajak DJP, 3-statement financial modeling dengan asisten AI.",
-          competitorValue: "Pemrograman pipeline model machine learning Databricks, Apache Spark, vector database.",
+          revouValue: "Kurikulum Strategic Corporate Finance Berbantuan AI:\n• Corporate Financial Strategy: Pengambilan keputusan permodalan, restrukturisasi, & M&A holding.\n• Multi-Entity & Holding Transactions: Transaksi afiliasi, transfer pricing, & regulasi perpajakan DJP.\n• AI Financial Modeling: Pembuatan 3-Statement financial model presisi tinggi dibantu AI agent.\n• Executive FP&A: Analisis varians laba rugi dan simulasi skenario bisnis untuk Board of Directors.\n• UI Campus Defense: Sidang Capstone Project langsung di hadapan Guru Besar & Dosen FEB/FIA UI di Kampus UI Depok.",
+          competitorValue: "Kurikulum Khusus IT / Software Engineering (Tanpa Materi Keuangan):\n• Data & AI Infrastructure: Databricks, Apache Spark, & pipeline Big Data.\n• Vector Embeddings: Pinecone & vector similarity search.\n• RAG & Agent Framework: LangChain, LlamaIndex, & CrewAI multi-agent.\n• Model Serving: API deployment untuk integrasi backend software.\n• (Tidak ada materi financial modeling, akuntansi, atau perpajakan korporasi).",
           highlight: true
         },
         {
@@ -663,7 +677,7 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
         {
           parameter: "Biaya & Skema Pembayaran",
           categoryTag: "INVESTASI & BIAYA",
-          revouValue: "Rp 16.000.000 – Rp 25.000.000-an (Cicilan 0% s.d. 12-18 bulan, all-in sudah termasuk 12 minggu Virtual Internship & Career+).",
+          revouValue: "Rp 17.900.000 – Rp 20.900.000 (Rp 17.9jt – 20.9jt, cicilan 3x–12x via kartu kredit/Danacita, all-in termasuk 12 minggu Virtual Internship & Career+).",
           competitorValue: "Early Bird Rp 15jt | Term 1 Rp 18jt | Term 2 Rp 21jt | Promo 39th Rp 18,5jt | Scholarship Sinarmas Land Rp 12,5jt | Normal Rp 25jt (Non-refundable).",
           highlight: false
         },
@@ -761,7 +775,7 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
         {
           parameter: "Biaya & Skema Pembayaran",
           categoryTag: "INVESTASI & BIAYA",
-          revouValue: "Rp 16.000.000 – Rp 25.000.000-an (Cicilan 0% s.d. 12-18 bulan via kartu kredit/Danacita, tanpa biaya kos). Non-refundable.",
+          revouValue: "Rp 17.900.000 – Rp 20.900.000 (Rp 17.9jt – 20.9jt, cicilan 3x–12x via kartu kredit/Danacita, tanpa biaya kos). Non-refundable.",
           competitorValue: "Early Bird Rp 15jt | Term 1 Rp 18jt | Term 2 Rp 21jt | Promo 39th Rp 18,5jt | Scholarship Sinarmas Land Rp 12,5jt | Normal Rp 25jt. Non-refundable.",
           highlight: false
         },
@@ -792,13 +806,6 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
           revouValue: "Terbuka bagi seluruh jenjang (SMA/SMK, D3, S1) tanpa batasan usia karir.",
           competitorValue: "Mewajibkan minimal lulusan S1/sederajat (hanya program Full Stack Software Development dan Visual Design & UI/UX yang terbuka untuk SMA/SMK), dan fasilitas koneksi kerja dibatasi maks. usia 30 tahun.",
           highlight: true
-        },
-        {
-          parameter: "Dukungan Karir & Hasil Alumni",
-          categoryTag: "PERSIAPAN KERJA",
-          revouValue: "Career+ (1:1 Personal Career Coach selama 7 bulan penuh, AI Career Engine, simulasi interview hiring manager). Rata-rata gaji alumni Rp 9.800.000/bulan.",
-          competitorValue: "Career counseling & koneksi ke jaringan hiring network Purwadhika.",
-          highlight: false
         }
       ],
       competitorLimitation: "Durasi modul materi relatif singkat (12–14 minggu), mewajibkan minimal S1/sederajat, dan batas usia 30 tahun untuk koneksi kerja.",
@@ -817,7 +824,7 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
         {
           parameter: "Biaya & Skema Pembayaran",
           categoryTag: "INVESTASI & BIAYA",
-          revouValue: "Rp 16.000.000 – Rp 25.000.000-an (All-in termasuk alokasi real ads budget jutaan rupiah).",
+          revouValue: "• Biaya Program: Rp 14.900.000 – Rp 17.900.000 (Rp 14.9jt – 17.9jt all-in sudah termasuk 12 modul AI, alokasi real ads budget jutaan rupiah, 12 minggu Virtual Internship, & Career+).\n• Upfront: Lunas di awal tanpa admin fee & tanpa bunga.\n• Cicilan: Opsi cicilan fleksibel 3x sampai 12x via kartu kredit & mitra resmi (Danacita).\n• Bebas Biaya Tambahan: Bebas biaya tools/akun premium (100% disediakan RevoU).",
           competitorValue: "Early Bird Rp 15jt | Term 1 Rp 18jt | Term 2 Rp 21jt | Promo 39th Rp 18,5jt | Scholarship Sinarmas Land Rp 12,5jt | Normal Rp 25jt. Non-refundable.",
           highlight: false
         },
@@ -873,7 +880,7 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
         {
           parameter: "Biaya & Skema Pembayaran",
           categoryTag: "INVESTASI & BIAYA",
-          revouValue: "Rp 16.000.000 – Rp 25.000.000-an (Cicilan 0% s.d. 12-18 bulan via kartu kredit/Danacita). Non-refundable.",
+          revouValue: "Rp 19.500.000 – Rp 22.500.000 (Rp 19.5jt – 22.5jt, cicilan 3x–12x via kartu kredit/Danacita). Non-refundable.",
           competitorValue: "Early Bird Rp 15jt | Term 1 Rp 18jt | Term 2 Rp 21jt | Promo 39th Rp 18,5jt | Scholarship Sinarmas Land Rp 12,5jt | Normal Rp 25jt. Tanpa garansi refund.",
           highlight: false
         },
@@ -964,14 +971,14 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
         {
           parameter: "Biaya & Skema Pembayaran",
           categoryTag: "INVESTASI & BIAYA",
-          revouValue: "Rp 16.000.000 – Rp 25.000.000-an (Cicilan 0% s.d. 12-18 bulan via kartu kredit/Danacita, tanpa biaya kos). Non-refundable.",
+          revouValue: "Rp 17.900.000 – Rp 20.900.000 (Rp 17.9jt – 20.9jt, cicilan 3x–12x via kartu kredit/Danacita, tanpa biaya kos). Non-refundable.",
           competitorValue: "Early Bird Rp 15jt | Term 1 Rp 18jt | Term 2 Rp 21jt | Promo 39th Rp 18,5jt | Scholarship Sinarmas Land Rp 12,5jt | Normal Rp 25jt. Non-refundable.",
           highlight: false
         },
         {
           parameter: "Jadwal Belajar",
           categoryTag: "JADWAL KELAS",
-          revouValue: "Pilihan Fleksibel: Option A Weekday Evening (Senin–Kamis 19:00–21:00 WIB + Review Sabtu) atau Option B Weekend (Sabtu–Minggu 10:00–12:00 & 13:00–15:00 WIB + Review Jumat).",
+          revouValue: "Malam hari (19:00–21:00 WIB) Senin–Kamis (LIVE Lecture & Simulation) + Sesi Review Tugas Opsional: Sabtu 13:00–15:30 WIB — ramah pekerja & mahasiswa (tidak perlu resign).",
           competitorValue: "Senin–Kamis 19:00–22:00 WIB (Online Livestream, 3 jam per sesi).",
           highlight: false
         },
@@ -1002,13 +1009,6 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
           revouValue: "Terbuka bagi seluruh jenjang pendidikan (SMA/SMK, D3, S1) tanpa batasan usia.",
           competitorValue: "Mewajibkan minimal lulusan S1/sederajat (hanya program Full Stack Software Development dan Visual Design & UI/UX yang terbuka untuk SMA/SMK), dan koneksi kerja dibatasi maksimal usia 30 tahun.",
           highlight: true
-        },
-        {
-          parameter: "Dukungan Karir & Bimbingan",
-          categoryTag: "PERSIAPAN KERJA",
-          revouValue: "Career+ (1:1 Personal Career Coach selama 7 bulan penuh, AI Career Engine, simulasi interview hiring manager). Rata-rata gaji alumni Rp 9.800.000/bulan.",
-          competitorValue: "Bimbingan CV & LinkedIn, persiapan interview, dan koneksi ke Purwadhika Hiring Network.",
-          highlight: false
         }
       ],
       competitorLimitation: "Kurikulum murni teknis backend pipeline tanpa latihan presentasi bisnis ke jajaran direksi/stakeholder, mewajibkan min. S1/sederajat, dan batas usia 30 tahun untuk koneksi kerja.",
@@ -1027,7 +1027,7 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
         {
           parameter: "Biaya & Skema Pembayaran",
           categoryTag: "INVESTASI & BIAYA",
-          revouValue: "Rp 16.000.000 – Rp 25.000.000-an (Cicilan 0% s.d. 12-18 bulan via kartu kredit/Danacita). Non-refundable.",
+          revouValue: "Rp 19.500.000 – Rp 22.500.000 (Rp 19.5jt – 22.5jt, cicilan 3x–12x via kartu kredit/Danacita). Non-refundable.",
           competitorValue: "Early Bird Rp 14jt | Term 2 Rp 20jt | Promo 39th Rp 14,5jt | Normal Rp 23jt. Non-refundable.",
           highlight: false
         },
@@ -1083,7 +1083,7 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
         {
           parameter: "Biaya & Skema Pembayaran",
           categoryTag: "INVESTASI & BIAYA",
-          revouValue: "Rp 16.000.000 – Rp 25.000.000-an (All-in sudah termasuk alokasi real ads budget jutaan rupiah, tanpa biaya tools tambahan).",
+          revouValue: "• Biaya Program: Rp 14.900.000 – Rp 17.900.000 (Rp 14.9jt – 17.9jt all-in sudah termasuk 12 modul AI, alokasi real ads budget jutaan rupiah, 12 minggu Virtual Internship, & Career+).\n• Upfront: Lunas di awal tanpa admin fee & tanpa bunga.\n• Cicilan: Opsi cicilan fleksibel 3x sampai 12x via kartu kredit & mitra resmi (Danacita).\n• Bebas Biaya Tambahan: Bebas biaya tools/akun premium (100% disediakan RevoU).",
           competitorValue: "Early Bird Rp 14jt | Term 2 Rp 20jt | Promo 39th Rp 14,5jt | Normal Rp 23jt. Non-refundable.",
           highlight: false
         },
@@ -1150,7 +1150,7 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
         {
           parameter: "Format Belajar & Intensitas Sesi",
           categoryTag: "FORMAT KELAS",
-          revouValue: "100% Live Online interaktif dua arah (pilihan Weekday malam 19:00–21:00 WIB atau Weekend 10:00–15:00 WIB) bersama Lead/Manager aktif unicorn.",
+          revouValue: "100% Live Online interaktif dua arah malam hari (19:00–21:00 WIB) Senin–Kamis + Sesi Review Tugas Opsional Sabtu (ramah pekerja tanpa perlu resign).",
           competitorValue: "Kombinasi video rekaman materi LMS + sesi Live Zoom tanya jawab 2–3x per minggu.",
           highlight: true
         },
@@ -1171,14 +1171,14 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
         {
           parameter: "Reputasi Recruiter Top Tech",
           categoryTag: "TRACK RECORD",
-          revouValue: "Kurikulum terstandar unicorn, 15.000+ alumni aktif di 1.000+ top company (Gojek, Tokopedia, Traveloka, Shopee, Big 4). Gaji rata-rata alumni Rp 9.800.000/bulan.",
+          revouValue: "Kurikulum berstandar praktik industry, 15.000+ alumni aktif di 1.000+ top company (Gojek, Tokopedia, Traveloka, Shopee, Big 4).",
           competitorValue: "Penyaluran ke 1.100+ hiring partner Dibimbing.",
           highlight: false
         }
       ],
       competitorLimitation: "Hanya 2–3 sesi per minggu dan sebagian materi berupa rekaman video; jam interaksi live bersama praktisi jauh lebih sedikit.",
       revouEdge: "100% Live Instruction interaktif, 8 modul lengkap dengan Apache Airflow & Automated ETL, 7 portofolio proyek + 12 minggu Virtual Internship mitra nyata, dan bimbingan karir 1-on-1 intensif Career+.",
-      acTalkingPoint: "Dibimbing cocok kalau kakak ingin belajar santai 2-3 sesi per minggu via video rekaman LMS. Tapi jika kakak ingin switch career total menjadi Data Analyst handal, RevoU menyediakan 100% live class interaktif, bimbingan langsung dari Lead Data unicorn, penguasaan Apache Airflow ETL, dan 12 minggu Virtual Internship analisis real dataset bisnis."
+      acTalkingPoint: "Dibimbing cocok kalau kakak ingin belajar santai 2-3 sesi per minggu via video rekaman LMS. Tapi jika kakak ingin switch career total menjadi Data Analyst handal, RevoU menyediakan 100% live class interaktif, bimbingan langsung dari praktisi industri aktif, penguasaan Apache Airflow ETL, dan 12 minggu Virtual Internship analisis real dataset bisnis."
     },
     {
       id: "db-dm",
@@ -1189,6 +1189,13 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
       revouMatchProgram: "Full Stack Digital Marketing (FSDM)",
       revouMatchBadge: "FSDM",
       tableRows: [
+        {
+          parameter: "Biaya & Skema Pembayaran",
+          categoryTag: "INVESTASI & BIAYA",
+          revouValue: "• Biaya Program: Rp 14.900.000 – Rp 17.900.000 (Rp 14.9jt – 17.9jt all-in sudah termasuk 12 modul AI, alokasi real ads budget jutaan rupiah, 12 minggu Virtual Internship, & Career+).\n• Upfront: Lunas di awal tanpa admin fee & tanpa bunga.\n• Cicilan: Opsi cicilan fleksibel 3x sampai 12x via kartu kredit & mitra resmi (Danacita).\n• Bebas Biaya Tambahan: Bebas biaya registrasi tersembunyi & tanpa biaya tools.",
+          competitorValue: "Rp 7.000.000 – Rp 15.000.000 (Harga ekonomis, banyak diskon promo, benefit gratis ulang kelas seumur hidup tanpa refund dana).",
+          highlight: false
+        },
         {
           parameter: "Format Sesi & Real Budget",
           categoryTag: "FORMAT KELAS",
@@ -1209,13 +1216,6 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
           revouValue: "13 Portfolio Projects praktis mandiri + 12 Minggu Virtual Internship menjalankan kampanye pemasaran nyata untuk perusahaan partner.",
           competitorValue: "Studi kasus latihan dan tugas akhir kelompok.",
           highlight: true
-        },
-        {
-          parameter: "Dukungan Karir & Hasil Alumni",
-          categoryTag: "PERSIAPAN KERJA",
-          revouValue: "Career+ (1:1 Personal Career Coach selama 7 bulan, AI Career Engine, simulasi interview). Gaji rata-rata alumni Rp 7.100.000/bulan dengan 93% placement rate resmi (non-refundable).",
-          competitorValue: "Benefit mengulang kelas gratis tanpa pengembalian biaya.",
-          highlight: false
         }
       ],
       competitorLimitation: "Sebagian materi dipelajari mandiri melalui video rekaman LMS dengan sesi live 2–3x seminggu, dan tidak tercantum alokasi anggaran ads berbayar mandiri untuk tiap siswa.",
@@ -1273,7 +1273,7 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
         {
           parameter: "Biaya & Model Program",
           categoryTag: "INVESTASI & BIAYA",
-          revouValue: "Program Karir Komprehensif End-to-End 7 bulan (Rp 16jt–25jt) termasuk 12 minggu Virtual Internship & Career+ (non-refundable).",
+          revouValue: "Program Karir Komprehensif End-to-End 7 bulan (Rp 17.9jt – 20.9jt, opsi cicilan 3x–12x) termasuk 12 minggu Virtual Internship & Career+ (non-refundable).",
           competitorValue: "Kursus Modular Singkat Rp 899.000 (normal Rp 1.099.000) atau paket bundle BNSP Rp 1,2jt–3,8jt.",
           highlight: false
         },
@@ -1290,18 +1290,11 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
           revouValue: "End-to-end: SQL BigQuery AI, Python Pandas/PandasAI, Tableau, Looker Studio, Advanced Spreadsheet, Data Storytelling, Business Problem Solving (Issue Tree/RCA), serta Production-Ready Analytics (Apache Airflow & Automated ETL).",
           competitorValue: "SQL queries dasar, manipulasi data Pandas, dan persiapan uji kompetensi BNSP.",
           highlight: true
-        },
-        {
-          parameter: "Dukungan Karir (Job Placement)",
-          categoryTag: "PERSIAPAN KERJA",
-          revouValue: "Career+ (1:1 Personal Career Coach selama 7 bulan penuh, AI Career Engine untuk CV/LinkedIn, simulasi interview sampai hired). Rata-rata gaji alumni Rp 9.800.000/bulan.",
-          competitorValue: "Fokus persiapan ujian sertifikasi BNSP (tanpa pendampingan karir 1-on-1 mendalam).",
-          highlight: true
         }
       ],
       competitorLimitation: "Format kursus modular singkat 17 sesi (42,5 jam) fokus pada persiapan ujian kompetensi BNSP, tanpa program magang virtual atau bimbingan karir intensif 1-on-1.",
       revouEdge: "Di RevoU FSDA peserta belajar 7 bulan komprehensif dari nol, menguasai SQL, Python, Tableau, Looker, dan Apache Airflow ETL, serta 12 minggu Virtual Internship mengerjakan data bisnis riil (Telkom OCA, Zurich), didampingi Career Coach 1-on-1 sampai dapat kerja.",
-      acTalkingPoint: "DQLab berformat kursus modular singkat 17 sesi (42,5 jam) fokus pada persiapan sertifikasi BNSP kak. Di RevoU FSDA peserta belajar 7 bulan komprehensif, menguasai SQL, Python, Tableau, Looker Studio, dan Apache Airflow ETL, ada 12 minggu Virtual Internship mengerjakan data bisnis riil perusahaan, didampingi Career Coach 1-on-1 sampai dapat kerja (rata-rata gaji alumni Rp 9,8 jt/bln)."
+      acTalkingPoint: "DQLab berformat kursus modular singkat 17 sesi (42,5 jam) fokus pada persiapan sertifikasi BNSP kak. Di RevoU FSDA peserta belajar 7 bulan komprehensif, menguasai SQL, Python, Tableau, Looker Studio, dan Apache Airflow ETL, ada 12 minggu Virtual Internship mengerjakan data bisnis riil perusahaan, didampingi Career Coach 1-on-1 sampai dapat kerja."
     },
     {
       id: "dq-genai",
@@ -1369,7 +1362,7 @@ const GENERAL_COMPARISON_DATA: GeneralComparisonRow[] = [
     feature: "Biaya & Skema Cicilan",
     revou: "Program Karir: Rp 16jt – 25jt (Cicilan 0% s.d. 12-18 bulan via kartu kredit/Danacita, tanpa biaya kos) | Program Eksekutif: Rp 15jt – 16,99jt (Diskon alumni 15%)",
     general: "Rp 7.000.000 – Rp 45.000.000 (Sering ada biaya pendaftaran/non-refundable)",
-    hacktiv8: "Full-Day Rp 35jt–45jt | Night Rp 18jt–25jt. Reg fee Rp 100rb, non-refundable. Upfront 2 tahap / cicilan",
+    hacktiv8: "Full-Day Rp 35jt–45jt | Night Rp 18jt–25jt. Reg fee Rp 100rb (non-refundable).\n• Upfront (Best Choice): 2 tahap (tanpa admin & bunga)\n• Cicilan 0%: Danacita & CIMB Niaga / CIMB Niaga Syariah\n• SNPL: Penangguhan bayar s.d. 4 bulan via Danacita",
     purwadhika: "Tiered 10 Program: Normal Rp 20jt–35jt (Early Bird Rp 13jt–20jt, Term 1 Rp 15jt–25jt, Term 2 Rp 17jt–30jt, Promo 39th Rp 14,5jt–27,5jt, Sinarmas Rp 10jt–17,5jt). Tools premium tertentu ditanggung peserta.",
     dibimbing: "Rp 7jt – Rp 15jt (Ekonomis, bayar penuh atau cicilan, gratis mengulang batch seumur hidup)",
     dqlab: "Rp 699rb – Rp 3,8jt (Bootcamp single Rp 699rb–2,5jt, Ujian BNSP Rp 1,9jt–2,5jt, Bundle Rp 1,2jt–3,8jt)",
@@ -1379,7 +1372,7 @@ const GENERAL_COMPARISON_DATA: GeneralComparisonRow[] = [
   {
     category: "Sistem Belajar",
     feature: "Jadwal & Komitmen Waktu",
-    revou: "Malam hari (19:00–21:00 WIB Senin–Kamis + Review Sabtu) atau Opsi Weekend (Sabtu–Minggu 10:00–12:00 & 13:00–15:00 WIB) — ramah pekerja & mahasiswa (tanpa resign)",
+    revou: "Malam hari (19:00–21:00 WIB) Senin–Kamis (LIVE Lecture & Simulation) + Sesi Review Tugas Opsional: Sabtu 13:00–15:30 WIB — ramah pekerja & mahasiswa (tidak perlu resign)",
     general: "Bervariasi (beberapa program full-day bentrok jam kantor)",
     hacktiv8: "Full-Day 09:00–18:00 WIB (Senin–Jumat wajib komitmen seharian) atau Night 19:00–22:00 WIB",
     purwadhika: "After Hours (Sen–Kam / Sel & Kam 19:00–22:00) atau Office Hours (Sen–Kam 09:00–12:00)",
@@ -1466,9 +1459,9 @@ const GENERAL_COMPARISON_DATA: GeneralComparisonRow[] = [
   {
     category: "Jaminan Kerja",
     feature: "Kebijakan Refund & Jaminan Karir",
-    revou: "Tidak ada garansi refund dana (Non-refundable). Komitmen difokuskan pada pendampingan karir intensif Career+ (1:1 Career Coach selama 7-8 bulan, AI Career Engine, dan 93% placement rate resmi)",
+    revou: "Tidak ada garansi refund dana (Non-refundable). Komitmen difokuskan pada pendampingan karir intensif Career+ (1:1 Career Coach selama 7-8 bulan dan AI Career Engine)",
     general: "Mayoritas non-refundable atau skema ISA/cicilan mengikat",
-    hacktiv8: "Tanpa refund (Non-refundable), skema Study Now Pay Later atau cicilan",
+    hacktiv8: "Tanpa refund (Non-refundable). Reg fee Rp 100rb & biaya pendidikan tidak dapat ditarik kembali. Opsi: Upfront 2 tahap, Cicilan 0% OJK, atau SNPL",
     purwadhika: "Tidak ada jaminan refund biaya (Non-refundable; fasilitas Purwadhika Hiring Network)",
     dibimbing: "Gratis mengulang batch seumur hidup (tidak ada jaminan refund dana)",
     dqlab: "Tidak ada jaminan refund dana",
@@ -1512,20 +1505,820 @@ const GENERAL_COMPARISON_DATA: GeneralComparisonRow[] = [
     dqlab: "Tidak ada; tidak perlu background IT",
     selfPaced: "Tanpa seleksi",
     revouHighlight: true
-  },
-  {
-    category: "Seleksi Program",
-    feature: "Completion Rate & Placement Peserta",
-    revou: "93% peserta berhasil menyelesaikan program sampai akhir & 93% placement rate resmi",
-    general: "30% – 60% completion rate",
-    hacktiv8: "Tidak ada di halaman web (Outcome: 90% kerja full-time <90 hari, 96% di pekerjaan relevan IT & Data)",
-    purwadhika: "Tidak dipublikasi di halaman website resmi",
-    dibimbing: "Tidak dipublikasi di web (klaim 96% alumni dapat kerja)",
-    dqlab: "Tidak dipublikasi di halaman website resmi",
-    selfPaced: "< 15% completion rate",
-    revouHighlight: true
   }
 ];
+
+// ─────────────────────────────────────────────────────────────────────────────
+// KAMUS INFO POP-UP TOOLS & TEKNOLOGI REVOU (POP-UP BOX INFORMATION)
+// ─────────────────────────────────────────────────────────────────────────────
+interface ToolGlossaryItem {
+  name: string;
+  title: string;
+  roleTag: string;
+  bullets: { bold: string; text: string }[];
+}
+
+const TOOL_GLOSSARY_DATA: Record<string, ToolGlossaryItem> = {
+  Kiro: {
+    name: "Kiro",
+    title: "Kiro",
+    roleTag: "Spec-Driven AI",
+    bullets: [
+      {
+        bold: "Rancang dulu, koding kemudian:",
+        text: "Membuat spec arsitektur sebelum coding seperti engineer profesional."
+      },
+      {
+        bold: "Pegang kendali penuh:",
+        text: "Membagi task dan verifikasi hasil AI, bukan sekadar menerima saran kode."
+      },
+      {
+        bold: "Fondasi transferable:",
+        text: "Paham workflow AI modern mempermudah adaptasi ke berbagai AI tool lainnya."
+      }
+    ]
+  },
+  "Next.js (App Router)": {
+    name: "Next.js (App Router)",
+    title: "Next.js",
+    roleTag: "Modern React",
+    bullets: [
+      {
+        bold: "Standar industri #1:",
+        text: "Framework React paling dominan di tech company global."
+      },
+      {
+        bold: "App Router termutakhir:",
+        text: "Server Components & SSR untuk performa kilat dan SEO terbaik."
+      },
+      {
+        bold: "Paling dicari recruiter:",
+        text: "Syarat utama lowongan Software Engineer modern."
+      }
+    ]
+  },
+  "Next.js": {
+    name: "Next.js",
+    title: "Next.js",
+    roleTag: "Modern React",
+    bullets: [
+      {
+        bold: "Standar industri #1:",
+        text: "Framework React paling dominan di tech company global."
+      },
+      {
+        bold: "App Router termutakhir:",
+        text: "Server Components & SSR untuk performa kilat dan SEO terbaik."
+      },
+      {
+        bold: "Paling dicari recruiter:",
+        text: "Syarat utama lowongan Software Engineer modern."
+      }
+    ]
+  },
+  TypeScript: {
+    name: "TypeScript",
+    title: "TypeScript",
+    roleTag: "Type-Safe JS",
+    bullets: [
+      {
+        bold: "Cegah bug sejak awal:",
+        text: "Menangkap error saat koding sebelum aplikasi dipakai pengguna."
+      },
+      {
+        bold: "Wajib di enterprise:",
+        text: "Standar kolaborasi tim besar di Gojek, Tokopedia, dan tier-1 tech."
+      },
+      {
+        bold: "Nilai tawar karir:",
+        text: "Pembeda utama software engineer profesional vs junior coder."
+      }
+    ]
+  },
+  Python: {
+    name: "Python",
+    title: "Python",
+    roleTag: "Universal AI & Backend",
+    bullets: [
+      {
+        bold: "Bahasa #1 era AI:",
+        text: "Fondasi utama AI engineering, data science, dan backend."
+      },
+      {
+        bold: "Sintaks bersih:",
+        text: "Fokus mendalami logika pemecahan masalah bisnis."
+      },
+      {
+        bold: "Ekosistem terluas:",
+        text: "Menghubungkan software engineering dengan model AI/LLM."
+      }
+    ]
+  },
+  Flask: {
+    name: "Flask",
+    title: "Flask",
+    roleTag: "Python API",
+    bullets: [
+      {
+        bold: "Arsitektur transparan:",
+        text: "Ringan tanpa black-box untuk mendalami cara kerja REST API."
+      },
+      {
+        bold: "Standar AI serving:",
+        text: "Pilihan utama engineer untuk melayani model AI ke aplikasi web."
+      },
+      {
+        bold: "Modular & scalable:",
+        text: "Mudah dipadukan dengan database PostgreSQL dan Docker."
+      }
+    ]
+  },
+  PostgreSQL: {
+    name: "PostgreSQL",
+    title: "PostgreSQL",
+    roleTag: "Enterprise RDBMS",
+    bullets: [
+      {
+        bold: "Database SQL standar dunia:",
+        text: "Keandalan transaksi tinggi (ACID) standar perbankan."
+      },
+      {
+        bold: "Dukungan AI vector:",
+        text: "Mendukung ekstensi pgvector untuk integrasi AI & semantic search."
+      },
+      {
+        bold: "Cloud-ready:",
+        text: "Langsung aplikatif ke AWS RDS, Supabase, dan Cloud SQL."
+      }
+    ]
+  },
+  AWS: {
+    name: "AWS",
+    title: "AWS",
+    roleTag: "Official Partner",
+    bullets: [
+      {
+        bold: "Partner resmi AWS:",
+        text: "RevoU adalah AWS Academy & Training Partner resmi di Indonesia."
+      },
+      {
+        bold: "Praktik cloud nyata:",
+        text: "Deploy langsung ke infrastruktur cloud enterprise (EC2, S3, RDS)."
+      },
+      {
+        bold: "Peluang sertifikasi:",
+        text: "Persiapan kredensial resmi AWS Certified Cloud Practitioner."
+      }
+    ]
+  },
+  Docker: {
+    name: "Docker",
+    title: "Docker",
+    roleTag: "Container Standard",
+    bullets: [
+      {
+        bold: "Lingkungan konsisten:",
+        text: "Aplikasi berjalan identik di laptop maupun server cloud."
+      },
+      {
+        bold: "Standar wajib DevOps:",
+        text: "Membungkus aplikasi terisolasi yang siap scale di cloud."
+      },
+      {
+        bold: "Fondasi cloud-native:",
+        text: "Langkah awal sebelum deployment container di production."
+      }
+    ]
+  },
+  "Playwright (E2E testing)": {
+    name: "Playwright",
+    title: "Playwright",
+    roleTag: "Automated E2E Testing",
+    bullets: [
+      {
+        bold: "Testing multi-browser:",
+        text: "Uji otomatis di Chromium, Firefox, dan Safari sekaligus."
+      },
+      {
+        bold: "Kualitas production:",
+        text: "Mencegah bug regresi merusak fitur yang sudah berjalan."
+      },
+      {
+        bold: "Cepat & andal:",
+        text: "Mekanisme auto-wait cerdas buatan Microsoft tanpa flaky test."
+      }
+    ]
+  },
+  Playwright: {
+    name: "Playwright",
+    title: "Playwright",
+    roleTag: "Automated E2E Testing",
+    bullets: [
+      {
+        bold: "Testing multi-browser:",
+        text: "Uji otomatis di Chromium, Firefox, dan Safari sekaligus."
+      },
+      {
+        bold: "Kualitas production:",
+        text: "Mencegah bug regresi merusak fitur yang sudah berjalan."
+      },
+      {
+        bold: "Cepat & andal:",
+        text: "Mekanisme auto-wait cerdas buatan Microsoft tanpa flaky test."
+      }
+    ]
+  },
+  Locust: {
+    name: "Locust",
+    title: "Locust",
+    roleTag: "Load Testing",
+    bullets: [
+      {
+        bold: "Simulasi beban user:",
+        text: "Uji daya tahan server saat traffic melonjak tinggi."
+      },
+      {
+        bold: "Script berbasis Python:",
+        text: "Skenario pengujian ditulis dengan koding terukur."
+      },
+      {
+        bold: "Diferensiasi industri:",
+        text: "Kesiapan menangani skala riil yang jarang diajarkan kursus lain."
+      }
+    ]
+  },
+  Postman: {
+    name: "Postman",
+    title: "Postman",
+    roleTag: "API Testing",
+    bullets: [
+      {
+        bold: "Validasi API:",
+        text: "Uji request payload, response, status code, dan auth token."
+      },
+      {
+        bold: "Dokumentasi tim:",
+        text: "Standar kolaborasi agar tim backend dan frontend selalu sinkron."
+      },
+      {
+        bold: "Tool harian wajib:",
+        text: "Dipakai setiap hari oleh engineer di industri teknologi."
+      }
+    ]
+  },
+  Claude: {
+    name: "Claude",
+    title: "Claude",
+    roleTag: "Frontier AI",
+    bullets: [
+      {
+        bold: "Reasoning koding terbaik:",
+        text: "Handal untuk arsitektur kompleks, debugging teliti, dan refactoring."
+      },
+      {
+        bold: "AI thinking partner:",
+        text: "Diskusi merancang automated test dan validasi solusi."
+      },
+      {
+        bold: "Kerja 10x lebih efisien:",
+        text: "Mengarahkan AI secara presisi tanpa kehilangan esensi pemahaman."
+      }
+    ]
+  },
+  TailwindCSS: {
+    name: "TailwindCSS",
+    title: "TailwindCSS",
+    roleTag: "Utility-First CSS",
+    bullets: [
+      {
+        bold: "Pembangunan UI kilat:",
+        text: "Styling cepat langsung di komponen React/Next.js."
+      },
+      {
+        bold: "Design system rapi:",
+        text: "Konsistensi warna, font scale, dan spacing responsif."
+      },
+      {
+        bold: "Standar industri modern:",
+        text: "Framework styling paling populer dan dominan saat ini."
+      }
+    ]
+  },
+  "Apache Airflow": {
+    name: "Apache Airflow",
+    title: "Apache Airflow",
+    roleTag: "Data Pipeline",
+    bullets: [
+      {
+        bold: "Orkestrasi otomatis:",
+        text: "Jadwalkan dan monitor pipeline data ribuan tabel otomatis."
+      },
+      {
+        bold: "Standar data tier-1:",
+        text: "Dipakai unicorn dan perbankan untuk alur data warehouse."
+      },
+      {
+        bold: "Diferensiasi RevoU:",
+        text: "Belajar membuat automated pipeline skala produksi nyata."
+      }
+    ]
+  },
+  Airflow: {
+    name: "Airflow",
+    title: "Apache Airflow",
+    roleTag: "Data Pipeline",
+    bullets: [
+      {
+        bold: "Orkestrasi otomatis:",
+        text: "Jadwalkan dan monitor pipeline data ribuan tabel otomatis."
+      },
+      {
+        bold: "Standar data tier-1:",
+        text: "Dipakai unicorn dan perbankan untuk alur data warehouse."
+      },
+      {
+        bold: "Diferensiasi RevoU:",
+        text: "Belajar membuat automated pipeline skala produksi nyata."
+      }
+    ]
+  },
+  Tableau: {
+    name: "Tableau",
+    title: "Tableau",
+    roleTag: "Enterprise BI",
+    bullets: [
+      {
+        bold: "Market leader korporat:",
+        text: "Software visualisasi data pilihan korporasi multinasional."
+      },
+      {
+        bold: "Visualisasi interaktif:",
+        text: "Mengolah jutaan data menjadi insight bisnis dinamis."
+      },
+      {
+        bold: "Data storytelling:",
+        text: "Membantu menyajikan data meyakinkan bagi jajaran direksi."
+      }
+    ]
+  },
+  "Looker Studio": {
+    name: "Looker Studio",
+    title: "Looker Studio",
+    roleTag: "Cloud BI",
+    bullets: [
+      {
+        bold: "Ekosistem Google:",
+        text: "Terhubung instan ke BigQuery, GA4, Sheets, dan Google Ads."
+      },
+      {
+        bold: "Dashboard real-time:",
+        text: "Mudah dibagikan via tautan untuk monitoring KPI harian."
+      },
+      {
+        bold: "Favorit startup:",
+        text: "Visualisasi cepat, efisien, dan hemat biaya lisensi."
+      }
+    ]
+  },
+  BigQuery: {
+    name: "BigQuery",
+    title: "BigQuery",
+    roleTag: "Cloud Data Warehouse",
+    bullets: [
+      {
+        bold: "Query data kilat:",
+        text: "Proses dataset skala terabyte dalam hitungan detik."
+      },
+      {
+        bold: "Fitur BigQuery ML:",
+        text: "Jalankan model machine learning langsung dengan sintaks SQL."
+      },
+      {
+        bold: "Standar industri modern:",
+        text: "Data warehouse utama startup unicorn dan korporat."
+      }
+    ]
+  },
+  Pandas: {
+    name: "Pandas",
+    title: "Pandas",
+    roleTag: "Data Wrangling",
+    bullets: [
+      {
+        bold: "Manipulasi data #1:",
+        text: "Standar mutlak untuk data cleaning, filtering, dan join tabel."
+      },
+      {
+        bold: "Otomasi spreadsheet:",
+        text: "Ubah pekerjaan manual jam-jaman di Excel jadi script hitungan detik."
+      },
+      {
+        bold: "Fondasi machine learning:",
+        text: "Tahap awal wajib dalam setiap proyek data science."
+      }
+    ]
+  },
+  PandasAI: {
+    name: "PandasAI",
+    title: "PandasAI",
+    roleTag: "AI Data Analysis",
+    bullets: [
+      {
+        bold: "Analisis bahasa alami:",
+        text: "Eksplorasi dataset menggunakan prompt teks dibantu AI."
+      },
+      {
+        bold: "Insight generation kilat:",
+        text: "Mempercepat pembersihan dan eksplorasi data secara instan."
+      },
+      {
+        bold: "Standar data modern:",
+        text: "Kombinasi logika koding Python dengan akselerasi generative AI."
+      }
+    ]
+  },
+  SQL: {
+    name: "SQL",
+    title: "SQL",
+    roleTag: "Core Data Language",
+    bullets: [
+      {
+        bold: "Bahasa wajib data:",
+        text: "Standar mutlak ekstraksi, agregasi, dan filtering data bisnis."
+      },
+      {
+        bold: "Tingkat lanjut (Advanced):",
+        text: "Menguasai Window Functions dan CTE yang diuji saat interview."
+      },
+      {
+        bold: "Praktik cloud warehouse:",
+        text: "Dijalankan langsung pada Google BigQuery skala jutaan baris."
+      }
+    ]
+  },
+  "Meta Ads": {
+    name: "Meta Ads",
+    title: "Meta Ads",
+    roleTag: "Paid Social",
+    bullets: [
+      {
+        bold: "Targeting presisi:",
+        text: "Menjangkau miliaran audiens Facebook & Instagram dengan AI targeting."
+      },
+      {
+        bold: "Real budget iklan:",
+        text: "Setiap siswa mengelola anggaran iklan riil langsung saat praktik."
+      },
+      {
+        bold: "Strategi full-funnel:",
+        text: "Optimasi dari awareness hingga konversi penjualan ber-ROAS tinggi."
+      }
+    ]
+  },
+  "Google Ads": {
+    name: "Google Ads",
+    title: "Google Ads",
+    roleTag: "High-Intent Ads",
+    bullets: [
+      {
+        bold: "Target audiens berniat beli:",
+        text: "Menjangkau calon pembeli yang aktif mencari di Google."
+      },
+      {
+        bold: "Ekosistem lengkap:",
+        text: "Google Search, YouTube Ads, Display, hingga Performance Max."
+      },
+      {
+        bold: "Efisiensi biaya:",
+        text: "Optimasi Quality Score dan bidding cerdas untuk menekan CPC."
+      }
+    ]
+  },
+  "TikTok Ads": {
+    name: "TikTok Ads",
+    title: "TikTok Ads",
+    roleTag: "Short-Form Video",
+    bullets: [
+      {
+        bold: "Pertumbuhan tercepat:",
+        text: "Channel akuisisi paling efektif untuk segmen Gen-Z & millenials."
+      },
+      {
+        bold: "Integrasi TikTok Shop:",
+        text: "Memahami struktur campaign untuk optimasi GMV toko online."
+      },
+      {
+        bold: "Kreatif berbasis data:",
+        text: "Melatih hook video dan A/B testing materi konten interaktif."
+      }
+    ]
+  },
+  GA4: {
+    name: "GA4",
+    title: "GA4",
+    roleTag: "Web Analytics",
+    bullets: [
+      {
+        bold: "Standar analitik global:",
+        text: "Pelacakan user journey berbasis event di web & aplikasi."
+      },
+      {
+        bold: "Prediksi berbasis AI:",
+        text: "Metrik prediktif Google untuk strategi retensi dan konversi."
+      },
+      {
+        bold: "Integrasi BigQuery:",
+        text: "Ekspor data mentah langsung untuk analisis data mendalam."
+      }
+    ]
+  },
+  GTM: {
+    name: "GTM",
+    title: "GTM",
+    roleTag: "Tag Management",
+    bullets: [
+      {
+        bold: "Tracking mandiri:",
+        text: "Pasang pixel dan event tracking tanpa perlu bantuan developer."
+      },
+      {
+        bold: "Debugging presisi:",
+        text: "Preview mode memastikan seluruh event tercatat 100% akurat."
+      },
+      {
+        bold: "Eksekusi lincah:",
+        text: "Marketer leluasa merilis tracking kampanye baru seketika."
+      }
+    ]
+  },
+  HackerRank: {
+    name: "HackerRank",
+    title: "HackerRank",
+    roleTag: "Coding Assessment",
+    bullets: [
+      {
+        bold: "Standar rekrutmen global:",
+        text: "Platform ujian koding resmi yang dipakai unicorn untuk hiring."
+      },
+      {
+        bold: "Asah computational thinking:",
+        text: "Mengasah efisiensi algoritma dan penanganan edge cases."
+      },
+      {
+        bold: "Portofolio terpercaya:",
+        text: "Bukti valid kemampuan koding yang diakui hiring manager."
+      }
+    ]
+  },
+  Zapier: {
+    name: "Zapier",
+    title: "Zapier",
+    roleTag: "No-Code Automation",
+    bullets: [
+      {
+        bold: "Otomasi tanpa coding:",
+        text: "Menghubungkan ratusan aplikasi kerja otomatis 24/7."
+      },
+      {
+        bold: "Hemat jam kerja:",
+        text: "Mengeliminasi pekerjaan manual repetitif di unit bisnis."
+      },
+      {
+        bold: "Aset berharga:",
+        text: "Mendongkrak efisiensi dan produktivitas tim operasional."
+      }
+    ]
+  },
+  Make: {
+    name: "Make",
+    title: "Make",
+    roleTag: "Visual Automation",
+    bullets: [
+      {
+        bold: "Alur visual kompleks:",
+        text: "Membangun skenario multi-step dengan logika percabangan fleksibel."
+      },
+      {
+        bold: "Integrasi Webhook & API:",
+        text: "Menghubungkan database internal dengan layanan third-party."
+      },
+      {
+        bold: "Standar startup & korporat:",
+        text: "Otomasi alur leads, transaksi, dan pelaporan berkala."
+      }
+    ]
+  }
+};
+
+interface ToolGlossaryTooltipProps {
+  toolKey: string;
+  children: React.ReactNode;
+}
+
+function ToolGlossaryTooltip({ toolKey, children }: ToolGlossaryTooltipProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const containerRef = useRef<HTMLSpanElement>(null);
+
+  const normalizedKey = useMemo(() => {
+    const lower = toolKey.toLowerCase().trim();
+    return Object.keys(TOOL_GLOSSARY_DATA).find(
+      (k) => k.toLowerCase() === lower
+    ) || toolKey;
+  }, [toolKey]);
+
+  const toolData = TOOL_GLOSSARY_DATA[normalizedKey];
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    }
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen]);
+
+  if (!toolData) {
+    return <>{children}</>;
+  }
+
+  return (
+    <span
+      ref={containerRef}
+      className="relative inline-block group/tool"
+      onMouseEnter={() => setIsOpen(true)}
+      onMouseLeave={() => setIsOpen(false)}
+    >
+      <span
+        role="button"
+        tabIndex={0}
+        onClick={(e) => {
+          e.stopPropagation();
+          setIsOpen((prev) => !prev);
+        }}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.stopPropagation();
+            setIsOpen((prev) => !prev);
+          }
+        }}
+        className="underline decoration-dotted decoration-[#1F7A4D]/60 underline-offset-3 cursor-pointer font-semibold text-inherit hover:text-[#165836] hover:decoration-[#1F7A4D] transition-colors"
+        title={`Info keunggulan ${toolData.name}`}
+      >
+        {children}
+      </span>
+
+      {/* Pop-up Box Minimalis */}
+      {isOpen && (
+        <span
+          onClick={(e) => e.stopPropagation()}
+          className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-50 w-[260px] sm:w-[280px] max-w-[calc(100vw-32px)] p-3 bg-white text-[#141412] rounded-xl border border-[#E8E8E4] shadow-md kiro-popover-animate block text-left pointer-events-auto after:content-[''] after:absolute after:top-full after:left-0 after:right-0 after:h-2"
+          style={{
+            boxShadow: "0 8px 24px -4px rgba(20, 20, 18, 0.12), 0 0 0 1px rgba(20, 20, 18, 0.04)"
+          }}
+        >
+          {/* Header */}
+          <span className="flex items-center justify-between gap-1.5 pb-1.5 border-b border-[#F0F0EC] mb-2 block">
+            <span className="font-display font-bold text-xs text-[#141412]">
+              {toolData.title}
+            </span>
+            {toolData.roleTag && (
+              <span className="font-mono text-[9px] font-semibold px-1.5 py-0.5 rounded bg-[#EBF7EE] text-[#1F7A4D] border border-[#D4EDDA] shrink-0">
+                {toolData.roleTag}
+              </span>
+            )}
+          </span>
+
+          {/* Bullet Points Ringkas */}
+          <span className="space-y-1.5 block text-[11px] leading-relaxed text-[#4B4B46]">
+            {toolData.bullets.map((b, bIdx) => (
+              <span key={bIdx} className="flex items-start gap-1.5 block">
+                <span className="text-[#1F7A4D] shrink-0 select-none font-bold">•</span>
+                <span className="block flex-1">
+                  <strong className="font-semibold text-[#141412]">{b.bold}</strong>{" "}
+                  {b.text}
+                </span>
+              </span>
+            ))}
+          </span>
+
+          {/* Tooltip Arrow */}
+          <span className="absolute top-full left-1/2 -translate-x-1/2 -mt-px border-6 border-transparent border-t-white" />
+          <span className="absolute top-full left-1/2 -translate-x-1/2 border-6 border-transparent border-t-[#E8E8E4] -z-10" />
+        </span>
+      )}
+    </span>
+  );
+}
+
+function escapeRegex(str: string) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function renderTextWithGlossary(text: string) {
+  if (!text || typeof text !== "string") return text;
+
+  // Sorted by length descending so multi-word terms match first
+  const keys = Object.keys(TOOL_GLOSSARY_DATA).sort((a, b) => b.length - a.length);
+  const escapedKeys = keys.map((k) => escapeRegex(k)).join("|");
+  const pattern = new RegExp(`(^|[^a-zA-Z0-9_])(${escapedKeys})(?=[^a-zA-Z0-9_]|$)`, "gi");
+
+  if (!pattern.test(text)) return text;
+  pattern.lastIndex = 0;
+
+  const tokens: (string | React.ReactNode)[] = [];
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+
+  while ((match = pattern.exec(text)) !== null) {
+    const prefix = match[1] || "";
+    const matchedTool = match[2];
+    const matchStart = match.index + prefix.length;
+    const matchEnd = matchStart + matchedTool.length;
+
+    if (matchStart > lastIndex) {
+      tokens.push(text.slice(lastIndex, matchStart));
+    }
+
+    const officialKey = keys.find((k) => k.toLowerCase() === matchedTool.toLowerCase()) || matchedTool;
+
+    tokens.push(
+      <ToolGlossaryTooltip key={`${matchStart}-${officialKey}`} toolKey={officialKey}>
+        {matchedTool}
+      </ToolGlossaryTooltip>
+    );
+
+    lastIndex = matchEnd;
+  }
+
+  if (lastIndex < text.length) {
+    tokens.push(text.slice(lastIndex));
+  }
+
+  return tokens;
+}
+
+function renderBoldText(text: string, enableGlossary: boolean = true) {
+  const parts = text.split(/(\*\*.*?\*\*)/g);
+  return parts.map((part, i) => {
+    if (part.startsWith("**") && part.endsWith("**")) {
+      const inner = part.slice(2, -2);
+      return (
+        <strong key={i} className="font-bold text-[#141412]">
+          {enableGlossary ? renderTextWithGlossary(inner) : inner}
+        </strong>
+      );
+    }
+    return <React.Fragment key={i}>{enableGlossary ? renderTextWithGlossary(part) : part}</React.Fragment>;
+  });
+}
+
+function renderComparisonCell(text: string, isRevou: boolean = false) {
+  if (!text) return null;
+  const lines = text.split("\n").filter((l) => l.trim().length > 0);
+
+  if (lines.length <= 1) {
+    return (
+      <span className={`leading-relaxed text-xs sm:text-[13px] ${isRevou ? "font-semibold text-[#1F7A4D]" : "font-normal text-[#2A2A26]"}`}>
+        {renderBoldText(text, isRevou)}
+      </span>
+    );
+  }
+
+  return (
+    <div className="space-y-1.5 leading-relaxed text-xs sm:text-[13px]">
+      {lines.map((line, idx) => {
+        const trimmed = line.trim();
+        const isSubBullet = trimmed.startsWith("•") && (line.startsWith("    •") || line.startsWith("  •"));
+        const isBullet = trimmed.startsWith("•") || trimmed.startsWith("-");
+        const cleanContent = isBullet ? trimmed.replace(/^[•\-]\s*/, "") : trimmed;
+
+        if (isBullet) {
+          return (
+            <div key={idx} className={`flex items-start gap-1.5 ${isSubBullet ? "pl-3.5" : "pl-0.5"}`}>
+              <span className={`shrink-0 select-none text-[12px] font-bold mt-0.5 ${isRevou ? "text-[#1F7A4D]" : "text-[#73736C]"}`}>
+                •
+              </span>
+              <span className={`flex-1 ${isRevou ? "font-medium text-[#1F7A4D]" : "text-[#2A2A26]"}`}>
+                {renderBoldText(cleanContent, isRevou)}
+              </span>
+            </div>
+          );
+        }
+
+        return (
+          <p key={idx} className={`font-bold ${isRevou ? "text-[#165836]" : "text-[#141412]"}`}>
+            {renderBoldText(trimmed, isRevou)}
+          </p>
+        );
+      })}
+    </div>
+  );
+}
 
 interface AnimatedSelectProps {
   value: string;
@@ -1629,6 +2422,10 @@ function AnimatedSelect({
   );
 }
 
+// ── FEATURE TOGGLES ──
+// Set ke `true` jika tim AC ingin mengaktifkan kembali tab General Comparison (Level Institusi/Makro)
+const SHOW_GENERAL_COMPARISON = false;
+
 export default function ComparisonView() {
   const [activeTab, setActiveTab] = useState<"bootcamp" | "general" | "battlecards">("bootcamp");
   const [institutionViewMode, setInstitutionViewMode] = useState<"headToHead" | "allCompetitors">("headToHead");
@@ -1650,14 +2447,15 @@ export default function ComparisonView() {
     return availableProgramsForSelectedComp.find((p) => p.id === selectedProgramId) || null;
   }, [availableProgramsForSelectedComp, selectedProgramId]);
 
-  // Unique RevoU program badges for this competitor
+  // Unique RevoU programs for this competitor
   const uniqueRevoUProgramsForComp = useMemo(() => {
     const seen = new Set<string>();
-    const list: { badge: string; title: string; firstProgramId: string }[] = [];
+    const list: { program: string; badge: string; title: string; firstProgramId: string }[] = [];
     for (const prog of availableProgramsForSelectedComp) {
-      if (!seen.has(prog.revouMatchBadge)) {
-        seen.add(prog.revouMatchBadge);
+      if (!seen.has(prog.revouMatchProgram)) {
+        seen.add(prog.revouMatchProgram);
         list.push({
+          program: prog.revouMatchProgram,
           badge: prog.revouMatchBadge,
           title: `RevoU ${prog.revouMatchProgram}`,
           firstProgramId: prog.id
@@ -1667,12 +2465,12 @@ export default function ComparisonView() {
     return list;
   }, [availableProgramsForSelectedComp]);
 
-  const handleRevoUMatchChange = (badge: string) => {
-    if (!badge) {
+  const handleRevoUMatchChange = (programName: string) => {
+    if (!programName) {
       setSelectedProgramId("");
       return;
     }
-    const found = uniqueRevoUProgramsForComp.find((item) => item.badge === badge);
+    const found = uniqueRevoUProgramsForComp.find((item) => item.program === programName);
     if (found) {
       setSelectedProgramId(found.firstProgramId);
     }
@@ -1707,7 +2505,7 @@ export default function ComparisonView() {
   const revouProgramOptions = useMemo(() => [
     { value: "", label: "— Pilih Program RevoU —" },
     ...uniqueRevoUProgramsForComp.map((p) => ({
-      value: p.badge,
+      value: p.program,
       label: p.title,
       badge: p.badge,
     })),
@@ -1785,7 +2583,7 @@ export default function ComparisonView() {
 
         {/* ── BARIS 2 (DI BAWAHNYA): PROGRAM KAMI vs PROGRAM KOMPETITOR ── */}
         <div className="pt-3.5 border-t border-[#E8E8E4]">
-          {activeTab === "general" && (
+          {SHOW_GENERAL_COMPARISON && activeTab === "general" && (
             <div className="mb-3 px-3 py-1.5 rounded-lg bg-[#EBF7EE] border border-[#D4EDDA] flex items-center gap-2 text-[11.5px] text-[#1F7A4D]">
               <Info className="w-3.5 h-3.5 shrink-0 text-[#1F7A4D]" />
               <span>
@@ -1803,7 +2601,7 @@ export default function ComparisonView() {
                 </span>
               </label>
               <AnimatedSelect
-                value={activeProgramDetail?.revouMatchBadge || ""}
+                value={activeProgramDetail?.revouMatchProgram || ""}
                 onChange={(val) => handleRevoUMatchChange(val)}
                 options={revouProgramOptions}
                 placeholder="— Pilih Program RevoU —"
@@ -1835,36 +2633,13 @@ export default function ComparisonView() {
               />
             </div>
           </div>
-
-          {/* Quick Pill Buttons untuk Program Kompetitor */}
-          <div className="pt-3 flex flex-wrap items-center gap-1.5">
-            <span className="font-mono text-[10.5px] text-[#8A8A84] font-bold uppercase shrink-0">
-              Pilihan Cepat:
-            </span>
-            {availableProgramsForSelectedComp.map((p) => {
-              const isSelected = p.id === selectedProgramId;
-              return (
-                <button
-                  key={p.id}
-                  type="button"
-                  onClick={() => setSelectedProgramId(p.id)}
-                  className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer whitespace-nowrap select-none border ${isSelected
-                    ? "bg-[#141412] text-[#FFD84D] border-[#141412] shadow-xs active:scale-95"
-                    : "bg-[#F5F5F2] text-[#4B4B46] border-[#E8E8E4] hover:border-[#141412] hover:bg-[#EAEAEA] active:scale-95"
-                    }`}
-                >
-                  {p.programTitle}
-                </button>
-              );
-            })}
-          </div>
         </div>
       </motion.div>
 
       {/* ───────────────────────────────────────────────────────────── */}
       {/* SUB-NAVIGATION TABS (Komparasi Spesifik, Matriks Lembaga, Battlecard) */}
       {/* ───────────────────────────────────────────────────────────── */}
-      <div className="grid grid-cols-3 gap-1 sm:gap-2 border-b-2 border-[#E8E8E4] -mb-[2px]">
+      <div className={`grid ${SHOW_GENERAL_COMPARISON ? "grid-cols-3" : "grid-cols-2"} gap-1 sm:gap-2 border-b-2 border-[#E8E8E4] -mb-[2px]`}>
         <button
           type="button"
           onClick={() => setActiveTab("bootcamp")}
@@ -1877,17 +2652,19 @@ export default function ComparisonView() {
           <span className="truncate">Spesific Comparison</span>
         </button>
 
-        <button
-          type="button"
-          onClick={() => setActiveTab("general")}
-          className={`group flex items-center justify-center gap-1.5 sm:gap-2 px-2 sm:px-3 md:px-4 py-2.5 sm:py-3 text-[11.5px] sm:text-xs md:text-sm font-bold rounded-t-xl transition-all border-b-[3px] cursor-pointer select-none min-w-0 ${activeTab === "general"
-            ? "bg-[#F5F5F0] text-[#141412] border-[#1F7A4D]"
-            : "bg-transparent text-[#7A7A74] border-transparent hover:text-[#141412] hover:bg-[#F5F5F0]/60"
-            }`}
-        >
-          <Scale className={`w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 ${activeTab === "general" ? "text-[#1F7A4D]" : "text-[#8A8A84]"}`} />
-          <span className="truncate">General Comparison</span>
-        </button>
+        {SHOW_GENERAL_COMPARISON && (
+          <button
+            type="button"
+            onClick={() => setActiveTab("general")}
+            className={`group flex items-center justify-center gap-1.5 sm:gap-2 px-2 sm:px-3 md:px-4 py-2.5 sm:py-3 text-[11.5px] sm:text-xs md:text-sm font-bold rounded-t-xl transition-all border-b-[3px] cursor-pointer select-none min-w-0 ${activeTab === "general"
+              ? "bg-[#F5F5F0] text-[#141412] border-[#1F7A4D]"
+              : "bg-transparent text-[#7A7A74] border-transparent hover:text-[#141412] hover:bg-[#F5F5F0]/60"
+              }`}
+          >
+            <Scale className={`w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 ${activeTab === "general" ? "text-[#1F7A4D]" : "text-[#8A8A84]"}`} />
+            <span className="truncate">General Comparison</span>
+          </button>
+        )}
 
         <button
           type="button"
@@ -1947,10 +2724,6 @@ export default function ComparisonView() {
                     <span className="font-mono text-[9.5px] sm:text-[10px] font-bold uppercase tracking-wider text-[#141412] bg-[#E8E8E4] px-2 py-0.5 rounded">
                       MATCHING PROGRAM
                     </span>
-                  </div>
-                  <div className="flex items-center gap-1.5 font-mono text-[9.5px] sm:text-[10px] text-[#1F7A4D] font-bold bg-[#EBF7EE] border border-[#D4EDDA] px-2 py-0.5 rounded">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#1F7A4D]"></span>
-                    <span>VERIFIED METRICS · OKT 2026</span>
                   </div>
                 </motion.div>
 
@@ -2028,14 +2801,8 @@ export default function ComparisonView() {
                 >
                   <div className="flex items-center gap-1.5">
                   </div>
-                  <span className="font-mono text-[10px] text-[#8A8A84] shrink-0">
-                    Sistem Perbandingan Resmi
-                  </span>
                 </motion.div>
               </motion.div>
-              <p className="text-xs text-[#8A8A84] mt-0.5">
-                Perbandingan rinci kurikulum spesifik, silabus, biaya resmi, jadwal sesi, tools, dan fasilitas hands-on lab program ini.
-              </p>
             </div>
 
             {/* ── TABEL UTAMA (FORMAT PERSIS SEPERTI TABEL GENERAL TAPI ISINYA SPESIFIK) ── */}
@@ -2075,16 +2842,16 @@ export default function ComparisonView() {
                           </span>
                         </div>
                       </td>
-                      <td className="p-3.5 sm:p-4 text-[#141412] font-medium border-r border-[#E8E8E4]/70 bg-[#EBF7EE]/40 align-top">
-                        <div className="flex items-start gap-1.5">
+                      <td className="p-3.5 sm:p-4 border-r border-[#E8E8E4]/70 bg-[#EBF7EE]/40 align-top">
+                        <div className="flex items-start gap-2">
                           <CheckCircle2 className="w-3.5 h-3.5 text-[#1F7A4D] shrink-0 mt-0.5" />
-                          <span className="leading-relaxed font-semibold text-[#1F7A4D] text-xs sm:text-[13px]">
-                            {row.revouValue}
-                          </span>
+                          <div className="flex-1 min-w-0">
+                            {renderComparisonCell(row.revouValue, true)}
+                          </div>
                         </div>
                       </td>
-                      <td className="p-3.5 sm:p-4 text-[#141412] align-top leading-relaxed font-normal bg-[#FAFAF8]/60 text-xs sm:text-[13px]">
-                        {row.competitorValue}
+                      <td className="p-3.5 sm:p-4 align-top leading-relaxed bg-[#FAFAF8]/60 text-xs sm:text-[13px]">
+                        {renderComparisonCell(row.competitorValue, false)}
                       </td>
                     </tr>
                   ))}
@@ -2153,7 +2920,7 @@ export default function ComparisonView() {
                             key={tIdx}
                             className="font-mono text-[9px] px-1.5 py-0.5 rounded bg-white text-[#4B4B46] border border-[#E8E8E4]"
                           >
-                            {t}
+                            {renderTextWithGlossary(t)}
                           </span>
                         ))}
                       </div>
@@ -2177,7 +2944,7 @@ export default function ComparisonView() {
                 <div className="text-[11.5px] text-[#1F7A4D] space-y-1 pt-1 border-t border-[#D4EDDA]/80">
                   <p>✓ 100% Live Instruction malam (19:00–21:00 WIB) — tidak perlu resign kerja</p>
                   <p>✓ 12 Minggu Virtual Internship mengerjakan real client & real budget/dataset (bukan sekadar tugas simulasi internal)</p>
-                  <p>✓ Pendampingan Karir Intensif Career+ (1:1 Coaching sampai Hired & 93% Placement Rate)</p>
+                  <p>✓ Pendampingan Karir Intensif Career+ (1:1 Coaching sampai Hired)</p>
                 </div>
               </div>
 
@@ -2211,23 +2978,8 @@ export default function ComparisonView() {
                 Pilih Program untuk Membuka Tabel Komparasi Spesifik
               </h4>
               <p className="text-sm text-[#8A8A84] max-w-[56ch] mx-auto leading-relaxed">
-                Tabel komparasi spesifik head-to-head akan muncul setelah Anda memilih program di dropdown atas, atau klik salah satu pilihan cepat di bawah ini:
+                Silakan pilih program pada dropdown di atas untuk melihat tabel komparasi detail head-to-head secara spesifik.
               </p>
-            </div>
-            <div className="flex flex-wrap justify-center items-center gap-2 pt-2">
-              <span className="font-mono text-xs text-[#8A8A84] font-bold uppercase w-full mb-1">
-                Pilihan Cepat Program {competitorDisplayNames[selectedCompetitorKey]}:
-              </span>
-              {availableProgramsForSelectedComp.map((p) => (
-                <button
-                  key={p.id}
-                  type="button"
-                  onClick={() => setSelectedProgramId(p.id)}
-                  className="px-3.5 py-2 rounded-xl text-xs font-bold bg-[#F5F5F2] hover:bg-[#FFD84D] hover:text-[#141412] text-[#4B4B46] border border-[#E8E8E4] transition-all cursor-pointer shadow-2xs active:scale-95"
-                >
-                  {p.programTitle} →
-                </button>
-              ))}
             </div>
           </motion.div>
         ))}
@@ -2235,7 +2987,7 @@ export default function ComparisonView() {
       {/* ───────────────────────────────────────────────────────────── */}
       {/* 2. TAB: MATRIKS KOMPARASI LEMBAGA (MAKRO EKOSISTEM BELAJAR)  */}
       {/* ───────────────────────────────────────────────────────────── */}
-      {activeTab === "general" && (
+      {SHOW_GENERAL_COMPARISON && activeTab === "general" && (
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -2260,7 +3012,7 @@ export default function ComparisonView() {
                 Matriks Perbandingan Standar Mutu Lembaga
               </h3>
               <p className="text-xs text-[#60605B] max-w-[72ch] leading-relaxed">
-                Perbandingan makro sistem pendidikan, support system belajar, jaminan refund, sertifikasi universitas, tingkat seleksi, dan completion rate RevoU vs kompetitor.
+                Perbandingan makro sistem pendidikan, support system belajar, jaminan refund, sertifikasi universitas, dan tingkat seleksi RevoU vs kompetitor.
               </p>
             </div>
 
@@ -2334,13 +3086,13 @@ export default function ComparisonView() {
                       <td className="p-3.5 sm:p-4 text-[#141412] font-medium border-r border-[#E8E8E4]/70 bg-[#EBF7EE]/40 align-top">
                         <div className="flex items-start gap-1.5">
                           <CheckCircle2 className="w-3.5 h-3.5 text-[#1F7A4D] shrink-0 mt-0.5" />
-                          <span className="leading-relaxed font-semibold text-[#1F7A4D] text-xs sm:text-[13px]">
-                            {row.revou}
-                          </span>
+                          <div className="flex-1 min-w-0">
+                            {renderComparisonCell(row.revou, true)}
+                          </div>
                         </div>
                       </td>
                       <td className="p-3.5 sm:p-4 text-[#141412] border-r border-[#E8E8E4]/70 align-top leading-relaxed font-normal bg-[#FAFAF8]/60 text-xs sm:text-[13px]">
-                        {row[selectedCompetitorKey] || row.general}
+                        {renderComparisonCell(row[selectedCompetitorKey] || row.general, false)}
                       </td>
                       <td className="p-3.5 sm:p-4 text-[#8A8A84] align-top leading-relaxed text-xs">
                         {row.selfPaced}
@@ -2394,22 +3146,22 @@ export default function ComparisonView() {
                       <td className="p-3 sm:p-3.5 text-[#141412] font-medium border-r border-[#E8E8E4]/70 bg-[#EBF7EE]/40 align-top">
                         <div className="flex items-start gap-1">
                           <CheckCircle2 className="w-3 h-3 text-[#1F7A4D] shrink-0 mt-0.5" />
-                          <span className="leading-relaxed font-semibold text-[#1F7A4D] text-xs">
-                            {row.revou}
-                          </span>
+                          <div className="flex-1 min-w-0">
+                            {renderComparisonCell(row.revou, true)}
+                          </div>
                         </div>
                       </td>
                       <td className="p-3 sm:p-3.5 text-[#141412] border-r border-[#E8E8E4]/70 align-top leading-relaxed text-xs">
-                        {row.hacktiv8}
+                        {renderComparisonCell(row.hacktiv8, false)}
                       </td>
                       <td className="p-3 sm:p-3.5 text-[#141412] border-r border-[#E8E8E4]/70 align-top leading-relaxed text-xs">
-                        {row.purwadhika}
+                        {renderComparisonCell(row.purwadhika, false)}
                       </td>
                       <td className="p-3 sm:p-3.5 text-[#141412] border-r border-[#E8E8E4]/70 align-top leading-relaxed text-xs">
-                        {row.dibimbing}
+                        {renderComparisonCell(row.dibimbing, false)}
                       </td>
                       <td className="p-3 sm:p-3.5 text-[#141412] align-top leading-relaxed text-xs">
-                        {row.dqlab}
+                        {renderComparisonCell(row.dqlab, false)}
                       </td>
                     </tr>
                   ))}
@@ -2423,7 +3175,7 @@ export default function ComparisonView() {
             <Info className="w-4 h-4 text-[#A15C00] shrink-0 mt-0.5" />
             <div>
               <strong className="text-[#141412] font-semibold">Catatan Transparansi &amp; Validasi Data (Audit Website Resmi Okt 2026): </strong>
-              Completion rate tidak dipublikasikan oleh satu pun kompetitor di halaman website resmi mereka (kandidat sumber sekunder: laporan CIRR Hacktiv8 PDF dan Outcomes Report Dibimbing). RevoU transparan mempublikasikan 93% completion rate dan 93% career placement rate resmi. Untuk perbandingan detail teknis kurikulum, biaya paket, dan modul per program, silakan buka tab <strong>Komparasi Spesifik Program</strong>.
+              Completion rate tidak dipublikasikan oleh satu pun kompetitor di halaman website resmi mereka (kandidat sumber sekunder: laporan CIRR Hacktiv8 PDF dan Outcomes Report Dibimbing). RevoU transparan mempublikasikan 93% completion rate resmi. Untuk perbandingan detail teknis kurikulum, biaya paket, dan modul per program, silakan buka tab <strong>Komparasi Spesifik Program</strong>.
             </div>
           </div>
 
@@ -2479,10 +3231,10 @@ export default function ComparisonView() {
               <div className="p-3.5 rounded-xl border border-[#D4EDDA] bg-[#EBF7EE]/60 space-y-1.5 sm:col-span-2 lg:col-span-2">
                 <div className="flex items-center gap-2 font-display font-bold text-xs text-[#1F7A4D]">
                   <CheckCircle2 className="w-3.5 h-3.5 text-[#1F7A4D]" />
-                  <span>5. Bimbingan Karir Intensif Career+ &amp; 93% Placement Rate</span>
+                  <span>5. Bimbingan Karir Intensif Career+</span>
                 </div>
                 <p className="text-xs text-[#4B4B46] leading-relaxed">
-                  Pendampingan 1:1 Personal Career Coach selama 7-8 bulan, AI Career Engine untuk CV/LinkedIn, dan simulasi interview langsung bersama Hiring Manager hingga siap kerja (93% placement rate resmi).
+                  Pendampingan 1:1 Personal Career Coach selama 7-8 bulan, AI Career Engine untuk CV/LinkedIn, dan simulasi interview langsung bersama Hiring Manager hingga siap kerja.
                 </p>
               </div>
             </div>
@@ -2526,7 +3278,7 @@ export default function ComparisonView() {
                   </p>
                   <p>
                     <strong className="text-[#1F7A4D] font-semibold">RevoU: </strong>
-                    Rp 16.000.000 – Rp 25.000.000-an (Opsi cicilan bunga 0% s.d. 12-18 bulan via kartu kredit/mitra resmi Danacita, tanpa biaya kos/transportasi tambahan).
+                    Rp 14.9jt – 22.5jt (FSDM: Rp 14.9jt – 17.9jt | FSDA: Rp 17.9jt – 20.9jt | FSSE: Rp 19.5jt – 22.5jt, opsi cicilan 3x–12x via kartu kredit/Danacita, tanpa biaya kos).
                   </p>
                 </div>
               </div>
@@ -2627,7 +3379,7 @@ export default function ComparisonView() {
                 <ul className="text-xs text-[#141412] space-y-1.5 list-disc pl-4 leading-relaxed">
                   {activeBattlecard.revouWins.map((win, idx) => (
                     <li key={idx}>
-                      <span>{win}</span>
+                      <span>{renderBoldText(win)}</span>
                     </li>
                   ))}
                 </ul>

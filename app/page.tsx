@@ -982,9 +982,8 @@ INSTRUKSI PENTING:
                   key={tab.key}
                   type="button"
                   onClick={() => handleModeChange(tab.key as ModeKey)}
-                  className={`relative px-4 py-2.5 text-xs sm:text-sm font-bold rounded-lg transition-colors cursor-pointer select-none flex items-center gap-2 shrink-0 ${
-                    isActive ? "text-[#141412]" : "text-[#7A7A74] hover:text-[#141412]"
-                  }`}
+                  className={`relative px-4 py-2.5 text-xs sm:text-sm font-bold rounded-lg transition-colors cursor-pointer select-none flex items-center gap-2 shrink-0 ${isActive ? "text-[#141412]" : "text-[#7A7A74] hover:text-[#141412]"
+                    }`}
                 >
                   {isActive && (
                     <motion.div
@@ -1085,11 +1084,10 @@ INSTRUKSI PENTING:
                   onClick={handleGenerate}
                   whileHover={!isLoading && inputText.trim() ? { y: -1 } : {}}
                   whileTap={!isLoading && inputText.trim() ? { scale: 0.98 } : {}}
-                  className={`inline-flex items-center gap-2 font-display font-bold text-sm sm:text-base px-6 py-3 rounded-xl select-none transition-all duration-150 ${
-                    !inputText.trim() || isLoading
+                  className={`inline-flex items-center gap-2 font-display font-bold text-sm sm:text-base px-6 py-3 rounded-xl select-none transition-all duration-150 ${!inputText.trim() || isLoading
                       ? "bg-[#E8E8E4] text-[#8A8A84] cursor-not-allowed border border-[#D9D9D4]"
                       : "bg-[#FFD84D] hover:bg-[#FFCC1A] text-[#141412] border border-[#E5B500] shadow-xs cursor-pointer active:bg-[#E5B500]"
-                  }`}
+                    }`}
                 >
                   {isLoading ? (
                     <>
@@ -1114,15 +1112,20 @@ INSTRUKSI PENTING:
                 </button>
               </div>
 
-              {/* Autonote status */}
-              <p className="text-[12px] text-[#8A8A84] m-0 flex items-center gap-1.5">
-                <span className="inline-flex items-center gap-1.5 font-mono text-[11px] text-[#1F7A4D] font-bold">
-                  <span className="w-2 h-2 rounded-full bg-[#1F7A4D]" />
-                  AI siap
-                </span>
-                <span>&middot;</span>
-                <span>AI memetakan program RevoU yang paling relevan secara otomatis dari knowledge base.</span>
-              </p>
+              {/* Autonote status: 3D Pulsing Beacon */}
+              <div className="flex items-center gap-2 m-0 select-none">
+                <div className="beacon-3d-badge inline-flex items-center gap-2 px-2.5 py-1 rounded-full cursor-default">
+                  <span className="relative flex h-2.5 w-2.5 items-center justify-center">
+                    {/* 3D Wave Ripple */}
+                    <span className="beacon-3d-ripple absolute inline-flex h-full w-full rounded-full" />
+                    {/* 3D Spherical Dot with light reflection */}
+                    <span className="beacon-3d-dot relative inline-flex rounded-full h-2 w-2" />
+                  </span>
+                  <span className="font-mono text-[11px] font-bold tracking-wider text-[#166534] uppercase drop-shadow-[0_1px_0_rgba(255,255,255,0.8)]">
+                    AI siap
+                  </span>
+                </div>
+              </div>
 
               {errorMessage && (
                 <div className="p-3 bg-red-50 border border-red-200 text-[#B42318] text-xs rounded-lg">

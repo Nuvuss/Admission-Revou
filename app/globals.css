@@ -140,4 +140,79 @@
   transform: translateY(-50%) rotate(180deg) scale(1.08);
 }
 
+/* ======================================================== */
+/* Kiro Info Popover Animation                              */
+/* ======================================================== */
+@keyframes kiroPop {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 8px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+}
+
+.kiro-popover-animate {
+  animation: kiroPop 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ======================================================== */
+/* 3D Blinking / Pulsing Live Beacon Indicator              */
+/* ======================================================== */
+@keyframes beacon3dPulse {
+  0%, 100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 4px rgba(34, 197, 94, 0.7));
+  }
+  50% {
+    transform: scale(1.22);
+    filter: drop-shadow(0 0 10px rgba(34, 197, 94, 1));
+  }
+}
+
+@keyframes beacon3dRipple {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.85;
+  }
+  70% {
+    opacity: 0.35;
+  }
+  100% {
+    transform: scale(2.8);
+    opacity: 0;
+  }
+}
+
+.beacon-3d-dot {
+  background: radial-gradient(circle at 35% 30%, #86EFAC 0%, #22C55E 45%, #15803D 85%, #052E16 100%);
+  box-shadow: inset 0 1px 1.5px rgba(255, 255, 255, 0.9),
+              0 1px 2px rgba(0, 0, 0, 0.3),
+              0 0 6px rgba(34, 197, 94, 0.8);
+  animation: beacon3dPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.beacon-3d-ripple {
+  background: radial-gradient(circle, rgba(74, 222, 128, 0.7) 0%, rgba(34, 197, 94, 0) 70%);
+  animation: beacon3dRipple 2s cubic-bezier(0.1, 0.8, 0.3, 1) infinite;
+}
+
+.beacon-3d-badge {
+  background: linear-gradient(180deg, #F0FDF4 0%, #DCFCE7 100%);
+  border: 1px solid #86EFAC;
+  box-shadow: 0 1px 2px rgba(20, 20, 18, 0.05),
+              inset 0 1px 0 rgba(255, 255, 255, 0.9),
+              0 0 8px -2px rgba(34, 197, 94, 0.25);
+  transition: all 0.2s ease;
+}
+
+.beacon-3d-badge:hover {
+  box-shadow: 0 2px 6px rgba(20, 20, 18, 0.08),
+              inset 0 1px 0 rgba(255, 255, 255, 1),
+              0 0 12px 0 rgba(34, 197, 94, 0.4);
+}
+
+
 
