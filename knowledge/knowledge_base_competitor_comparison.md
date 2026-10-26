@@ -72,20 +72,20 @@ Setiap kali calon siswa (*leads*) menyebut atau membandingkan RevoU dengan lemba
 
 ### BATTLECARD 3: DIBIMBING
 
-| Kategori | Dibimbing (Data Resmi Website Okt 2026) | RevoU |
+| Kategori | Dibimbing (Data Resmi Website Scrape Okt 2026) | RevoU |
 | :--- | :--- | :--- |
-| **Price & Cicilan** | • Biaya masuk terjangkau (~Rp 7.000.000 – Rp 15.000.000 tergantung program & promo).<br>• Bayar penuh atau cicilan internal/mitra. Gratis mengulang batch seumur hidup. | • Rp 16.000.000 – Rp 25.000.000-an.<br>• Investasi sebanding dengan durasi belajar 2x lebih panjang dan 100% live instruction. |
-| **Duration & Schedule** | • Pre-bootcamp mandiri + 24 minggu bootcamp + 2 minggu post-bootcamp + 4 minggu Job Connect (total ±7 bulan).<br>• Pilihan weekday atau weekend (frekuensi 2–3 sesi per minggu). | • 6 – 9 bulan (5x per minggu sesi diskusi & interaksi, >80 total sesi live + 3 bulan RevoU Labs).<br>• Jadwal terstruktur Senin–Jumat 19:00–21:00 WIB. |
-| **Format Pembelajaran** | Online & offline, supported with AI. | **100% Live Instruction interaktif dua arah** (+ Akses rekaman & materi ajar selamanya). |
-| **Sesi Tanya Jawab & Diskusi** | Dedicated class manager untuk kebutuhan di dalam & luar kelas. | 5x per minggu live interaktif dua arah bersama praktisi industri. |
-| **Kurikulum & Case Study** | Tugas & project menantang untuk portofolio, plus pengalaman magang nyata. | Disesuaikan dengan kebutuhan industri di Indonesia & SEA + 3 bulan RevoU Labs dengan real client. |
+| **Price & Cicilan** | • Bayar Hari Ini atau Cicilan (harga di-render dinamis via JS / estimasi promo ~Rp 7.000.000 – Rp 15.000.000 via WhatsApp admission 081227741541).<br>• Benefit gratis mengulang batch seumur hidup (non-refundable). | • Rp 16.000.000 – Rp 25.000.000-an.<br>• Investasi sebanding dengan durasi belajar 2x lebih panjang dan 100% live instruction harian. |
+| **Duration & Schedule** | • Pre-bootcamp mandiri + 24 minggu bootcamp + 2 minggu post-bootcamp + 4 minggu Job Connect (total ±7–7,5 bulan).<br>• Frekuensi 2–3 sesi per minggu (weekday atau weekend). Catatan: meta-description FE & QA tertulis 5 bulan. | • 6 – 9 bulan (5x per minggu sesi diskusi & interaksi, >80 total sesi live + 3 bulan RevoU Labs / Virtual Internship).<br>• Jadwal terstruktur Senin–Jumat 19:00–21:00 WIB. |
+| **Format Pembelajaran** | Online (seluruh 8 program), Offline Jakarta (Data Analytics Batch 3 & Full-Stack Batch 1), serta Private Session (Full-Stack). | **100% Live Instruction interaktif dua arah** (+ Akses rekaman & materi ajar selamanya). |
+| **Sesi Tanya Jawab & Diskusi** | Dedicated class manager untuk kebutuhan di dalam & luar kelas (sesi live 2–3x seminggu). | 5x per minggu live interaktif dua arah bersama praktisi industri. |
+| **Kurikulum & Case Study** | 8 Program Tech spesifik (Data Engineering, DA, AI, FE, DevOps, QA, BE, Full-Stack) dengan tugas mandiri/kelompok. | Disesuaikan dengan kebutuhan industri di Indonesia & SEA + 3 bulan Virtual Internship dengan real client. |
 | **Support System Belajar** | 475+ mentor yang dievaluasi berkala; Talent Support selama & setelah bootcamp. | Pengajar Praktisi + Section Manager + Team Lead + Mentor + Konselor Karir. |
-| **Kelas Karir & Review CV** | Konsultasi karier & portofolio 1-on-1, review CV & LinkedIn, latihan interview, Talent Showcase. | 16 sesi LIVE Career Coach + 1-on-1 Personalized Coaching & portfolio review. |
-| **Sertifikasi & Kampus** | Terakui Kemendikti; layanan BNSP & placement program untuk universitas; Forbes 30 Under 30 Asia 2025. | RevoU Certificate bertaraf internasional + Sertifikasi Resmi Universitas Top (**ITB, BINUS x AWS, UI**). |
-| **Komunitas & Network** | 10K+ lulusan; 100.000+ digital learners; 1.100+ hiring partners. | 6.000+ Alumni Aktif di 1.000+ top company & 550.000+ member pelajar. |
-| **Seleksi Masuk** | Tes masuk tidak tercantum; Job Connect hanya untuk lulusan berpredikat eligible. | Tes kemampuan dasar & wawancara (tingkat penerimaan <10%) untuk jamin circle terbaik. |
-| **What They Genuinely Do Better** | Pilihan kategori program sangat variatif (mencakup ESG, Legal, HR, Supply Chain) dengan biaya masuk lebih ekonomis (*budget-friendly*) dan benefit gratis mengulang batch seumur hidup. |
-| **Where RevoU Wins** | 1. **Kedalaman Jam Terbang Live**: >80 sesi live intensif bersama praktisi aktif vs sesi rekaman video.<br>2. **RevoU Labs 3 Bulan**: Pengalaman kerja portofolio nyata dengan anggaran iklan dan data riil.<br>3. **Standar Seleksi & Circle Belajar**: Standar seleksi ketat menjamin circle belajar ambisius dan suportif.<br>4. **Track Record Unicorn & Multinasional**: Reputasi lulusan RevoU diakui recruiter unicorn terkemuka. |
+| **Kelas Karir & Review CV** | Job Connect 4 minggu: konsultasi karier & portofolio 1-on-1, review CV & LinkedIn, latihan interview, Talent Showcase ke 1.100+ partner (meta QA: 700+). FAQ AI sebut perbedaan Job Connect vs Job Connect Plus. | 16 sesi LIVE Career Coach + 1-on-1 Personalized Coaching & portfolio review Career+. |
+| **Sertifikasi & Kampus** | Terakui Kemendikti; 4.96/5 SwitchUp (Back-End: 4.9/5), 4.81 Course Report; Forbes 30 Under 30 Asia 2025. | RevoU Certificate bertaraf internasional + Sertifikasi Resmi Universitas Top (**ITB, BINUS x AWS, UI**). |
+| **Komunitas & Network** | 10K+ alumni (Back-End: 4K+); 100.000+ digital learners; 1.100+ hiring partners. | 15.000+ Alumni Aktif di 1.000+ top company & 550.000+ member pelajar. |
+| **Seleksi Masuk** | Tes masuk tidak tercantum / tanpa tes koding ketat; Job Connect hanya untuk lulusan berpredikat eligible. | Tes kemampuan dasar & wawancara (tingkat penerimaan <10%) untuk jamin circle terbaik. |
+| **What They Genuinely Do Better** | Menawarkan pilihan program tech variatif (termasuk DevOps Batch 1 dan QA Batch 4), tools AI modern (LangChain, GroqAPI, PgVector), opsi offline Jakarta di program tertentu, serta benefit gratis mengulang batch seumur hidup dengan biaya masuk terjangkau. |
+| **Where RevoU Wins** | 1. **Kedalaman Jam Terbang Live**: >80 sesi live intensif harian (210+ jam) bersama praktisi aktif vs 2-3 sesi/minggu dominan rekaman video LMS.<br>2. **12 Minggu Virtual Internship**: Pengalaman kerja portofolio nyata dengan anggaran iklan dan dataset riil mitra enterprise (Telkom OCA, Zurich).<br>3. **Kredensial Kampus Nomor 1**: Kemitraan resmi ITB, BINUS x AWS, dan UI dengan transfer SKS Magister jauh lebih tinggi nilainya dibanding sertifikat kursus internal.<br>4. **Track Record Unicorn & Multinasional**: Reputasi lulusan RevoU diakui recruiter unicorn terkemuka. |
 | **One Proof Point** | 10K+ lulusan & 100.000+ digital learners. Completion rate belajar tidak dipublikasi resmi di web. RevoU transparan mempublikasikan 93% completion rate & >80 sesi intensif live harian. |
 
 ---
@@ -241,7 +241,7 @@ Setiap kali calon siswa (*leads*) menyebut atau membandingkan RevoU dengan lemba
    - Harga: Rp 35.000.000 (Early Bird Rp 33.000.000)
    - Durasi: 12 minggu (4 minggu persiapan + 8 minggu bootcamp)
    - Batch: 047 (26 Okt 2026 – 29 Jan 2027) · 048 (23 Nov 2026 – 26 Feb 2027)
-   - Materi: Fase 0 (Python, SQL, Tableau, Pandas) -> Fase 1 (ML Scikit-Learn, Streamlit, HuggingFace) -> Fase 2 (AWS Big Data, Airflow, Spark, TensorFlow)
+   - Materi: Fase 1 (Python, Pandas, NumPy, PostgreSQL, BeautifulSoup, Seaborn, Tableau, GitHub) -> Fase 2 (Scikit-Learn, SciPy, Streamlit, Hugging Face) -> Fase 3 (TensorFlow, Apache Spark, Elasticsearch, Great Expectations, Apache Airflow, Docker, AWS)
    - Klaim: 87% bekerja di 2025, rerata gaji Rp 8 jt
 
 3. **Comprehensive Data Analytics**:
@@ -249,7 +249,7 @@ Setiap kali calon siswa (*leads*) menyebut atau membandingkan RevoU dengan lemba
    - Harga: Rp 18.000.000 (Early Bird Rp 16.000.000)
    - Durasi: 12 minggu (Remote)
    - Batch: 025 (26 Okt 2026 – 29 Jan 2027) · 026 (23 Nov 2026 – 26 Feb 2027) · 027 (14 Des 2026 – 12 Mar 2027)
-   - Materi: SQL, Python, FastAPI, Spreadsheet, Tableau, Looker Studio, Big Data ETL, GenAI
+   - Materi: Fase 1 (Python, Pandas, NumPy, PostgreSQL, BeautifulSoup, GitHub, Seaborn, Tableau) -> Fase 2 (Scikit-Learn, SciPy, Streamlit, Hugging Face) -> Fase 3 (Docker, Elasticsearch, Great Expectations, Apache Airflow, Apache Spark, AWS, TensorFlow)
    - Klaim: Rerata gaji entry level Rp 7 jt
 
 4. **Back End Golang**:
@@ -257,7 +257,7 @@ Setiap kali calon siswa (*leads*) menyebut atau membandingkan RevoU dengan lemba
    - Harga: Rp 22.000.000 (Early Bird Rp 20.000.000)
    - Durasi: 16 minggu (Remote)
    - Batch: 020 (9 Nov 2026 – 5 Mar 2027) · 021 (7 Des 2026 – 9 Apr 2027)
-   - Materi: Go fundamental, Goroutine, Channel, REST API, Gin/Echo, Relational DB (PostgreSQL), NoSQL, Performance Load Testing (Grafana k6), Microservices, gRPC, Docker, K8s, Cloud Deployment (Railway)
+   - Materi: HTML, CSS, SQL, Go fundamental, Goroutine, Channel, REST API, Gin/Echo, Relational DB (PostgreSQL), NoSQL, Performance Load Testing (Grafana k6), Microservices, gRPC, Docker, K8s, Cloud Deployment (Railway)
    - Klaim: Rerata gaji Rp 7,9 jt, dapat kerja rata-rata 7 minggu
 
 5. **Applied AI Engineer**:
@@ -266,7 +266,7 @@ Setiap kali calon siswa (*leads*) menyebut atau membandingkan RevoU dengan lemba
    - Durasi: 12 minggu (Remote)
    - Syarat: Aktif Python & SQL, min 1 tahun di IT (screening test)
    - Batch: 003 (26 Okt 2026 – 15 Jan 2027) · 004 (23 Nov 2026 – 26 Feb 2027)
-   - Materi: Data architecture, LLM, RAG (LangChain), CrewAI, n8n, MCP, Pinecone, Redis
+   - Materi: Tier 1 Data & Pipeline (Python, Pandas, PostgreSQL, MongoDB, Databricks, Apache Spark, Apache Airflow, Great Expectations, Grafana, Tableau, FastAPI, Docker, AWS, Google Cloud) -> Tier 2 LLM & Agents (OpenAI, Gemini, Ollama, Hugging Face, LangChain, LangSmith, CrewAI, Pinecone, Redis) -> Tier 3 Automation & Cloud (n8n, Model Context Protocol/MCP, DigitalOcean, Hetzner, IDCloudHost, Biznet Gio Cloud, VPSDime)
 
 ---
 
@@ -278,83 +278,156 @@ Setiap kali calon siswa (*leads*) menyebut atau membandingkan RevoU dengan lemba
 1. **AI Automation Engineer**:
    - Jadwal: Sen–Kam 19:00–22:00 WIB (Online Livestream)
    - Harga: Early Bird Rp 13jt | Term 1 Rp 15jt | Term 2 Rp 17jt | Promo 39th Rp 14,5jt | Sinarmas Land Rp 10jt | Normal Rp 20jt
-   - Durasi: 6 minggu modul (24 sesi) + 3–4 minggu final project kelompok 1–3 orang
-   - Modul: BPM & AI fundamentals -> Workflow automation (Zapier, Make, n8n, LLM) -> AI business use cases (CS, sales, ops)
+   - Platforms Covered: Zapier, Make, PostgreSQL, Maze, WhatsApp Business, Slack, Telegram Bot, Discord, Google Data Studio, Gmail, Google Sheets, Google Docs, Google Forms, Miro
+   - AI Boost: ChatGPT, Ollama, n8n
+   - Modul: BPM & AI fundamentals -> Workflow automation & platform integrations -> AI Boost (ChatGPT, Ollama, n8n) -> AI business use cases (CS, sales, ops)
 
 2. **AI Engineering**:
    - Jadwal: Sen–Kam 19:00–22:00 WIB (On Campus / Online Livestream)
    - Harga: Early Bird Rp 20jt | Term 1 Rp 25jt | Term 2 Rp 30jt | Promo 39th Rp 27,5jt | Sinarmas Land Rp 17,5jt | Normal Rp 35jt
-   - Durasi: 15 minggu modul (60 sesi) + 4 minggu final project
-   - Modul: DS/Python -> ML/DL -> NLP & LLM (RAG, LangChain, vector DB) -> CV -> n8n/MCP -> MLOps
+   - Platforms Covered: Python, VSCode, Pandas, MySQL, Git, GitHub, Seaborn, Scikit-Learn, TensorFlow, ChatGPT, OpenAI, Pinecone, FAISS, MongoDB, Hugging Face, LangChain, Langfuse, OpenCV, GCP, Docker, Flask, FastAPI, MLflow, ONNX
+   - Modul: Python & Data (MySQL, Pandas) -> ML & Computer Vision (Scikit-Learn, TensorFlow, OpenCV) -> GenAI & Vector Search (OpenAI, LangChain, Pinecone, FAISS) -> MLOps & Deployment (Flask, FastAPI, Docker, GCP, MLflow, ONNX, Langfuse)
 
 3. **Data Science & Machine Learning**:
    - Jadwal: Sen–Kam 19:00–22:00 (3 Mos) atau Sel & Kam 19:00–22:00 (6 Mos)
    - Harga: Early Bird Rp 15jt | Term 1 Rp 18jt | Term 2 Rp 21jt | Promo 39th Rp 18,5jt | Sinarmas Land Rp 12,5jt | Normal Rp 25jt
-   - Durasi: 12–14 minggu (45 sesi) + 4 minggu project
-   - Modul: Python programming -> Data analysis (SQL, Tableau, stats) -> ML & AI (supervised, ensemble, unsupervised)
+   - Platforms Covered: Jupyter, Python, Tableau, Pandas, VSCode, MySQL, ChatGPT, OpenAI
+   - Modul: Python programming & environment (Jupyter, VSCode, Pandas) -> Data analysis & Database (MySQL, Tableau, stats) -> ML & AI (Scikit-Learn, ChatGPT, OpenAI)
 
 4. **Business & Data Analyst**:
    - Jadwal: After Hours (Sen–Kam 19:00–22:00 / Sel & Kam 19:00–22:00) atau Office Hours (Sen–Kam 09:00–12:00)
    - Harga: Early Bird Rp 15jt | Term 1 Rp 18jt | Term 2 Rp 21jt | Promo 39th Rp 18,5jt | Sinarmas Land Rp 12,5jt | Normal Rp 25jt
-   - Durasi: 9 minggu (45 sesi) + 5 minggu project
-   - Modul: Business foundation & KPI -> Data pipeline (SQL, Pandas, BigQuery, dbt) -> Role analytics (Tableau, RFM)
+   - Platforms Covered: Jupyter, Python, Tableau, Pandas, VSCode, MySQL, Notion, ChatGPT, OpenAI
+   - Modul: Business foundation & KPI -> Data pipeline (MySQL, Pandas) -> Role analytics & dashboarding (Tableau) -> AI & Productivity (ChatGPT, OpenAI, Notion)
 
 5. **Data Engineering**:
    - Jadwal: Sen–Kam 19:00–22:00 WIB (Online Livestream)
    - Harga: Early Bird Rp 15jt | Term 1 Rp 18jt | Term 2 Rp 21jt | Promo 39th Rp 18,5jt | Sinarmas Land Rp 12,5jt | Normal Rp 25jt
    - Durasi: 14 minggu (44 sesi) + 5 minggu project
-   - Modul: Python OOP/Docker -> Database & Data Warehouse -> Data pipeline (Airflow, BigQuery, Spark, GCP)
+   - Platforms Covered: Python, Pandas, Jupyter, VSCode, Linux, Git, Kubernetes, GitHub, PostgreSQL, Docker, Scala, Airflow, BigQuery, Spark, PySpark, GCP, ChatGPT, OpenAI
+   - Modul: Foundations & Coding (Python, Scala, Linux CLI, Git, GitHub) -> Database & Warehouse (PostgreSQL, BigQuery) -> Big Data & Cloud (Spark, PySpark, GCP) -> Pipeline & DevOps (Airflow, Docker, Kubernetes) -> AI Coding (ChatGPT, OpenAI)
 
 6. **Cybersecurity**:
    - Jadwal: Sen–Kam 19:00–22:00 WIB (Online Livestream)
    - Harga: Early Bird Rp 15jt | Term 1 Rp 18jt | Term 2 Rp 21jt | Promo 39th Rp 18,5jt | Sinarmas Land Rp 12,5jt | Normal Rp 25jt
-   - Durasi: 13 minggu (52 sesi) + 4–5 minggu project
-   - Modul: Tech foundations -> Networking -> OS/Scripting -> Blue Team (SOC, SIEM) -> Red Team (ethical hacking)
+   - Platforms Covered: Aircrack-ng, Burp Suite Community, VirtualBox, Wazuh / Splunk Free, Metasploit Framework, MISP, nmap, OpenSSL, Postman, PowerShell / Bash, Python 3.x, theHarvester, Snort, Sysinternals Suite, Volatility, Wireshark, ZAP Proxy, Cisco Packet Tracer
+   - Modul: Networking & Recon (nmap, Wireshark, Packet Tracer) -> OS & Scripting (Python, Bash/PowerShell) -> Blue Team / SOC & SIEM (Wazuh, Splunk, Snort, MISP) -> Red Team & Pentest (Burp Suite, Metasploit, ZAP Proxy, Aircrack-ng) -> Digital Forensics (Volatility, Sysinternals)
 
 7. **Quality Assurance Engineer**:
    - Jadwal: Sen–Kam 19:00–22:00 WIB
    - Harga: Early Bird Rp 14jt | Term 2 Rp 20jt | Promo 39th Rp 14,5jt | Normal Rp 23jt
-   - Durasi: 8 minggu modul
+   - Durasi: 8 minggu modul (32 sesi) + 4 minggu final project
+   - Platforms Covered: Jira, Microsoft Excel, MySQL, Zephyr Scale, DBeaver, Postman, GitHub, Node.js, Visual Studio Code, ChatGPT, Gemini, Claude
+   - Modul: Test Management (Jira, Zephyr Scale, Excel) -> Database Testing (MySQL, DBeaver) -> API & Automation Testing (Postman, Node.js, VSCode, GitHub) -> Generative AI for QA (ChatGPT, Gemini, Claude)
 
 8. **Social Media & Content Creation**:
    - Jadwal: Sen–Kam 19:00–22:00 WIB
    - Harga: Early Bird Rp 14jt | Term 2 Rp 20jt | Promo 39th Rp 14,5jt | Normal Rp 23jt
    - Durasi: 5 minggu (30 sesi) + 5 minggu project (kelompok maks 5 orang)
-   - Modul: Marketing foundation -> Content planning -> Copywriting -> Short-form video -> AI-optimized strategy
+   - Platforms Covered: Instagram, Threads, TikTok, YouTube, LinkedIn, X, Canva, CapCut, Rival IQ, UpDog, Seedance, HiggsField AI, ChatGPT, Gemini, Claude
+   - Modul: Organic Social Platforms (Instagram, Threads, TikTok, YouTube, LinkedIn, X) -> Creative Production (Canva, CapCut) -> Social Intelligence & Analytics (Rival IQ, UpDog, Seedance) -> Generative AI Strategy & Video (HiggsField AI, ChatGPT, Gemini, Claude)
 
 9. **Fullstack Software Development**:
    - Jadwal: After Hours (Sen–Kam 19:00–22:00 / Sel & Kam 19:00–22:00) atau Office Hours (09:00–12:00)
    - Harga: Early Bird Rp 15jt | Term 1 Rp 18jt | Term 2 Rp 21jt | Promo 39th Rp 18,5jt | Sinarmas Land Rp 12,5jt | Normal Rp 25jt
-   - Durasi: 13 minggu (45 sesi) + 4–5 minggu project (kelompok 2–3 orang)
-   - Modul: Programming -> Frontend React -> Backend Node/Prisma -> AI development -> SSR/PWA -> Cloud CI/CD
+   - Platforms Covered: Visual Studio Code, GitHub, ChatGPT, React.js, TailwindCSS, Vite, Axios, Node.js, Express.js, PostgreSQL, PrismaJS, Jest, Docker
+   - Modul: Frontend (React.js, TailwindCSS, Vite, Axios) -> Backend (Node.js, Express.js, PostgreSQL, PrismaJS) -> Testing & Containerization (Jest, Docker) -> AI Coding (ChatGPT)
 
 10. **Digital Marketing**:
     - Jadwal: After Hours (Sen–Kam 19:00–22:00 / Sel & Kam 19:00–22:00) atau Office Hours (09:00–12:00)
     - Harga: Early Bird Rp 15jt | Term 1 Rp 18jt | Term 2 Rp 21jt | Promo 39th Rp 18,5jt | Sinarmas Land Rp 12,5jt | Normal Rp 25jt
     - Durasi: 12 minggu materi (3 level × 15 sesi = 45 sesi) + 5 minggu final project persiapan s.d. presentasi (kelompok 7–8 orang didampingi 1 mentor internal praktisi, wajib lolos prerequisite nilai akhir modul)
-    - Modul: Level 1 (Foundation, SEO, Paid) -> Level 2 (Organic, Social commerce, CRM) -> Level 3 (Paid ads, Marketplace, CRO)
+    - Platforms Covered: Ahrefs, Canva, Meta, Google, Google Analytics, Google Ads, Facebook, Instagram, Youtube, X, Tiktok, Semrush, Ubersuggest, Mailchimp, ChatGPT, OpenAI
+    - Modul: Level 1 (Foundation, SEO via Ahrefs/Semrush/Ubersuggest, Paid Search) -> Level 2 (Social Media Meta/TikTok/YouTube/X, Content Canva, CRM Mailchimp) -> Level 3 (Performance Paid Ads, Analytics GA4, AI Copywriting via ChatGPT/OpenAI)
 
 ---
 
-### C. DIBIMBING (14 Program across 3 Kategori)
-• **Format**: Online Livestream, Offline Jakarta/Surabaya, atau Private.
-• **Durasi Umum**: ±4 bulan (Pre-bootcamp + 24 minggu + 2 minggu post + 4 minggu Job Connect).
-• **Fasilitas**: 1.100+ hiring partner, gratis mengulang batch seumur hidup.
+### C. DIBIMBING (8 Program Tech Bootcamp Resmi — Scrape 26 Okt 2026)
+• **Sumber Data**: Website resmi dibimbing.id (Diambil: 26 Oktober 2026).
+• **Alur di Semua Program**: Pre-bootcamp (belajar mandiri) → Bootcamp 24 minggu → Post-bootcamp 2 minggu → Job Connect 4 minggu (Total ±7,5 bulan).
+• **USP Umum**: Gratis mengulang batch seumur hidup · Penyaluran ke 1.100+ hiring partners · Akses materi seumur hidup · 475+ mentor · Networking 100.000+ digital learners.
+• **Klaim Kredensial**: Diakui Kemendikti · 4.96/5 SwitchUp (Back-End: 4.9/5) · 4.81 Course Report · 10K+ alumni (Back-End: 4K+) · 96% alumni dapat kerja.
+• **Job Connect**: Konsultasi karier & portofolio 1-on-1, review CV & LinkedIn, latihan interview, talent showcase, penyaluran kerja (hanya untuk yang eligible).
+• **Kontak Admission**: WhatsApp 081227741541 (Biaya di-render dinamis via JavaScript sehingga harus konfirmasi via WA).
 
-1. **Data Engineering** (SQL, Python, Spark, Cloud DWH)
-2. **Data Analytics** (SQL, Python, Excel, Power BI, Tableau, LangChain, Groq, PgVector)
-3. **AI Engineering** (Python, SQL, ML, Generative AI)
-4. **Front-End Web Development** (HTML, CSS, JS, React)
-5. **Back-End Development** (API, Database, Node/Golang/Java)
-6. **Full-Stack Web Development** (End-to-end web & deployment)
-7. **DevOps Engineering** (CI/CD, Cloud, Docker, K8s)
-8. **Quality Assurance** (Manual testing, API automation, Web/Mobile testing)
-9. **Cyber Security** (Ethical hacking, pentest, network security, digital forensics)
-10. **Digital Marketing** (SEO, Content, Social media, Ads, CRM)
-11. **Human Resources** (Recruitment, payroll, OD, performance management)
-12. **Supply Chain Management** (Procurement, warehouse, logistics)
-13. **ESG & Sustainability Management** (ESG reporting, carbon, waste, GRI Standards)
-14. **Legal & Policy** (Legal drafting, compliance, risk governance, contract)
+#### Rincian 8 Program Tech:
+1. **Data Engineering (Batch 12)**
+   - Format & Bayar: Online · Bayar Hari Ini
+   - Fokus: SQL, Python, Spark, Cloud DWH, pipeline, big data
+   - Tools: Colab, Git, Google Cloud, Docker, Airflow, Spark, Hadoop, Kafka, PostgreSQL, WSL
+   - Klaim Gaji: Data Engineer Rp 9–18jt/bulan
+   - Mentor Dari: DANA, Kredivo, ZEALS, MIFX, INA Digital, Bank Mega, Singaporean Bank
+   - URL: `https://dibimbing.id/layanan/bootcamp/data-engineering`
+
+2. **Data Analytics (Weekend Online Batch 21+, Offline Jakarta Batch 3)**
+   - Format & Bayar: Online + Offline Jakarta (BARU) · Bayar Hari Ini / Cicilan · Weekday & Weekend
+   - Fokus: Excel, SQL, Python, Business Metrics & KPI, Power BI, Tableau
+   - Tools: Excel/Spreadsheet, Colab, MongoDB, VS Code, LangChain, PostgreSQL, PgVector, GroqAPI, Streamlit, DBeaver (memasukkan tools AI modern)
+   - Klaim Gaji: DA Rp 7,6–15jt; BI Analyst Rp 9,8–18,5jt; BI Developer Rp 6,8–13jt; Marketing/Sales Analyst Rp 7,6–15,6jt
+   - Mentor Dari: Ajaib, OY! Indonesia, Philip Morris, Astro, Mekari
+   - URL: `https://dibimbing.id/layanan/bootcamp/data-analyst`
+
+3. **AI Engineering (Batch 41 — Rebrand dari Data Science & ML)**
+   - Format & Bayar: Online · Bayar Hari Ini (FAQ: menyebut program bergaransi serta beda Job Connect vs Job Connect Plus)
+   - Fokus: Python, SQL, statistik, ML, deep learning, NLP, Generative AI (URL masih `/data-science`, footer Back-End masih pakai nama lama)
+   - Tools: Colab, PostgreSQL, DBeaver, MongoDB, VS Code, Anaconda, LangChain, Docker, Streamlit, Tableau
+   - Klaim Gaji: AI Engineer Rp 8,7–14,4jt; MLE Rp 8,2–28,9jt; Data Scientist Rp 6,9–12,8jt; CV/NLP Engineer Rp 5,9–10,5jt; MLOps Rp 8–10jt
+   - Mentor Dari: Evermos, Bank Multiarta Sentosa, Astra International, Bank Mega, Otten Coffee
+   - URL: `https://dibimbing.id/layanan/bootcamp/data-science`
+
+4. **Front-End Web Development (Batch 26+)**
+   - Format & Bayar: Online · Bayar Hari Ini (FAQ: bisa daftar FE dan BE sekaligus)
+   - Catatan Durasi: Meta-description menyebut "5 bulan", alur tertulis 24 minggu (+6 minggu post-bootcamp)
+   - Fokus: HTML, CSS, Git, React (hanya Front-End terpisah)
+   - Tools: HTML, CSS, JavaScript, React, Redux, Git, GitHub, Netlify, Hackerrank, VS Code
+   - Klaim Gaji: FE Developer Rp 5–8jt; FE Engineer Rp 6–9jt; Web Designer Rp 5–6jt
+   - Mentor Dari: SALT, Rekosistem, Paragon, Apotek Digital, Hijr Studio, Telkom Indonesia, PrivyID, Amartha
+   - URL: `https://dibimbing.id/layanan/bootcamp/front-end-web-development`
+
+5. **DevOps Engineering (Batch 1 — Program Baru)**
+   - Format & Bayar: Online · Bayar Hari Ini (Batch 1, belum ada rekam jejak alumni di pasar kerja)
+   - Fokus: Automation, CI/CD, containerization, infra management, deployment
+   - Tools: Linux, Git, SSH, Virtual Machine, NGINX, Docker, Kubernetes, WSL, VS Code, Miro
+   - Klaim Gaji: DevOps Engineer Rp 5,7–19,5jt; SRE Rp 10,1–19,6jt
+   - Mentor Dari: BTPN Syariah, SPE Solution (baru dari 2 perusahaan)
+   - URL: `https://dibimbing.id/layanan/bootcamp/devops-engineering`
+
+6. **Quality Assurance (Batch 4 — Program Muda)**
+   - Format & Bayar: Online · Bayar Hari Ini
+   - Catatan: Meta sebut "5 bulan" vs alur 24 minggu (+6 minggu); meta partner "700+" vs body "1.100+"
+   - Fokus: Foundation QA, manual testing, API & DB testing, web/mobile automation, advanced testing
+   - Tools: Jira, Miro, MySQL, VS Code, Selenium, Appium, GitHub, JMeter
+   - Klaim Gaji: Manual Tester Rp 3–4jt; Software Tester Rp 7–8jt; QA Automation Rp 8–15jt; QA Engineer Rp 7–8,5jt; QA Lead Rp 10–20jt
+   - Mentor Dari: OCBC, NOICE, BCI Central, GoTo Financial, Stockbit, Chronicle
+   - URL: `https://dibimbing.id/layanan/bootcamp/quality-assurance`
+
+7. **Back-End Development (Batch 6+)**
+   - Format & Bayar: Online · Bayar Hari Ini (hanya Back-End terpisah)
+   - Catatan: Footer halaman masih pakai nama lama "Data Science & AI Machine Learning"; stat tertulis 4.9/5 SwitchUp & 4K+ lulusan (beda dari 10K+ di program lain)
+   - Fokus: JavaScript dasar, database, Git, Docker
+   - Tools: Draw.io, VS Code, MySQL, MongoDB, Git, Docker, JavaScript, Java, Spring Framework, GPT
+   - Klaim Gaji: BE Developer Rp 7–14jt; BE Engineer Rp 6–12jt; Software Engineer Rp 7–12jt
+   - Mentor Dari: AccelByte, bynsm.io, GovTech Procurement, Srw&co, ParagonCorp, Amartha, Apotek Digital
+   - URL: `https://dibimbing.id/layanan/bootcamp/backend-development`
+
+8. **Full-Stack Web Development (Online Batch 11, Offline JKT Batch 1)**
+   - Format & Bayar: Online + Offline Jakarta + Private Session (BARU) · Bayar Hari Ini / Cicilan
+   - Fokus: HTML, CSS, JavaScript, React, database, API, deployment (MERN konvensional)
+   - Tools: VS Code, JavaScript, HTML, CSS, MySQL, MongoDB, React, Docker, Netlify, GitHub
+   - Klaim Gaji: FE Developer Rp 6–10jt; BE Developer Rp 6–12jt; Full-Stack Rp 5–10jt
+   - Mentor Dari: bynsm.io, GovTech Procurement, Srw&co, ParagonCorp, Amartha, PrivyID, Apotek Digital, ex-BitHealth
+   - URL: `https://dibimbing.id/layanan/bootcamp/full-stack-web-development`
+
+#### Insight untuk Battlecard:
+• **AI Engineering** adalah rebrand dari "Data Science & AI Machine Learning" — URL masih `/data-science`, footer halaman Back-End masih pakai nama lama.
+• **Durasi:** meta-description FE & QA menyebut "5 bulan", sementara alur resmi tertulis 24 minggu (+6 minggu post-bootcamp).
+• **Hiring partners:** meta QA masih "700+", body halaman "1.100+".
+• **Back-End** pakai stat berbeda: 4.9/5 SwitchUp dan 4K+ lulusan (program lain 10K+).
+• **Program muda:** DevOps baru Batch 1, QA Batch 4, Back-End Batch 6.
+• **Offline & cicilan** hanya tampil di Data Analytics dan Full-Stack; Full-Stack juga punya opsi Private Session.
+• **Data Analytics** memasukkan tools AI (LangChain, PgVector, GroqAPI, Streamlit).
+• **FAQ AI Engineering** menyebut "program bergaransi" serta perbedaan Job Connect vs Job Connect Plus.
+• **FAQ Front-End** menyebut bisa daftar FE dan BE sekaligus.
 
 ---
 

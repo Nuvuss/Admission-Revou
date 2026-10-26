@@ -87,21 +87,22 @@ const BATTLECARDS: CompetitorBattlecard[] = [
   {
     id: "dibimbing",
     name: "Dibimbing",
-    tagline: "Opsi budget-friendly & pilihan 14 program (Data, IT, Marketing, HR, Supply Chain, ESG, Legal)",
-    price: "Rp 7.000.000 – Rp 15.000.000 (Harga ekonomis, banyak diskon promo, opsi cicilan fleksibel, garansi gratis mengulang batch seumur hidup).",
-    duration: "Pre-bootcamp mandiri + 24 minggu bootcamp + 2 minggu post-bootcamp + 4 minggu Job Connect (total ±7 bulan). Frekuensi 2–3 sesi per minggu (weekday atau weekend).",
-    format: "Online & offline, supported with AI.",
-    careerSupport: "Konsultasi karier & portofolio 1-on-1, review CV & LinkedIn, latihan interview, Talent Showcase ke 1.100+ partner (hanya lulusan berpredikat eligible). Klaim 96% alumni dapat kerja.",
-    certification: "Sertifikat Kelulusan Dibimbing, Terakui Kemendikti; layanan BNSP & placement program untuk universitas; Forbes 30 Under 30 Asia 2025.",
-    honestStrength: "Pilihan kategori program sangat luas dan variatif (mencakup HR, Supply Chain, ESG, Legal) dengan biaya masuk lebih ekonomis (budget-friendly) dan benefit gratis mengulang batch.",
+    tagline: "Opsi budget-friendly & pilihan 8 program Tech (Data, AI, Web Dev, DevOps, QA) dengan benefit gratis mengulang batch",
+    price: "Bayar Hari Ini atau Cicilan (harga di-render dinamis via JS / estimasi promo Rp 7jt – Rp 15jt via WA Admission 081227741541). Benefit gratis mengulang batch seumur hidup (non-refundable).",
+    duration: "Pre-bootcamp mandiri + 24 minggu bootcamp + 2 minggu post-bootcamp + 4 minggu Job Connect (total ±7–7,5 bulan). Frekuensi 2–3 sesi per minggu (weekday atau weekend). Catatan: meta-description FE & QA menyebut 5 bulan.",
+    format: "Online (seluruh 8 program) · Offline Jakarta (baru di Data Analytics Batch 3 & Full-Stack Batch 1) · Private Session (Full-Stack).",
+    careerSupport: "Job Connect 4 minggu (konsultasi 1-on-1, review CV & LinkedIn, latihan interview, Talent Showcase ke 1.100+ hiring partner; meta QA: 700+; klaim 96% alumni dapat kerja). FAQ AI Engineering membedakan Job Connect vs Job Connect Plus.",
+    certification: "Sertifikat Kelulusan Dibimbing, Diakui Kemendikti; 4.96/5 SwitchUp (Back-End: 4.9/5), 4.81 Course Report; 10K+ alumni (Back-End: 4K+); Forbes 30 Under 30 Asia 2025.",
+    honestStrength: "Pilihan 8 program spesifik tech (Data Engineering, DA, AI, FE, DevOps Batch 1, QA Batch 4, BE, Full-Stack) dengan tools mutakhir (termasuk LangChain, Groq, PgVector), opsi offline Jakarta di program tertentu, dan benefit gratis mengulang batch seumur hidup.",
     revouWins: [
-      "Kedalaman kurikulum & jam terbang 100% LIVE interaktif harian (4-5 sesi live/minggu, 210+ jam live vs <40 sesi rekaman/campuran LMS).",
-      "Kurikulum terdepan: FSDM 12 modul AI, FSDA 8 modul + Apache Airflow & Automated ETL, FSSE 4 fase AI-native bersama AWS.",
-      "12 Minggu Virtual Internship: Portofolio mandiri mengelola real budget iklan jutaan rupiah atau dataset enterprise langsung.",
+      "Kedalaman kurikulum & jam terbang 100% LIVE interaktif harian (4-5 sesi live/minggu, 210+ jam live coding vs 2-3 sesi/minggu dominan video LMS).",
+      "Kurikulum terdepan: FSDA 8 modul + Apache Airflow & Automated ETL, FSSE 4 fase AI-native bersama AWS Cloud, RevoU x ITB diajar Head of Data Science XLSMART & Dosen FTI ITB.",
+      "12 Minggu Virtual Internship: Portofolio mandiri mengolah real dataset korporasi mitra (Telkom OCA, Zurich) atau mendeploy software riil (bukan sekadar tugas akhir portofolio).",
+      "Kemitraan kampus bergengsi: Kredensial resmi ITB, BINUS x AWS, dan UI dengan transfer SKS Magister & kredibilitas akademis jauh lebih tinggi dibanding sertifikat kursus internal.",
       "Standar seleksi ketat menjamin circle belajar ambisius dan suportif (tingkat penerimaan <10%)."
     ],
     proofPoint: "15.000+ alumni RevoU di 1.000+ top company (Gojek, Tokopedia, Traveloka, Shopee, Big 4, BUMN). Completion rate Dibimbing tidak dipublikasi resmi di web. RevoU transparan mempublikasikan 93% completion rate resmi.",
-    acScriptTemplate: "Dibimbing pilihan yang bagus kak kalau kakak mencari opsi belajar santai 2-3 sesi per minggu via video rekaman LMS dengan budget hemat. Namun kalau tujuan kakak adalah career switch total di tech company papan atas, RevoU memberikan 100% live class interaktif setiap hari, bimbingan karir 1-on-1 intensif selama 7-8 bulan, 12 minggu Virtual Internship portofolio riil, dan pendampingan karir intensif 1-on-1 Career+ sampai dapat kerja. Boleh tau tujuan utama kakak ambil program ini apakah untuk eksplorasi dasar atau persiapan karir jangka panjang kak? :)"
+    acScriptTemplate: "Dibimbing pilihan yang bagus kak kalau kakak mencari opsi belajar santai 2-3 sesi per minggu via video rekaman LMS dengan benefit gratis mengulang batch seumur hidup. Namun kalau tujuan kakak adalah career switch total di tech company papan atas, RevoU memberikan 100% live class interaktif setiap hari, bimbingan karir 1-on-1 intensif selama 7-8 bulan, 12 minggu Virtual Internship portofolio riil bersama korporasi mitra, dan pendampingan karir intensif Career+ sampai dapat kerja. Boleh tau tujuan utama kakak ambil program ini apakah untuk eksplorasi dasar atau persiapan karir jangka panjang kak? :)"
   },
   {
     id: "dqlab",
@@ -255,21 +256,21 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
           parameter: "Cakupan Stack Pengembangan",
           categoryTag: "CAKUPAN ROLE",
           revouValue: "Full Stack AI-Native (Frontend Next.js App Router/TypeScript/TailwindCSS + Backend Python/Flask/PostgreSQL + 3-Layer Testing Playwright & Locust + AI Spec Mode Kiro & AWS Cloud) — mencakup end-to-end frontend dan backend untuk fleksibilitas loker software engineer di Indonesia.",
-          competitorValue: "Backend Golang Murni: Go fundamentals (Goroutine/Channel), REST API Gin/Echo, PostgreSQL, NoSQL, Load Testing Grafana k6, Microservices gRPC, Docker, K8s, serta Cloud Deployment via Railway — fokus backend tanpa penguasaan frontend web modern.",
+          competitorValue: "Backend Golang & Fondasi Web: Dasar Web (HTML, CSS), Query Database Relasional (SQL / PostgreSQL), Go fundamentals (Goroutine/Channel), REST API Gin/Echo, NoSQL, Load Testing Grafana k6, Microservices gRPC, Docker, K8s, serta Cloud Deployment via Railway — fokus backend & basis data tanpa penguasaan framework frontend web modern (Next.js/React).",
           highlight: true
         },
         {
           parameter: "Kurikulum & Modul Utama",
           categoryTag: "KURIKULUM",
           revouValue: "Kurikulum Full Stack AI-Native (Frontend + Backend + Cloud):\n• Phase 1 - Algorithm: Dasar logika komputasional, flowchart, data structures, & tantangan HackerRank.\n• Phase 2 - Backend Skalabel: Python, Flask REST API, PostgreSQL database modeling, & automated backend testing.\n• Phase 3 - Modern Frontend: Next.js App Router, TypeScript, React component lifecycle, & Playwright E2E testing.\n• Phase 4 - AI Engineering & Cloud DevOps: Kiro Spec Mode, Claude AI agent, Locust load testing, Docker, & AWS Cloud deployment.\n• Virtual Internship (3 Bulan): Proyek software skala enterprise bersama partner korporasi nyata.",
-          competitorValue: "Spesialisasi Arsitektur Backend Microservices Golang:\n• Go Fundamentals: Syntax dasar, pointer, struct, interface, data structures, concurrency (Goroutine & Channel).\n• RESTful API Development: Framework Gin / Echo, middleware handling, JWT authentication, & validation.\n• Databases Architecture: PostgreSQL (relational) & NoSQL database, connection pooling, & query tuning.\n• Microservices Architecture: Komunikasi antar service via gRPC protocol & Protocol Buffers (protobuf).\n• Testing, DevOps & Cloud: Load testing Grafana k6, containerisasi Docker, Kubernetes (K8s), & deployment Railway.",
+          competitorValue: "Spesialisasi Arsitektur Backend Microservices Golang:\n• Web Basics & Go Fundamentals: Dasar web HTML & CSS, syntax dasar Go, pointer, struct, interface, data structures, concurrency (Goroutine & Channel).\n• Databases Architecture & SQL: Query database SQL relasional, PostgreSQL & NoSQL database, connection pooling, & query tuning.\n• RESTful API Development: Framework Gin / Echo, middleware handling, JWT authentication, & validation.\n• Microservices Architecture: Komunikasi antar service via gRPC protocol & Protocol Buffers (protobuf).\n• Testing, DevOps & Cloud: Load testing Grafana k6, containerisasi Docker, Kubernetes (K8s), & deployment Railway.",
           highlight: true
         },
         {
           parameter: "Database, Testing & Cloud Tooling",
           categoryTag: "DATABASE & DEVOPS",
           revouValue: "PostgreSQL RDBMS design, 3-layer automated testing (pytest unit test, Locust performance/stress test, Playwright E2E), AI engineering dengan Kiro spec mode & Claude, serta Cloud Infrastructure bersama Amazon Web Services (AWS) Partner & Vercel/Railway.",
-          competitorValue: "Relational Database (PostgreSQL) & NoSQL database, performance load testing menggunakan Grafana k6, containerisasi Docker & Kubernetes (K8s), serta cloud deployment ke Railway.",
+          competitorValue: "SQL & Relational Database (PostgreSQL) serta NoSQL database, performance load testing menggunakan Grafana k6, containerisasi Docker & Kubernetes (K8s), serta cloud deployment ke Railway.",
           highlight: false
         },
         {
@@ -280,9 +281,17 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
           highlight: true
         }
       ],
-      competitorLimitation: "Fokus kurikulum sangat spesifik pada backend Golang dengan PostgreSQL, NoSQL, Grafana k6, dan deployment Railway tanpa penguasaan frontend Next.js/React modern, sehingga cakupan peluang kerja bagi pemula/career switcher lebih terbatas dibanding Full Stack.",
+      competitorLimitation: "Meskipun mencakup fondasi HTML, CSS, dan SQL, fokus kurikulum tetap sangat spesifik pada backend Golang dengan PostgreSQL, NoSQL, Grafana k6, dan deployment Railway tanpa penguasaan framework frontend web modern (Next.js/React), sehingga fleksibilitas peluang kerja bagi pemula/career switcher lebih terbatas dibanding Full Stack.",
       revouEdge: "RevoU FSSE melatih Full Stack AI-Native (Next.js/TypeScript + Python/Flask/PostgreSQL + AWS) yang mencakup 3-layer testing (Playwright & Locust) dan deployment, lengkap dengan 3 bulan Virtual Internship riil.",
-      acTalkingPoint: "Golang di Hacktiv8 sangat bagus jika kakak sudah pasti ingin berkarir spesifik di backend microservices dengan PostgreSQL, NoSQL, Grafana k6, dan Railway. Namun bagi pemula atau career switcher, lowongan kerja Software Engineer terbesar di Indonesia mencari Full Stack (Next.js + Python/Flask). Di RevoU FSSE kakak belajar end-to-end frontend dan backend lengkap dengan portofolio riil Virtual Internship dan kemitraan resmi AWS."
+      acTalkingPoint: "Golang di Hacktiv8 sangat bagus jika kakak sudah pasti ingin berkarir spesifik di backend microservices dan sudah dibekali dasar HTML, CSS, serta SQL PostgreSQL. Namun bagi pemula atau career switcher, lowongan kerja Software Engineer terbesar di Indonesia mencari Full Stack (Next.js + Python/Flask). Di RevoU FSSE kakak belajar end-to-end frontend dan backend lengkap dengan portofolio riil Virtual Internship dan kemitraan resmi AWS.",
+      referenceImages: [
+        {
+          url: "/images/hacktiv8/h8-golang-stack-web-db.png",
+          title: "Fondasi Web & Database: HTML, CSS & SQL",
+          subtitle: "Fondasi antarmuka web (HTML5, CSS3) serta manajemen dan kueri basis data relasional (SQL)",
+          tools: ["HTML", "CSS", "SQL", "PostgreSQL", "Go"]
+        }
+      ]
     },
     {
       id: "h8-dsml",
@@ -318,7 +327,7 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
           parameter: "Kurikulum & Modul Utama",
           categoryTag: "KURIKULUM",
           revouValue: "8 Modul Analisis Data + AI & Automated ETL:\n• Modul 1-2 - Problem Solving & Spreadsheet AI: Issue Tree, Root Cause Analysis, Google Sheets AI, & financial modeling.\n• Modul 3-4 - SQL & Enterprise Database: BigQuery AI, window functions, CTE, complex data joins, & query optimization.\n• Modul 5 - Python for Data Analytics: Pandas, NumPy, PandasAI, otomatisasi data cleaning, & exploratory data analysis (EDA).\n• Modul 6 - Visual Analytics & BI: Tableau, Looker Studio, & executive dashboard design.\n• Modul 7 - Executive Storytelling: Menerjemahkan data menjadi insight & strategi bisnis ke jajaran C-Level.\n• Modul 8 - Production-Ready Analytics: Apache Airflow & Automated ETL pipeline.\n• Virtual Internship (12 Minggu): Menganalisis dataset riil klien industri (Telkom OCA, Zurich).",
-          competitorValue: "Fokus Berat Matematika Koding & Deep Learning Machine Learning:\n• Python & Data Wrangling: Python scripting, SQL database querying, pandas, & data preprocessing.\n• Applied Machine Learning: Regresi linear/logistik, decision tree, clustering, & evaluasi model via Scikit-Learn.\n• Deep Learning & Computer Vision: TensorFlow, Keras, convolutional neural network (CNN), & NLP dasar.\n• Big Data Engineering: Apache Spark, AWS Big Data ecosystem, & orkestrasi pipeline data Airflow.\n• Model Deployment: Containerisasi Docker & deploy model AI ke production API.",
+          competitorValue: "Fokus Teknis Koding, Machine Learning, Deep Learning & Big Data:\n• Fase 1 - Data Wrangling, Scraping & Visualisasi: Python, Pandas, NumPy, PostgreSQL, Web Scraping BeautifulSoup, Git/GitHub, Visualisasi Seaborn & Tableau.\n• Fase 2 - Applied Machine Learning & Deployment: Scikit-Learn, SciPy, Interactive Web App Streamlit, & Pre-trained NLP Models Hugging Face.\n• Fase 3 - Deep Learning, Big Data & MLOps Pipeline: Deep Learning TensorFlow, Big Data Apache Spark, Elasticsearch, Data Quality Great Expectations, Workflow Apache Airflow, Container Docker, & Cloud AWS.",
           highlight: true
         },
         {
@@ -331,7 +340,27 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
       ],
       competitorLimitation: "Jadwal seharian penuh (09:00–18:00) menyulitkan pekerja, biaya non-refundable, dan fokus dominan matematika koding tanpa latihan business communication ke direksi.",
       revouEdge: "RevoU FSDA fokus melatih Business Communication & Problem Solving C-level, 8 modul lengkap dengan Apache Airflow & Automated ETL, jadwal kelas malam 19:00–21:00 WIB (ramah pekerja tanpa resign), dan 12 minggu Virtual Internship studi kasus riil (Telkom OCA, Zurich).",
-      acTalkingPoint: "Hacktiv8 DS&ML mewajibkan waktu seharian dari pagi sampai jam 6 sore kak. Kalau di RevoU FSDA, kelas berlangsung malam hari 19.00–21.00 WIB Senin–Kamis (+ Review Sabtu opsional), jadi kakak tidak perlu resign kerja. Di RevoU juga fokus melatih cara mempresentasikan data ke bos dan manajemen bisnis, ada modul Apache Airflow ETL terbaru, 12 minggu Virtual Internship menganalisis real dataset bisnis mitra, dan didampingi Career Coach 1-on-1 sampai dapat kerja."
+      acTalkingPoint: "Hacktiv8 DS&ML mewajibkan waktu seharian dari pagi sampai jam 6 sore kak. Kalau di RevoU FSDA, kelas berlangsung malam hari 19.00–21.00 WIB Senin–Kamis (+ Review Sabtu opsional), jadi kakak tidak perlu resign kerja. Di RevoU juga fokus melatih cara mempresentasikan data ke bos dan manajemen bisnis, ada modul Apache Airflow ETL terbaru, 12 minggu Virtual Internship menganalisis real dataset bisnis mitra, dan didampingi Career Coach 1-on-1 sampai dapat kerja.",
+      referenceImages: [
+        {
+          url: "/images/hacktiv8/h8-dsml-stack-phase1.png",
+          title: "Fase 1: Data Analytics, Scraping & Visualisasi",
+          subtitle: "Fondasi pemrograman Python, manipulasi data Pandas & NumPy, web scraping BeautifulSoup, database PostgreSQL, visualisasi Seaborn & Tableau, serta Git/GitHub",
+          tools: ["Python", "Pandas", "NumPy", "PostgreSQL", "BeautifulSoup", "Seaborn", "Tableau", "GitHub"]
+        },
+        {
+          url: "/images/hacktiv8/h8-dsml-stack-phase2.png",
+          title: "Fase 2: Classical Machine Learning & Model Deployment",
+          subtitle: "Pemodelan algoritma Scikit-Learn, komputasi sains SciPy, pembuatan interactive web app Streamlit, dan integrasi pre-trained model Hugging Face",
+          tools: ["scikit-learn", "SciPy", "Streamlit", "Hugging Face", "Machine Learning"]
+        },
+        {
+          url: "/images/hacktiv8/h8-dsml-stack-phase3.png",
+          title: "Fase 3: Deep Learning, Big Data & MLOps Pipeline",
+          subtitle: "Deep learning neural network TensorFlow, distributed computing Apache Spark, Elasticsearch, data quality Great Expectations, orkestrasi Airflow, Docker, dan deployment AWS",
+          tools: ["TensorFlow", "Apache Spark", "Elasticsearch", "Great Expectations", "Apache Airflow", "Docker", "AWS"]
+        }
+      ]
     },
     {
       id: "h8-dsml-ads",
@@ -367,7 +396,7 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
           parameter: "Kurikulum & Modern AI Tooling",
           categoryTag: "KURIKULUM",
           revouValue: "Modern Data Science: Predictive modelling (regresi, klasifikasi), forecasting, ML clustering, AI coding agent via Claude Code Safety Gate (akselerasi koding aman berstandar ITB).",
-          competitorValue: "Python scripting, SQL, Scikit-Learn machine learning, deep learning TensorFlow/Keras, Apache Spark, & deployment API.",
+          competitorValue: "Kurikulum 3 Fase Teknis:\n• Fase 1: Python, Pandas, NumPy, PostgreSQL, BeautifulSoup, Seaborn, Tableau, GitHub.\n• Fase 2: Scikit-Learn ML, SciPy, Streamlit App, Hugging Face.\n• Fase 3: Deep Learning TensorFlow, Apache Spark, Elasticsearch, Great Expectations, Apache Airflow, Docker, AWS.",
           highlight: true
         },
         {
@@ -380,7 +409,27 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
       ],
       competitorLimitation: "Biaya sangat tinggi (Rp 35.000.000), mewajibkan cuti/resign kerja karena jam belajar full-day 09:00–18:00 WIB, dan hanya menerbitkan sertifikat internal lembaga kursus.",
       revouEdge: "Kredensial resmi universitas teknik nomor 1 di Indonesia (FTI ITB) dengan opsi transfer 1 SKS Magister, biaya separuh lebih terjangkau (Rp 16,99jt), jadwal malam ramah pekerja, bimbingan Head of Data Science XLSMART, dan AI coding agent Claude Code.",
-      acTalkingPoint: "Hacktiv8 DS&ML biayanya Rp 35 juta dan jam belajarnya full-day 09:00–18:00 WIB sehingga kakak harus resign duluan kak. Di program RevoU x ITB Applied Data Science with AI, biayanya jauh lebih terjangkau (Rp 16,99jt), jadwal kelas malam jam 19.30 WIB (tidak perlu resign kerja), dibimbing langsung oleh Head of Data Science XLSMART & Dosen FTI ITB, menggunakan AI coding agent Claude Code, dan mendapatkan sertifikat resmi ITB plus opsi 1 SKS Magister ITB. Jauh lebih prestigius dan fleksibel untuk karir kakak!"
+      acTalkingPoint: "Hacktiv8 DS&ML biayanya Rp 35 juta dan jam belajarnya full-day 09:00–18:00 WIB sehingga kakak harus resign duluan kak. Di program RevoU x ITB Applied Data Science with AI, biayanya jauh lebih terjangkau (Rp 16,99jt), jadwal kelas malam jam 19.30 WIB (tidak perlu resign kerja), dibimbing langsung oleh Head of Data Science XLSMART & Dosen FTI ITB, menggunakan AI coding agent Claude Code, dan mendapatkan sertifikat resmi ITB plus opsi 1 SKS Magister ITB. Jauh lebih prestigius dan fleksibel untuk karir kakak!",
+      referenceImages: [
+        {
+          url: "/images/hacktiv8/h8-dsml-stack-phase1.png",
+          title: "Fase 1: Data Analytics, Scraping & Visualisasi",
+          subtitle: "Fondasi pemrograman Python, manipulasi data Pandas & NumPy, web scraping BeautifulSoup, database PostgreSQL, visualisasi Seaborn & Tableau, serta Git/GitHub",
+          tools: ["Python", "Pandas", "NumPy", "PostgreSQL", "BeautifulSoup", "Seaborn", "Tableau", "GitHub"]
+        },
+        {
+          url: "/images/hacktiv8/h8-dsml-stack-phase2.png",
+          title: "Fase 2: Classical Machine Learning & Model Deployment",
+          subtitle: "Pemodelan algoritma Scikit-Learn, komputasi sains SciPy, pembuatan interactive web app Streamlit, dan integrasi pre-trained model Hugging Face",
+          tools: ["scikit-learn", "SciPy", "Streamlit", "Hugging Face", "Machine Learning"]
+        },
+        {
+          url: "/images/hacktiv8/h8-dsml-stack-phase3.png",
+          title: "Fase 3: Deep Learning, Big Data & MLOps Pipeline",
+          subtitle: "Deep learning neural network TensorFlow, distributed computing Apache Spark, Elasticsearch, data quality Great Expectations, orkestrasi Airflow, Docker, dan deployment AWS",
+          tools: ["TensorFlow", "Apache Spark", "Elasticsearch", "Great Expectations", "Apache Airflow", "Docker", "AWS"]
+        }
+      ]
     },
     {
       id: "h8-cda",
@@ -416,7 +465,14 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
           parameter: "Kurikulum & Modul Utama",
           categoryTag: "KURIKULUM",
           revouValue: "8 Modul Analisis Data + AI & Automated ETL:\n• Modul 1-2 - Business Problem Solving & Advanced Spreadsheet: Issue Tree, Root Cause Analysis, Google Sheets AI, financial modeling.\n• Modul 3-4 - SQL & BigQuery AI: Window functions, CTE, complex joins, automated query analysis.\n• Modul 5 - Python for Data Analytics: Pandas, NumPy, PandasAI, automated data cleaning.\n• Modul 6 - Business Intelligence & Dashboards: Tableau, Looker Studio, visual KPI tracking.\n• Modul 7 - Executive Communication: Data storytelling & presentasi rekomendasi ke C-Level.\n• Modul 8 - Production-Ready Analytics: Apache Airflow & Automated ETL pipeline.\n• Virtual Internship (12 Minggu): Menganalisis dataset riil klien industri (Telkom OCA, Zurich).",
-          competitorValue: "3 Fase Kurikulum Analytics & Data Engineering:\n• Fase 1 - Analytics & Visualization: Python, Pandas, SQL, Google Sheets, Looker Studio, & Tableau.\n• Fase 2 - Data Pipeline & REST API: Database PostgreSQL, web scraping (Selenium & BeautifulSoup), FastAPI, Git, GitHub, & Vercel deployment.\n• Fase 3 - Big Data, Data Engineering & GenAI: Apache Spark, dbt, MongoDB, Great Expectations, Apache Airflow, AWS Glue, Docker, OpenAI, & Gemini.",
+          competitorValue: "Kurikulum 3 Fase (Data Analytics, Machine Learning & Big Data Pipeline):\n• Fase 1 - Data Analytics, Scraping & Visualisasi: Python, Pandas, NumPy, PostgreSQL, Web Scraping BeautifulSoup, Git/GitHub, visualisasi data Seaborn & Tableau.\n• Fase 2 - Applied Machine Learning & Deployment: Pemodelan prediktif Scikit-Learn, komputasi sains SciPy, interactive web application Streamlit, & pre-trained model Hugging Face.\n• Fase 3 - Deep Learning, Big Data & MLOps Pipeline: Deep Learning TensorFlow, Big Data Apache Spark, distributed search Elasticsearch, data quality Great Expectations, pipeline Apache Airflow, containerisasi Docker, & cloud AWS.",
+          highlight: true
+        },
+        {
+          parameter: "Platform & Tools yang Digunakan",
+          categoryTag: "TECH STACK & TOOLS",
+          revouValue: "Google Sheets AI, BigQuery SQL, Python, Pandas, NumPy, PandasAI, Tableau, Looker Studio, Claude Code Safety Gate, Apache Airflow, & AWS Partner Cloud.",
+          competitorValue: "Daftar Tools Lengkap 3 Fase:\n• Fase 1 (Data & Scraping): Python, Pandas, NumPy, PostgreSQL, BeautifulSoup, GitHub, Seaborn, Tableau.\n• Fase 2 (ML & Web App): Scikit-Learn, SciPy, Streamlit, Hugging Face.\n• Fase 3 (Big Data & DevOps): Docker, Elasticsearch, Great Expectations, Apache Airflow, Apache Spark, AWS, TensorFlow.",
           highlight: true
         },
         {
@@ -429,27 +485,7 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
       ],
       competitorLimitation: "Biaya non-refundable (tidak ada pengembalian uang sama sekali jika tidak dapat kerja), durasi hanya 12 minggu tanpa program lab portofolio terpisah.",
       revouEdge: "RevoU FSDA berdurasi 7 bulan komprehensif termasuk 8 modul + Apache Airflow ETL, 12 minggu Virtual Internship data nyata klien, dan didukung bimbingan karir 1-on-1 intensif Career+.",
-      acTalkingPoint: "Hacktiv8 Comprehensive DA durasinya hanya 12 minggu kak. Di RevoU FSDA kakak belajar 7 bulan komprehensif, menguasai Apache Airflow ETL, ada 12 minggu Virtual Internship menganalisis dataset bisnis riil perusahaan, dan dibimbing langsung oleh Career Coach 1-on-1 sampai dapat kerja. Tentu jauh lebih matang untuk persiapan karir kakak :)",
-      referenceImages: [
-        {
-          url: "/images/hacktiv8/h8-cda-stack-analytics-viz.png",
-          title: "Fase 1: Data Analytics & Visualization",
-          subtitle: "Fondasi analisis data, spreadsheet, database SQL, dan pembuatan dashboard visual interaktif",
-          tools: ["Python", "Pandas", "SQL", "Google Sheets", "Looker Studio", "Tableau"]
-        },
-        {
-          url: "/images/hacktiv8/h8-cda-stack-scraping-fastapi.png",
-          title: "Fase 2: Data Pipeline, Web Scraping & REST API",
-          subtitle: "Automasi web scraping (Selenium & BeautifulSoup), database PostgreSQL, dan API backend FastAPI",
-          tools: ["PostgreSQL", "Selenium", "BeautifulSoup", "FastAPI", "Pandas", "Git", "GitHub", "Vercel", "Python"]
-        },
-        {
-          url: "/images/hacktiv8/h8-cda-stack-bigdata-genai.png",
-          title: "Fase 3: Big Data, Data Engineering & Generative AI",
-          subtitle: "Pemrosesan big data terdistribusi (Spark), orkestrasi pipeline (Airflow, dbt, Glue), dan integrasi AI (OpenAI & Gemini)",
-          tools: ["OpenAI", "Gemini", "Apache Spark", "dbt", "MongoDB", "Great Expectations", "Apache Airflow", "AWS Glue", "Docker", "Python", "SQL"]
-        }
-      ]
+      acTalkingPoint: "Hacktiv8 Comprehensive DA durasinya hanya 12 minggu kak. Di RevoU FSDA kakak belajar 7 bulan komprehensif, menguasai Apache Airflow ETL, ada 12 minggu Virtual Internship menganalisis dataset bisnis riil perusahaan, dan dibimbing langsung oleh Career Coach 1-on-1 sampai dapat kerja. Tentu jauh lebih matang untuk persiapan karir kakak :)"
     },
     {
       id: "h8-ai-itb",
@@ -478,7 +514,14 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
           parameter: "Kurikulum & Modul Utama",
           categoryTag: "KURIKULUM",
           revouValue: "Kurikulum Kepemimpinan Berbasis Data & AI untuk Leaders (Non-Coding):\n• Strategic Decision-Making: Framework analitis menguji intuisi bisnis dengan data valid.\n• AI-Assisted Business Intelligence: Pemanfaatan model LLM (Claude, ChatGPT, Gemini) untuk riset & benchmarking pasar kilat.\n• Workflow Automation: Otomasi alur kerja operasional tim tanpa koding menggunakan n8n & AI agents.\n• AI Governance & Risk Management: Mitigasi risiko halusinasi AI, keamanan data privasi korporat, & compliance.\n• Campus Networking: Sesi tatap muka eksklusif di Kampus ITB Bandung bersama para leader industri.",
-          competitorValue: "Pipeline Machine Learning & AI Engineering Teknis (Heavy Coding):\n• Data Engineering Pipeline: Databricks, Apache Spark, & arsitektur big data.\n• Vector Storage: Pinecone, Milvus, & embedding storage untuk data retrieval.\n• Advanced RAG: Retrieval-Augmented Generation menggunakan framework LangChain & LlamaIndex.\n• Autonomous AI Agents: Multi-agent system orchestration menggunakan CrewAI & AutoGen.\n• Model Serving: Containerisasi & microservices deployment untuk serving model AI.",
+          competitorValue: "Kurikulum Rekayasa AI Teknis 3 Tingkat (Heavy Coding):\n• Tier 1 - Data Architecture & Pipeline: Python, Pandas, PostgreSQL, MongoDB, Databricks, Apache Spark, Apache Airflow, Great Expectations, Grafana, Tableau, FastAPI, Docker, AWS, Google Cloud.\n• Tier 2 - LLM Ecosystem, RAG & Multi-Agent: OpenAI (GPT-4o), Google Gemini, Ollama (Local LLM), Hugging Face, LangChain, LangSmith, CrewAI (Multi-Agent), Pinecone (Vector DB), Redis, PostgreSQL, FastAPI, Docker.\n• Tier 3 - AI Automation, MCP & Multi-Cloud Deployment: n8n Workflow Automation, Model Context Protocol (MCP), Docker, & Multi-Cloud Serving (DigitalOcean, Hetzner, IDCloudHost, Biznet Gio Cloud, VPSDime).",
+          highlight: true
+        },
+        {
+          parameter: "Platform & Tools yang Digunakan",
+          categoryTag: "TECH STACK & TOOLS",
+          revouValue: "Claude Code Safety Gate, ChatGPT & Gemini untuk riset pasar dan strategic forecasting, framework analitis eksekutif, n8n no-code automation, & AI Governance toolkit (tanpa koding teknis).",
+          competitorValue: "Ekosistem Tools Lengkap 3 Tingkat:\n• Data & Pipeline: Python, Pandas, PostgreSQL, MongoDB, Databricks, Apache Spark, Apache Airflow, Great Expectations, Grafana, Tableau, FastAPI, Docker, AWS, Google Cloud.\n• LLM & Agentic AI: OpenAI, Gemini, Ollama, Hugging Face, LangChain, LangSmith, CrewAI, Pinecone, Redis.\n• Automation & Serving: n8n, Model Context Protocol (MCP), DigitalOcean, Hetzner, IDCloudHost, Biznet Gio Cloud, VPSDime.",
           highlight: true
         },
         {
@@ -520,7 +563,14 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
           parameter: "Kurikulum & Modul Utama",
           categoryTag: "KURIKULUM",
           revouValue: "Kurikulum Practical No-Code / Low-Code AI Automation:\n• No-Code AI Automation: Membangun workflow otomatisasi proses bisnis lintas divisi menggunakan n8n & Zapier.\n• AI Coding & Agentic Workflow: Pemanfaatan Claude Code & prompt engineering untuk eliminasi tugas repetitif kantor.\n• Cross-Functional Implementation: Solusi otomasi nyata untuk efisiensi Marketing, HR, Finance, & Operasional bisnis.\n• Capstone Decision App: Membangun prototype otomasi fungsional siap pakai langsung di unit kerja.\n• Campus Showcase: 2x sesi tatap muka dan showcase di Kampus BINUS Kemanggisan Jakarta.",
-          competitorValue: "Kurikulum Berat Rekayasa Koding AI (Wajib Background IT):\n• Data Pipelines: Pemrosesan pipeline data terdistribusi via Apache Spark & Databricks.\n• Vector Storage: Integrasi Pinecone database untuk pencarian semantik berkecepatan tinggi.\n• Generative AI Systems: Rekayasa RAG berbasis LangChain & integrasi LLM API.\n• Multi-Agent Systems: Desain AI agent berbasis CrewAI untuk koding otomasi teknikal.\n• DevOps for AI: Deployment pipeline container di server cloud.",
+          competitorValue: "Kurikulum Rekayasa AI Teknis 3 Tingkat (Heavy Coding):\n• Tier 1 - Data Architecture & Pipeline: Python, Pandas, PostgreSQL, MongoDB, Databricks, Apache Spark, Apache Airflow, Great Expectations, Grafana, Tableau, FastAPI, Docker, AWS, Google Cloud.\n• Tier 2 - LLM Ecosystem, RAG & Multi-Agent: OpenAI (GPT-4o), Google Gemini, Ollama (Local LLM), Hugging Face, LangChain, LangSmith, CrewAI (Multi-Agent), Pinecone (Vector DB), Redis, PostgreSQL, FastAPI, Docker.\n• Tier 3 - AI Automation, MCP & Multi-Cloud Deployment: n8n Workflow Automation, Model Context Protocol (MCP), Docker, & Multi-Cloud Serving (DigitalOcean, Hetzner, IDCloudHost, Biznet Gio Cloud, VPSDime).",
+          highlight: true
+        },
+        {
+          parameter: "Platform & Tools yang Digunakan",
+          categoryTag: "TECH STACK & TOOLS",
+          revouValue: "n8n AI Workflow Automation, Zapier, Claude Code, OpenAI API, Gemini, Google Sheets AI, Looker Studio, & prompt engineering praktikal tanpa koding teknis.",
+          competitorValue: "Ekosistem Tools Lengkap 3 Tingkat:\n• Data & Pipeline: Python, Pandas, PostgreSQL, MongoDB, Databricks, Apache Spark, Apache Airflow, Great Expectations, Grafana, Tableau, FastAPI, Docker, AWS, Google Cloud.\n• LLM & Agentic AI: OpenAI, Gemini, Ollama, Hugging Face, LangChain, LangSmith, CrewAI, Pinecone, Redis.\n• Automation & Serving: n8n, Model Context Protocol (MCP), DigitalOcean, Hetzner, IDCloudHost, Biznet Gio Cloud, VPSDime.",
           highlight: true
         },
         {
@@ -562,7 +612,14 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
           parameter: "Kurikulum & Modul Utama",
           categoryTag: "KURIKULUM",
           revouValue: "Kurikulum Strategic Corporate Finance Berbantuan AI:\n• Corporate Financial Strategy: Pengambilan keputusan permodalan, restrukturisasi, & M&A holding.\n• Multi-Entity & Holding Transactions: Transaksi afiliasi, transfer pricing, & regulasi perpajakan DJP.\n• AI Financial Modeling: Pembuatan 3-Statement financial model presisi tinggi dibantu AI agent.\n• Executive FP&A: Analisis varians laba rugi dan simulasi skenario bisnis untuk Board of Directors.\n• UI Campus Defense: Sidang Capstone Project langsung di hadapan Guru Besar & Dosen FEB/FIA UI di Kampus UI Depok.",
-          competitorValue: "Kurikulum Khusus IT / Software Engineering (Tanpa Materi Keuangan):\n• Data & AI Infrastructure: Databricks, Apache Spark, & pipeline Big Data.\n• Vector Embeddings: Pinecone & vector similarity search.\n• RAG & Agent Framework: LangChain, LlamaIndex, & CrewAI multi-agent.\n• Model Serving: API deployment untuk integrasi backend software.\n• (Tidak ada materi financial modeling, akuntansi, atau perpajakan korporasi).",
+          competitorValue: "Kurikulum Rekayasa AI Teknis 3 Tingkat (Khusus IT / Software Engineering, Tanpa Finansial):\n• Tier 1 - Data Architecture & Pipeline: Python, Pandas, PostgreSQL, MongoDB, Databricks, Apache Spark, Apache Airflow, Great Expectations, Grafana, Tableau, FastAPI, Docker, AWS, Google Cloud.\n• Tier 2 - LLM Ecosystem, RAG & Multi-Agent: OpenAI (GPT-4o), Google Gemini, Ollama (Local LLM), Hugging Face, LangChain, LangSmith, CrewAI (Multi-Agent), Pinecone (Vector DB), Redis, PostgreSQL, FastAPI, Docker.\n• Tier 3 - AI Automation, MCP & Multi-Cloud Deployment: n8n Workflow Automation, Model Context Protocol (MCP), Docker, & Multi-Cloud Serving (DigitalOcean, Hetzner, IDCloudHost, Biznet Gio Cloud, VPSDime).\n• (Tidak ada materi financial modeling, akuntansi, atau perpajakan korporasi).",
+          highlight: true
+        },
+        {
+          parameter: "Platform & Tools yang Digunakan",
+          categoryTag: "TECH STACK & TOOLS",
+          revouValue: "AI Financial Modeling tools, Claude & ChatGPT untuk 3-statement modeling presisi tinggi, financial ratio analysis, Python automation opsional, & compliance DJP (fokus manajemen finansial strategis).",
+          competitorValue: "Ekosistem Tools Lengkap 3 Tingkat (Khusus Software/AI Engineering, Tanpa Finansial):\n• Data & Pipeline: Python, Pandas, PostgreSQL, MongoDB, Databricks, Apache Spark, Apache Airflow, Great Expectations, Grafana, Tableau, FastAPI, Docker, AWS, Google Cloud.\n• LLM & Agentic AI: OpenAI, Gemini, Ollama, Hugging Face, LangChain, LangSmith, CrewAI, Pinecone, Redis.\n• Automation & Serving: n8n, Model Context Protocol (MCP), DigitalOcean, Hetzner, IDCloudHost, Biznet Gio Cloud, VPSDime.",
           highlight: true
         },
         {
@@ -622,8 +679,15 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
           parameter: "Materi & Tools Otomasi",
           categoryTag: "KURIKULUM",
           revouValue: "Practical no-code automation: Zapier, Make, AI Agents, integrasi database, otomasi proses bisnis corporate, AI governance.",
-          competitorValue: "BPM, Zapier, Make, n8n, Ollama, Google Sheets, Slack, Telegram Bot, AI for CS/Sales/Marketing.",
+          competitorValue: "Kurikulum Otomasi Proses & Modul AI Boost (24 Sesi):\n• Platforms Covered: Zapier, Make, n8n, PostgreSQL, Maze, Google Data Studio, Miro.\n• Chat & Communication Channels: WhatsApp Business, Slack, Telegram Bot, Discord, Gmail.\n• Workspace Tools: Google Sheets, Google Docs, Google Forms.\n• Modul AI Boost: Akselerasi keahlian AI praktis menggunakan ChatGPT (OpenAI), Ollama (Local LLM), & workflow automation n8n.",
           highlight: false
+        },
+        {
+          parameter: "Platform & Tools yang Digunakan",
+          categoryTag: "TECH STACK & TOOLS",
+          revouValue: "n8n AI Workflow Automation, Zapier, Make, Claude Code Safety Gate, OpenAI API, Gemini, Google Sheets AI, Looker Studio, & integrasi enterprise database.",
+          competitorValue: "Daftar Lengkap Platforms Covered & AI Boost:\n• Automation & Database: Zapier, Make, PostgreSQL, Maze, Google Data Studio, Miro.\n• Communication & Messaging: WhatsApp Business, Slack, Telegram Bot, Discord, Gmail.\n• Google Workspace: Google Sheets, Google Docs, Google Forms.\n• Modul AI Boost: ChatGPT, Ollama, n8n.",
+          highlight: true
         }
       ],
       competitorLimitation: "Menerbitkan sertifikat internal Purwadhika (tanpa kemitraan perguruan tinggi), durasi modul 6 minggu (24 sesi), dan mensyaratkan min. S1/sederajat.",
@@ -657,8 +721,15 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
           parameter: "Fokus Kurikulum",
           categoryTag: "KURIKULUM",
           revouValue: "Applied AI strategis untuk bisnis & manajemen, RAG, prompt engineering, efisiensi operasional perusahaan.",
-          competitorValue: "Koding AI teknis berat: Scikit-Learn, TensorFlow, Computer Vision CNN, LangChain, vector DB, MLOps, MLflow.",
+          competitorValue: "Koding AI Teknis Berat (15 Minggu Modul / 60 Sesi):\n• Core Dev & Data: Python, VSCode, Pandas, MySQL, Git, GitHub, Seaborn.\n• Machine Learning & Vision: Scikit-Learn, TensorFlow, OpenCV.\n• GenAI, LLM & Vector DB: ChatGPT, OpenAI, Hugging Face, LangChain, Pinecone, FAISS, MongoDB.\n• Serving & MLOps Infrastructure: Flask, FastAPI, Docker, GCP, MLflow, ONNX, Langfuse.",
           highlight: false
+        },
+        {
+          parameter: "Platform & Tools yang Digunakan",
+          categoryTag: "TECH STACK & TOOLS",
+          revouValue: "Claude Code Safety Gate, ChatGPT & Gemini untuk analitis bisnis dan strategic forecasting, framework analitis eksekutif, n8n no-code automation, & AI Governance toolkit.",
+          competitorValue: "Platforms Covered Lengkap:\n• Core Dev & Data: Python, VSCode, Pandas, MySQL, Git, GitHub, Seaborn.\n• Machine Learning & Vision: Scikit-Learn, TensorFlow, OpenCV.\n• GenAI, LLM & Vector DB: ChatGPT, OpenAI, Hugging Face, LangChain, Pinecone, FAISS, MongoDB.\n• Deployment & MLOps: Flask, FastAPI, Docker, GCP, MLflow, ONNX, Langfuse.",
+          highlight: true
         }
       ],
       competitorLimitation: "Biaya normal Rp 35 juta menerbitkan sertifikat internal Purwadhika (tanpa kemitraan perguruan tinggi), dengan kurikulum teknis koding machine learning & deep learning.",
@@ -692,8 +763,15 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
           parameter: "Kurikulum & Tools",
           categoryTag: "KURIKULUM",
           revouValue: "8 Modules + AI: Business Problem Solving (Issue Tree, RCA), SQL BigQuery AI, Python Pandas/PandasAI, Tableau, Looker Studio, Data Storytelling, serta Production-Ready Analytics (Apache Airflow & Automated ETL).",
-          competitorValue: "Python, SQL, Tableau, Statistics, Machine Learning dasar.",
+          competitorValue: "Analisis Data Bisnis & AI Assistance (45 Sesi Modul):\n• Coding & Environment: Python, Jupyter Notebook, VSCode, Pandas.\n• Database Querying: Relational Database MySQL.\n• Visualisasi & Dashboard: Tableau visual analytics.\n• AI & Documentation Tools: Notion, ChatGPT (OpenAI) untuk akselerasi analisis data bisnis & penyusunan insight.",
           highlight: false
+        },
+        {
+          parameter: "Platform & Tools yang Digunakan",
+          categoryTag: "TECH STACK & TOOLS",
+          revouValue: "Google Sheets AI, BigQuery SQL, Python, Pandas, NumPy, PandasAI, Tableau, Looker Studio, Claude Code Safety Gate, Apache Airflow, & AWS Partner Cloud.",
+          competitorValue: "Platforms Covered Lengkap:\n• Environment & Programming: Python, Jupyter, VSCode, Pandas.\n• Database: MySQL.\n• Business Intelligence & Visualisasi: Tableau.\n• AI & Productivity: ChatGPT, OpenAI, Notion.",
+          highlight: true
         },
         {
           parameter: "Persyaratan Peserta",
@@ -741,7 +819,14 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
           parameter: "Kurikulum & Modern AI Tooling",
           categoryTag: "KURIKULUM",
           revouValue: "Modern Data Science: Predictive analytics (regression, classification), forecasting, ML clustering, AI coding agent via **Claude Code Safety Gate** untuk akselerasi koding aman.",
-          competitorValue: "Python dasar, SQL, Tableau, statistik, dan machine learning (Scikit-Learn).",
+          competitorValue: "Kurikulum Data Science & Machine Learning (45 Sesi):\n• Coding & Environment: Python, Jupyter Notebook, VSCode, Pandas.\n• Database & Visualisasi: MySQL relational database, Tableau business dashboards.\n• Modeling & AI Assistance: Scikit-Learn machine learning, integrasi ChatGPT & OpenAI untuk eksplorasi dan analitis.",
+          highlight: true
+        },
+        {
+          parameter: "Platform & Tools yang Digunakan",
+          categoryTag: "TECH STACK & TOOLS",
+          revouValue: "Claude Code Safety Gate, ChatGPT & Gemini untuk analitis prediktif terapan, BigQuery, Python, Pandas, Tableau, & sertifikasi resmi ITB.",
+          competitorValue: "Platforms Covered Lengkap:\n• Environment & Tools: Python, Jupyter, VSCode, Pandas.\n• Database: MySQL.\n• Visual Analytics: Tableau.\n• AI Models: ChatGPT, OpenAI.",
           highlight: true
         },
         {
@@ -790,8 +875,15 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
           parameter: "Kurikulum & Production Engineering",
           categoryTag: "KURIKULUM",
           revouValue: "8 Modules + AI: Business Problem Solving (Issue Tree, RCA), SQL BigQuery AI, Python Pandas/PandasAI, Tableau, Looker Studio, Data Storytelling, serta **Production-Ready Analytics (Apache Airflow & Automated ETL)**.",
-          competitorValue: "Python programming, SQL, Tableau, statistik, dan machine learning (Scikit-Learn).",
+          competitorValue: "Kurikulum Data Science & Machine Learning (45 Sesi):\n• Coding & Environment: Python, Jupyter Notebook, VSCode, Pandas.\n• Database & Visualisasi: MySQL relational database, Tableau business dashboards.\n• Modeling & AI Assistance: Scikit-Learn machine learning, integrasi ChatGPT & OpenAI untuk analisis data.",
           highlight: false
+        },
+        {
+          parameter: "Platform & Tools yang Digunakan",
+          categoryTag: "TECH STACK & TOOLS",
+          revouValue: "Google Sheets AI, BigQuery SQL, Python, Pandas, NumPy, PandasAI, Tableau, Looker Studio, Claude Code Safety Gate, Apache Airflow, & AWS Partner Cloud.",
+          competitorValue: "Platforms Covered Lengkap:\n• Environment & Tools: Python, Jupyter, VSCode, Pandas.\n• Database: MySQL.\n• Visual Analytics: Tableau.\n• AI Models: ChatGPT, OpenAI.",
+          highlight: true
         },
         {
           parameter: "Proyek Nyata (Virtual Internship)",
@@ -839,8 +931,15 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
           parameter: "Kurikulum & Integrasi AI",
           categoryTag: "KURIKULUM",
           revouValue: "12 Modul Lengkap Integrasi AI: Performance & Budget (CAC, CLTV), Landing Pages & CRO, GenAI & Custom GPTs, GA4 & GTM, Looker Studio, Social Media Organic AI, Influencer KOL, Meta Ads AI, TikTok & Marketplace Ads (Shopee/Tokopedia CPAS), Google Ads, SEO with AI (100% AI-Powered), CRM & Automation.",
-          competitorValue: "Fundamental DM, Social Media, SEO, Performance Marketing (Google & Meta Ads).",
+          competitorValue: "Kurikulum Digital Marketing 12 Minggu Modul:\n• Organic & SEO: Ahrefs, Semrush, Ubersuggest, Google Search Console.\n• Paid Advertising & Performance: Google Ads, Meta Ads (Facebook & Instagram), TikTok Ads.\n• Social Media Channels: Facebook, Instagram, YouTube, X, TikTok, Canva content design.\n• Analytics & CRM: Google Analytics, Mailchimp email automation.\n• AI Copywriting: ChatGPT (OpenAI).",
           highlight: false
+        },
+        {
+          parameter: "Platform & Tools yang Digunakan",
+          categoryTag: "TECH STACK & TOOLS",
+          revouValue: "GA4, Google Tag Manager, Looker Studio, Meta Ads Manager, Google Ads, TikTok Ads Manager, Marketplace CPAS (Shopee/Tokopedia), Mailchimp, HubSpot CRM, Ahrefs, Semrush, WordPress, Canva, Custom GPTs & Claude AI Copywriting.",
+          competitorValue: "Platforms Covered Lengkap:\n• SEO & Research: Ahrefs, Semrush, Ubersuggest, Google.\n• Paid Ads: Google Ads, Meta Ads (Facebook & Instagram), TikTok Ads.\n• Social Media Channels: Facebook, Instagram, YouTube, X, TikTok.\n• Analytics, CRM & Creative: Google Analytics, Mailchimp, Canva.\n• AI Tools: ChatGPT, OpenAI.",
+          highlight: true
         },
         {
           parameter: "Praktek Anggaran Iklan Riil",
@@ -888,7 +987,14 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
           parameter: "Durasi & Kurikulum",
           categoryTag: "DURASI & KURIKULUM",
           revouValue: "8 Bulan komprehensif (5 Bulan Live Classes 210+ Jam LIVE malam 19:00–21:00 WIB + 3 Bulan Virtual Internship). Indonesia's 1st AI-Native Software Engineering Program (Eksklusif AWS), Python/Flask, Next.js/TypeScript, Tailwind, Playwright, Kiro spec mode, Claude.",
-          competitorValue: "13 minggu modul + 4–5 minggu final project (JavaScript/Node.js, Express, React, MySQL).",
+          competitorValue: "13 minggu modul (45 sesi) + 4–5 minggu final project kelompok 2–3 orang:\n• Frontend Modern: React.js, TailwindCSS, Vite, Axios.\n• Backend REST API: Node.js, Express.js.\n• Database & ORM: PostgreSQL & PrismaJS ORM.\n• Testing & DevOps: Unit testing Jest, containerisasi Docker, & integrasi AI ChatGPT.",
+          highlight: true
+        },
+        {
+          parameter: "Platform & Tools yang Digunakan",
+          categoryTag: "TECH STACK & TOOLS",
+          revouValue: "Next.js App Router, TypeScript, React, TailwindCSS, Python, Flask REST API, PostgreSQL, Playwright E2E Testing, Locust Load Testing, Docker, Amazon Web Services (AWS) Partner Cloud, Claude AI, & Kiro Spec Mode.",
+          competitorValue: "Platforms Covered Lengkap:\n• Frontend: React.js, TailwindCSS, Vite, Axios.\n• Backend & Database: Node.js, Express.js, PostgreSQL, PrismaJS.\n• Testing & DevOps: Jest, Docker.\n• Tools & AI: Visual Studio Code, GitHub, ChatGPT.",
           highlight: true
         },
         {
@@ -944,7 +1050,14 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
           parameter: "Fokus Kurikulum Pertahanan",
           categoryTag: "KURIKULUM",
           revouValue: "Mendalam pada **Defensive Cybersecurity (Blue Team)**: threat triage, monitoring, incident response, dan integrasi AI security agent sejak Day One.",
-          competitorValue: "Mencakup materi keamanan siber Blue Team (defensive) dan Red Team (ethical hacking/penetration testing).",
+          competitorValue: "Mencakup Kurikulum 13 Minggu (52 Sesi) Blue Team & Red Team:\n• Network & Reconnaissance: nmap, Wireshark, theHarvester, Cisco Packet Tracer.\n• Red Team & Pentest: Metasploit, Burp Suite, ZAP Proxy, Aircrack-ng, Postman.\n• Blue Team & SIEM: Wazuh / Splunk Free, Snort (NIDS), MISP Threat Sharing.\n• Forensics & Scripting: Sysinternals, Volatility, OpenSSL, Python 3.x, PowerShell/Bash, VirtualBox.",
+          highlight: true
+        },
+        {
+          parameter: "Platform & Tools yang Digunakan",
+          categoryTag: "TECH STACK & TOOLS",
+          revouValue: "Amazon Web Services (AWS) Cloud Security, GuardDuty, AWS WAF, Security Hub, IAM, Claude AI Security Agent, SIEM Tools, & Linux Security Hardening.",
+          competitorValue: "Platforms Covered Lengkap:\n• Recon & Network: nmap, Wireshark, theHarvester, Cisco Packet Tracer.\n• Red Team & Pentesting: Burp Suite Community, ZAP Proxy, Metasploit Framework, Aircrack-ng, Postman.\n• Blue Team & SIEM: Wazuh / Splunk Free, Snort, MISP.\n• Forensics & OS: Sysinternals Suite, Volatility, OpenSSL.\n• Scripting & Virtualization: Python 3.x, PowerShell / Bash, VirtualBox.",
           highlight: true
         },
         {
@@ -993,8 +1106,15 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
           parameter: "Kurikulum & Data Pipeline Stack",
           categoryTag: "KURIKULUM",
           revouValue: "End-to-end Data Lifecycle: Business Problem Framing, Advanced SQL BigQuery AI, Python Pandas, Data Storytelling, serta **Production-Ready Analytics (Apache Airflow & Automated ETL Pipeline)**.",
-          competitorValue: "Python OOP & Docker -> Database (Relational & NoSQL) -> Data Warehouse (BigQuery) -> Data Pipeline (Apache Airflow, Apache Spark, GCP).",
+          competitorValue: "Kurikulum Data Engineering 14 Minggu Modul (44 Sesi):\n• Programming & Foundations: Python, Pandas, Jupyter, VSCode, Scala, Linux CLI, Git, GitHub.\n• Database & Storage: Relational Database PostgreSQL, Cloud Data Warehouse Google BigQuery.\n• Distributed Big Data & Processing: Apache Spark, PySpark, Google Cloud Platform (GCP).\n• Pipeline Orchestration & Containerization: Apache Airflow, Docker, Kubernetes.\n• AI Assistance: ChatGPT & OpenAI.",
           highlight: false
+        },
+        {
+          parameter: "Platform & Tools yang Digunakan",
+          categoryTag: "TECH STACK & TOOLS",
+          revouValue: "Google Sheets AI, BigQuery SQL, Python, Pandas, NumPy, PandasAI, Tableau, Looker Studio, Claude Code Safety Gate, Apache Airflow Automated ETL, & AWS Partner Cloud.",
+          competitorValue: "Platforms Covered Lengkap:\n• Foundations & Coding: Python, Pandas, Jupyter, VSCode, Linux, Git, GitHub, Scala.\n• Database & Warehouse: PostgreSQL, BigQuery.\n• Big Data & Cloud: Apache Spark, PySpark, GCP (Google Cloud Platform).\n• Pipeline & DevOps: Apache Airflow, Docker, Kubernetes.\n• AI Tools: ChatGPT, OpenAI.",
+          highlight: true
         },
         {
           parameter: "Portofolio Proyek (Virtual Internship)",
@@ -1049,7 +1169,14 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
           parameter: "Kurikulum & Cakupan Skill",
           categoryTag: "KURIKULUM",
           revouValue: "Full Stack Software Engineering AI-Native (AWS partner): Python/Flask, Next.js/TypeScript, modern testing end-to-end dengan Playwright & spec-driven AI development, cloud deployment CI/CD.",
-          competitorValue: "Manual Testing (Test Case, SDLC/STLC, Jira), API Testing (Postman, Newman), Automation Testing (Selenium, Cypress/Playwright), Performance Testing (JMeter).",
+          competitorValue: "Kurikulum Quality Assurance Engineer (8 Minggu / 32 Sesi):\n• Test Management & Defect Tracking: Jira, Zephyr Scale, Microsoft Excel.\n• Database & Data Verification: MySQL, DBeaver.\n• API & Automation Testing: Postman (API Testing), Node.js, Visual Studio Code (VSCode), GitHub.\n• Generative AI for QA: ChatGPT, Gemini, Claude (pembuatan test case otomatis & bug reporting).",
+          highlight: true
+        },
+        {
+          parameter: "Platform & Tools yang Digunakan",
+          categoryTag: "TECH STACK & TOOLS",
+          revouValue: "TypeScript, Python/Flask, Next.js, Playwright (Automated Testing), Git, GitHub, Docker, AWS Cloud Partner, Claude Code & AI-Assisted Spec Testing.",
+          competitorValue: "Platforms Covered Lengkap:\n• Test Management: Jira, Zephyr Scale, Microsoft Excel.\n• Database Testing: MySQL, DBeaver.\n• Automation & Development: Postman, Node.js, Visual Studio Code, GitHub.\n• AI-Powered QA: ChatGPT, Gemini, Claude.",
           highlight: true
         },
         {
@@ -1098,7 +1225,14 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
           parameter: "Cakupan Kurikulum & Kanal Marketing",
           categoryTag: "KURIKULUM",
           revouValue: "12 Modul Digital Marketing Full Funnel: Social Media Organic AI, Short-form Video, Influencer KOL, Meta/Google/TikTok Ads, SEO with AI, GA4 & GTM, Looker Studio, CRM & Automation.",
-          competitorValue: "Fokus kurikulum: Marketing foundation, Content planning & calendar, Copywriting, Short-form video production, AI-optimized content strategy.",
+          competitorValue: "Kurikulum Social Media & Content (5 Minggu / 30 Sesi):\n• Social Platforms: Instagram, Threads, TikTok, YouTube, LinkedIn, X (Twitter).\n• Creative & Video Production: Canva, CapCut (Short-form Video Editing).\n• Social Analytics & Intel: Rival IQ, UpDog, Seedance.\n• AI Generation & Strategy: HiggsField AI, ChatGPT, Gemini, Claude.",
+          highlight: true
+        },
+        {
+          parameter: "Platform & Tools yang Digunakan",
+          categoryTag: "TECH STACK & TOOLS",
+          revouValue: "Meta Ads Manager, Google Ads & Keyword Planner, TikTok Ads Manager, GA4, Google Tag Manager, Looker Studio, Mailchimp CRM, Canva, Ahrefs, & AI Prompts (ChatGPT, Claude).",
+          competitorValue: "Platforms Covered Lengkap:\n• Social Channels: Instagram, Threads, TikTok, YouTube, LinkedIn, X.\n• Creative & Editing: Canva, CapCut.\n• Social Analytics & Intelligence: Rival IQ, UpDog, Seedance.\n• AI Content & Video: HiggsField AI, ChatGPT, Gemini, Claude.",
           highlight: true
         },
         {
@@ -1129,133 +1263,484 @@ const COMPETITOR_PROGRAMS_BY_VENDOR: Record<"hacktiv8" | "purwadhika" | "dibimbi
     }
   ],
 
-  // ── 3. DIBIMBING (Katalog 7 Domain Resmi) ──
+  // ── 3. DIBIMBING (8 Program Tech Resmi Hasil Scrape 26 Okt 2026) ──
   dibimbing: [
+    // 1. Data Engineering (Batch 12)
     {
-      id: "db-da",
+      id: "db-de",
       competitorId: "dibimbing",
       competitorName: "Dibimbing",
-      programTitle: "Data Analytics Bootcamp",
-      badge: "Bootcamp ±4 Bulan",
+      programTitle: "Data Engineering Bootcamp",
+      badge: "Batch 12 · Online",
       revouMatchProgram: "Full Stack Data Analytics (FSDA)",
       revouMatchBadge: "FSDA",
       tableRows: [
         {
-          parameter: "Biaya & Skema Pembelajaran",
+          parameter: "Biaya & Opsi Pembayaran",
           categoryTag: "INVESTASI & BIAYA",
-          revouValue: "Investasi berbanding lurus dengan fasilitas: **100% Live Instruction** harian, 12 minggu Virtual Internship, & Career+ 1-on-1 coaching (non-refundable).",
-          competitorValue: "Rp 7.000.000 – Rp 15.000.000 (Harga ekonomis, banyak diskon promo, benefit gratis ulang kelas seumur hidup tanpa refund dana).",
+          revouValue: "• Biaya Program: Rp 17.900.000 – Rp 20.900.000 (Rp 17.9jt – 20.9jt all-in sudah termasuk 8 modul AI, Apache Airflow ETL, 12 minggu Virtual Internship, & Career+ sampai hired).\n• Upfront: Lunas di awal tanpa admin fee & tanpa bunga.\n• Cicilan: Opsi cicilan fleksibel 3x sampai 12x via kartu kredit & mitra resmi (Danacita).\n• Bebas Biaya Tambahan: Bebas biaya registrasi & tools (100% disediakan RevoU).",
+          competitorValue: "• Biaya Program: Bayar Hari Ini (biaya di-render dinamis via JavaScript; estimasi promo Rp 7jt – Rp 15jt, perlu hubungi admission WA 081227741541).\n• Refund: Non-refundable (tidak ada garansi refund dana).\n• Keunggulan Finansial: Opsi gratis mengulang batch seumur hidup.",
           highlight: false
         },
         {
-          parameter: "Format Belajar & Intensitas Sesi",
+          parameter: "Format Belajar & Jadwal Sesi",
           categoryTag: "FORMAT KELAS",
-          revouValue: "100% Live Online interaktif dua arah malam hari (19:00–21:00 WIB) Senin–Kamis + Sesi Review Tugas Opsional Sabtu (ramah pekerja tanpa perlu resign).",
-          competitorValue: "Kombinasi video rekaman materi LMS + sesi Live Zoom tanya jawab 2–3x per minggu.",
+          revouValue: "100% Live Online interaktif dua arah malam hari (19:00–21:00 WIB) Senin–Kamis (210+ jam live) + Sesi Review Tugas Opsional Sabtu (ramah pekerja tanpa perlu resign).",
+          competitorValue: "Online (Batch 12) · Pre-bootcamp mandiri + sesi live Zoom tanya jawab 2–3x per minggu kombinasi rekaman video LMS.",
           highlight: true
         },
         {
-          parameter: "Durasi & Kurikulum",
-          categoryTag: "DURASI & KURIKULUM",
-          revouValue: "7 Bulan komprehensif (Bulan 1-4 Modul Live + Bulan 5-7: 12 Minggu Virtual Internship & Career Track). 8 Modul + AI termasuk Apache Airflow & Automated ETL.",
-          competitorValue: "Pre-bootcamp + 24 minggu bootcamp + 2 post + 4 minggu Job Connect (±7 bulan).",
+          parameter: "Durasi & Alur Belajar",
+          categoryTag: "DURASI & ALUR",
+          revouValue: "7 Bulan komprehensif (Bulan 1-4 Modul Live + Bulan 5-7: 12 Minggu Virtual Internship & Career Track; Lifetime Community).",
+          competitorValue: "Pre-bootcamp (belajar mandiri) → Bootcamp 24 minggu → Post-bootcamp 2 minggu → Job Connect 4 minggu (total ±7,5 bulan). Batch terbaru: Batch 12.",
+          highlight: true
+        },
+        {
+          parameter: "Fokus Kurikulum & Spesialisasi",
+          categoryTag: "KURIKULUM",
+          revouValue: "8 Modul + AI: BigQuery SQL, Python PandasAI, Tableau, Looker Studio, Automated ETL dengan **Apache Airflow**, Business Problem Solving (Issue Tree, RCA), & Cloud Analytics.",
+          competitorValue: "SQL, Python, Spark, Cloud DWH, pipeline, big data.",
+          highlight: true
+        },
+        {
+          parameter: "Platform & Tools yang Digunakan",
+          categoryTag: "TECH STACK & TOOLS",
+          revouValue: "Apache Airflow, BigQuery, Python, Pandas, NumPy, PandasAI, Tableau, Looker Studio, Claude Code Safety Gate, & AWS Cloud Partner.",
+          competitorValue: "Colab, Git, Google Cloud, Docker, Airflow, Spark, Hadoop, Kafka, PostgreSQL, WSL.",
           highlight: true
         },
         {
           parameter: "Portofolio Proyek (Virtual Internship)",
           categoryTag: "PROYEK NYATA",
-          revouValue: "7 Portfolio Projects standar industri + 12 Minggu Virtual Internship menganalisis dataset bisnis skala enterprise mitra riil (Telkom Indonesia OCA, Zurich, dll).",
-          competitorValue: "Portofolio tugas akhir dan talent showcase ke partner.",
+          revouValue: "7 Portfolio Projects standar industri + **12 Minggu Virtual Internship** mengolah dataset bisnis skala enterprise riil mitra (Telkom OCA, Zurich) dan presentasi C-level.",
+          competitorValue: "Tugas akhir mandiri/kelompok dan talent showcase ke 1.100+ partner Dibimbing.",
           highlight: true
         },
         {
-          parameter: "Reputasi Recruiter Top Tech",
-          categoryTag: "TRACK RECORD",
-          revouValue: "Kurikulum berstandar praktik industry, 15.000+ alumni aktif di 1.000+ top company (Gojek, Tokopedia, Traveloka, Shopee, Big 4).",
-          competitorValue: "Penyaluran ke 1.100+ hiring partner Dibimbing.",
+          parameter: "Mentor & Dukungan Karir",
+          categoryTag: "KARIR & MENTOR",
+          revouValue: "Career+ (1-on-1 Personal Career Coach selama 7-8 bulan + AI Career Engine CV/LinkedIn + Mock Interview Hiring Manager). 15.000+ alumni di 1.000+ top company.",
+          competitorValue: "Job Connect 4 minggu: Review CV & LinkedIn, latihan interview, konsultasi 1-on-1. Mentor dari DANA, Kredivo, ZEALS, MIFX, INA Digital, Bank Mega, Singaporean Bank. Klaim gaji Data Engineer Rp 9–18jt/bulan.",
           highlight: false
         }
       ],
-      competitorLimitation: "Hanya 2–3 sesi per minggu dan sebagian materi berupa rekaman video; jam interaksi live bersama praktisi jauh lebih sedikit.",
-      revouEdge: "100% Live Instruction interaktif, 8 modul lengkap dengan Apache Airflow & Automated ETL, 7 portofolio proyek + 12 minggu Virtual Internship mitra nyata, dan bimbingan karir 1-on-1 intensif Career+.",
-      acTalkingPoint: "Dibimbing cocok kalau kakak ingin belajar santai 2-3 sesi per minggu via video rekaman LMS. Tapi jika kakak ingin switch career total menjadi Data Analyst handal, RevoU menyediakan 100% live class interaktif, bimbingan langsung dari praktisi industri aktif, penguasaan Apache Airflow ETL, dan 12 minggu Virtual Internship analisis real dataset bisnis."
+      competitorLimitation: "Sesi live hanya 2–3 kali seminggu dengan sebagian besar materi dipelajari mandiri via video LMS rekaman, biaya di-render dinamis via JS (harus kontak WA), dan portofolio hanya berupa tugas akhir tanpa virtual internship klien korporasi riil.",
+      revouEdge: "100% Live Instruction intensif setiap malam, penguasaan Apache Airflow & Automated ETL end-to-end, 12 minggu Virtual Internship mengolah real dataset perusahaan mitra, dan bimbingan karir intensif Career+ 1-on-1.",
+      acTalkingPoint: "Dibimbing Data Engineering fokus pada pipeline big data via 2-3 sesi per minggu dan materi rekaman LMS kak. Di RevoU FSDA, kakak belajar komprehensif selama 7 bulan dengan 100% live class interaktif setiap hari, menguasai SQL BigQuery, Python, Tableau, Looker Studio, dan Production-Ready Analytics dengan Apache Airflow & Automated ETL, plus 12 minggu Virtual Internship mengolah real dataset korporasi mitra (Telkom OCA, Zurich) serta didampingi Career Coach 1-on-1 sampai dapat kerja."
     },
+
+    // 2. Data Analytics (Online Batch 21+, Offline JKT Batch 3)
     {
-      id: "db-dm",
+      id: "db-da",
       competitorId: "dibimbing",
       competitorName: "Dibimbing",
-      programTitle: "Digital Marketing Bootcamp",
-      badge: "Bootcamp ±4 Bulan",
-      revouMatchProgram: "Full Stack Digital Marketing (FSDM)",
-      revouMatchBadge: "FSDM",
+      programTitle: "Data Analytics Bootcamp",
+      badge: "Online (Batch 21+) + Offline JKT (Batch 3)",
+      revouMatchProgram: "Full Stack Data Analytics (FSDA)",
+      revouMatchBadge: "FSDA",
+      tableRows: [
+        {
+          parameter: "Biaya & Opsi Pembayaran",
+          categoryTag: "INVESTASI & BIAYA",
+          revouValue: "• Biaya Program: Rp 17.900.000 – Rp 20.900.000 (Rp 17.9jt – 20.9jt all-in sudah termasuk 8 modul AI, Apache Airflow ETL, 12 minggu Virtual Internship, & Career+ sampai hired).\n• Upfront: Lunas di awal tanpa admin fee & tanpa bunga.\n• Cicilan: Opsi cicilan fleksibel 3x sampai 12x via kartu kredit & mitra resmi (Danacita).\n• Bebas Biaya Tambahan: Bebas biaya registrasi & tools.",
+          competitorValue: "• Biaya Program: Bayar Hari Ini atau Cicilan (harga di-render dinamis via JS / estimasi promo Rp 7jt – Rp 15jt via WA 081227741541).\n• Refund: Non-refundable (tidak ada refund dana).\n• Keunggulan Finansial: Opsi cicilan tersedia & gratis mengulang batch seumur hidup.",
+          highlight: false
+        },
+        {
+          parameter: "Format Belajar & Lokasi Kelas",
+          categoryTag: "FORMAT KELAS",
+          revouValue: "100% Live Online interaktif dua arah malam hari (19:00–21:00 WIB) Senin–Kamis + Review Sabtu. Ramah pekerja tanpa perlu macet atau biaya akomodasi.",
+          competitorValue: "Online (Weekday & Weekend - Batch 21+) atau Offline Jakarta (BARU - Batch 3). Frekuensi 2–3 sesi per minggu kombinasi rekaman video LMS.",
+          highlight: true
+        },
+        {
+          parameter: "Durasi & Alur Program",
+          categoryTag: "DURASI & ALUR",
+          revouValue: "7 Bulan komprehensif (Bulan 1-4 Modul Live + Bulan 5-7: 12 Minggu Virtual Internship & Career Track; Lifetime Community).",
+          competitorValue: "Pre-bootcamp mandiri → 24 minggu bootcamp → 2 minggu post → 4 minggu Job Connect (total ±7 bulan). Batch: Weekend Online Batch 21+, Offline Jakarta Batch 3.",
+          highlight: true
+        },
+        {
+          parameter: "Fokus Kurikulum & Problem Solving",
+          categoryTag: "KURIKULUM",
+          revouValue: "8 Modul + AI: Business Problem Solving (Issue Tree, RCA), SQL BigQuery AI, Python PandasAI, Tableau, Looker Studio, Data Storytelling, serta **Production-Ready Analytics (Apache Airflow & Automated ETL)**.",
+          competitorValue: "Excel, SQL, Python, Business Metrics & KPI, Power BI, Tableau, dan integrasi tools AI modern.",
+          highlight: true
+        },
+        {
+          parameter: "Platform & Tools yang Digunakan",
+          categoryTag: "TECH STACK & TOOLS",
+          revouValue: "Google Sheets AI, BigQuery SQL, Python, Pandas, NumPy, PandasAI, Tableau, Looker Studio, Claude Code Safety Gate, & Apache Airflow.",
+          competitorValue: "Excel/Spreadsheet, Colab, MongoDB, VS Code, LangChain, PostgreSQL, PgVector, GroqAPI, Streamlit, DBeaver.",
+          highlight: true
+        },
+        {
+          parameter: "Portofolio Proyek (Virtual Internship)",
+          categoryTag: "PROYEK NYATA",
+          revouValue: "7 Portfolio Projects mandiri standar industri + **12 Minggu Virtual Internship** menganalisis dataset bisnis riil enterprise mitra (Telkom OCA, Zurich) dan presentasi C-level.",
+          competitorValue: "Tugas akhir mandiri/kelompok dan talent showcase ke 1.100+ hiring partner.",
+          highlight: true
+        },
+        {
+          parameter: "Mentor & Klaim Gaji",
+          categoryTag: "KARIR & MENTOR",
+          revouValue: "Career+ 1-on-1 Personal Career Coach selama 7-8 bulan penuh + AI Career Engine CV/LinkedIn + Mock Interview Hiring Manager. 15.000+ alumni di 1.000+ top company.",
+          competitorValue: "Job Connect 4 minggu. Mentor dari Ajaib, OY! Indonesia, Philip Morris, Astro, Mekari. Klaim gaji: DA Rp 7,6–15jt; BI Analyst Rp 9,8–18,5jt; BI Developer Rp 6,8–13jt; Marketing/Sales Analyst Rp 7,6–15,6jt/bulan.",
+          highlight: false
+        }
+      ],
+      competitorLimitation: "Meskipun sudah ada opsi offline Jakarta dan memasukkan tools AI (LangChain/Groq), format online tetap berbasis 2–3 sesi seminggu dengan banyak modul mandiri via video LMS, serta tidak ada program virtual internship dataset enterprise riil.",
+      revouEdge: "100% Live Instruction interaktif setiap malam bersama praktisi senior, kurikulum terdepan mencakup Apache Airflow Automated ETL & Business Problem Solving, 12 minggu Virtual Internship dataset riil mitra, dan pendampingan karir 1-on-1 intensif Career+.",
+      acTalkingPoint: "Dibimbing Data Analytics memang sudah menyediakan opsi offline Jakarta dan tools AI seperti LangChain kak. Namun belajarnya hanya 2-3 sesi per minggu dan materi banyak dipelajari mandiri via video LMS rekaman. Kalau di RevoU FSDA, kakak belajar 100% live class interaktif setiap malam, menguasai business problem solving dan Apache Airflow Automated ETL, serta yang paling bernilai tinggi adalah 12 minggu Virtual Internship menganalisis dataset bisnis riil perusahaan mitra (Telkom OCA, Zurich) dan didampingi Career Coach 1-on-1 sampai dapat kerja."
+    },
+
+    // 3. AI Engineering (Batch 41 - ex Data Science & AI ML)
+    {
+      id: "db-ai",
+      competitorId: "dibimbing",
+      competitorName: "Dibimbing",
+      programTitle: "AI Engineering Bootcamp (ex-Data Science & ML)",
+      badge: "Batch 41 · Online",
+      revouMatchProgram: "x ITB: Applied Data Science with AI",
+      revouMatchBadge: "ITB",
+      tableRows: [
+        {
+          parameter: "Biaya & Kredensial Resmi",
+          categoryTag: "INVESTASI & KREDENSIAL",
+          revouValue: "Rp 16.999.000 (cicilan 0% & invoice kantor) + Certificate of Completion resmi **Institut Teknologi Bandung (FTI ITB)** + Opsi transfer kredit 1 SKS Magister FTI ITB.",
+          competitorValue: "• Biaya Program: Bayar Hari Ini (biaya via WA 081227741541 / estimasi promo Rp 7jt–15jt; non-refundable).\n• Sertifikasi: Sertifikat kelulusan internal Dibimbing (tanpa kemitraan kampus PTN/PTS).\n• FAQ: Menyebut program bergaransi serta perbedaan Job Connect vs Job Connect Plus.",
+          highlight: true
+        },
+        {
+          parameter: "Pengajar & Instruktur Praktisi",
+          categoryTag: "PENGAJAR",
+          revouValue: "Kolaborasi Dosen FTI ITB & Praktisi Senior Aktif: **Rahmat Hidayatullah** (Head of Data Science, XLSMART) — kurikulum terapan mutakhir.",
+          competitorValue: "Mentor praktisi dari Evermos, Bank Multiarta Sentosa, Astra International, Bank Mega, Otten Coffee.",
+          highlight: true
+        },
+        {
+          parameter: "Rebrand & Fokus Kurikulum",
+          categoryTag: "KURIKULUM",
+          revouValue: "Modern Data Science: Predictive analytics (regression, classification), forecasting, ML clustering, AI coding agent via **Claude Code Safety Gate** untuk akselerasi koding aman.",
+          competitorValue: "Python, SQL, statistik, ML, deep learning, NLP, Generative AI. (Catatan: Rebrand dari 'Data Science & AI Machine Learning' — URL website masih `/data-science`, footer Back-End masih pakai nama lama).",
+          highlight: true
+        },
+        {
+          parameter: "Platform & Tools yang Digunakan",
+          categoryTag: "TECH STACK & TOOLS",
+          revouValue: "Claude Code Safety Gate, ChatGPT & Gemini untuk analitis prediktif terapan, BigQuery, Python, Pandas, Tableau, & sertifikasi resmi ITB.",
+          competitorValue: "Colab, PostgreSQL, DBeaver, MongoDB, VS Code, Anaconda, LangChain, Docker, Streamlit, Tableau.",
+          highlight: true
+        },
+        {
+          parameter: "Format Belajar & Kampus",
+          categoryTag: "FORMAT KELAS",
+          revouValue: "Hybrid 13 Minggu: Live Zoom interaktif malam hari + Sesi On-Campus Networking tatap muka di Kampus ITB Ganesha Bandung.",
+          competitorValue: "Online 2–3x seminggu + video rekaman materi LMS (total ±7 bulan alur belajar). Batch terbaru: Batch 41.",
+          highlight: false
+        },
+        {
+          parameter: "Deliverable Akhir & Klaim Gaji",
+          categoryTag: "PROYEK & KARIR",
+          revouValue: "Capstone Decision App siap pakai berbasis machine learning & AI (misal Churn Prediction & Decision System) yang langsung bisa diimplementasikan ke sistem bisnis nyata.",
+          competitorValue: "Tugas akhir mandiri/kelompok. Klaim gaji: AI Engineer Rp 8,7–14,4jt; MLE Rp 8,2–28,9jt; Data Scientist Rp 6,9–12,8jt; CV/NLP Engineer Rp 5,9–10,5jt; MLOps Rp 8–10jt/bulan.",
+          highlight: true
+        }
+      ],
+      competitorLimitation: "AI Engineering merupakan rebrand dari kursus Data Science lama (URL masih `/data-science`), format belajar hanya 2–3 sesi seminggu dengan materi rekaman LMS, dan sertifikat yang didapat hanya sertifikat internal lembaga kursus tanpa pengakuan universitas ternama.",
+      revouEdge: "Kredensial resmi Institut Teknologi Bandung (FTI ITB) dengan opsi 1 SKS Magister ITB, dibimbing langsung Head of Data Science XLSMART & Dosen FTI ITB, integrasi modern Claude Code, dan sesi tatap muka eksklusif di Kampus ITB Ganesha Bandung.",
+      acTalkingPoint: "Dibimbing AI Engineering adalah rebrand dari program Data Science & ML mereka dengan format online rekaman video 2-3 sesi per minggu dan sertifikat internal kursus kak. Di program RevoU x ITB Applied Data Science with AI, kakak belajar langsung dari Dosen FTI ITB dan Head of Data Science XLSMART, menggunakan AI coding agent Claude Code, sesi on-campus di ITB Ganesha Bandung, dan mendapatkan sertifikat resmi ITB plus opsi 1 SKS Magister ITB. Kredensial dan bobot profesionalnya jauh lebih prestisius di mata recruiter industri!"
+    },
+
+    // 4. Front-End Web Development (Batch 26+)
+    {
+      id: "db-fe",
+      competitorId: "dibimbing",
+      competitorName: "Dibimbing",
+      programTitle: "Front-End Web Development Bootcamp",
+      badge: "Batch 26+ · Online",
+      revouMatchProgram: "Full Stack Software Engineering (FSSE)",
+      revouMatchBadge: "FSSE",
+      tableRows: [
+        {
+          parameter: "Biaya & Cakupan Program",
+          categoryTag: "INVESTASI & BIAYA",
+          revouValue: "• Biaya Program: Rp 19.500.000 – Rp 22.500.000 (Rp 19.5jt – 22.5jt all-in sudah termasuk Full Stack Front-End + Back-End + AWS Cloud + AI Agent, 3 bulan Virtual Internship, & Career+ sampai hired).\n• Upfront: Lunas di awal tanpa admin fee & tanpa bunga.\n• Cicilan: Opsi cicilan fleksibel 3x sampai 12x via kartu kredit & Danacita.",
+          competitorValue: "• Biaya Program: Bayar Hari Ini (biaya via admission WA 081227741541; estimasi promo Rp 7jt–15jt).\n• Pembatasan: Hanya mencakup modul Front-End saja. Jika ingin Back-End harus daftar terpisah (FAQ menyebut bisa daftar FE dan BE sekaligus dengan biaya terpisah).",
+          highlight: false
+        },
+        {
+          parameter: "Cakupan Arsitektur Software",
+          categoryTag: "ARSITEKTUR KODING",
+          revouValue: "**Full Stack End-to-End**: Front-End (React, Next.js, TypeScript) PLUS Back-End (Node.js, Express, PostgreSQL, REST API) + Cloud Architecture di AWS.",
+          competitorValue: "**Hanya Front-End Terpisah**: HTML, CSS, JavaScript dasar, React, Redux, Netlify. Tidak ada pembelajaran arsitektur backend, database, atau cloud server.",
+          highlight: true
+        },
+        {
+          parameter: "Format Belajar & Durasi",
+          categoryTag: "FORMAT & DURASI",
+          revouValue: "100% Live Online interaktif malam (19:00–21:00 WIB) Senin–Kamis (210+ jam live coding & review baris-per-baris bersama praktisi).",
+          competitorValue: "Pre-bootcamp mandiri + 24 minggu bootcamp + 2 post + 4 Job Connect (±7,5 bulan). Sesi live Zoom 2–3x/minggu. Catatan: meta-description di web menyebut '5 bulan' (inkonsisten dengan alur 24 minggu). Batch: Batch 26+.",
+          highlight: true
+        },
+        {
+          parameter: "Tech Stack & AI Tooling",
+          categoryTag: "TECH STACK & TOOLS",
+          revouValue: "React, Next.js, TypeScript, Node.js, Express, PostgreSQL, Docker, AWS Partner Cloud, & AI Coding Agents (Claude Code, Cursor).",
+          competitorValue: "HTML, CSS, JavaScript, React, Redux, Git, GitHub, Netlify, Hackerrank, VS Code.",
+          highlight: true
+        },
+        {
+          parameter: "Portofolio Proyek (Virtual Internship)",
+          categoryTag: "PROYEK NYATA",
+          revouValue: "Proyek mandiri standar industri + **12 Minggu Virtual Internship** membangun software riil untuk mitra korporasi enterprise nyata.",
+          competitorValue: "Portofolio tugas akhir mandiri dan talent showcase ke 1.100+ partner.",
+          highlight: true
+        },
+        {
+          parameter: "Mentor & Klaim Gaji",
+          categoryTag: "KARIR & MENTOR",
+          revouValue: "Career+ 1-on-1 Personal Career Coach selama 7-8 bulan penuh sampai hired. 15.000+ alumni di 1.000+ top company.",
+          competitorValue: "Job Connect 4 minggu. Mentor dari SALT, Rekosistem, Paragon, Apotek Digital, Hijr Studio, Telkom Indonesia, PrivyID, Amartha. Klaim gaji: FE Developer Rp 5–8jt, FE Engineer Rp 6–9jt, Web Designer Rp 5–6jt/bulan.",
+          highlight: false
+        }
+      ],
+      competitorLimitation: "Materi hanya mencakup Front-End terpisah (jika ingin full stack harus bayar dan ikut FE dan BE terpisah), ada inkonsistensi durasi antara meta (5 bulan) vs alur resmi (24 minggu), dan jam live coding bersama praktisi sangat minim (2-3 sesi seminggu).",
+      revouEdge: "Di RevoU siswa langsung menguasai Full Stack Software Engineering lengkap (Front-End Modern React/Next.js PLUS Back-End Node.js & AWS Cloud) dengan 210+ jam live instruction harian, review code baris-per-baris, dan 12 minggu Virtual Internship membangun software nyata.",
+      acTalkingPoint: "Di Dibimbing, Front-End dijual terpisah kak, jadi kalau mau jadi Full Stack harus daftar FE dan BE sekaligus dengan biaya dobel, plus belajarnya 2-3 sesi per minggu via video rekaman LMS. Di RevoU FSSE, kakak langsung menguasai Full Stack Software Engineering lengkap (Front-End React/Next.js PLUS Back-End Node.js, database, dan AWS cloud) dengan 100% live class interaktif setiap hari, bimbingan code review baris-per-baris, dan 12 minggu Virtual Internship software riil sampai dapat kerja!"
+    },
+
+    // 5. DevOps Engineering (Batch 1)
+    {
+      id: "db-devops",
+      competitorId: "dibimbing",
+      competitorName: "Dibimbing",
+      programTitle: "DevOps Engineering Bootcamp",
+      badge: "Batch 1 (Baru) · Online",
+      revouMatchProgram: "Full Stack Software Engineering (FSSE)",
+      revouMatchBadge: "FSSE",
+      tableRows: [
+        {
+          parameter: "Biaya & Kematangan Program",
+          categoryTag: "INVESTASI & BIAYA",
+          revouValue: "• Biaya Program: Rp 19.500.000 – Rp 22.500.000 (Program matang dengan ribuan alumni sukses di top tech unicorn & multinational, integrasi resmi AWS Partner Cloud).\n• Skema: Cicilan 0% s.d. 12-18 bulan via kartu kredit/Danacita.",
+          competitorValue: "• Biaya Program: Bayar Hari Ini (biaya via admission WA 081227741541).\n• Status Program: **Baru berjalan Batch 1** (program perintis yang belum teruji rekam jejak lulusannya di pasar kerja).",
+          highlight: true
+        },
+        {
+          parameter: "Cakupan Kurikulum & Relevansi Karir",
+          categoryTag: "KURIKULUM",
+          revouValue: "Full Stack Software Engineering AI-Native: Pengembangan aplikasi end-to-end + CI/CD automated pipeline, Docker containerization, AWS Cloud Infrastructure, & monitoring sistem.",
+          competitorValue: "Automation, CI/CD, containerization, infra management, deployment. Tools: Linux, Git, SSH, Virtual Machine, NGINX, Docker, Kubernetes, WSL, VS Code, Miro.",
+          highlight: true
+        },
+        {
+          parameter: "Format Belajar & Jam Interaksi Live",
+          categoryTag: "FORMAT KELAS",
+          revouValue: "100% Live Online intensif harian malam (19:00–21:00 WIB) 4-5x seminggu (210+ jam live) bersama praktisi senior + 24/7 AI Learning Assistant.",
+          competitorValue: "Online (Batch 1). Pre-bootcamp mandiri + 24 minggu bootcamp + 2 post + 4 Job Connect (±7,5 bulan). Sesi live Zoom 2–3x seminggu kombinasi rekaman video LMS.",
+          highlight: true
+        },
+        {
+          parameter: "Ekosistem Mentor & Network",
+          categoryTag: "MENTOR & NETWORK",
+          revouValue: "15.000+ alumni di 1.000+ top company (Gojek, Tokopedia, Traveloka, Shopee, Big 4, BUMN) dengan reputasi kurikulum yang diakui hiring manager.",
+          competitorValue: "Mentor yang terdaftar baru dari 2 perusahaan: BTPN Syariah & SPE Solution.",
+          highlight: false
+        },
+        {
+          parameter: "Portofolio Proyek (Virtual Internship)",
+          categoryTag: "PROYEK NYATA",
+          revouValue: "**12 Minggu Virtual Internship** mendeploy dan memelihara aplikasi skala enterprise dengan arsitektur cloud nyata mitra korporasi.",
+          competitorValue: "Tugas akhir mandiri/kelompok simulasi infrastruktur lokal.",
+          highlight: true
+        },
+        {
+          parameter: "Klaim Gaji & Prospek Karir",
+          categoryTag: "KARIR & GAJI",
+          revouValue: "Software Engineer / DevOps Engineer siap pakai dengan pendampingan karir 1-on-1 intensif Career+ sampai hired.",
+          competitorValue: "Klaim gaji DevOps Engineer Rp 5,7–19,5jt; SRE Rp 10,1–19,6jt/bulan.",
+          highlight: false
+        }
+      ],
+      competitorLimitation: "Program DevOps Dibimbing masih berstatus Batch 1 (program perintis yang belum memiliki track record lulusan/alumni teruji), mentor baru terdaftar dari 2 perusahaan, dan pembelajaran hanya 2-3 sesi seminggu berbasis video rekaman LMS.",
+      revouEdge: "RevoU FSSE memiliki kurikulum software engineering & cloud deployment yang matang dan teruji bersama AWS Partner, didukung 15.000+ alumni di top company, 100% live class harian, dan 12 minggu Virtual Internship arsitektur riil.",
+      acTalkingPoint: "Program DevOps di Dibimbing baru berjalan batch pertama (Batch 1) kak, sehingga rekam jejak alumni dan portofolio industrinya masih sangat muda dan mentornya baru dari 2 institusi. Kalau di RevoU FSSE, materi containerization Docker, CI/CD automated deployment, dan cloud infrastructure AWS diajarkan secara komprehensif dalam ekosistem Full Stack Software Engineering yang sudah teruji meluluskan ribuan alumni di top tech company, didukung 100% live class harian dan 12 minggu Virtual Internship!"
+    },
+
+    // 6. Quality Assurance (Batch 4)
+    {
+      id: "db-qa",
+      competitorId: "dibimbing",
+      competitorName: "Dibimbing",
+      programTitle: "Quality Assurance Bootcamp",
+      badge: "Batch 4 (Muda) · Online",
+      revouMatchProgram: "Full Stack Software Engineering (FSSE)",
+      revouMatchBadge: "FSSE",
       tableRows: [
         {
           parameter: "Biaya & Skema Pembayaran",
           categoryTag: "INVESTASI & BIAYA",
-          revouValue: "• Biaya Program: Rp 14.900.000 – Rp 17.900.000 (Rp 14.9jt – 17.9jt all-in sudah termasuk 12 modul AI, alokasi real ads budget jutaan rupiah, 12 minggu Virtual Internship, & Career+).\n• Upfront: Lunas di awal tanpa admin fee & tanpa bunga.\n• Cicilan: Opsi cicilan fleksibel 3x sampai 12x via kartu kredit & mitra resmi (Danacita).\n• Bebas Biaya Tambahan: Bebas biaya registrasi tersembunyi & tanpa biaya tools.",
-          competitorValue: "Rp 7.000.000 – Rp 15.000.000 (Harga ekonomis, banyak diskon promo, benefit gratis ulang kelas seumur hidup tanpa refund dana).",
+          revouValue: "• Biaya Program: Rp 19.500.000 – Rp 22.500.000 (all-in mencakup Full Stack Engineering, Testing Automation, CI/CD Test Gates, 3 bulan Virtual Internship, & Career+).\n• Cicilan: Opsi cicilan 0% s.d. 12-18 bulan via kartu kredit/Danacita.",
+          competitorValue: "• Biaya Program: Bayar Hari Ini (biaya via WA 081227741541; tanpa refund dana, ada benefit gratis mengulang batch seumur hidup).",
           highlight: false
         },
         {
-          parameter: "Format Sesi & Real Budget",
-          categoryTag: "FORMAT KELAS",
-          revouValue: "100% Live Instruction 4x/minggu malam (19:00–21:00 WIB) + Setiap siswa pegang REAL BUDGET ADS jutaan rupiah langsung untuk live campaign di Meta, Google, & TikTok.",
-          competitorValue: "Video LMS rekaman + live Zoom 2-3x/minggu tanpa alokasi anggaran ads riil mandiri.",
+          parameter: "Kedalaman Arsitektur vs Testing Terisolasi",
+          categoryTag: "ARSITEKTUR KODING",
+          revouValue: "Memahami software arsitektur secara holistik (Front-End, Back-End API, Database, CI/CD automated testing pipeline, Unit/Integration/E2E testing), sehingga mampu menulis test script automation yang kokoh (level SDET).",
+          competitorValue: "Fokus terisolasi pada Foundation QA, manual testing, API & DB testing, web/mobile automation dengan Selenium & Appium tanpa mendalami koding software development end-to-end.",
           highlight: true
         },
         {
-          parameter: "Durasi & Kurikulum",
-          categoryTag: "DURASI & KURIKULUM",
-          revouValue: "7 Bulan komprehensif (Bulan 1-4 Modul Live + Bulan 5-7: 12 Minggu Virtual Internship & Career Track). 12 Modul Lengkap Integrasi AI (Custom GPTs, GA4/GTM, Looker Studio, Meta/Google/TikTok Ads, SEO with AI, CRM).",
-          competitorValue: "Durasi 4 bulan, fokus materi dasar SEO, sosmed, ads, CRM.",
+          parameter: "Format Belajar & Alur Waktu",
+          categoryTag: "FORMAT & DURASI",
+          revouValue: "100% Live Instruction interaktif malam (19:00–21:00 WIB) Senin–Kamis (210+ jam live) bersama praktisi senior + bimbingan code review.",
+          competitorValue: "Pre-bootcamp mandiri + 24 minggu bootcamp + 2 post + 4 Job Connect (±7,5 bulan). Sesi live Zoom 2–3x seminggu. Catatan: meta-description menyebut '5 bulan' vs alur 24 minggu; meta hiring partner tertulis '700+' vs body '1.100+'. Batch: Batch 4.",
           highlight: true
         },
         {
-          parameter: "Portofolio Klien Nyata (Virtual Internship)",
+          parameter: "Tools & Testing Framework",
+          categoryTag: "TECH STACK & TOOLS",
+          revouValue: "Automated test framework, Jest, Cypress/Playwright, Postman API testing, GitHub Actions CI/CD test gates, AWS Cloud, & AI code auditing.",
+          competitorValue: "Jira, Miro, MySQL, VS Code, Selenium, Appium, GitHub, JMeter.",
+          highlight: true
+        },
+        {
+          parameter: "Portofolio Proyek (Virtual Internship)",
           categoryTag: "PROYEK NYATA",
-          revouValue: "13 Portfolio Projects praktis mandiri + 12 Minggu Virtual Internship menjalankan kampanye pemasaran nyata untuk perusahaan partner.",
-          competitorValue: "Studi kasus latihan dan tugas akhir kelompok.",
+          revouValue: "**12 Minggu Virtual Internship** melakukan automated testing & QA pada sistem software enterprise nyata korporasi mitra.",
+          competitorValue: "Studi kasus latihan dan portofolio tugas akhir mandiri/kelompok.",
           highlight: true
+        },
+        {
+          parameter: "Mentor & Klaim Gaji",
+          categoryTag: "KARIR & MENTOR",
+          revouValue: "Software Development Engineer in Test (SDET) / Software Engineer dengan daya tawar gaji premium di tech unicorn didampingi Career+ 1-on-1.",
+          competitorValue: "Job Connect 4 minggu. Mentor dari OCBC, NOICE, BCI Central, GoTo Financial, Stockbit, Chronicle. Klaim gaji: Manual Tester Rp 3–4jt, Software Tester Rp 7–8jt, QA Automation Rp 8–15jt, QA Engineer Rp 7–8,5jt, QA Lead Rp 10–20jt/bulan.",
+          highlight: false
         }
       ],
-      competitorLimitation: "Sebagian materi dipelajari mandiri melalui video rekaman LMS dengan sesi live 2–3x seminggu, dan tidak tercantum alokasi anggaran ads berbayar mandiri untuk tiap siswa.",
-      revouEdge: "100% Live Instruction interaktif malam, kurikulum 12 modul lengkap integrasi AI, alokasi real ads budget jutaan rupiah untuk setiap siswa, 13 portofolio mandiri, dan 12 minggu Virtual Internship.",
-      acTalkingPoint: "Dibimbing memang opsi yang ramah kantong untuk belajar santai 2-3x seminggu via video LMS kak. Tapi kalau tujuan kakak ingin career switch menjadi Digital Marketer handal di perusahaan top, RevoU memberikan 100% live class interaktif, real ads budget jutaan rupiah mandiri, 12 modul integrasi AI, 13 portofolio project, dan 12 minggu Virtual Internship bersama real client."
+      competitorLimitation: "Program QA Dibimbing masih relatif muda (Batch 4), terdapat ketidaksinkronan data (meta sebut durasi 5 bulan vs alur 24 minggu, partner di meta 700+ vs body 1.100+), dan belajarnya hanya 2-3 sesi per minggu via video rekaman LMS.",
+      revouEdge: "Di RevoU siswa memahami rekayasa software end-to-end sehingga penguasaan automated testing jauh lebih kokoh (level SDET), didukung 100% live class harian, dan 12 minggu Virtual Internship software riil.",
+      acTalkingPoint: "Program QA Dibimbing baru batch ke-4 kak, belajarnya 2-3 sesi seminggu dengan video rekaman LMS dan ada inkonsistensi durasi di web mereka (meta 5 bulan vs alur 24 minggu). Nah di industri teknologi saat ini, perusahaan lebih mengutamakan SDET (Software Development Engineer in Test) yang paham arsitektur koding software end-to-end. Di RevoU FSSE, kakak menguasai software engineering lengkap sekaligus automated testing dan CI/CD pipeline dengan 100% live class harian dan 12 minggu Virtual Internship portofolio riil!"
     },
+
+    // 7. Back-End Development (Batch 6+)
     {
-      id: "db-cyber",
+      id: "db-be",
       competitorId: "dibimbing",
       competitorName: "Dibimbing",
-      programTitle: "Cyber Security Bootcamp",
-      badge: "Bootcamp ±4 Bulan",
-      revouMatchProgram: "x BINUS: Applied Cybersecurity with AI",
-      revouMatchBadge: "BINUS",
+      programTitle: "Back-End Development Bootcamp",
+      badge: "Batch 6+ · Online",
+      revouMatchProgram: "Full Stack Software Engineering (FSSE)",
+      revouMatchBadge: "FSSE",
       tableRows: [
         {
-          parameter: "Biaya & Kredensial Resmi",
+          parameter: "Biaya & Pembatasan Program",
           categoryTag: "INVESTASI & BIAYA",
-          revouValue: "Online: Rp 15.000.000 / On-Campus: Rp 16.500.000 (cicilan tersedia) + Professional Certificate resmi **BINUS University, AWS, dan RevoU**.",
-          competitorValue: "Rp 7.000.000 – Rp 15.000.000 (Sertifikat kelulusan internal Dibimbing).",
+          revouValue: "• Biaya Program: Rp 19.500.000 – Rp 22.500.000 (all-in mencakup Full Stack Back-End + Front-End + Cloud AWS + AI Agent, 3 bulan Virtual Internship, & Career+).\n• Cicilan: Opsi cicilan 0% s.d. 12-18 bulan via kartu kredit/Danacita.",
+          competitorValue: "• Biaya Program: Bayar Hari Ini (biaya via admission WA 081227741541; estimasi promo Rp 7jt–15jt).\n• Pembatasan: Hanya mencakup Back-End terpisah tanpa modul Front-End (tidak full-stack).",
+          highlight: false
+        },
+        {
+          parameter: "Cakupan Arsitektur Software",
+          categoryTag: "ARSITEKTUR KODING",
+          revouValue: "Full Stack Engineering: Back-End API arsitektur mendalam (Node.js, Express, PostgreSQL, Database relational modeling, Auth/Security, Docker, AWS) PLUS Front-End modern (React, Next.js).",
+          competitorValue: "Hanya Back-End terpisah: JavaScript dasar, Java, Spring Framework, MySQL, MongoDB, Docker. (Tidak mempelajari Front-End atau integrasi UI).",
           highlight: true
         },
         {
-          parameter: "Fasilitas Cloud Lab Praktis",
-          categoryTag: "LABS PRAKTIK",
-          revouValue: "3 Live Cloud Infrastructure Labs di lingkungan resmi **Amazon Web Services (AWS)** + 5 sesi on-campus di BINUS Kemanggisan.",
-          competitorValue: "Sesi Zoom dan tugas akhir mandiri tanpa dedicated cloud labs di AWS.",
+          parameter: "Format Belajar & Intensitas Kelas Live",
+          categoryTag: "FORMAT KELAS",
+          revouValue: "100% Live Online interaktif malam (19:00–21:00 WIB) Senin–Kamis (210+ jam live) bersama praktisi senior + review kode baris-per-baris.",
+          competitorValue: "Online (Batch 6+). Pre-bootcamp mandiri + 24 minggu bootcamp + 2 post + 4 Job Connect (±7,5 bulan). Sesi live Zoom 2–3x seminggu. Catatan: Footer halaman web masih pakai nama lama 'Data Science & AI Machine Learning', rating tertulis 4.9/5 SwitchUp & 4K+ lulusan (beda dari 10K+ di program lain).",
           highlight: true
         },
         {
-          parameter: "Fokus Kurikulum Pertahanan",
-          categoryTag: "KURIKULUM",
-          revouValue: "Mendalam pada **Defensive Cybersecurity (Blue Team)**: threat detection, triage, respons insiden, dan integrasi AI security agent sejak Day One.",
-          competitorValue: "Kombinasi materi rekaman video LMS dan sesi live Zoom (tidak tercantum fasilitas live cloud labs AWS enterprise).",
+          parameter: "Tech Stack & Integrasi Cloud",
+          categoryTag: "TECH STACK & TOOLS",
+          revouValue: "Node.js, Express, PostgreSQL, RESTful API, Docker, **AWS Partner Cloud Infrastructure**, & AI Coding Agents (Claude Code, Cursor).",
+          competitorValue: "Draw.io, VS Code, MySQL, MongoDB, Git, Docker, JavaScript, Java, Spring Framework, GPT.",
           highlight: true
+        },
+        {
+          parameter: "Portofolio Proyek (Virtual Internship)",
+          categoryTag: "PROYEK NYATA",
+          revouValue: "Proyek mandiri standar industri + **12 Minggu Virtual Internship** mendeploy backend service skala enterprise untuk perusahaan partner riil.",
+          competitorValue: "Tugas akhir mandiri/kelompok dan talent showcase ke partner.",
+          highlight: true
+        },
+        {
+          parameter: "Mentor & Klaim Gaji",
+          categoryTag: "KARIR & MENTOR",
+          revouValue: "Career+ 1-on-1 Personal Career Coach selama 7-8 bulan penuh sampai hired di top company. 15.000+ alumni.",
+          competitorValue: "Job Connect 4 minggu. Mentor dari AccelByte, bynsm.io, GovTech Procurement, Srw&co, ParagonCorp, Amartha, Apotek Digital. Klaim gaji: BE Developer Rp 7–14jt, BE Engineer Rp 6–12jt, Software Engineer Rp 7–12jt/bulan.",
+          highlight: false
         }
       ],
-      competitorLimitation: "Materi sebagian besar berupa rekaman video LMS dan tidak memiliki fasilitas hands-on lab di cloud AWS enterprise resmi.",
-      revouEdge: "Kolaborasi resmi BINUS University, AWS, dan RevoU, fokus mendalam pada Defensive Cybersecurity (Blue Team), 3 hari live lab AWS, dan sertifikasi resmi institusi.",
-      acTalkingPoint: "Dibimbing opsi ekonomis via video LMS rekaman kak. Namun di bidang cybersecurity, industri mencari analis Blue Team yang sudah terbiasa dengan environment cloud nyata. Di RevoU x BINUS, kakak praktek langsung di 3 AWS Live Labs asli dan dibimbing langsung oleh faculty BINUS serta Solutions Architect AWS!"
+      competitorLimitation: "Modul Back-End dijual terpisah dari Front-End (tidak full-stack), format pembelajaran 2-3 sesi seminggu dengan materi dominan rekaman video LMS, dan footer halaman masih mencantumkan nama program lama serta perbedaan statistik lulusan (4K+ vs 10K+).",
+      revouEdge: "Di RevoU siswa langsung menguasai Full Stack Software Engineering lengkap dengan 210+ jam live instruction harian, bimbingan code review intensif, kemitraan cloud resmi AWS Partner, dan 12 minggu Virtual Internship backend enterprise riil.",
+      acTalkingPoint: "Di Dibimbing, Back-End dipisah tersendiri dan belajarnya 2-3 sesi per minggu via materi rekaman LMS. Di era AI saat ini, tech company mencari engineer yang paham Full Stack end-to-end. Di RevoU FSSE, kakak menguasai arsitektur Back-End database dan API sekaligus Front-End dan Cloud AWS, didukung 100% live class interaktif setiap hari, dan 12 minggu Virtual Internship membangun backend sistem nyata perusahaan mitra sampai dapat kerja!"
+    },
+
+    // 8. Full-Stack Web Development (Online Batch 11, Offline JKT Batch 1)
+    {
+      id: "db-fs",
+      competitorId: "dibimbing",
+      competitorName: "Dibimbing",
+      programTitle: "Full-Stack Web Development Bootcamp",
+      badge: "Online (Batch 11) + Offline JKT (Batch 1)",
+      revouMatchProgram: "Full Stack Software Engineering (FSSE)",
+      revouMatchBadge: "FSSE",
+      tableRows: [
+        {
+          parameter: "Biaya & Opsi Pembayaran",
+          categoryTag: "INVESTASI & BIAYA",
+          revouValue: "• Biaya Program: Rp 19.500.000 – Rp 22.500.000 (Rp 19.5jt – 22.5jt all-in termasuk kurikulum AI, AWS Cloud Partner, 3 bulan Virtual Internship, & Career+ sampai hired).\n• Cicilan: Opsi cicilan fleksibel 3x sampai 12x via kartu kredit & Danacita.\n• Bebas Biaya Tambahan: Bebas biaya registrasi tersembunyi & tanpa biaya akomodasi kos.",
+          competitorValue: "• Biaya Program: Bayar Hari Ini atau Cicilan (harga di-render dinamis via JS / estimasi promo Rp 7jt – Rp 15jt via WA 081227741541).\n• Refund: Non-refundable (tidak ada garansi refund dana).\n• Keunggulan: Opsi cicilan tersedia & gratis mengulang batch seumur hidup.",
+          highlight: false
+        },
+        {
+          parameter: "Format Belajar & Lokasi Kelas",
+          categoryTag: "FORMAT KELAS",
+          revouValue: "100% Live Online interaktif dua arah malam hari (19:00–21:00 WIB) Senin–Kamis (210+ jam live) bersama praktisi senior + 24/7 AI Learning Assistant. Fleksibel tanpa biaya kos.",
+          competitorValue: "Pilihan Online (Batch 11), Offline Jakarta (BARU - Batch 1), atau Private Session. Sesi online 2–3x seminggu kombinasi rekaman video LMS.",
+          highlight: true
+        },
+        {
+          parameter: "Durasi & Kedalaman Kurikulum",
+          categoryTag: "DURASI & KURIKULUM",
+          revouValue: "8 Bulan komprehensif (5 Bulan Live Classes & 210+ Jam Kelas LIVE + 3 Bulan Virtual Internship / Real Company Project). 4 Fase AI-Native Software Engineering.",
+          competitorValue: "Pre-bootcamp mandiri → 24 minggu bootcamp → 2 minggu post → 4 minggu Job Connect (total ±7,5 bulan). Batch: Online Batch 11, Offline Jakarta Batch 1.",
+          highlight: true
+        },
+        {
+          parameter: "Tech Stack & Integrasi Cloud",
+          categoryTag: "TECH STACK & TOOLS",
+          revouValue: "React, Next.js, TypeScript, Node.js, Express, PostgreSQL, REST API, Docker, **AWS Partner Cloud Infrastructure**, & AI Coding Agents (Claude Code, Cursor).",
+          competitorValue: "VS Code, JavaScript, HTML, CSS, MySQL, MongoDB, React, Docker, Netlify, GitHub (MERN stack konvensional).",
+          highlight: true
+        },
+        {
+          parameter: "Portofolio Proyek (Virtual Internship)",
+          categoryTag: "PROYEK NYATA",
+          revouValue: "**12 Minggu Virtual Internship** membangun dan mendeploy software web aplikasi skala enterprise untuk perusahaan partner riil.",
+          competitorValue: "Tugas akhir mandiri/kelompok dan talent showcase ke 1.100+ hiring partner.",
+          highlight: true
+        },
+        {
+          parameter: "Mentor & Klaim Gaji",
+          categoryTag: "KARIR & MENTOR",
+          revouValue: "Career+ 1-on-1 Personal Career Coach selama 7-8 bulan penuh + AI Career Engine CV/LinkedIn + Mock Interview Hiring Manager. 15.000+ alumni di 1.000+ top company.",
+          competitorValue: "Job Connect 4 minggu (Konsultasi 1-on-1, review CV & LinkedIn, talent showcase). Mentor dari bynsm.io, GovTech, Srw&co, ParagonCorp, Amartha, PrivyID, Apotek Digital, ex-BitHealth. Klaim gaji: Full-Stack Rp 5–10jt, FE Rp 6–10jt, BE Rp 6–12jt/bulan.",
+          highlight: false
+        }
+      ],
+      competitorLimitation: "Format offline Jakarta baru berjalan angkatan pertama (Batch 1), sesi online hanya 2–3 kali seminggu via rekaman materi LMS, stack masih MERN konvensional tanpa Next.js/TypeScript enterprise atau integrasi cloud AWS resmi, dan portofolio hanya tugas akhir tanpa virtual internship klien korporasi.",
+      revouEdge: "8 Bulan komprehensif dengan 100% live class interaktif setiap malam (210+ jam live coding), kurikulum modern Next.js/TypeScript bersama AWS Partner, live code review baris-per-baris, dan 12 minggu Virtual Internship membangun software riil korporasi.",
+      acTalkingPoint: "Dibimbing Full-Stack baru membuka offline Jakarta batch ke-1 dan format onlinenya hanya 2-3 sesi per minggu via materi rekaman LMS dengan MERN stack dasar. Di RevoU FSSE, kakak belajar 8 bulan komprehensif dengan 100% live class harian (210+ jam live interaktif), kurikulum modern Next.js dan TypeScript bersama AWS Partner, live code review baris-per-baris, dan 12 minggu Virtual Internship membangun software riil korporasi mitra serta bimbingan karir Career+ 1-on-1 sampai dapat kerja!"
     }
   ],
 
@@ -1352,7 +1837,7 @@ const GENERAL_COMPARISON_DATA: GeneralComparisonRow[] = [
     general: "Kombinasi kelas live dengan rekaman video",
     hacktiv8: "Full-Day Bootcamp & Night Bootcamp; lokasi Jakarta, Tangerang, dan Remote",
     purwadhika: "On campus atau online livestream",
-    dibimbing: "Online & offline, supported with AI",
+    dibimbing: "Online (seluruh program) · Offline Jakarta (Data Analytics & Full-Stack) · Private Session (Full-Stack)",
     dqlab: "Bootcamp live class virtual + belajar mandiri via modul",
     selfPaced: "100% rekaman video mandiri",
     revouHighlight: true
@@ -1364,7 +1849,7 @@ const GENERAL_COMPARISON_DATA: GeneralComparisonRow[] = [
     general: "Rp 7.000.000 – Rp 45.000.000 (Sering ada biaya pendaftaran/non-refundable)",
     hacktiv8: "Full-Day Rp 35jt–45jt | Night Rp 18jt–25jt. Reg fee Rp 100rb (non-refundable).\n• Upfront (Best Choice): 2 tahap (tanpa admin & bunga)\n• Cicilan 0%: Danacita & CIMB Niaga / CIMB Niaga Syariah\n• SNPL: Penangguhan bayar s.d. 4 bulan via Danacita",
     purwadhika: "Tiered 10 Program: Normal Rp 20jt–35jt (Early Bird Rp 13jt–20jt, Term 1 Rp 15jt–25jt, Term 2 Rp 17jt–30jt, Promo 39th Rp 14,5jt–27,5jt, Sinarmas Rp 10jt–17,5jt). Tools premium tertentu ditanggung peserta.",
-    dibimbing: "Rp 7jt – Rp 15jt (Ekonomis, bayar penuh atau cicilan, gratis mengulang batch seumur hidup)",
+    dibimbing: "Bayar Hari Ini atau Cicilan (harga dinamis via JS / estimasi promo Rp 7jt–15jt via WA 081227741541), gratis mengulang batch seumur hidup",
     dqlab: "Rp 699rb – Rp 3,8jt (Bootcamp single Rp 699rb–2,5jt, Ujian BNSP Rp 1,9jt–2,5jt, Bundle Rp 1,2jt–3,8jt)",
     selfPaced: "Rp 500rb – Rp 5jt (tanpa bimbingan live)",
     revouHighlight: true
@@ -1376,7 +1861,7 @@ const GENERAL_COMPARISON_DATA: GeneralComparisonRow[] = [
     general: "Bervariasi (beberapa program full-day bentrok jam kantor)",
     hacktiv8: "Full-Day 09:00–18:00 WIB (Senin–Jumat wajib komitmen seharian) atau Night 19:00–22:00 WIB",
     purwadhika: "After Hours (Sen–Kam / Sel & Kam 19:00–22:00) atau Office Hours (Sen–Kam 09:00–12:00)",
-    dibimbing: "Weekday malam atau Weekend (frekuensi 2–3 sesi per minggu)",
+    dibimbing: "Weekday malam atau Weekend (frekuensi 2–3 sesi per minggu kombinasi rekaman LMS)",
     dqlab: "2x seminggu malam (19:00–21:30 WIB) atau weekend pagi (10:00–12:00)",
     selfPaced: "Mandiri tanpa jadwal pasti",
     revouHighlight: true
@@ -1388,7 +1873,7 @@ const GENERAL_COMPARISON_DATA: GeneralComparisonRow[] = [
     general: "3 – 5 bulan (<60 sesi)",
     hacktiv8: "12 – 16 minggu (4 minggu persiapan + 8–12 minggu bootcamp)",
     purwadhika: "Kalender 20–28 minggu (modul 6–15 minggu + final project 4–5 minggu)",
-    dibimbing: "Pre-bootcamp + 24 minggu bootcamp + 2 post + 4 minggu Job Connect (±7 bulan)",
+    dibimbing: "Pre-bootcamp + 24 minggu bootcamp + 2 post + 4 Job Connect (±7,5 bulan; meta FE/QA sebut 5 bulan)",
     dqlab: "10 – 17 sesi singkat (durasi 1,5 – 2,5 bulan, total 20–42,5 jam)",
     selfPaced: "7 – 9 bulan tanpa sesi live",
     revouHighlight: true
@@ -1412,7 +1897,7 @@ const GENERAL_COMPARISON_DATA: GeneralComparisonRow[] = [
     general: "Sebagian teori umum atau materi luar tanpa konteks lokal",
     hacktiv8: "Kurikulum berbasis AI-powered sesuai kebutuhan industri",
     purwadhika: "Kurikulum teruji industri dengan capstone project di tiap modul + AI Boost",
-    dibimbing: "Tugas & project menantang untuk portofolio, plus pengalaman magang nyata",
+    dibimbing: "8 Program Tech (DE, DA, AI, FE, DevOps, QA, BE, Full-Stack) dengan tugas mandiri/kelompok",
     dqlab: "Metode HERO (Hands-On, Experiential Learning, Outcome-based); studi kasus relevan industri",
     selfPaced: "Terjemahan materi luar negeri tanpa konteks lokal"
   },
@@ -1475,7 +1960,7 @@ const GENERAL_COMPARISON_DATA: GeneralComparisonRow[] = [
     general: "Sertifikat internal lembaga kursus biasa",
     hacktiv8: "Sertifikat kelulusan Hacktiv8; tidak ada kemitraan kampus",
     purwadhika: "Terdaftar Kemendikbud; Certified Google Partner; menerbitkan sertifikat internal Purwadhika (tanpa kemitraan kampus)",
-    dibimbing: "Terakui Kemendikti; layanan BNSP & placement program universitas; Forbes 30 Under 30 Asia 2025",
+    dibimbing: "Diakui Kemendikti; 4.96/5 SwitchUp (BE: 4.9/5), 4.81 Course Report; Forbes 30 Under 30 Asia 2025",
     dqlab: "E-certificate per modul; Sertifikasi BNSP DA; naungan Yayasan Multimedia Nusantara & Xeratic",
     selfPaced: "Certificate of completion otomatis platform",
     revouHighlight: true
@@ -1489,7 +1974,7 @@ const GENERAL_COMPARISON_DATA: GeneralComparisonRow[] = [
     general: "< 2.000 alumni / < 200.000 member",
     hacktiv8: "3.500+ lulusan di industri tech; 1.000+ hiring partner tanpa placement fee",
     purwadhika: "30.000–40.000+ alumni; Alumni Club berbasis tribe; 1.000+ hiring partner",
-    dibimbing: "10K+ lulusan; 100.000+ digital learners; 1.100+ hiring partners",
+    dibimbing: "10K+ alumni (Back-End: 4K+); 100.000+ digital learners; 1.100+ hiring partners (meta QA: 700+)",
     dqlab: "500.000+ pengguna; 30+ mitra hiring & corporate training",
     selfPaced: "0 / tidak terpusat",
     revouHighlight: true
@@ -2515,8 +3000,7 @@ export default function ComparisonView() {
     { value: "", label: `— Pilih Program ${competitorDisplayNames[selectedCompetitorKey]} —` },
     ...availableProgramsForSelectedComp.map((prog) => ({
       value: prog.id,
-      label: `${prog.programTitle} — [${prog.badge}]`,
-      badge: prog.badge,
+      label: prog.programTitle,
     })),
   ], [availableProgramsForSelectedComp, competitorDisplayNames, selectedCompetitorKey]);
 
