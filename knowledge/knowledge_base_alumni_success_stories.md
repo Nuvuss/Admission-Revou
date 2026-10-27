@@ -353,6 +353,8 @@ Kisah nyata alumni yang berhasil beralih karir atau meningkatkan karir di bidang
 - **Restrinanda Syifaani** (Data Analytics Jun 25): Field Material Control Assistant ➔ Supply Chain Management Analyst
 
 ### Career Switchers Menarik (Non-Tech ke Data):
+- **Paolo M Hernandez**: Finance & Business Strategy Associate ➔ Analyst di Delivery Tasker (Global) | [Kisah Paolo](https://www.revou.co/alumni-stories/paolo-m-hernandez)
+- **Ahmad Dzaky Musthofa**: Fleet Analyst & Mahasiswa D3 (Batam) ➔ QA Engineer di FWD Singapore Pte. Ltd. | [Kisah Ahmad Dzaky](https://www.revou.co/alumni-stories/ahmad-dzaky-musthofa)
 - **Feren Meysi Sampel** (Sep 23): Paramedis (Paramedic) ➔ Business Analyst
 - **Viska Mulyanda Sari** (Feb 25): Senior Process Engineer ➔ Junior Data Engineer
 - **Ardy Kurniawan** (Sep 23): Warehouse Assistant ➔ Data Analyst
@@ -427,6 +429,7 @@ Kisah nyata alumni yang berhasil beralih karir dan scale-up bisnis di bidang Dig
 - **Mega Dewi Larasati** (Sep 23): Quality Executive ➔ Performance Marketer
 
 ### Career Switchers Ekstrem (Non-Marketing ke Digital Marketing):
+- **Jasmin Arumsari (Arie):** Dari Bidan & Claim Analyst Kesehatan menjadi Performance Marketer di Premier Grup | [Kisah Jasmin Arumsari](https://www.revou.co/alumni-stories/jasmin-arie)
 - **Christopher Pradipta Marpaung & Fachreza Yahya:** Dari Barista menjadi Programmatic Executive & Digital Marketer | [Kisah Fachreza Yahya](https://www.revou.co/alumni-stories/fachreza-yahya)
 - **Marati Husna:** Dari Guru Matematika SD (Primary Math Teacher SD Cambridge) menjadi SEO Specialist (+55% Salary Increase)
 - **Nadia Windyaningrum & Laylatus Shania:** Dari Pharmacy Manager / Asisten Apoteker menjadi Digital Marketing Lead & Social Media Specialist
@@ -450,6 +453,14 @@ Saat menyusun pesan social proof alumni:
 ## 7. Direktori Lengkap Kisah Sukses Alumni RevoU (Database Terverifikasi)
 
 ### 7.1. Full Stack Digital Marketing (FSDM)
+
+- [**Jasmin Arumsari (Arie)**](https://www.revou.co/alumni-stories/jasmin-arie) — *"[Bidan Ini Nekat Mulai dari Nol, Buktikan Sukses Switch Career Jadi Performance Marketing Specialist!](https://www.revou.co/alumni-stories/jasmin-arie)"*
+  - **Program:** Digital Marketing (Batch 19)
+  - **Tipe Karir:** Career Switcher (23–29) / Bidan & Medis ke Digital Marketing
+  - **Ringkasan:** Mantan bidan & claim analyst kesehatan nekat mulai dari nol belajar FSDM sambil kerja full-time. Memposisikan pengalaman ketelitian medis di CV, dibimbing SDC & HR di RevoU NEXT, mengirim 62 lamaran dan tembus 10 wawancara hingga sukses berkarier sebagai **Performance Marketer di Premier Grup** lewat kanal Slack Komunitas Alumni RevoU.
+  - **Tantangan & Titik Balik:** Mengorbankan jam tidur (3–4 jam/hari) saat fase RevoU Faculty & tutup buku akhir tahun. Sering merasa tertinggal namun terbantu oleh kolaborasi teman sekelas di Discord.
+  - **Pesan Utama:** Menyesal setelah berusaha jauh lebih ringan daripada menyesal tidak melangkah; jejaring (networking) komunitas alumni sangat menentukan di kondisi ekonomi sekarang.
+  - **Link Kisah:** [https://www.revou.co/alumni-stories/jasmin-arie](https://www.revou.co/alumni-stories/jasmin-arie)
 
 - [**Devina Dea**](https://www.revou.co/alumni-stories/devina-dea) — *"[Atlet Karate Peraih Medali PON & SEA Games Ini Buktikan Sukses Jadi Performance Marketing Specialist Usai Pensiun](https://www.revou.co/alumni-stories/devina-dea)"*
   - **Program:** Digital Marketing
@@ -820,6 +831,14 @@ Saat menyusun pesan social proof alumni:
 ---
 
 ### 7.2. Full Stack Data Analytics (FSDA)
+
+- [**Ahmad Dzaky Musthofa**](https://www.revou.co/alumni-stories/ahmad-dzaky-musthofa) — *"[Dulu Hidup Serba Pas-pasan, Kini Berhasil Lolos Jadi QA Engineer di Perusahaan Singapura](https://www.revou.co/alumni-stories/ahmad-dzaky-musthofa)"*
+  - **Program:** Data Analytics
+  - **Tipe Karir:** Career Switcher (23–29) / Fleet Analyst & Mahasiswa D3 ke QA Engineer Global
+  - **Ringkasan:** Berasal dari keluarga sederhana (pernah kuli bangunan & memulung botol bekas untuk sewa warnet), Dzaky membagi waktu antara kuliah D3, skripsi, kerja full-time sebagai Fleet Analyst di Batam, dan bootcamp FSDA RevoU. Menghadapi minimnya lowongan data lokal di Batam, ia memanfaatkan RevoU NEXT (simulasi wawancara & rombak CV) lalu menembus posisi **Quality Assurance (QA) Engineer di FWD Singapore Pte. Ltd.** secara remote/internasional.
+  - **Keahlian & Strategi Wawancara:** Mengaitkan skill data FSDA langsung ke peran QA: ketelitian data cleaning (identifikasi anomali, missing values, data duplikat), SQL untuk database testing, serta pemahaman alur sistem & model bisnis asuransi.
+  - **Pesan Utama:** Pentingnya "investasi leher ke atas", mengasah bahasa Inggris dan portofolio nyata, serta berani reach out profesional ke HR di LinkedIn.
+  - **Link Kisah:** [https://www.revou.co/alumni-stories/ahmad-dzaky-musthofa](https://www.revou.co/alumni-stories/ahmad-dzaky-musthofa)
 
 - [**Darryl Jannatun Fadhlin**](https://www.revou.co/alumni-stories/darryl-jannatun-fadhlin) — *"[Dulu Nganggur 6 Bulan, Kini Dapet Pekerjaan Impian Berkat “The Power of Networking”](https://www.revou.co/alumni-stories/darryl-jannatun-fadhlin)"*
   - **Program:** Data Analytics
@@ -1428,3 +1447,95 @@ Saat menyusun pesan social proof alumni:
   - **Tipe Karir:** Working Mom / Tech Transition
   - **Ringkasan:** Pengalaman para ibu belajar digital marketing dan switch career ke tech industry dan 9 tips praktis untuk para RevoU Moms!
   - **Link Kisah:** [https://www.revou.co/alumni-stories/4-moms-alumni-revou-switch-career-ke-tech-industry](https://www.revou.co/alumni-stories/4-moms-alumni-revou-switch-career-ke-tech-industry)
+
+---
+
+## 8. Profil Mendalam & Studi Kasus Alumni Terbaru (Update 27 Oktober 2026)
+
+Bagian ini memuat transkrip mendalam dan studi kasus lengkap dari dua kisah sukses alumni terbaru untuk referensi komprehensif tim Admission/Sales saat memvalidasi profil calon siswa dengan latar belakang serupa.
+
+### 8.1. Alumni FSDM: Jasmin Arumsari (Arie)
+- **Sumber:** [https://www.revou.co/alumni-stories/jasmin-arie](https://www.revou.co/alumni-stories/jasmin-arie)
+- **Judul Artikel:** *Bidan Ini Nekat Mulai dari Nol, Buktikan Sukses Switch Career Jadi Performance Marketing Specialist!*
+
+| Atribut | Data |
+|---|---|
+| **Program** | Full-Stack Digital Marketing (FSDM) Batch 19 |
+| **Kategori** | Career switcher usia 23 sampai 29 |
+| **Latar Belakang** | Bidan dan claim analyst kesehatan |
+| **Posisi Sekarang** | Performance Marketer di Premier Grup |
+
+#### Alasan Pindah Karier
+Penghasilan bidan dinilai belum cukup untuk menopang masa depannya. Ia menyukai dunia pemasaran tetapi tidak ingin menjadi sales. Keputusan mengambil FSDM datang setelah konsultasi dengan konselor RevoU dan mencoba Mini Course.
+
+#### Tantangan Selama Belajar
+- Fase RevoU Faculty ia sebut sebagai salah satu fase terberat dalam hidupnya.
+- Belajar dari nol sambil bekerja penuh waktu dan menghadapi masa tutup buku akhir tahun.
+- Waktu tidurnya hanya sekitar 3 sampai 4 jam per hari.
+- Sering merasa tertinggal, tetapi terbantu oleh teman sekelas yang mengerjakan tugas bersama lewat Discord.
+
+#### Strategi Karier & RevoU NEXT
+- Latar belakang bidan dan claim analyst tidak dihapus dari CV, melainkan diposisikan sebagai nilai tambah berupa **ketelitian, critical thinking, dan kemampuan menganalisis data**.
+- Persiapan CV dibimbing langsung oleh Student Development Consultant (SDC) dan praktisi HR di fase RevoU NEXT.
+- Mengirim sekitar 62 lamaran dan berhasil mendapatkan 10 panggilan wawancara.
+- Hampir 70% informasi lowongan berasal dari kanal Slack komunitas Alumni RevoU; peluang di Premier Grup juga datang langsung dari komunitas alumni.
+
+#### Pekerjaan Saat Ini
+Mengelola kampanye iklan digital (Paid Ads / Performance Marketing), membaca tren pasar, dan mengoptimasi performa iklan secara berkelanjutan.
+
+#### Pesan Utama & Pitching Angle
+> *"Jangan takut mencoba karena menyesal setelah berusaha lebih ringan daripada menyesal karena tidak berani melangkah."*  
+Jejaring (networking) di komunitas RevoU sangat menentukan di kondisi ekonomi saat ini. Cocok dipitch ke leads berlatar belakang kesehatan/medis, non-marketing, atau yang takut karena harus belajar sambil kerja shift/tutup buku.
+
+---
+
+### 8.2. Alumni FSDA: Ahmad Dzaky Musthofa
+- **Sumber:** [https://www.revou.co/alumni-stories/ahmad-dzaky-musthofa](https://www.revou.co/alumni-stories/ahmad-dzaky-musthofa)
+- **Judul Artikel:** *Dulu Hidup Serba Pas-pasan, Kini Berhasil Lolos Jadi QA Engineer di Perusahaan Singapura*
+
+| Atribut | Data |
+|---|---|
+| **Program** | Full-Stack Data Analytics (FSDA) |
+| **Kategori** | Career switcher usia 23 sampai 29 |
+| **Latar Belakang** | Fleet Analyst, sambil kuliah D3 Informatika |
+| **Domisili** | Batam |
+| **Posisi Sekarang** | Quality Assurance (QA) Engineer di FWD Singapore Pte. Ltd. |
+
+#### Latar Belakang Pribadi
+Berasal dari keluarga sederhana. Sejak kecil sudah mandiri mencari uang sendiri dengan berjualan, membantu ayahnya sebagai kuli bangunan, dan memulung botol plastik untuk membayar sewa komputer di warnet. Motivasi utamanya adalah membahagiakan keluarga dan memutus rantai ekonomi.
+
+#### Tantangan Selama Belajar
+Menjalani 4 beban berat sekaligus: skripsi/tugas akhir kuliah D3, pekerjaan harian, bootcamp FSDA yang intensif, dan waktu pribadi yang banyak dikorbankan. Rutinitas berulang: bangun, kerja, kuliah, belajar materi RevoU, lalu tidur.
+
+#### Tantangan Pasar Kerja
+Lowongan white-collar di bidang data sangat minim di Batam karena pasar kerja lokal didominasi industri manufaktur dan galangan pabrik. Oleh karena itu, ia memperluas target ke posisi remote dan luar negeri (Singapura), memanfaatkan kemampuan bahasa Inggris kerja.
+
+#### Strategi di RevoU NEXT & Tembus FWD Singapore
+- Berkonsultasi intensif dengan SDC dan Career Coach RevoU.
+- Menjadi sukarelawan pertama di sesi simulasi wawancara (mock interview).
+- Merombak total CV berdasarkan perspektif HR profesional setelah CV awalnya sepi respons.
+- Menemukan lowongan di LinkedIn dan berani menghubungi HR perusahaan secara langsung lewat pesan profesional.
+- **Strategi Wawancara Teknis:** Mengaitkan skill data dengan peran QA melalui 3 pilar:
+  1. **Ketelitian data cleaning** (menemukan anomali, nilai hilang, dan data duplikat).
+  2. **SQL** untuk database testing.
+  3. **Pemahaman alur sistem & kebutuhan klien**, termasuk model bisnis asuransi.
+- Berhasil mendapatkan offering letter berkat kombinasi logika, kesiapan wawancara bahasa Inggris, dan portofolio berbasis proyek nyata RevoU.
+
+#### Pesan Utama & Pitching Angle
+> *"Terus investasi pada kemampuan diri (investasi leher ke atas), bangun relasi, dan siapkan portofolio nyata."*  
+Sangat cocok dipitch ke leads dari luar Jabodetabek/daerah yang khawatir tidak ada lowongan tech lokal, leads dengan beban kuliah/kerja bersamaan, atau yang bercita-cita menembus remote work luar negeri.
+
+---
+
+### 8.3. Matriks Perbandingan Singkat (Quick Reference Sales)
+
+| Aspek | Jasmin Arumsari / Arie (FSDM) | Ahmad Dzaky Musthofa (FSDA) |
+|---|---|---|
+| **Latar Belakang** | Bidan dan claim analyst kesehatan | Fleet Analyst dan mahasiswa D3 Informatika |
+| **Motif Utama** | Kelayakan finansial & passion marketing non-sales | Mobilitas sosial dan membahagiakan keluarga |
+| **Beban Saat Belajar** | Kerja penuh waktu dan tutup buku akhir tahun (tidur 3–4 jam) | Kuliah D3, skripsi, dan kerja penuh waktu |
+| **Hambatan Utama** | Mulai dari nol medis, rasa tertinggal materi | Pasar kerja lokal Batam minim posisi data/IT |
+| **Kanal Peluang Kerja** | Kanal Slack komunitas Alumni RevoU | LinkedIn & direct message profesional ke HR |
+| **Cara Memosisikan Diri** | Pengalaman medis dipertahankan sebagai bukti ketelitian & analisis di CV | Skill data cleaning & SQL dikaitkan ke database testing QA |
+| **Hasil Akhir** | **Performance Marketer di Premier Grup** | **QA Engineer di FWD Singapore Pte. Ltd.** |
+| **Target Persona Leads** | Leads medis/paramedis, pekerja sibuk, ragu switch career non-marketing | Leads daerah non-Jakarta, mahasiswa/fresh grad, pencari kerja remote global |

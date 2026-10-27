@@ -72,3 +72,16 @@
 * **Total Portfolio:** 13 Portfolio Projects (Satu projek praktis di setiap akhir modul, seperti Meta Ads Campaign, Custom GPT, Landing Page, SEO Strategy, GA4 Dashboard, dll).
 * **Virtual Internship (Bulan 5-7):** Magang virtual selama 12 minggu mengerjakan masalah riil dari perusahaan partner RevoU.
 * **Career Support (Career+):** 1-on-1 Career Coaching, Live Monthly Career Clinics, AI Career Engine untuk CV, dan Mock Interviews dengan Hiring Manager.
+
+---
+
+## 5. KISAH SUKSES ALUMNI & SOCIAL PROOF (FSDM)
+* **Jasmin Arumsari (Arie) — FSDM Batch 19:**
+  * **Latar Belakang Asal:** Bidan dan Claim Analyst Kesehatan.
+  * **Posisi Sekarang:** Performance Marketer di Premier Grup.
+  * **Tantangan:** Belajar dari nol total sambil bekerja penuh waktu di masa tutup buku akhir tahun (waktu tidur hanya 3–4 jam/hari). Sempat merasa tertinggal namun terbantu belajar bareng di Discord komunitas RevoU.
+  * **Strategi RevoU NEXT:** Mempertahankan pengalaman medis di CV sebagai bukti ketelitian, daya analisis, dan critical thinking; dibimbing intensif oleh SDC dan praktisi HR; mengirim 62 lamaran hingga mendapat 10 panggilan wawancara.
+  * **Jejaring Komunitas Alumni:** Lowongan di Premier Grup didapatkan langsung lewat kanal Slack Komunitas Alumni RevoU (hampir 70% info lowongan yang didapat berasal dari kanal alumni).
+  * **Pesan Utama:** *"Menyesal setelah berusaha lebih ringan daripada menyesal karena tidak berani melangkah."* Networking di komunitas RevoU sangat menentukan di kondisi ekonomi saat ini.
+  * **Link Artikel:** [https://www.revou.co/alumni-stories/jasmin-arie](https://www.revou.co/alumni-stories/jasmin-arie)
+

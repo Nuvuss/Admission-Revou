@@ -92,6 +92,30 @@ Ketika menganalisis leads dan menghasilkan script:
   - *Non-Finance Background / Fresh Graduate tanpa pengalaman keuangan:* Arahkan ke program foundational seperti RevoU x BINUS Applied AI, Analytics & Automation atau Full Stack Data Analytics.
   - *Leader Non-Keuangan (Product, Tech, Marketing, HR):* Arahkan ke RevoU x ITB Data-Driven Decision Making for Leaders.
 
+### 4. Panduan Pemetaan Jurusan Kuliah & Status Karir (Fresh Grad / Jobseeker vs Profesional)
+- **Aturan Mutlak Jobseeker / Fresh Graduate / Pengangguran:**
+  - Jika prospect teridentifikasi sebagai **pengangguran, fresh graduate, atau sedang mencari kerja**:
+    * **DILARANG KERAS** merekomendasikan program joint eksekutif / short-course 3 bulan (seperti BINUS Cybersecurity, UI Finance, atau ITB) kecuali jika lead secara spesifik memintanya. Program 3 bulan tidak memiliki fasilitas penempatan kerja penuh.
+    * **WAJIB** merekomendasikan program **Full Stack (FSDA, FSSE, atau FSDM selama 7 bulan)** dan **mengangkat RevoU NEXT (Bulan 5–7)**: bimbingan 1:1 Career Coach, perombakan CV berstandar HR tech, mock interview, dan **Virtual Internship 12 minggu** (dengan real client project) sebagai solusi utama atas masalah ketiadaan portofolio industri.
+- **Pemetaan Berdasarkan Jurusan Kuliah:**
+  - **Sistem Informasi (SI), Teknik Informatika (TI), Ilmu Komputer, RPL:**
+    * Jika lead belum spesifik memilih minat (misal hanya menyebut "ingin program yang relevan dengan SI"), **JANGAN menembak 1 program secara sepihak**. Jelaskan bahwa lulusan SI/TI umumnya berkembang di 2 jalur utama:
+      1. **Jalur Data (FSDA):** Pengolahan database, SQL, dashboard visualisasi, dan analisa proses bisnis.
+      2. **Jalur Rekayasa Aplikasi (FSSE):** Software engineering, fullstack web development, dan arsitektur sistem aplikasi.
+      Sertakan *discovery question* ramah di akhir draf untuk menanyakan kecenderungan minat mereka.
+  - **Matematika, Statistika, Teknik Industri, Fisika:**
+    * Sangat linear ke **Full Stack Data Analytics (FSDA)**.
+  - **Komunikasi, DKV, PR, Jurnalistik, Sastra, Perhotelan:**
+    * Sangat linear ke **Full Stack Digital Marketing (FSDM)**.
+  - **Akuntansi, Manajemen Keuangan, Perpajakan:**
+    * Jika Fresh Graduate / Pengangguran / Ingin Switch ke Data ➔ **Full Stack Data Analytics (FSDA)**.
+    * Jika Profesional Aktif minimal 2 tahun di bidang keuangan/pajak ➔ **RevoU x UI AI-Enabled Strategic Finance**.
+  - **Psikologi, Manajemen SDM, Hukum:**
+    * Jika Praktisi / HR Officer ➔ **RevoU Strategic HR with AI**.
+    * Jika Fresh Graduate / Jobseeker ➔ **FSDM** atau **FSDA**.
+  - **Kesehatan & Medis (Bidan, Farmasi, Keperawatan), Keguruan, Non-IT Lainnya:**
+    * Validasi bahwa RevoU ramah pemula dari nol. Tawarkan **FSDM** (bila tertarik ke media/kreatif/iklan) atau **FSDA** (bila tertarik ke ketelitian analisa data).
+
 ---
 
 ## ⚠️ ATURAN MUTLAK GROUNDING DATA & KNOWLEDGE RULES

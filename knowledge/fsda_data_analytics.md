@@ -70,3 +70,19 @@ Setiap lulusan membawa **7 Projek Portfolio** standar industri:
 * **AI Career Engine:** Membantu pembuatan & optimasi CV, LinkedIn, dan aplikasi lamaran.
 * **Mock Interview:** Latihan wawancara langsung bersama Hiring Manager industri.
 * **Virtual Internship (12 Minggu / Bulan 5-7):** Mengerjakan studi kasus dari mitra bisnis nyata (misal: Telkom Indonesia OCA, Zurich, dll) dan melakukan presentasi di hadapan tim internal mitra tersebut.
+
+---
+
+## 6. KISAH SUKSES ALUMNI & SOCIAL PROOF (FSDA)
+* **Ahmad Dzaky Musthofa — Full Stack Data Analytics:**
+  * **Latar Belakang Asal:** Fleet Analyst sambil kuliah D3 Informatika di Batam (berasal dari keluarga sederhana, sempat jadi kuli bangunan & memulung botol bekas untuk sewa warnet).
+  * **Posisi Sekarang:** Quality Assurance (QA) Engineer di FWD Singapore Pte. Ltd. (Perusahaan Asuransi Singapura).
+  * **Tantangan:** Menjalani 4 beban sekaligus (skripsi D3, kerja harian, bootcamp FSDA, waktu pribadi terbatas); pasar kerja lokal Batam yang minim lowongan white-collar data (didominasi pabrik/manufaktur).
+  * **Strategi RevoU NEXT:** Konsultasi intensif dengan SDC & Career Coach, jadi sukarelawan pertama simulasi wawancara kerja, dan merombak total CV bersama HR profesional.
+  * **Koneksi Skill Data ke Tech Role:** Saat wawancara di FWD Singapore, ia menghubungkan skill data ke peran QA melalui 3 hal:
+    1. Ketelitian proses data cleaning (anomali, null value, data duplikat).
+    2. SQL untuk database testing.
+    3. Pemahaman alur sistem, kebutuhan user, dan model bisnis asuransi.
+  * **Pesan Utama:** *"Terus investasi pada kemampuan diri (investasi leher ke atas), bangun relasi, dan siapkan portofolio nyata."*
+  * **Link Artikel:** [https://www.revou.co/alumni-stories/ahmad-dzaky-musthofa](https://www.revou.co/alumni-stories/ahmad-dzaky-musthofa)
+

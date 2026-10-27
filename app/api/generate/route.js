@@ -78,41 +78,50 @@ function detectRelevantKnowledgeFiles(situation = "", tab = "pitch") {
   let matchedSpecificProgram = false;
 
   // 1. Digital Marketing (FSDM)
-  if (/marketing|fsdm|iklan|ads|meta ads|google ads|seo|sem|social media|sosmed|copywriting|content creator/i.test(text)) {
+  // Keywords program & topik + Jurusan kuliah linear: Komunikasi, DKV, PR, Jurnalistik, Sastra, Perhotelan
+  if (/marketing|fsdm|iklan|ads|meta ads|google ads|seo|sem|social media|sosmed|copywriting|content creator|komunikasi|ilmu komunikasi|\bdkv\b|desain komunikasi|public relation|humas|jurnalistik|sastra|perhotelan|pariwisata/i.test(text)) {
     detectedFiles.add("fsdm_digital_marketing.md");
     matchedSpecificProgram = true;
   }
 
   // 2. Data Analytics & Data Science (FSDA & Applied DS)
-  if (/data analytic|data analyst|fsda|data science|scientist|python|sql|tableau|looker|power bi|dashboard/i.test(text)) {
+  // Keywords program & topik + Jurusan kuliah linear: Sistem Informasi, Matematika, Statistika, Teknik Industri, Fisika
+  if (/data analytic|data analyst|fsda|data science|scientist|python|sql|tableau|looker|power bi|dashboard|sistem informasi|\bsi\b|matematika|statistika|teknik industri|fisika/i.test(text)) {
     detectedFiles.add("fsda_data_analytics.md");
     detectedFiles.add("knowledge_base_admission_applied_data_science_with_ai.md");
     matchedSpecificProgram = true;
   }
 
   // 3. Software Engineering (FSSE / Fullstack / Coding)
-  if (/software engineer|developer|coding|programmer|fullstack|frontend|backend|fsse|react|javascript|typescript|golang|web dev/i.test(text)) {
+  // Keywords program & topik + Jurusan kuliah linear: Sistem Informasi, Teknik Informatika, Ilmu Komputer, TI, RPL
+  if (/software engineer|developer|coding|programmer|fullstack|frontend|backend|fsse|react|javascript|typescript|golang|web dev|sistem informasi|teknik informatika|ilmu komputer|computer science|\bti\b|\brpl\b|rekayasa perangkat lunak/i.test(text)) {
     detectedFiles.add("knowledge_base_se_fullstack.md");
     detectedFiles.add("knowledge_base_software_engineering.md");
     matchedSpecificProgram = true;
   }
 
   // 4. Strategic HR with AI
-  if (/hr|human resource|talent acquisition|recruiter|recruitment|compensation|benefit|remunerasi|payroll/i.test(text)) {
+  // Keywords program & topik + Jurusan kuliah linear: Psikologi, Manajemen SDM
+  if (/hr|human resource|talent acquisition|recruiter|recruitment|compensation|benefit|remunerasi|payroll|psikologi|manajemen sdm/i.test(text)) {
     detectedFiles.add("knowledge_base_revou_strategic_hr_with_ai.md");
     matchedSpecificProgram = true;
   }
 
   // 5. Applied AI, Analytics & Automation (BINUS)
-  if (/binus|applied ai|automation|otomasi|ai automation|workflow automation|no-code ai/i.test(text)) {
+  if (/binus|applied ai|automation|otomasi|ai automation|workflow automation|no-code ai|administrasi bisnis/i.test(text)) {
     detectedFiles.add("knowledge_base_admission_applied_ai_analytics_automation_binus.md");
     detectedFiles.add("knowledge_base_syllabus_binus_ai_analytics.md");
     matchedSpecificProgram = true;
   }
 
   // 6. Strategic Finance (UI)
-  if (/finance|keuangan|akuntansi|accounting|tax|pajak|fpa|controller|treasury|audit/i.test(text)) {
+  // Keywords program & topik + Jurusan kuliah linear: Akuntansi, Keuangan, Perpajakan, Fiskal
+  if (/finance|keuangan|akuntansi|accounting|tax|pajak|fpa|controller|treasury|audit|perpajakan|fiskal/i.test(text)) {
     detectedFiles.add("knowledge_base_admission_ai_strategic_finance_ui.md");
+    // Jika ada indikasi fresh grad / pengangguran / cari kerja / switch ke data:
+    if (/pengangguran|fresh grad|jobseeker|lulusan baru|cari kerja|switch|pindah/i.test(text)) {
+      detectedFiles.add("fsda_data_analytics.md");
+    }
     matchedSpecificProgram = true;
   }
 
@@ -124,12 +133,20 @@ function detectRelevantKnowledgeFiles(situation = "", tab = "pitch") {
   }
 
   // 8. Cybersecurity (BINUS)
+  // Wajib ada kata kunci eksplisit keamanan / cyber / soc / pentest
   if (/cyber|security|keamanan|soc|pentest|red team|blue team|hacker|hacking/i.test(text)) {
     detectedFiles.add("knowledge_base_binus_cybersecurity.md");
     matchedSpecificProgram = true;
   }
 
-  // 9. Competitor Mention (jika lead membandingkan dengan kompetitor di tab pitch)
+  // 9. Medis / Kesehatan / Paramedis (Career Switcher)
+  if (/bidan|kebidanan|perawat|keperawatan|farmasi|kesehatan|kedokteran|dokter/i.test(text)) {
+    detectedFiles.add("fsdm_digital_marketing.md");
+    detectedFiles.add("fsda_data_analytics.md");
+    matchedSpecificProgram = true;
+  }
+
+  // 10. Competitor Mention (jika lead membandingkan dengan kompetitor di tab pitch)
   if (/hacktiv8|purwadhika|dibimbing|dqlab|kompetitor|bootcamp lain/i.test(text)) {
     detectedFiles.add("knowledge_base_competitor_comparison.md");
   }
@@ -353,6 +370,30 @@ Ketika user/sales mencari alumni di INDUSTRI ATAU BIDANG TERTENTU (seperti: "Man
 3. **FIELD 'industry' HARUS VALID:**
    Isi field 'industry' dengan nama industri resmi yang diminta (misal: "Manufacture"), BUKAN industri lain.
 
+### ATURAN PEMETAAN JURUSAN KULIAH & STATUS KARIR LEADS (JOBSEEKER VS PROFESIONAL):
+1. **Aturan Mutlak Jobseeker / Fresh Graduate / Pengangguran (Wajib RevoU NEXT & Program Full Stack):**
+   - Jika prospect teridentifikasi sebagai **pengangguran, fresh graduate, atau sedang mencari kerja pertama**:
+     * **DILARANG KERAS** merekomendasikan program joint eksekutif / short-course 3 bulan (seperti BINUS Cybersecurity, UI Strategic Finance, atau ITB) kecuali lead secara eksplisit meminta spesialisasi topik tersebut. Program 3 bulan TIDAK memiliki fasilitas pendampingan karir intensif RevoU NEXT.
+     * **WAJIB** merekomendasikan program **Full Stack (FSDA, FSSE, atau FSDM selama 7 bulan)** dan **WAJIB mengangkat RevoU NEXT (Bulan 5–7)**: bimbingan 1:1 Career Coach, perombakan CV berstandar HR tech, mock interview, dan **Virtual Internship 12 minggu** (dengan real client project) sebagai jawaban atas kekhawatiran minimnya portofolio industri.
+2. **Aturan Pemetaan Berdasarkan Jurusan Kuliah:**
+   - **Sistem Informasi (SI), Teknik Informatika (TI), Ilmu Komputer, RPL:**
+     * Latar belakang ini adalah modal emas di dunia teknologi. Jika lead belum spesifik memilih minat (misal hanya menyebut "ingin program yang relevan dengan SI"), **JANGAN menembak 1 program secara sepihak**. Jelaskan bahwa lulusan SI/TI umumnya berkembang di 2 jalur utama:
+       - **Jalur Data (Full Stack Data Analytics - FSDA):** Mengolah database, SQL, dashboard visualisasi, dan analisa proses bisnis.
+       - **Jalur Rekayasa Aplikasi (Full Stack Software Engineering - FSSE):** Software engineering, fullstack web development, dan arsitektur sistem aplikasi.
+       Sertakan *discovery question* ramah di akhir draf untuk menanyakan kecenderungan minat mereka (apakah lebih suka analisa data bisnis atau coding/membangun sistem).
+   - **Matematika, Statistika, Teknik Industri, Fisika:**
+     * Sangat linear ke **Full Stack Data Analytics (FSDA)** (menghubungkan logika kuantitatif ke insight bisnis nyata).
+   - **Komunikasi, DKV, PR, Jurnalistik, Sastra, Perhotelan:**
+     * Sangat linear ke **Full Stack Digital Marketing (FSDM)** (kombinasi kreatif konten & analitik paid ads/SEO).
+   - **Akuntansi, Manajemen Keuangan, Perpajakan:**
+     * Jika Fresh Graduate / Pengangguran / Ingin Switch ke Data ➔ **Full Stack Data Analytics (FSDA)** (menonjolkan analisa finansial berbasis data/SQL).
+     * Jika Profesional Aktif minimal 2 tahun di bidang keuangan/pajak ➔ **RevoU x UI AI-Enabled Strategic Finance**.
+   - **Psikologi, Manajemen SDM, Hukum:**
+     * Jika Praktisi / HR Officer ➔ **RevoU Strategic HR with AI**.
+     * Jika Fresh Graduate / Jobseeker ➔ **FSDM** atau **FSDA**.
+   - **Kesehatan & Medis (Bidan, Farmasi, Keperawatan), Keguruan, Non-IT Lainnya:**
+     * Validasi bahwa RevoU ramah pemula dari nol. Tawarkan **FSDM** (bila tertarik ke media/kreatif/iklan) atau **FSDA** (bila tertarik ke ketelitian analisa data).
+
 ## ATURAN MODE & FORMAT OUTPUT KHUSUS BERDASARKAN MENU:
 Menu aktif saat ini: **${tab}**
 
@@ -514,7 +555,16 @@ const VERIFIED_ALUMNI_MAP = {
   "victor lie": "https://www.revou.co/alumni-stories/victor-lie",
   "michael pradipta nawa aji": "https://www.revou.co/alumni-stories/michael-pradipta-nawa-aji",
   "paolo m hernandez": "https://www.revou.co/alumni-stories/paolo-m-hernandez",
+  "paolo hernandez": "https://www.revou.co/alumni-stories/paolo-m-hernandez",
+  "paolo": "https://www.revou.co/alumni-stories/paolo-m-hernandez",
   "prasakti tenri fanyiwi": "https://www.revou.co/alumni-stories/prasakti-tenri-fanyiwi",
+  "tenri": "https://www.revou.co/alumni-stories/prasakti-tenri-fanyiwi",
+  "jasmin arumsari": "https://www.revou.co/alumni-stories/jasmin-arie",
+  "jasmin arie": "https://www.revou.co/alumni-stories/jasmin-arie",
+  "jasmin": "https://www.revou.co/alumni-stories/jasmin-arie",
+  "ahmad dzaky musthofa": "https://www.revou.co/alumni-stories/ahmad-dzaky-musthofa",
+  "ahmad dzaky": "https://www.revou.co/alumni-stories/ahmad-dzaky-musthofa",
+  "dzaky": "https://www.revou.co/alumni-stories/ahmad-dzaky-musthofa",
   "olivia gianetta": "https://www.revou.co/alumni-stories/olivia-gianetta",
   "ryandi putra": "https://www.revou.co/alumni-stories/ryandi-putra",
   "sri lestari": "https://www.revou.co/alumni-stories/sri-lestari",
@@ -652,9 +702,24 @@ function resolveAlumniStoryUrl(rawUrl, alumniName = "") {
   // If match by alumni name in verified map
   if (alumniName) {
     const cleanName = alumniName.toLowerCase().replace(/[^a-z0-9 ]/g, " ").replace(/\s+/g, " ").trim();
+    // 1. Direct or substring matching
     for (const [key, verifiedUrl] of Object.entries(VERIFIED_ALUMNI_MAP)) {
       if (cleanName.includes(key) || key.includes(cleanName)) {
         return verifiedUrl;
+      }
+    }
+    // 2. Token-based matching (handles middle initials e.g. "paolo hernandez" vs "paolo m hernandez")
+    const cleanTokens = cleanName.split(/\s+/).filter((w) => w.length > 2);
+    if (cleanTokens.length > 0) {
+      for (const [key, verifiedUrl] of Object.entries(VERIFIED_ALUMNI_MAP)) {
+        const keyTokens = key.split(/\s+/).filter((w) => w.length > 2);
+        if (keyTokens.length > 0) {
+          const allCleanInKey = cleanTokens.every((t) => keyTokens.includes(t));
+          const allKeyInClean = keyTokens.every((t) => cleanTokens.includes(t));
+          if (allCleanInKey || allKeyInClean) {
+            return verifiedUrl;
+          }
+        }
       }
     }
   }
@@ -664,16 +729,8 @@ function resolveAlumniStoryUrl(rawUrl, alumniName = "") {
     return "https://www.revou.co/alumni";
   }
 
-  // If it's a linkedin URL or invalid/placeholder, check if name matches or fallback to directory
+  // If it's a linkedin URL or invalid/placeholder, fallback to directory
   if (url.includes("linkedin.com") || !url.startsWith("http")) {
-    if (alumniName) {
-      const cleanName = alumniName.toLowerCase().replace(/[^a-z0-9 ]/g, " ").replace(/\s+/g, " ").trim();
-      for (const [key, verifiedUrl] of Object.entries(VERIFIED_ALUMNI_MAP)) {
-        if (cleanName.includes(key) || key.includes(cleanName)) {
-          return verifiedUrl;
-        }
-      }
-    }
     return "https://www.revou.co/alumni";
   }
 
@@ -687,6 +744,9 @@ function sanitizeFeaturedAlumni(feat) {
   const resolvedUrl = resolveAlumniStoryUrl(feat.profile_url, name);
   let summary = (feat.summary || "").replace(/https?:\/\/(?:www\.)?linkedin\.com\/[^\s)\]]+/gi, resolvedUrl);
   summary = summary.replace(/https?:\/\/(?:www\.)?revou\.co\/(?:id\/)?alumni-stories(?:-list)?\/([a-zA-Z0-9_-]+)/g, "https://www.revou.co/alumni-stories/$1");
+  if (resolvedUrl.includes("/alumni-stories/")) {
+    summary = summary.replace(/\(https?:\/\/(?:www\.)?revou\.co\/alumni\/?\)/g, `(${resolvedUrl})`);
+  }
   return {
     ...feat,
     profile_url: resolvedUrl,
@@ -712,6 +772,9 @@ function sanitizeAlumniMatches(matches) {
     const resolvedUrl = resolveAlumniStoryUrl(m.profile_url, rawName);
     let summary = (m.career_journey_summary || "").replace(/https?:\/\/(?:www\.)?linkedin\.com\/[^\s)\]]+/gi, resolvedUrl);
     summary = summary.replace(/https?:\/\/(?:www\.)?revou\.co\/(?:id\/)?alumni-stories(?:-list)?\/([a-zA-Z0-9_-]+)/g, "https://www.revou.co/alumni-stories/$1");
+    if (resolvedUrl.includes("/alumni-stories/")) {
+      summary = summary.replace(/\(https?:\/\/(?:www\.)?revou\.co\/alumni\/?\)/g, `(${resolvedUrl})`);
+    }
     if (!summary.includes("https://www.revou.co")) {
       summary = `${summary.trim()}\n\n[Baca Kisah Lengkap](${resolvedUrl})`;
     }
