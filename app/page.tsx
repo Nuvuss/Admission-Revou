@@ -36,106 +36,12 @@ import {
   Award
 } from "lucide-react";
 import ComparisonView from "./components/ComparisonView";
-
-// Helper to render text with clickable hyperlinks, markdown bold, highlights, and italics
-function renderFormattedTextWithLinks(
-  text: string,
-  options?: { isSummary?: boolean }
-) {
-  if (!text) return null;
-
-  // Regex matching:
-  // 1 & 2: Markdown links [label](url)
-  // 3: Raw URLs https://...
-  // 4: Highlight ==text==
-  // 5: Highlight <mark>text</mark>
-  // 6: Bold **text**
-  // 7: Bold __text__
-  // 8: Italic *text*
-  const regex =
-    /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)|(https?:\/\/[^\s<>"'{}|\\^`[\]()]+)|==([^=]+)==|<mark>([\s\S]*?)<\/mark>|\*\*([^*]+)\*\*|__([^_]+)__|(?<!\*)\*([^*]+)\*(?!\*)/g;
-  const elements: React.ReactNode[] = [];
-  let lastIndex = 0;
-  let match: RegExpExecArray | null;
-  let counter = 0;
-
-  while ((match = regex.exec(text)) !== null) {
-    if (match.index > lastIndex) {
-      elements.push(text.slice(lastIndex, match.index));
-    }
-
-    if (match[1] && match[2]) {
-      const rawLabel = match[1];
-      const url = match[2];
-      const cleanLabel = rawLabel.replace(/\*\*/g, "").replace(/__/g, "");
-      elements.push(
-        <a
-          key={`link-${counter++}-${match.index}`}
-          href={url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-[#0E62FE] hover:text-[#0043CE] underline font-semibold inline-flex items-center gap-0.5 transition-colors"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <span>{cleanLabel}</span>
-          <ExternalLink className="w-3 h-3 inline shrink-0 opacity-80" />
-        </a>
-      );
-    } else if (match[3]) {
-      const url = match[3];
-      elements.push(
-        <a
-          key={`rawurl-${counter++}-${match.index}`}
-          href={url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-[#0E62FE] hover:text-[#0043CE] underline font-semibold break-all inline-flex items-center gap-0.5 transition-colors"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <span>{url}</span>
-          <ExternalLink className="w-3 h-3 inline shrink-0 opacity-80" />
-        </a>
-      );
-    } else if (match[4] || match[5]) {
-      const content = match[4] || match[5];
-      elements.push(
-        <mark
-          key={`mark-${counter++}-${match.index}`}
-          className="bg-[#FEF08A]/90 text-[#141412] font-semibold px-1 py-0.5 rounded"
-        >
-          {content}
-        </mark>
-      );
-    } else if (match[6] || match[7]) {
-      const content = match[6] || match[7];
-      elements.push(
-        <strong
-          key={`bold-${counter++}-${match.index}`}
-          className="font-bold text-[#141412]"
-        >
-          {content}
-        </strong>
-      );
-    } else if (match[8]) {
-      const content = match[8];
-      elements.push(
-        <em key={`em-${counter++}-${match.index}`} className="italic">
-          {content}
-        </em>
-      );
-    }
-
-    lastIndex = regex.lastIndex;
-  }
-
-  if (lastIndex < text.length) {
-    elements.push(text.slice(lastIndex));
-  }
-
-  return elements;
-}
-
-type ModeKey = "pitch" | "alumni" | "comparison";
+import ApiKeyModal from "./components/ApiKeyModal";
+import HistoryDrawer from "./components/HistoryDrawer";
+import AlumniCardList from "./components/AlumniCardList";
+import PitchScripts from "./components/PitchScripts";
+import { ModeKey, ClarificationItem, HistoryItem, ApiPoolStatus, ApiKeyTestResult } from "./types";
+import { renderFormattedTextWithLinks } from "./utils/formatText";
 
 interface ModeConfig {
   title: string;
@@ -208,43 +114,20 @@ export default function DashboardPage() {
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  // Clarification Chat State
-  interface ClarificationItem {
-    id: string;
-    role: "user" | "ai";
-    text: string;
-    data?: any;
-    timestamp?: string;
-  }
-
   // History & Favorites State
-  interface HistoryItem {
-    id: string;
-    timestamp: number;
-    dateFormatted: string;
-    mode: ModeKey;
-    inputText: string;
-    model: string;
-    responseResult: any;
-    chatThread?: ClarificationItem[];
-    isFavorite: boolean;
-  }
-
   const [historyList, setHistoryList] = useState<HistoryItem[]>([]);
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
   const [isHistoryDrawerOpen, setIsHistoryDrawerOpen] = useState(false);
   const [drawerTab, setDrawerTab] = useState<"favorites" | "all">("favorites");
-  const [searchHistoryQuery, setSearchHistoryQuery] = useState("");
   const [copiedHistoryId, setCopiedHistoryId] = useState<string | null>(null);
   const [historyToast, setHistoryToast] = useState<string | null>(null);
 
   // ── 5 API Keys Round Robin & Quota Management State ──
   const [customApiKeys, setCustomApiKeys] = useState<string[]>(["", "", "", "", ""]);
-  const [showKeySecret, setShowKeySecret] = useState<boolean[]>([false, false, false, false, false]);
   const [isKeyModalOpen, setIsKeyModalOpen] = useState(false);
-  const [apiPoolStatus, setApiPoolStatus] = useState<any | null>(null);
+  const [apiPoolStatus, setApiPoolStatus] = useState<ApiPoolStatus | null>(null);
   const [isTestingKeys, setIsTestingKeys] = useState(false);
-  const [testResults, setTestResults] = useState<any[] | null>(null);
+  const [testResults, setTestResults] = useState<ApiKeyTestResult[] | null>(null);
   const [quotaAlertBanner, setQuotaAlertBanner] = useState<string | null>(null);
 
   // Load history & API keys from localStorage and fetch server pool status
@@ -805,19 +688,6 @@ INSTRUKSI PENTING:
   };
 
   const favoritesCount = historyList.filter((i) => i.isFavorite).length;
-  const filteredHistory = historyList.filter((item) => {
-    const matchesTab = drawerTab === "favorites" ? item.isFavorite : true;
-    if (!matchesTab) return false;
-    if (!searchHistoryQuery.trim()) return true;
-    const q = searchHistoryQuery.toLowerCase();
-    const matchInput = item.inputText?.toLowerCase().includes(q);
-    const matchPersona = item.responseResult?.persona?.toLowerCase().includes(q);
-    const matchAlumni = item.responseResult?.alumni_matches?.some((a: any) =>
-      a?.name?.toLowerCase().includes(q) || a?.current_role?.toLowerCase().includes(q)
-    );
-    const matchApproach = item.responseResult?.recommended_approach?.toLowerCase().includes(q);
-    return Boolean(matchInput || matchPersona || matchAlumni || matchApproach);
-  });
 
   return (
     <div className="min-h-screen bg-[#FFFFFF] text-[#141412] font-sans antialiased px-4 sm:px-6 py-6 sm:py-10">
@@ -1213,106 +1083,7 @@ INSTRUKSI PENTING:
 
                     {/* ALUMNI MATCHES CARDS GRID (Hanya untuk menu alumni) */}
                     {mode === "alumni" && responseResult.alumni_matches && responseResult.alumni_matches.length > 0 && (
-                      <div className="space-y-3 pt-1">
-                        <div className="flex items-center justify-between gap-2">
-                          <div className="flex items-center gap-2 font-display font-bold text-xs uppercase tracking-wider text-[#1F7A4D]">
-                            <UserCheck className="w-3.5 h-3.5 text-[#1F7A4D]" />
-                            <span>Data Alumni & Bukti Nyata ({responseResult.alumni_matches.length} Profil Ditemukan)</span>
-                          </div>
-                          <a
-                            href="https://www.revou.co/alumni"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="font-mono text-[11px] text-[#0E62FE] hover:underline inline-flex items-center gap-1 font-semibold"
-                          >
-                            <span>Direktori Lengkap Alumni</span>
-                            <ExternalLink className="w-3 h-3" />
-                          </a>
-                        </div>
-
-                        <div className="grid grid-cols-1 gap-4">
-                          {responseResult.alumni_matches.map((alumni: any, i: number) => (
-                            <div
-                              key={i}
-                              className="bg-[#FFFFFF] p-4 sm:p-5 rounded-xl border border-[#E8E8E4] space-y-3.5 shadow-2xs card-interactive flex flex-col justify-between"
-                            >
-                              <div className="space-y-3">
-                                <div className="flex flex-wrap items-start justify-between gap-2 border-b border-[#E8E8E4] pb-2.5">
-                                  <div>
-                                    <h4 className="font-bold text-[15.5px] text-[#141412] leading-tight">
-                                      {alumni.name}
-                                    </h4>
-                                    <p className="text-xs text-[#8A8A84] font-medium mt-0.5">
-                                      {alumni.program_batch}
-                                    </p>
-                                  </div>
-                                  {alumni.achievement && (
-                                    <span className="font-mono text-[11px] px-2.5 py-0.5 rounded-full bg-[#EBF7EE] text-[#1F7A4D] font-bold shrink-0 border border-[#D4EDDA]">
-                                      {alumni.achievement}
-                                    </span>
-                                  )}
-                                </div>
-
-                                <div className="text-xs text-[#4B4B46] space-y-1 bg-[#F5F5F2] p-3 rounded-lg border border-[#E8E8E4]/70">
-                                  {alumni.previous_role && alumni.previous_role !== "-" && alumni.previous_role.toLowerCase() !== "tidak ada" && (
-                                    <div>
-                                      <span className="text-[#8A8A84] font-medium">Latar Belakang / Profesi Sebelumnya: </span>
-                                      <span className="font-semibold text-[#141412]">{alumni.previous_role}</span>
-                                    </div>
-                                  )}
-                                  {alumni.current_role && (
-                                    <div>
-                                      <span className="text-[#8A8A84] font-medium">Posisi & Perusahaan Sekarang: </span>
-                                      <span className="font-semibold text-[#1F7A4D]">{alumni.current_role}</span>
-                                      {alumni.company && <span className="text-[#4B4B46]"> · {alumni.company}</span>}
-                                    </div>
-                                  )}
-                                  {alumni.industry && (
-                                    <div>
-                                      <span className="text-[#8A8A84] font-medium">Kategori / Industri: </span>
-                                      <span className="font-semibold text-[#141412]">{alumni.industry}</span>
-                                    </div>
-                                  )}
-                                </div>
-
-                                {/* Detailed Career Journey Summary (min 250 words) */}
-                                {alumni.career_journey_summary && (
-                                  <div className="space-y-1.5 pt-1">
-                                    <div className="font-mono text-[11px] uppercase tracking-wider text-[#1F7A4D] font-bold flex items-center gap-1.5">
-                                      <Sparkles className="w-3 h-3 text-[#1F7A4D]" />
-                                      <span>Summary Perjalanan Karir & Transformasi:</span>
-                                    </div>
-                                    <div className="text-[13.5px] text-[#141412] leading-relaxed whitespace-pre-line bg-[#FAFAF8] p-3.5 rounded-lg border border-[#E8E8E4]/80">
-                                      {renderFormattedTextWithLinks(alumni.career_journey_summary, { isSummary: true })}
-                                    </div>
-                                  </div>
-                                )}
-
-                                {alumni.why_relevant && (
-                                  <p className="text-xs text-[#4B4B46] leading-relaxed bg-[#FFF6D1]/40 p-2.5 rounded-md border border-[#FFD84D]/40">
-                                    💡 <span className="text-[#8A8A84] font-semibold">Relevansi untuk Leads: </span>
-                                    <span className="font-medium text-[#141412]">{alumni.why_relevant}</span>
-                                  </p>
-                                )}
-                              </div>
-
-                              {alumni.profile_url && (
-                                <div className="pt-2.5 border-t border-[#E8E8E4] flex items-center justify-between">
-                                  <a
-                                    href={alumni.profile_url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-xs font-semibold text-[#0E62FE] hover:text-[#0043CE] inline-flex items-center gap-1.5 transition-colors"
-                                  >
-                                    <span>Baca Kisah & Bukti Nyata Alumni di RevoU</span>
-                                    <ExternalLink className="w-3.5 h-3.5 inline" />
-                                  </a>
-                                </div>
-                              )}
-                            </div>
-                          ))}
-                        </div>
-                      </div>
+                      <AlumniCardList matches={responseResult.alumni_matches} />
                     )}
 
                     {/* 2. Recommended approach */}
@@ -1331,72 +1102,13 @@ INSTRUKSI PENTING:
 
                   {/* 3. SUGGESTED RESPONSE (TAB UI SYSTEM — UNTUK MENU PITCH) */}
                   {mode === "pitch" && responseResult.scripts && responseResult.scripts.length > 0 && (
-                    <div className="space-y-3 pt-2">
-                      <div className="flex items-center justify-between gap-2">
-                        <span className="font-mono text-xs font-bold uppercase tracking-wider text-[#8A8A84] flex items-center gap-1.5">
-                          <Layers className="w-3.5 h-3.5 text-[#8A8A84]" />
-                          <span>Suggested response ({responseResult.scripts.length} Variasi)</span>
-                        </span>
-                      </div>
-
-                      {/* Tabs bar */}
-                      <div className="flex border-b border-[#E8E8E4] gap-1 overflow-x-auto pb-px">
-                        {responseResult.scripts.map((s: any, idx: number) => {
-                          const isActive = activeScriptTab === idx;
-                          return (
-                            <button
-                              key={idx}
-                              type="button"
-                              onClick={() => setActiveScriptTab(idx)}
-                              className={`px-3.5 py-2 text-xs font-semibold rounded-t-lg transition-all border-b-2 whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${isActive
-                                ? "bg-[#F5F5F2] text-[#141412] border-[#FFD84D] font-bold"
-                                : "text-[#8A8A84] hover:text-[#141412] hover:bg-[#F5F5F2]/60 border-transparent"
-                                }`}
-                            >
-                              <span className={`w-2 h-2 rounded-full ${isActive ? "bg-[#FFCC1A]" : "bg-[#D9D9D4]"}`} />
-                              <span>{s.badge.split("—")[0].trim() || `Variasi ${idx + 1}`}</span>
-                            </button>
-                          );
-                        })}
-                      </div>
-
-                      {/* Active Script Blockquote Card */}
-                      {responseResult.scripts[activeScriptTab] && (
-                        <div className="relative rounded-[12px] bg-[#F5F5F2] border border-[#E8E8E4] p-4 sm:p-5 text-[15px] leading-relaxed card-interactive">
-                          <div className="font-mono text-[11px] uppercase tracking-wider text-[#8A8A84] mb-2 font-semibold flex items-center justify-between">
-                            <span>{responseResult.scripts[activeScriptTab].badge}</span>
-                            {responseResult.scripts[activeScriptTab]?.text && (
-                              <span className="bg-white/80 px-2 py-0.5 rounded border border-[#E8E8E4] text-[#4B4B46] font-medium">
-                                {responseResult.scripts[activeScriptTab].text.trim().split(/\s+/).length} kata
-                              </span>
-                            )}
-                          </div>
-
-                          <blockquote className="whitespace-pre-line text-[#141412] font-normal leading-relaxed pb-8">
-                            {renderFormattedTextWithLinks(responseResult.scripts[activeScriptTab].text)}
-                          </blockquote>
-
-                          {/* Floating Copy Button */}
-                          <button
-                            type="button"
-                            onClick={() => handleCopySingle(responseResult.scripts[activeScriptTab].text, activeScriptTab)}
-                            className="absolute right-3 bottom-3 font-mono text-[11px] tracking-wide font-bold px-2.5 py-1 rounded-[6px] bg-[#FFD84D] text-[#141412] hover:bg-[#FFCC1A] transition-all cursor-pointer active:scale-95 shadow-2xs flex items-center gap-1"
-                          >
-                            {copiedIndex === activeScriptTab ? (
-                              <>
-                                <Check className="w-3 h-3 text-[#141412]" />
-                                <span>Tersalin</span>
-                              </>
-                            ) : (
-                              <>
-                                <Copy className="w-3 h-3 text-[#141412]" />
-                                <span>Salin</span>
-                              </>
-                            )}
-                          </button>
-                        </div>
-                      )}
-                    </div>
+                    <PitchScripts
+                      scripts={responseResult.scripts}
+                      activeTab={activeScriptTab}
+                      onTabChange={setActiveScriptTab}
+                      onCopySingle={handleCopySingle}
+                      copiedIndex={copiedIndex}
+                    />
                   )}
 
                   {/* ===================================================== */}
@@ -1650,106 +1362,10 @@ INSTRUKSI PENTING:
 
                               {/* ALUMNI MATCHES CARDS GRID (From Clarification - Hanya untuk menu alumni) */}
                               {mode === "alumni" && msg.data?.alumni_matches && msg.data.alumni_matches.length > 0 && (
-                                <div className="space-y-3 pt-1">
-                                  <div className="flex items-center justify-between gap-2">
-                                    <div className="flex items-center gap-2 font-display font-bold text-xs uppercase tracking-wider text-[#1F7A4D]">
-                                      <UserCheck className="w-3.5 h-3.5 text-[#1F7A4D]" />
-                                      <span>Data Alumni Hasil Klarifikasi ({msg.data.alumni_matches.length} Profil Ditemukan)</span>
-                                    </div>
-                                    <a
-                                      href="https://www.revou.co/alumni"
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="font-mono text-[11px] text-[#0E62FE] hover:underline inline-flex items-center gap-1 font-semibold"
-                                    >
-                                      <span>Direktori Lengkap Alumni</span>
-                                      <ExternalLink className="w-3 h-3" />
-                                    </a>
-                                  </div>
-
-                                  <div className="grid grid-cols-1 gap-4">
-                                    {msg.data.alumni_matches.map((alumni: any, idx: number) => (
-                                      <div
-                                        key={idx}
-                                        className="bg-[#FFFFFF] p-4 sm:p-5 rounded-xl border border-[#E8E8E4] space-y-3.5 shadow-2xs hover:border-[#D9D9D4] transition-all flex flex-col justify-between"
-                                      >
-                                        <div className="space-y-3">
-                                          <div className="flex flex-wrap items-start justify-between gap-2 border-b border-[#E8E8E4] pb-2.5">
-                                            <div>
-                                              <h4 className="font-bold text-[15.5px] text-[#141412] leading-tight">
-                                                {alumni.name}
-                                              </h4>
-                                              <p className="text-xs text-[#8A8A84] font-medium mt-0.5">
-                                                {alumni.program_batch}
-                                              </p>
-                                            </div>
-                                            {alumni.achievement && (
-                                              <span className="font-mono text-[11px] px-2.5 py-0.5 rounded-full bg-[#EBF7EE] text-[#1F7A4D] font-bold shrink-0 border border-[#D4EDDA]">
-                                                {alumni.achievement}
-                                              </span>
-                                            )}
-                                          </div>
-
-                                          <div className="text-xs text-[#4B4B46] space-y-1 bg-[#F5F5F2] p-3 rounded-lg border border-[#E8E8E4]/70">
-                                            {alumni.previous_role && alumni.previous_role !== "-" && alumni.previous_role.toLowerCase() !== "tidak ada" && (
-                                              <div>
-                                                <span className="text-[#8A8A84] font-medium">Latar Belakang / Profesi Sebelumnya: </span>
-                                                <span className="font-semibold text-[#141412]">{alumni.previous_role}</span>
-                                              </div>
-                                            )}
-                                            {alumni.current_role && (
-                                              <div>
-                                                <span className="text-[#8A8A84] font-medium">Posisi & Perusahaan Sekarang: </span>
-                                                <span className="font-semibold text-[#1F7A4D]">{alumni.current_role}</span>
-                                                {alumni.company && <span className="text-[#4B4B46]"> · {alumni.company}</span>}
-                                              </div>
-                                            )}
-                                            {alumni.industry && (
-                                              <div>
-                                                <span className="text-[#8A8A84] font-medium">Kategori / Industri: </span>
-                                                <span className="font-semibold text-[#141412]">{alumni.industry}</span>
-                                              </div>
-                                            )}
-                                          </div>
-
-                                          {/* Detailed Career Journey Summary (min 250 words) */}
-                                          {alumni.career_journey_summary && (
-                                            <div className="space-y-1.5 pt-1">
-                                              <div className="font-mono text-[11px] uppercase tracking-wider text-[#1F7A4D] font-bold flex items-center gap-1.5">
-                                                <Sparkles className="w-3 h-3 text-[#1F7A4D]" />
-                                                <span>Summary Perjalanan Karir & Transformasi:</span>
-                                              </div>
-                                              <div className="text-[13.5px] text-[#141412] leading-relaxed whitespace-pre-line bg-[#FAFAF8] p-3.5 rounded-lg border border-[#E8E8E4]/80">
-                                                {renderFormattedTextWithLinks(alumni.career_journey_summary, { isSummary: true })}
-                                              </div>
-                                            </div>
-                                          )}
-
-                                          {alumni.why_relevant && (
-                                            <p className="text-xs text-[#4B4B46] leading-relaxed bg-[#FFF6D1]/40 p-2.5 rounded-md border border-[#FFD84D]/40">
-                                              💡 <span className="text-[#8A8A84] font-semibold">Relevansi untuk Leads: </span>
-                                              <span className="font-medium text-[#141412]">{alumni.why_relevant}</span>
-                                            </p>
-                                          )}
-                                        </div>
-
-                                        {alumni.profile_url && (
-                                          <div className="pt-2.5 border-t border-[#E8E8E4] flex items-center justify-between">
-                                            <a
-                                              href={alumni.profile_url}
-                                              target="_blank"
-                                              rel="noopener noreferrer"
-                                              className="text-xs font-semibold text-[#0E62FE] hover:text-[#0043CE] inline-flex items-center gap-1.5 transition-colors"
-                                            >
-                                              <span>Baca Kisah & Bukti Nyata Alumni di RevoU</span>
-                                              <ExternalLink className="w-3.5 h-3.5 inline" />
-                                            </a>
-                                          </div>
-                                        )}
-                                      </div>
-                                    ))}
-                                  </div>
-                                </div>
+                                <AlumniCardList
+                                  matches={msg.data.alumni_matches}
+                                  title="Data Alumni Hasil Klarifikasi"
+                                />
                               )}
 
                               {/* Revised Script Variations (for pitch mode) */}
@@ -1854,559 +1470,36 @@ INSTRUKSI PENTING:
       {/* ========================================================= */}
       {/* 4. HISTORY & FAVORITES DRAWER                             */}
       {/* ========================================================= */}
-      {isHistoryDrawerOpen && (
-        <div className="fixed inset-0 z-50 overflow-hidden">
-          {/* Backdrop */}
-          <div
-            className="fixed inset-0 bg-black/40 backdrop-blur-xs transition-opacity animate-in fade-in duration-200 cursor-pointer"
-            onClick={() => setIsHistoryDrawerOpen(false)}
-          />
-
-          {/* Slide-over panel */}
-          <div className="fixed inset-y-0 right-0 max-w-full flex pl-6 sm:pl-10">
-            <div className="w-screen max-w-md sm:max-w-lg bg-white shadow-2xl flex flex-col border-l border-[#E8E8E4] animate-in slide-in-from-right duration-300">
-              {/* Drawer Header */}
-              <div className="p-4 sm:p-5 border-b border-[#E8E8E4] flex items-center justify-between bg-[#FAFAF8]">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-lg bg-[#FFF6D1] border border-[#FFD84D] flex items-center justify-center text-[#A15C00] shadow-2xs">
-                    <Bookmark className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <h3 className="font-display font-bold text-base text-[#141412] leading-tight">
-                      Favorit & Riwayat
-                    </h3>
-                    <p className="text-xs text-[#8A8A84] mt-0.5">
-                      Tersimpan di perangkat lokal (LocalStorage)
-                    </p>
-                  </div>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => setIsHistoryDrawerOpen(false)}
-                  className="w-8 h-8 rounded-lg border border-[#E8E8E4] hover:bg-[#F5F5F2] hover:border-[#D9D9D4] flex items-center justify-center text-[#8A8A84] hover:text-[#141412] transition-all cursor-pointer"
-                  title="Tutup (Esc)"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
-
-              {/* Sub-Tabs: Favorit vs Semua Riwayat */}
-              <div className="px-4 sm:px-5 pt-3 border-b border-[#E8E8E4] flex gap-2 bg-white">
-                <button
-                  type="button"
-                  onClick={() => setDrawerTab("favorites")}
-                  className={`flex items-center gap-2 px-3.5 py-2 text-xs sm:text-sm font-bold border-b-2 transition-all cursor-pointer select-none ${drawerTab === "favorites"
-                    ? "border-[#FFD84D] text-[#141412] bg-[#FFF6D1]/60 rounded-t-lg font-bold"
-                    : "border-transparent text-[#8A8A84] hover:text-[#141412] hover:bg-[#F5F5F2] rounded-t-lg"
-                    }`}
-                >
-                  <Star
-                    className={`w-3.5 h-3.5 ${drawerTab === "favorites" ? "fill-[#FFCC1A] text-[#A15C00]" : "text-[#8A8A84]"
-                      }`}
-                  />
-                  <span>Favorit</span>
-                  <span className="px-1.5 py-0.2 rounded-full text-[10.5px] font-mono bg-[#E8E8E4] text-[#4B4B46]">
-                    {favoritesCount}
-                  </span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setDrawerTab("all")}
-                  className={`flex items-center gap-2 px-3.5 py-2 text-xs sm:text-sm font-bold border-b-2 transition-all cursor-pointer select-none ${drawerTab === "all"
-                    ? "border-[#FFD84D] text-[#141412] bg-[#FFF6D1]/60 rounded-t-lg font-bold"
-                    : "border-transparent text-[#8A8A84] hover:text-[#141412] hover:bg-[#F5F5F2] rounded-t-lg"
-                    }`}
-                >
-                  <Clock className="w-3.5 h-3.5 text-[#8A8A84]" />
-                  <span>Semua Riwayat</span>
-                  <span className="px-1.5 py-0.2 rounded-full text-[10.5px] font-mono bg-[#E8E8E4] text-[#4B4B46]">
-                    {historyList.length}
-                  </span>
-                </button>
-              </div>
-
-              {/* Search bar inside drawer */}
-              <div className="p-3 sm:px-5 sm:py-3 border-b border-[#E8E8E4] bg-white">
-                <div className="relative">
-                  <Search className="w-3.5 h-3.5 text-[#8A8A84] absolute left-3 top-1/2 -translate-y-1/2" />
-                  <input
-                    type="text"
-                    value={searchHistoryQuery}
-                    onChange={(e) => setSearchHistoryQuery(e.target.value)}
-                    placeholder="Cari situasi, persona, nama alumni..."
-                    className="w-full text-xs text-[#141412] bg-[#F5F5F2] border border-[#E8E8E4] rounded-lg pl-8 pr-7 py-2 focus:outline-none focus:border-[#141412] focus:bg-white transition-all placeholder:text-[#8A8A84]"
-                  />
-                  {searchHistoryQuery && (
-                    <button
-                      type="button"
-                      onClick={() => setSearchHistoryQuery("")}
-                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#8A8A84] hover:text-[#141412]"
-                    >
-                      <X className="w-3 h-3" />
-                    </button>
-                  )}
-                </div>
-              </div>
-
-              {/* Cards List */}
-              <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-3">
-                {filteredHistory.length === 0 ? (
-                  <div className="text-center py-12 px-4 space-y-3">
-                    <div className="w-12 h-12 rounded-full bg-[#F5F5F2] border border-[#E8E8E4] flex items-center justify-center mx-auto text-[#8A8A84]">
-                      {drawerTab === "favorites" ? (
-                        <Star className="w-5 h-5 text-[#8A8A84]" />
-                      ) : (
-                        <Clock className="w-5 h-5 text-[#8A8A84]" />
-                      )}
-                    </div>
-                    <p className="font-bold text-sm text-[#141412]">
-                      {drawerTab === "favorites"
-                        ? "Belum ada skrip yang difavoritkan"
-                        : "Belum ada riwayat tercatat"}
-                    </p>
-                    <p className="text-xs text-[#8A8A84] max-w-xs mx-auto leading-relaxed">
-                      {drawerTab === "favorites"
-                        ? "Klik tombol ⭐ Simpan ke Favorit pada hasil draf atau di daftar riwayat untuk menyimpannya di sini."
-                        : "Setiap draf respon yang kamu buat akan otomatis tersimpan di sini."}
-                    </p>
-                  </div>
-                ) : (
-                  filteredHistory.map((item) => {
-                    const isSelectedCurrent = currentSessionId === item.id;
-                    const hasClarifications = item.chatThread && item.chatThread.length > 0;
-                    const scriptCount = item.responseResult?.scripts?.length || 0;
-                    const alumniMatchesCount = item.responseResult?.alumni_matches?.length || 0;
-
-                    return (
-                      <div
-                        key={item.id}
-                        className={`p-3.5 sm:p-4 rounded-xl border transition-all space-y-2.5 bg-white hover:border-[#D9D9D4] hover:shadow-2xs ${isSelectedCurrent
-                          ? "border-[#FFD84D] bg-[#FFF6D1]/20 ring-1 ring-[#FFD84D]"
-                          : "border-[#E8E8E4]"
-                          }`}
-                      >
-                        {/* Item Top: Mode Badge, Date, Star & Trash */}
-                        <div className="flex items-start justify-between gap-2">
-                          <div className="flex items-center gap-1.5 flex-wrap">
-                            <span
-                              className={`font-mono text-[10.5px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-full ${item.mode === "pitch"
-                                ? "bg-[#FFF6D1] text-[#A15C00] border border-[#FFD84D]/60"
-                                : item.mode === "alumni"
-                                  ? "bg-[#EBF7EE] text-[#1F7A4D] border border-[#D4EDDA]"
-                                  : "bg-[#EDF5FF] text-[#0E62FE] border border-[#B3D4FF]"
-                                }`}
-                            >
-                              {item.mode === "pitch" ? "Pitch" : item.mode === "alumni" ? "Alumni" : "Comparison"}
-                            </span>
-                            <span className="text-[11px] font-mono text-[#8A8A84]">
-                              {item.dateFormatted}
-                            </span>
-                            {hasClarifications && (
-                              <span className="text-[10.5px] font-mono px-1.5 py-0.5 rounded bg-[#F5F5F2] text-[#4B4B46] border border-[#E8E8E4]">
-                                +klarifikasi
-                              </span>
-                            )}
-                          </div>
-
-                          <div className="flex items-center gap-0.5">
-                            <button
-                              type="button"
-                              onClick={(e) => toggleFavorite(item.id, e)}
-                              className={`w-7 h-7 rounded-lg flex items-center justify-center transition-all cursor-pointer ${item.isFavorite
-                                ? "text-[#A15C00] hover:bg-[#FFF6D1]"
-                                : "text-[#8A8A84] hover:text-[#141412] hover:bg-[#F5F5F2]"
-                                }`}
-                              title={item.isFavorite ? "Hapus dari Favorit" : "Tandai sebagai Favorit"}
-                            >
-                              <Star
-                                className={`w-4 h-4 ${item.isFavorite ? "fill-[#FFCC1A] text-[#A15C00]" : ""
-                                  }`}
-                              />
-                            </button>
-                            <button
-                              type="button"
-                              onClick={(e) => handleDeleteItem(item.id, e)}
-                              className="w-7 h-7 rounded-lg flex items-center justify-center text-[#8A8A84] hover:text-[#B42318] hover:bg-red-50 transition-all cursor-pointer"
-                              title="Hapus dari riwayat"
-                            >
-                              <Trash2 className="w-3.5 h-3.5" />
-                            </button>
-                          </div>
-                        </div>
-
-                        {/* Situation Input Snippet */}
-                        <div>
-                          <p className="text-[13px] font-semibold text-[#141412] line-clamp-2 leading-snug">
-                            "{item.inputText}"
-                          </p>
-                        </div>
-
-                        {/* Result Context summary */}
-                        <div className="text-xs text-[#4B4B46] bg-[#FAFAF8] p-2.5 rounded-lg border border-[#E8E8E4]/80 space-y-1">
-                          {item.mode === "pitch" && item.responseResult?.persona && (
-                            <div className="line-clamp-1">
-                              <span className="text-[#8A8A84] font-medium">Persona: </span>
-                              <span className="font-semibold text-[#141412]">
-                                {item.responseResult.persona}
-                              </span>
-                            </div>
-                          )}
-                          {item.mode === "alumni" && item.responseResult?.alumni_matches?.[0] && (
-                            <div className="line-clamp-1">
-                              <span className="text-[#8A8A84] font-medium">Alumni: </span>
-                              <span className="font-semibold text-[#1F7A4D]">
-                                {item.responseResult.alumni_matches[0].name} (
-                                {item.responseResult.alumni_matches[0].current_role})
-                              </span>
-                            </div>
-                          )}
-                          {item.mode === "comparison" && item.responseResult?.competitor_analysis?.competitor_name && (
-                            <div className="line-clamp-1">
-                              <span className="text-[#8A8A84] font-medium">Kompetitor: </span>
-                              <span className="font-semibold text-[#0E62FE]">
-                                {item.responseResult.competitor_analysis.competitor_name}
-                              </span>
-                            </div>
-                          )}
-                          <div className="text-[11px] text-[#8A8A84] font-mono flex items-center gap-2">
-                            {scriptCount > 0 && <span>{scriptCount} variasi script</span>}
-                            {alumniMatchesCount > 0 && (
-                              <span>{alumniMatchesCount} profil alumni</span>
-                            )}
-                            <span>·</span>
-                            <span>{item.model?.includes("lite") ? "Flash Lite" : "Flash"}</span>
-                          </div>
-                        </div>
-
-                        {/* Action Buttons row */}
-                        <div className="flex items-center justify-between gap-2 pt-1">
-                          <button
-                            type="button"
-                            onClick={() => handleLoadSession(item)}
-                            className={`flex-1 text-xs font-bold py-2 px-3 rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer select-none ${isSelectedCurrent
-                              ? "bg-[#141412] text-white"
-                              : "bg-[#FFD84D] hover:bg-[#FFCC1A] text-[#141412] active:scale-97 shadow-2xs"
-                              }`}
-                          >
-                            <RotateCcw className="w-3.5 h-3.5" />
-                            <span>{isSelectedCurrent ? "Sedang Dibuka" : "Muat Sesi Ini"}</span>
-                          </button>
-
-                          <button
-                            type="button"
-                            onClick={(e) => handleQuickCopyHistory(item, e)}
-                            className="text-xs font-semibold py-2 px-3 rounded-lg border border-[#D9D9D4] bg-white hover:bg-[#F5F5F2] text-[#141412] flex items-center gap-1.5 transition-all cursor-pointer active:scale-97"
-                            title="Salin isi script langsung ke clipboard"
-                          >
-                            {copiedHistoryId === item.id ? (
-                              <>
-                                <Check className="w-3.5 h-3.5 text-[#1F7A4D]" />
-                                <span className="text-[#1F7A4D]">Tersalin</span>
-                              </>
-                            ) : (
-                              <>
-                                <Copy className="w-3.5 h-3.5 text-[#8A8A84]" />
-                                <span>Salin</span>
-                              </>
-                            )}
-                          </button>
-                        </div>
-                      </div>
-                    );
-                  })
-                )}
-              </div>
-
-              {/* Drawer Footer */}
-              {historyList.length > 0 && (
-                <div className="p-3.5 sm:px-5 sm:py-3.5 border-t border-[#E8E8E4] bg-[#FAFAF8] flex items-center justify-between text-xs">
-                  <span className="text-[#8A8A84] font-mono text-[11px]">
-                    Total: {historyList.length} sesi ({favoritesCount} favorit)
-                  </span>
-                  <button
-                    type="button"
-                    onClick={handleClearHistory}
-                    className="text-[#8A8A84] hover:text-[#B42318] hover:underline font-mono text-[11.5px] transition-all cursor-pointer"
-                  >
-                    Bersihkan non-favorit
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
+      <HistoryDrawer
+        isOpen={isHistoryDrawerOpen}
+        onClose={() => setIsHistoryDrawerOpen(false)}
+        historyList={historyList}
+        currentSessionId={currentSessionId}
+        drawerTab={drawerTab}
+        setDrawerTab={setDrawerTab}
+        onLoadSession={handleLoadSession}
+        onToggleFavorite={toggleFavorite}
+        onDeleteItem={handleDeleteItem}
+        onClearHistory={handleClearHistory}
+        onQuickCopy={handleQuickCopyHistory}
+        copiedHistoryId={copiedHistoryId}
+      />
 
       {/* ========================================================= */}
       {/* 5. MODAL MANAJEMEN 5 API KEYS & MONITOR KUOTA             */}
       {/* ========================================================= */}
-      {isKeyModalOpen && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-xs flex items-center justify-center p-3 sm:p-5 animate-in fade-in duration-200">
-          <div
-            className="fixed inset-0 cursor-pointer"
-            onClick={() => setIsKeyModalOpen(false)}
-          />
-
-          <div className="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl border border-[#E8E8E4] overflow-hidden my-6 z-10 flex flex-col max-h-[90vh]">
-            {/* Modal Header */}
-            <div className="p-4 sm:p-5 border-b border-[#E8E8E4] flex items-center justify-between bg-[#FAFAF8] shrink-0">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-[#FFF6D1] border border-[#FFD84D] flex items-center justify-center text-[#A15C00] shadow-2xs shrink-0">
-                  <Key className="w-5 h-5 text-[#A15C00]" />
-                </div>
-                <div>
-                  <h3 className="font-display font-bold text-base sm:text-lg text-[#141412] leading-tight flex items-center gap-2">
-                    <span>Pool 5 API Key · Rotasi Round Robin</span>
-                    <span className="font-mono text-[11px] px-2 py-0.5 rounded-full bg-[#1F7A4D]/10 text-[#1F7A4D] font-bold">
-                      Otomatis
-                    </span>
-                  </h3>
-                  <p className="text-xs text-[#8A8A84] mt-0.5">
-                    Merotasi 5 API Key secara bergiliran dan otomatis failover jika kuota habis (429 Rate Limit)
-                  </p>
-                </div>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => setIsKeyModalOpen(false)}
-                className="w-8 h-8 rounded-lg border border-[#E8E8E4] hover:bg-[#F5F5F2] hover:border-[#D9D9D4] flex items-center justify-center text-[#8A8A84] hover:text-[#141412] transition-all cursor-pointer shrink-0"
-                title="Tutup (Esc)"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            {/* Modal Body (Scrollable) */}
-            <div className="p-4 sm:p-5 space-y-4 overflow-y-auto">
-
-
-              {/* Status Overview Card */}
-              {apiPoolStatus && (
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-                  <div className="p-3 rounded-xl bg-[#F5F5F2] border border-[#E8E8E4] text-center">
-                    <p className="text-[11px] text-[#8A8A84] font-medium">Total Key di Pool</p>
-                    <p className="font-mono font-bold text-lg text-[#141412]">
-                      {apiPoolStatus.totalKeys || 0}
-                    </p>
-                  </div>
-                  <div className="p-3 rounded-xl bg-[#F5F5F2] border border-[#E8E8E4] text-center">
-                    <p className="text-[11px] text-[#8A8A84] font-medium">Giliran Saat Ini</p>
-                    <p className="font-mono font-bold text-lg text-[#0E62FE]">
-                      API {apiPoolStatus.activeRoundRobinIndex || 1}
-                    </p>
-                  </div>
-                  <div className="p-3 rounded-xl bg-[#F5F5F2] border border-[#E8E8E4] text-center">
-                    <p className="text-[11px] text-[#8A8A84] font-medium">Key Sehat / Siap</p>
-                    <p className="font-mono font-bold text-lg text-[#1F7A4D]">
-                      {apiPoolStatus.summary?.healthy ?? apiPoolStatus.totalKeys}
-                    </p>
-                  </div>
-                  <div className="p-3 rounded-xl bg-[#F5F5F2] border border-[#E8E8E4] text-center">
-                    <p className="text-[11px] text-[#8A8A84] font-medium">Status Kuota</p>
-                    <p className="font-mono font-bold text-xs mt-1 text-[#A15C00] uppercase tracking-wider">
-                      {apiPoolStatus.quotaHealth === "optimal"
-                        ? "🟢 Optimal"
-                        : apiPoolStatus.quotaHealth === "partial_warning"
-                          ? "🟡 Sebagian Cooldown"
-                          : "🔴 Habis"}
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              {/* 5 API Key Slots Form */}
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <h4 className="font-bold text-sm text-[#141412] flex items-center gap-1.5">
-                    <span>Daftar 5 API Key</span>
-                  </h4>
-                  <span className="text-[11px] font-mono text-[#8A8A84]">
-                    Tersimpan aman di browser &amp; .env.local
-                  </span>
-                </div>
-
-                {[0, 1, 2, 3, 4].map((idx) => {
-                  const keyNumber = idx + 1;
-                  const testRes = testResults?.find((t) => t.index === keyNumber);
-                  const poolRec = apiPoolStatus?.keys?.[idx];
-                  const hasCustom = Boolean(customApiKeys[idx] && customApiKeys[idx].trim().length > 10);
-                  const isCurrentActive = apiPoolStatus?.activeRoundRobinIndex === keyNumber;
-
-                  return (
-                    <div
-                      key={idx}
-                      className={`border rounded-xl p-3 sm:p-3.5 transition-all ${isCurrentActive
-                        ? "border-[#FFD84D] bg-[#FFF6D1]/20 shadow-2xs"
-                        : "border-[#E8E8E4] bg-[#FAFAF8]"
-                        }`}
-                    >
-                      <div className="flex items-center justify-between gap-2 mb-1.5">
-                        <div className="flex items-center gap-2">
-                          <span className="font-mono text-xs font-bold text-[#141412] px-2.5 py-0.5 rounded-md bg-white border border-[#D9D9D4] shadow-2xs">
-                            API {keyNumber}
-                          </span>
-                          {isCurrentActive && (
-                            <span className="text-[10px] font-mono font-semibold px-1.5 py-0.5 rounded-full bg-[#FFD84D] text-[#141412]">
-                              ⚡ Giliran Berikutnya
-                            </span>
-                          )}
-                        </div>
-
-                        {/* Status Badges */}
-                        <div className="flex items-center gap-1.5">
-                          {testRes ? (
-                            testRes.quotaAvailable ? (
-                              <span className="text-[11px] font-mono font-semibold px-2 py-0.5 rounded-md bg-[#1F7A4D]/10 text-[#1F7A4D] border border-[#1F7A4D]/20">
-                                🟢 Siap ({testRes.latencyMs}ms)
-                              </span>
-                            ) : testRes.statusCode === 429 ? (
-                              <span className="text-[11px] font-mono font-semibold px-2 py-0.5 rounded-md bg-[#D97706]/10 text-[#D97706] border border-[#D97706]/20">
-                                🟡 Kuota Habis (429)
-                              </span>
-                            ) : (
-                              <span className="text-[11px] font-mono font-semibold px-2 py-0.5 rounded-md bg-[#DA1E28]/10 text-[#DA1E28] border border-[#DA1E28]/20">
-                                🔴 Tidak Valid
-                              </span>
-                            )
-                          ) : poolRec?.status === "rate_limited" ? (
-                            <span className="text-[11px] font-mono font-semibold px-2 py-0.5 rounded-md bg-[#D97706]/10 text-[#D97706] border border-[#D97706]/20">
-                              🟡 Cooldown ({poolRec.cooldownSeconds}s)
-                            </span>
-                          ) : poolRec?.usageCount ? (
-                            <span className="text-[11px] font-mono text-[#4B4B46] px-2 py-0.5 rounded-md bg-white border border-[#E8E8E4]">
-                              {poolRec.usageCount} request diproses
-                            </span>
-                          ) : hasCustom ? (
-                            <span className="text-[11px] font-mono text-[#1F7A4D] px-2 py-0.5 rounded-md bg-[#1F7A4D]/10">
-                              Siap Digunakan
-                            </span>
-                          ) : poolRec?.isConfigured ? (
-                            <span className="text-[11px] font-mono text-[#4B4B46] px-2 py-0.5 rounded-md bg-white border border-[#E8E8E4]">
-                              Server Terkonfigurasi
-                            </span>
-                          ) : (
-                            <span className="text-[11px] font-mono text-[#8A8A84]">
-                              Belum Diisi
-                            </span>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Input Box */}
-                      <div className="relative flex items-center">
-                        <input
-                          type={showKeySecret[idx] ? "text" : "password"}
-                          value={customApiKeys[idx]}
-                          onChange={(e) => {
-                            const val = e.target.value;
-                            setCustomApiKeys((prev) => {
-                              const updated = [...prev];
-                              updated[idx] = val;
-                              return updated;
-                            });
-                          }}
-                          placeholder={
-                            hasCustom
-                              ? "••••••••••••••••••••••••••••••••••••"
-                              : poolRec?.isConfigured
-                                ? "Terkonfigurasi di server (Ketik untuk mengganti)"
-                                : `Masukkan API ${keyNumber}...`
-                          }
-                          className="w-full text-xs font-mono px-3 py-2 pr-16 bg-white border border-[#D9D9D4] rounded-lg text-[#141412] focus:outline-none focus:border-[#0E62FE] focus:ring-1 focus:ring-[#0E62FE] placeholder:text-[#A8A8A2]"
-                        />
-
-                        <div className="absolute right-1.5 flex items-center gap-1">
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setShowKeySecret((prev) => {
-                                const updated = [...prev];
-                                updated[idx] = !updated[idx];
-                                return updated;
-                              });
-                            }}
-                            className="p-1 text-[#8A8A84] hover:text-[#141412] transition-colors cursor-pointer"
-                            title={showKeySecret[idx] ? "Sembunyikan" : "Tampilkan API Key"}
-                          >
-                            {showKeySecret[idx] ? (
-                              <EyeOff className="w-3.5 h-3.5" />
-                            ) : (
-                              <Eye className="w-3.5 h-3.5" />
-                            )}
-                          </button>
-
-                          {customApiKeys[idx] && (
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setCustomApiKeys((prev) => {
-                                  const updated = [...prev];
-                                  updated[idx] = "";
-                                  return updated;
-                                });
-                              }}
-                              className="p-1 text-[#8A8A84] hover:text-[#B42318] transition-colors cursor-pointer"
-                              title="Hapus key ini"
-                            >
-                              <X className="w-3.5 h-3.5" />
-                            </button>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-
-
-            </div>
-
-            {/* Modal Actions Footer */}
-            <div className="p-3.5 sm:px-5 sm:py-3.5 border-t border-[#E8E8E4] bg-[#FAFAF8] flex flex-wrap items-center justify-between gap-2.5 shrink-0">
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={handleTestKeys}
-                  disabled={isTestingKeys}
-                  className="font-sans text-xs font-semibold px-3 py-2 rounded-xl border border-[#D9D9D4] bg-white hover:bg-[#F5F5F2] text-[#141412] transition-all cursor-pointer flex items-center gap-1.5 active:scale-95 disabled:opacity-50"
-                  title="Ping dan periksa sisa kuota ke-5 API Key di Google AI Studio"
-                >
-                  <RefreshCw className={`w-3.5 h-3.5 text-[#0E62FE] ${isTestingKeys ? "animate-spin" : ""}`} />
-                  <span>{isTestingKeys ? "Menguji Kuota..." : "Test & Cek Kuota Semua Key"}</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={handleResetKeysToDefault}
-                  className="font-sans text-xs text-[#8A8A84] hover:text-[#141412] px-2 py-2 hover:underline cursor-pointer"
-                >
-                  Reset ke Server
-                </button>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => setIsKeyModalOpen(false)}
-                  className="font-sans text-xs font-semibold px-3 py-2 rounded-xl border border-[#D9D9D4] bg-white hover:bg-[#F5F5F2] text-[#4B4B46] cursor-pointer"
-                >
-                  Tutup
-                </button>
-                <button
-                  type="button"
-                  onClick={handleSaveCustomKeys}
-                  className="font-sans text-xs font-bold px-4 py-2 rounded-xl bg-[#FFD84D] hover:bg-[#FFCC1A] text-[#141412] shadow-2xs transition-all cursor-pointer active:scale-95"
-                >
-                  Simpan Konfigurasi
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      <ApiKeyModal
+        isOpen={isKeyModalOpen}
+        onClose={() => setIsKeyModalOpen(false)}
+        customApiKeys={customApiKeys}
+        setCustomApiKeys={setCustomApiKeys}
+        apiPoolStatus={apiPoolStatus}
+        testResults={testResults}
+        isTestingKeys={isTestingKeys}
+        onTestKeys={handleTestKeys}
+        onSaveCustomKeys={handleSaveCustomKeys}
+        onResetKeysToDefault={handleResetKeysToDefault}
+      />
 
       {/* FLOATING TOAST NOTIFICATION */}
       {historyToast && (
