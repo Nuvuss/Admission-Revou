@@ -86,3 +86,20 @@ Setiap lulusan membawa **7 Projek Portfolio** standar industri:
   * **Pesan Utama:** *"Terus investasi pada kemampuan diri (investasi leher ke atas), bangun relasi, dan siapkan portofolio nyata."*
   * **Link Artikel:** [https://www.revou.co/alumni-stories/ahmad-dzaky-musthofa](https://www.revou.co/alumni-stories/ahmad-dzaky-musthofa)
 
+
+
+* **Basith Pahlevi — Full Stack Data Analytics (Batch 23):**
+  * **Program & Prestasi:** Full Stack Data Analytics (Associate's degree), Batch 23 (Januari 2023 – April 2023). Nilai kelulusan: 60,0 dari 69,0.
+  * **Posisi Sekarang:** Sport Presentation Manager di **Dewa United** (Purnawaktu / Full-time, On-site di Kota Tangerang, Banten; aktif sejak Januari 2024).
+  * **Fokus Kerja & Peran:** Memimpin penyusunan konsep dan pelaksanaan *sport presentation* serta strategi *fan engagement* secara langsung pada hari pertandingan (*matchday*), menghadirkan pengalaman berstandar liga profesional dan kompetisi internasional.
+  * **Penerapan Keahlian RevoU:** Memanfaatkan pemahaman analisis data (Data Analysis), visualisasi data (Tableau), Google Workspace, dan Microsoft Office untuk merancang strategi keterlibatan suporter dan tata kelola presentasi pertandingan berbasis data.
+  * **Pitching Angle Sales:** Bukti nyata bahwa keahlian Data Analytics RevoU tidak hanya untuk industri perbankan atau teknologi, melainkan sangat relevan dan bernilai tinggi di industri olahraga profesional (*sports entertainment*, manajemen klub/kompetisi, dan aktivasi penonton berbasis data).
+  * **Link Direktori Alumni:** [https://www.revou.co/alumni](https://www.revou.co/alumni)
+
+* **Bryant Andersson Tantra — Full Stack Data Analytics:**
+  * **Program & Modul:** Full Stack Data Analytics Program (Mei 2024 – September 2024). Mempelajari modul komprehensif: Data Analytics Introduction, Statistics, Spreadsheets, SQL, Python Data Analysis, Data Visualization, Data Presentation, dan Tableau.
+  * **Posisi Sekarang:** Football Match Statistics Operator di **BinaBola** (Pekerja Lepas / Freelance, Jarak Jauh / Remote dari Bandung, Jawa Barat; aktif sejak Agustus 2026).
+  * **Fokus Kerja & Peran:** Mengoperasikan dan mengolah data statistik pertandingan sepak bola secara langsung (*match statistics*), menganalisis metrik performa pertandingan sepak bola.
+  * **Penerapan Keahlian RevoU:** Mengaplikasikan Python, SQL, analisis statistik pertandingan, dan visualisasi data untuk menghasilkan data metrik olahraga yang akurat dan tepat waktu.
+  * **Pitching Angle Sales:** Contoh kuat bagi calon siswa yang ingin menyalurkan minat olahraga (sepak bola) atau mencari peluang kerja fleksibel/freelance remote di bidang analisis statistik olahraga (*sports analytics*).
+  * **Link Direktori Alumni:** [https://www.revou.co/alumni](https://www.revou.co/alumni)

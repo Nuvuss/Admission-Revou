@@ -35,7 +35,26 @@ import {
   Scale,
   Award
 } from "lucide-react";
-import ComparisonView from "./components/ComparisonView";
+import dynamic from "next/dynamic";
+
+// Dynamic import (lazy loading) to split the ~248 KB ComparisonView into a separate chunk
+const ComparisonView = dynamic(() => import("./components/ComparisonView"), {
+  loading: () => (
+    <div className="p-8 my-4 rounded-2xl border border-[#E8E8E4] bg-white flex flex-col items-center justify-center gap-3 text-center shadow-2xs">
+      <div className="w-7 h-7 border-2 border-[#FFD84D] border-t-[#141412] rounded-full animate-spin" />
+      <div className="space-y-1">
+        <p className="text-sm font-bold text-[#141412]">
+          Memuat Battlecard & Tabel Komparasi Kompetitor...
+        </p>
+        <p className="text-xs text-[#8A8A84]">
+          Komponen dimuat secara terpisah (lazy-loaded dynamic import) untuk efisiensi bundle.
+        </p>
+      </div>
+    </div>
+  ),
+  ssr: false,
+});
+
 import ApiKeyModal from "./components/ApiKeyModal";
 import HistoryDrawer from "./components/HistoryDrawer";
 import AlumniCardList from "./components/AlumniCardList";
@@ -113,6 +132,10 @@ export default function DashboardPage() {
   const [copiedAll, setCopiedAll] = useState(false);
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  // ── Real-Time Streaming State (SSE) ──
+  const [streamStatus, setStreamStatus] = useState<string>("");
+  const [streamDeltaText, setStreamDeltaText] = useState<string>("");
 
   // History & Favorites State
   const [historyList, setHistoryList] = useState<HistoryItem[]>([]);
@@ -303,7 +326,7 @@ export default function DashboardPage() {
     setActiveScriptTab(0);
   };
 
-  // Generate POST to /api/generate
+  // Generate POST to /api/generate via Response Streaming (SSE)
   const handleGenerate = async () => {
     if (!inputText.trim()) return;
     setIsLoading(true);
@@ -312,16 +335,22 @@ export default function DashboardPage() {
     setActiveScriptTab(0);
     setChatThread([]);
     setClarificationTabs({});
+    setStreamStatus("Menghubungkan ke RevoU Copilot...");
+    setStreamDeltaText("");
 
     try {
       const activeCustom = customApiKeys.filter((k) => k && k.trim().length > 10);
       const res = await fetch("/api/generate", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "text/event-stream",
+        },
         body: JSON.stringify({
           situation: inputText,
           model: selectedModel,
           tab: mode,
+          stream: true,
           customKeys: activeCustom.length > 0 ? activeCustom : null,
         }),
       });
@@ -330,50 +359,134 @@ export default function DashboardPage() {
         throw new Error(`Server returned status ${res.status}`);
       }
 
-      const data = await res.json();
-      setResponseResult(data);
+      // Consume SSE stream
+      const reader = res.body?.getReader();
+      if (!reader) {
+        throw new Error("Browser tidak mendukung streaming response.");
+      }
 
-      // Handle Round Robin key quota info & notifications
-      if (data.apiKeyInfo) {
-        if (data.apiKeyInfo.poolStatus) {
-          setApiPoolStatus(data.apiKeyInfo.poolStatus);
-        }
-        if (Array.isArray(data.apiKeyInfo.quotaNotifications) && data.apiKeyInfo.quotaNotifications.length > 0) {
-          setQuotaAlertBanner(data.apiKeyInfo.quotaNotifications.join(" • "));
-        } else if (data.apiKeyInfo.wasRotatedDueToQuota) {
-          setQuotaAlertBanner(`Rotasi Kuota: API Key berhasil dialihkan ke Key #${data.apiKeyInfo.activeKeyIndex} via Round Robin.`);
+      const decoder = new TextDecoder();
+      let streamBuffer = "";
+      let finalResultData: any = null;
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        streamBuffer += decoder.decode(value, { stream: true });
+        const blocks = streamBuffer.split("\n\n");
+        streamBuffer = blocks.pop() || "";
+
+        for (const block of blocks) {
+          if (!block.trim()) continue;
+          let eventType = "message";
+          let dataStr = "";
+
+          for (const line of block.split("\n")) {
+            if (line.startsWith("event: ")) {
+              eventType = line.slice(7).trim();
+            } else if (line.startsWith("data: ")) {
+              dataStr = line.slice(6).trim();
+            }
+          }
+
+          if (dataStr) {
+            try {
+              const payload = JSON.parse(dataStr);
+
+              if (eventType === "status") {
+                if (payload.message) setStreamStatus(payload.message);
+                if (payload.rateLimited && payload.activeKeyIndex) {
+                  setQuotaAlertBanner(
+                    `Rotasi Kuota: API Key #${payload.activeKeyIndex} mencapai limit kuota (429). Otomatis dialihkan ke key berikutnya.`
+                  );
+                }
+              } else if (eventType === "key_info") {
+                if (payload.poolStatus) setApiPoolStatus(payload.poolStatus);
+              } else if (eventType === "token") {
+                if (payload.delta) {
+                  setStreamDeltaText((prev) => prev + payload.delta);
+                }
+              } else if (eventType === "result") {
+                finalResultData = payload;
+                setResponseResult(payload);
+
+                if (payload.apiKeyInfo) {
+                  if (payload.apiKeyInfo.poolStatus) {
+                    setApiPoolStatus(payload.apiKeyInfo.poolStatus);
+                  }
+                  if (
+                    Array.isArray(payload.apiKeyInfo.quotaNotifications) &&
+                    payload.apiKeyInfo.quotaNotifications.length > 0
+                  ) {
+                    setQuotaAlertBanner(payload.apiKeyInfo.quotaNotifications.join(" • "));
+                  } else if (payload.apiKeyInfo.wasRotatedDueToQuota) {
+                    setQuotaAlertBanner(
+                      `Rotasi Kuota: API Key berhasil dialihkan ke Key #${payload.apiKeyInfo.activeKeyIndex} via Round Robin.`
+                    );
+                  }
+                }
+              } else if (eventType === "error") {
+                setErrorMessage(payload.message || payload.error || "Terjadi kesalahan saat streaming.");
+              }
+            } catch (jsonErr) {
+              // Non-JSON or keepalive SSE line
+            }
+          }
         }
       }
 
-      // Auto-save to History in LocalStorage
-      const newSessionId = `hist-${Date.now()}`;
-      setCurrentSessionId(newSessionId);
-      const newItem: HistoryItem = {
-        id: newSessionId,
-        timestamp: Date.now(),
-        dateFormatted: formatDate(new Date()),
-        mode,
-        inputText,
-        model: selectedModel,
-        responseResult: data,
-        chatThread: [],
-        isFavorite: false,
-      };
-
-      setHistoryList((prev) => {
-        const updated = [newItem, ...prev.filter((i) => i.id !== newSessionId)].slice(0, 30);
+      // Check remaining buffer
+      if (streamBuffer.trim()) {
         try {
-          localStorage.setItem("revou_admission_history_v1", JSON.stringify(updated));
-        } catch (e) {
-          console.error("Failed to save history:", e);
-        }
-        return updated;
-      });
+          const block = streamBuffer.trim();
+          let eventType = "message";
+          let dataStr = "";
+          for (const line of block.split("\n")) {
+            if (line.startsWith("event: ")) eventType = line.slice(7).trim();
+            else if (line.startsWith("data: ")) dataStr = line.slice(6).trim();
+          }
+          if (dataStr && eventType === "result") {
+            const payload = JSON.parse(dataStr);
+            finalResultData = payload;
+            setResponseResult(payload);
+          }
+        } catch (e) {}
+      }
+
+      if (finalResultData) {
+        // Auto-save to History in LocalStorage
+        const newSessionId = `hist-${Date.now()}`;
+        setCurrentSessionId(newSessionId);
+        const newItem: HistoryItem = {
+          id: newSessionId,
+          timestamp: Date.now(),
+          dateFormatted: formatDate(new Date()),
+          mode,
+          inputText,
+          model: selectedModel,
+          responseResult: finalResultData,
+          chatThread: [],
+          isFavorite: false,
+        };
+
+        setHistoryList((prev) => {
+          const updated = [newItem, ...prev.filter((i) => i.id !== newSessionId)].slice(0, 30);
+          try {
+            localStorage.setItem("revou_admission_history_v1", JSON.stringify(updated));
+          } catch (e) {
+            console.error("Failed to save history:", e);
+          }
+          return updated;
+        });
+      }
     } catch (err: any) {
       console.error("Generate error:", err);
       setErrorMessage(err.message || "Gagal memanggil AI. Silakan coba kembali.");
     } finally {
       setIsLoading(false);
+      setStreamStatus("");
+      setStreamDeltaText("");
     }
   };
 
@@ -1001,6 +1114,51 @@ INSTRUKSI PENTING:
                 <div className="p-3 bg-red-50 border border-red-200 text-[#B42318] text-xs rounded-lg">
                   {errorMessage}
                 </div>
+              )}
+
+              {/* ========================================================= */}
+              {/* LIVE SSE STREAMING INDICATOR & REAL-TIME PREVIEW          */}
+              {/* ========================================================= */}
+              {isLoading && (
+                <motion.div
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="border border-[#FFD84D]/80 bg-[#FFFDF5] rounded-2xl p-4 sm:p-5 shadow-xs space-y-3"
+                >
+                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#FFD84D]/40 pb-2.5">
+                    <div className="flex items-center gap-2">
+                      <span className="relative flex h-2.5 w-2.5 items-center justify-center">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#E5B500] opacity-75" />
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-[#FFCC1A]" />
+                      </span>
+                      <span className="font-display font-bold text-xs uppercase tracking-wider text-[#A15C00]">
+                        ⚡ Real-Time Response Streaming (SSE)
+                      </span>
+                    </div>
+                    <span className="font-mono text-[11px] text-[#4B4B46] bg-white px-2.5 py-0.5 rounded-full border border-[#E8E8E4] flex items-center gap-1.5 shadow-2xs">
+                      <Sparkles className="w-3 h-3 text-[#E5B500]" />
+                      <span>{streamStatus || "Sedang memproses..."}</span>
+                    </span>
+                  </div>
+
+                  {streamDeltaText ? (
+                    <div className="space-y-1.5">
+                      <div className="flex justify-between items-center text-[11px] font-mono text-[#8A8A84]">
+                        <span>Live AI Generation Tokens:</span>
+                        <span>{streamDeltaText.length} karakter mengalir</span>
+                      </div>
+                      <div className="bg-white border border-[#E8E8E4] rounded-xl p-3.5 max-h-48 overflow-y-auto font-mono text-xs text-[#2B2B28] leading-relaxed whitespace-pre-wrap shadow-inner">
+                        {streamDeltaText}
+                        <span className="inline-block w-1.5 h-3.5 bg-[#FFCC1A] ml-1 animate-pulse align-middle" />
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-3 py-2 text-xs text-[#4B4B46]">
+                      <div className="w-4 h-4 border-2 border-[#141412] border-t-transparent rounded-full animate-spin shrink-0" />
+                      <span>{streamStatus || "Menghubungkan ke Google Gemini API via Server-Sent Events..."}</span>
+                    </div>
+                  )}
+                </motion.div>
               )}
 
               {/* ========================================================= */}

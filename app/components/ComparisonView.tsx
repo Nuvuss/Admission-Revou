@@ -2907,6 +2907,119 @@ function AnimatedSelect({
   );
 }
 
+// ── PROGRAM-SPECIFIC BATTLECARD RESOLVER ──
+export interface ProgramBattlecardDetail {
+  id: string;
+  programTitle: string;
+  competitorName: string;
+  badge: string;
+  revouMatchProgram: string;
+  revouMatchBadge: string;
+  tagline: string;
+  competitorPrice: string;
+  revouPrice: string;
+  durationTextComp: string;
+  durationTextRevoU: string;
+  competitorFormat: string;
+  revouFormat: string;
+  careerSupportComp: string;
+  careerSupportRevoU: string;
+  competitorCert: string;
+  revouCert: string;
+  honestStrength: string;
+  revouWins: string[];
+  proofPoint: string;
+  acScriptTemplate: string;
+  competitorLimitation: string;
+}
+
+function buildProgramBattlecard(
+  program: CompetitorProgramItem,
+  macroBattlecard?: CompetitorBattlecard
+): ProgramBattlecardDetail {
+  const findRow = (catKeywords: string[], paramKeywords: string[]) => {
+    return program.tableRows.find((r) => {
+      const cat = (r.categoryTag || "").toLowerCase();
+      const param = (r.parameter || "").toLowerCase();
+      return (
+        catKeywords.some((k) => cat.includes(k.toLowerCase())) ||
+        paramKeywords.some((k) => param.includes(k.toLowerCase()))
+      );
+    });
+  };
+
+  const priceRow = findRow(["investasi", "biaya"], ["biaya", "investasi", "harga", "skema"]);
+  const scheduleRow = findRow(["jadwal"], ["jadwal", "komitmen", "waktu"]);
+  const durationRow = findRow(["durasi"], ["durasi", "sesi", "minggu"]);
+  const formatRow = findRow(["metode", "format"], ["format", "metode", "lokasi"]);
+  const certRow = findRow(["kredensial", "sertifikasi"], ["sertifikasi", "kredensial", "sertifikat"]);
+
+  // Price
+  const competitorPrice = priceRow?.competitorValue || macroBattlecard?.price || "Lihat tabel komparasi detail";
+  const revouPrice = priceRow?.revouValue || "Rp 14.9jt – Rp 22.5jt (opsi cicilan 3x–12x via kartu kredit/Danacita, tanpa biaya kos).";
+
+  // Duration & Schedule
+  const durationTextComp = [
+    durationRow ? durationRow.competitorValue : null,
+    scheduleRow ? `Jadwal: ${scheduleRow.competitorValue}` : null,
+  ].filter(Boolean).join("\n\n") || macroBattlecard?.duration || "12–24 minggu";
+
+  const durationTextRevoU = [
+    durationRow ? durationRow.revouValue : null,
+    scheduleRow ? `Jadwal: ${scheduleRow.revouValue}` : null,
+  ].filter(Boolean).join("\n\n") || "6–9 bulan komprehensif (termasuk 3 bulan Virtual Internship & Career+), kelas malam 19:00–21:00 WIB.";
+
+  // Format
+  const competitorFormat = formatRow?.competitorValue || macroBattlecard?.format || "Online / Offline";
+  const revouFormat = formatRow?.revouValue || "100% Live Online interaktif dua arah (5x/minggu sesi tanya jawab & diskusi) + Akses rekaman selamanya.";
+
+  // Certification
+  const competitorCert = certRow?.competitorValue || macroBattlecard?.certification || "Sertifikat Kelulusan Resmi";
+  const revouCert = certRow?.revouValue || "RevoU Certificate of Completion bertaraf internasional + Sertifikasi Resmi Universitas Terkemuka (ITB, BINUS x AWS, UI).";
+
+  // Honest Strength
+  const honestStrength = program.badge
+    ? `${program.competitorName} ${program.programTitle} (${program.badge}): ${macroBattlecard?.honestStrength || "Fokus pada kurikulum teknis spesifik dan format belajar yang terstruktur."}`
+    : macroBattlecard?.honestStrength || "Memiliki spesialisasi materi teknis di bidang ini.";
+
+  // Where RevoU Wins
+  const revouWins: string[] = [];
+  if (program.revouEdge) {
+    revouWins.push(program.revouEdge);
+  }
+  revouWins.push("Jadwal kelas malam (19:00–21:00 WIB) ramah pekerja & mahasiswa — peserta tidak perlu resign dari kantor saat masa belajar.");
+  revouWins.push("12 Minggu Virtual Internship: Portofolio nyata memecahkan real business problem dengan partner korporasi nyata (Telkom OCA, Zurich, dll).");
+  revouWins.push("Dukungan karir intensif Career+ (1:1 Personal Career Coach, AI Career Engine, dan simulasi interview dengan Hiring Manager).");
+
+  // Proof Point
+  const proofPoint = macroBattlecard?.proofPoint || "15.000+ alumni RevoU di 1.000+ top company & 93% completion rate resmi (transparan vs kompetitor).";
+
+  return {
+    id: program.id,
+    programTitle: program.programTitle,
+    competitorName: program.competitorName,
+    badge: program.badge,
+    revouMatchProgram: program.revouMatchProgram,
+    revouMatchBadge: program.revouMatchBadge,
+    tagline: `Battlecard Head-to-Head: RevoU ${program.revouMatchProgram} vs ${program.competitorName} ${program.programTitle}`,
+    competitorPrice,
+    revouPrice,
+    durationTextComp,
+    durationTextRevoU,
+    competitorFormat,
+    revouFormat,
+    careerSupportComp: macroBattlecard?.careerSupport || "Career support & bimbingan kerja.",
+    careerSupportRevoU: "RevoU Career+ (1:1 Personal Career Coach selama 7-8 bulan, AI Career Engine, & simulasi interview Hiring Manager).",
+    competitorCert,
+    revouCert,
+    honestStrength,
+    revouWins,
+    proofPoint,
+    acScriptTemplate: program.acTalkingPoint,
+    competitorLimitation: program.competitorLimitation,
+  };
+}
+
 // ── FEATURE TOGGLES ──
 // Set ke `true` jika tim AC ingin mengaktifkan kembali tab General Comparison (Level Institusi/Makro)
 const SHOW_GENERAL_COMPARISON = false;
@@ -3005,6 +3118,11 @@ export default function ComparisonView() {
   ], [availableProgramsForSelectedComp, competitorDisplayNames, selectedCompetitorKey]);
 
   const activeBattlecard = BATTLECARDS.find((b) => b.id === selectedCompetitorKey) || BATTLECARDS[0];
+
+  const activeProgramBattlecard = useMemo(() => {
+    if (!activeProgramDetail) return null;
+    return buildProgramBattlecard(activeProgramDetail, activeBattlecard);
+  }, [activeProgramDetail, activeBattlecard]);
 
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
@@ -3159,9 +3277,7 @@ export default function ComparisonView() {
             }`}
         >
           <Award className={`w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 ${activeTab === "battlecards" ? "text-[#B76E00]" : "text-[#8A8A84]"}`} />
-          <span className="truncate">
-            <span className="hidden xl:inline">One-Pager </span>Battlecard {competitorDisplayNames[selectedCompetitorKey]}
-          </span>
+          <span className="truncate">One-Pager Battlecard</span>
         </button>
       </div>
 
@@ -3727,169 +3843,204 @@ export default function ComparisonView() {
       )}
 
       {/* ───────────────────────────────────────────────────────────── */}
-      {/* 3. TAB: ONE-PAGER BATTLECARD                                  */}
+      {/* 3. TAB: ONE-PAGER BATTLECARD (TERHUBUNG LANGSUNG KE DROPDOWN) */}
       {/* ───────────────────────────────────────────────────────────── */}
       {activeTab === "battlecards" && (
         <div className="space-y-6">
-          <div className="bg-white border border-[#E8E8E4] rounded-2xl p-5 sm:p-6 shadow-2xs space-y-6">
-            {/* Header info */}
-            <div className="border-b border-[#E8E8E4] pb-4 space-y-1">
-              <div className="flex items-center gap-2">
-                <h3 className="font-display font-bold text-xl text-[#141412]">
-                  Battlecard: RevoU vs {activeBattlecard.name}
-                </h3>
-                <span className="font-mono text-[11px] bg-[#EBF7EE] text-[#1F7A4D] font-bold px-2.5 py-0.5 rounded-full border border-[#D4EDDA]">
-                  Verified Data 20 Okt 2026
-                </span>
+          {!activeProgramDetail || !activeProgramBattlecard ? (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.98, y: 8 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+              className="bg-white border-2 border-dashed border-[#D9D9D4] rounded-2xl p-8 sm:p-12 text-center space-y-4 shadow-2xs card-interactive"
+            >
+              <div className="w-14 h-14 rounded-2xl bg-[#FFF6D1] text-[#A15C00] mx-auto flex items-center justify-center border border-[#FFD84D] shadow-2xs">
+                <Award className="w-7 h-7 text-[#B76E00]" />
               </div>
-              <p className="text-xs sm:text-sm text-[#8A8A84]">
-                {activeBattlecard.tagline}
-              </p>
-            </div>
-
-            {/* 8 Core Battlecard Dimensions Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* 1. Price */}
-              <div className="p-4 rounded-xl border border-[#E8E8E4] bg-[#FAFAF8] space-y-2">
-                <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-[#8A8A84] font-bold">
-                  <DollarSign className="w-4 h-4 text-[#A15C00]" />
-                  <span>1. Price & Skema Cicilan (Instalments)</span>
-                </div>
-                <div className="text-xs text-[#141412] space-y-1.5 leading-relaxed">
-                  <p>
-                    <strong className="text-[#8A8A84] font-semibold">{activeBattlecard.name}: </strong>
-                    {activeBattlecard.price}
-                  </p>
-                  <p>
-                    <strong className="text-[#1F7A4D] font-semibold">RevoU: </strong>
-                    Rp 14.9jt – 22.5jt (FSDM: Rp 14.9jt – 17.9jt | FSDA: Rp 17.9jt – 20.9jt | FSSE: Rp 19.5jt – 22.5jt, opsi cicilan 3x–12x via kartu kredit/Danacita, tanpa biaya kos).
-                  </p>
-                </div>
-              </div>
-
-              {/* 2. Duration & Schedule */}
-              <div className="p-4 rounded-xl border border-[#E8E8E4] bg-[#FAFAF8] space-y-2">
-                <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-[#8A8A84] font-bold">
-                  <Clock className="w-4 h-4 text-[#A15C00]" />
-                  <span>2. Duration and Schedule</span>
-                </div>
-                <div className="text-xs text-[#141412] space-y-1.5 leading-relaxed">
-                  <p>
-                    <strong className="text-[#8A8A84] font-semibold">{activeBattlecard.name}: </strong>
-                    {activeBattlecard.duration}
-                  </p>
-                  <p>
-                    <strong className="text-[#1F7A4D] font-semibold">RevoU: </strong>
-                    6–9 bulan (Termasuk 3 bulan RevoU Labs & Career Development), jadwal kelas malam (19.00–21.00 WIB) ramah pekerja & mahasiswa.
-                  </p>
-                </div>
-              </div>
-
-              {/* 3. Format */}
-              <div className="p-4 rounded-xl border border-[#E8E8E4] bg-[#FAFAF8] space-y-2">
-                <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-[#8A8A84] font-bold">
-                  <Video className="w-4 h-4 text-[#A15C00]" />
-                  <span>3. Format (Live or Recorded)</span>
-                </div>
-                <div className="text-xs text-[#141412] space-y-1.5 leading-relaxed">
-                  <p>
-                    <strong className="text-[#8A8A84] font-semibold">{activeBattlecard.name}: </strong>
-                    {activeBattlecard.format}
-                  </p>
-                  <p>
-                    <strong className="text-[#1F7A4D] font-semibold">RevoU: </strong>
-                    100% Live Online interaktif dua arah (5x/minggu sesi tanya jawab & diskusi) + Akses rekaman & materi ajar selamanya.
-                  </p>
-                </div>
-              </div>
-
-              {/* 4. Career Support & Claims */}
-              <div className="p-4 rounded-xl border border-[#E8E8E4] bg-[#FAFAF8] space-y-2">
-                <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-[#8A8A84] font-bold">
-                  <Briefcase className="w-4 h-4 text-[#A15C00]" />
-                  <span>4. Career Support and Placement Claims</span>
-                </div>
-                <div className="text-xs text-[#141412] space-y-1.5 leading-relaxed">
-                  <p>
-                    <strong className="text-[#8A8A84] font-semibold">{activeBattlecard.name}: </strong>
-                    {activeBattlecard.careerSupport}
-                  </p>
-                  <p>
-                    <strong className="text-[#1F7A4D] font-semibold">RevoU: </strong>
-                    RevoU NEXT (Career Coach 1-on-1, review CV & portofolio personal, simulasi interview HR & User) + Jaminan Refund 100% transparan (10 lamaran/minggu).
-                  </p>
-                </div>
-              </div>
-
-              {/* 5. Certification */}
-              <div className="p-4 rounded-xl border border-[#E8E8E4] bg-[#FAFAF8] space-y-2 md:col-span-2">
-                <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-[#8A8A84] font-bold">
-                  <ShieldCheck className="w-4 h-4 text-[#A15C00]" />
-                  <span>5. Certification</span>
-                </div>
-                <div className="text-xs text-[#141412] space-y-1 leading-relaxed">
-                  <p>
-                    <strong className="text-[#8A8A84] font-semibold">{activeBattlecard.name}: </strong>
-                    {activeBattlecard.certification}
-                  </p>
-                  <p>
-                    <strong className="text-[#1F7A4D] font-semibold">RevoU: </strong>
-                    RevoU Certificate of Completion bertaraf internasional + Sertifikasi Resmi Program Kemitraan Universitas Terbaik (ITB untuk Leaders, BINUS untuk AI & Analytics, UI untuk Strategic Finance).
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Strategic Differentiators */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-              <div className="p-4 sm:p-5 rounded-xl border border-[#FFD84D]/70 bg-[#FFFDF0] space-y-2">
-                <div className="flex items-center gap-2 font-display font-bold text-xs uppercase tracking-wider text-[#A15C00]">
-                  <Lightbulb className="w-4 h-4 text-[#A15C00]" />
-                  <span>6. What They Genuinely Do Better (Stated Honestly)</span>
-                </div>
-                <p className="text-xs sm:text-[13px] text-[#141412] leading-relaxed">
-                  &quot;{activeBattlecard.honestStrength}&quot;
-                </p>
-                <p className="text-[11px] text-[#8A8A84] italic">
-                  💡 Tips AC: Jangan pernah membantah poin ini. Akui kelebihan ini dengan hormat, lalu bawa kembali ke konteks kebutuhan spesifik leads.
+              <div className="space-y-1">
+                <h4 className="font-display font-bold text-lg sm:text-xl text-[#141412]">
+                  Pilih Program pada Dropdown di Atas untuk Membuka One-Pager Battlecard
+                </h4>
+                <p className="text-sm text-[#8A8A84] max-w-[56ch] mx-auto leading-relaxed">
+                  Silakan pilih <strong>Program kami (RevoU)</strong> atau <strong>Program {competitorDisplayNames[selectedCompetitorKey]}</strong> pada dropdown di atas untuk membuka One-Pager Battlecard yang spesifik dengan harga, durasi, kelebihan jujur, dan script WhatsApp siap kirim.
                 </p>
               </div>
-
-              <div className="p-4 sm:p-5 rounded-xl border border-[#D4EDDA] bg-[#EBF7EE]/60 space-y-2">
-                <div className="flex items-center gap-2 font-display font-bold text-xs uppercase tracking-wider text-[#1F7A4D]">
-                  <CheckCircle2 className="w-4 h-4 text-[#1F7A4D]" />
-                  <span>7. Where RevoU Wins (Keunggulan RevoU)</span>
+            </motion.div>
+          ) : (
+            <motion.div
+              key={activeProgramDetail.id}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+              className="space-y-6"
+            >
+              {/* One-Pager Battlecard Card Container */}
+              <div className="bg-white border border-[#E8E8E4] rounded-2xl p-5 sm:p-6 shadow-2xs space-y-6">
+                {/* Header info */}
+                <div className="border-b border-[#E8E8E4] pb-4 space-y-1">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="font-mono text-[10px] uppercase font-bold tracking-wider bg-[#FFF4E5] text-[#B76E00] border border-[#FFE2B8] px-2.5 py-0.5 rounded-full">
+                        ONE-PAGER BATTLECARD PER PROGRAM
+                      </span>
+                      <span className="font-mono text-[10px] bg-[#EBF7EE] text-[#1F7A4D] font-bold px-2 py-0.5 rounded-full border border-[#D4EDDA]">
+                        Verified Data Okt 2026
+                      </span>
+                    </div>
+                  </div>
+                  <h3 className="font-display font-bold text-xl text-[#141412] pt-1">
+                    RevoU {activeProgramBattlecard.revouMatchProgram} <span className="text-[#8A8A84] font-normal">vs</span> {activeProgramBattlecard.competitorName} {activeProgramBattlecard.programTitle}
+                  </h3>
+                  <p className="text-xs sm:text-sm text-[#8A8A84]">
+                    {activeProgramBattlecard.badge} · Padanan resmi kurikulum industri RevoU vs {activeProgramBattlecard.competitorName}
+                  </p>
                 </div>
-                <ul className="text-xs text-[#141412] space-y-1.5 list-disc pl-4 leading-relaxed">
-                  {activeBattlecard.revouWins.map((win, idx) => (
-                    <li key={idx}>
-                      <span>{renderBoldText(win)}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
 
-            {/* One Proof Point */}
-            <div className="p-4 rounded-xl border border-[#0E62FE]/30 bg-[#EDF5FF] space-y-1.5">
-              <div className="flex items-center gap-2 font-display font-bold text-xs uppercase tracking-wider text-[#0E62FE]">
-                <ShieldCheck className="w-4 h-4 text-[#0E62FE]" />
-                <span>8. One Proof Point (1 Bukti Konkret Wajib)</span>
-              </div>
-              <p className="text-xs sm:text-[13.5px] text-[#141412] font-medium leading-relaxed">
-                🎯 {activeBattlecard.proofPoint}
-              </p>
-            </div>
+                {/* 8 Core Battlecard Dimensions Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* 1. Price */}
+                  <div className="p-4 rounded-xl border border-[#E8E8E4] bg-[#FAFAF8] space-y-2">
+                    <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-[#8A8A84] font-bold">
+                      <DollarSign className="w-4 h-4 text-[#A15C00]" />
+                      <span>1. Price & Skema Cicilan (Instalments)</span>
+                    </div>
+                    <div className="text-xs text-[#141412] space-y-2 leading-relaxed whitespace-pre-line">
+                      <p>
+                        <strong className="text-[#8A8A84] font-semibold">{activeProgramBattlecard.competitorName}: </strong>
+                        {activeProgramBattlecard.competitorPrice}
+                      </p>
+                      <p>
+                        <strong className="text-[#1F7A4D] font-semibold">RevoU: </strong>
+                        {activeProgramBattlecard.revouPrice}
+                      </p>
+                    </div>
+                  </div>
 
-            {/* Catatan Verifikasi Data Kompetitor */}
-            <div className="flex items-start gap-2.5 p-3.5 rounded-xl border border-[#E8E8E4] bg-[#FAFAF8] text-xs text-[#60605B] leading-relaxed">
-              <Info className="w-4 h-4 text-[#A15C00] shrink-0 mt-0.5" />
-              <div>
-                <strong className="text-[#141412] font-semibold">Catatan Data Website Resmi Kompetitor (Okt 2026): </strong>
-                Completion rate tidak dipublikasikan oleh satu pun kompetitor di halaman website resmi mereka (kandidat sumber sekunder: laporan CIRR Hacktiv8 PDF dan Outcomes Report Dibimbing). Parameter spesifik program seperti biaya, jadwal, dan kurikulum disinkronkan otomatis sesuai pilihan.
+                  {/* 2. Duration & Schedule */}
+                  <div className="p-4 rounded-xl border border-[#E8E8E4] bg-[#FAFAF8] space-y-2">
+                    <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-[#8A8A84] font-bold">
+                      <Clock className="w-4 h-4 text-[#A15C00]" />
+                      <span>2. Duration and Schedule</span>
+                    </div>
+                    <div className="text-xs text-[#141412] space-y-2 leading-relaxed whitespace-pre-line">
+                      <p>
+                        <strong className="text-[#8A8A84] font-semibold">{activeProgramBattlecard.competitorName}: </strong>
+                        {activeProgramBattlecard.durationTextComp}
+                      </p>
+                      <p>
+                        <strong className="text-[#1F7A4D] font-semibold">RevoU: </strong>
+                        {activeProgramBattlecard.durationTextRevoU}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* 3. Format */}
+                  <div className="p-4 rounded-xl border border-[#E8E8E4] bg-[#FAFAF8] space-y-2">
+                    <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-[#8A8A84] font-bold">
+                      <Video className="w-4 h-4 text-[#A15C00]" />
+                      <span>3. Format Belajar (Live or Recorded / Offline)</span>
+                    </div>
+                    <div className="text-xs text-[#141412] space-y-2 leading-relaxed">
+                      <p>
+                        <strong className="text-[#8A8A84] font-semibold">{activeProgramBattlecard.competitorName}: </strong>
+                        {activeProgramBattlecard.competitorFormat}
+                      </p>
+                      <p>
+                        <strong className="text-[#1F7A4D] font-semibold">RevoU: </strong>
+                        {activeProgramBattlecard.revouFormat}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* 4. Career Support & Claims */}
+                  <div className="p-4 rounded-xl border border-[#E8E8E4] bg-[#FAFAF8] space-y-2">
+                    <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-[#8A8A84] font-bold">
+                      <Briefcase className="w-4 h-4 text-[#A15C00]" />
+                      <span>4. Career Support and Placement Claims</span>
+                    </div>
+                    <div className="text-xs text-[#141412] space-y-2 leading-relaxed">
+                      <p>
+                        <strong className="text-[#8A8A84] font-semibold">{activeProgramBattlecard.competitorName}: </strong>
+                        {activeProgramBattlecard.careerSupportComp}
+                      </p>
+                      <p>
+                        <strong className="text-[#1F7A4D] font-semibold">RevoU: </strong>
+                        {activeProgramBattlecard.careerSupportRevoU}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* 5. Certification */}
+                  <div className="p-4 rounded-xl border border-[#E8E8E4] bg-[#FAFAF8] space-y-2 md:col-span-2">
+                    <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-[#8A8A84] font-bold">
+                      <ShieldCheck className="w-4 h-4 text-[#A15C00]" />
+                      <span>5. Certification & Kredensial Resmi</span>
+                    </div>
+                    <div className="text-xs text-[#141412] space-y-1.5 leading-relaxed">
+                      <p>
+                        <strong className="text-[#8A8A84] font-semibold">{activeProgramBattlecard.competitorName}: </strong>
+                        {activeProgramBattlecard.competitorCert}
+                      </p>
+                      <p>
+                        <strong className="text-[#1F7A4D] font-semibold">RevoU: </strong>
+                        {activeProgramBattlecard.revouCert}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Strategic Differentiators */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                  <div className="p-4 sm:p-5 rounded-xl border border-[#FFD84D]/70 bg-[#FFFDF0] space-y-2">
+                    <div className="flex items-center gap-2 font-display font-bold text-xs uppercase tracking-wider text-[#A15C00]">
+                      <Lightbulb className="w-4 h-4 text-[#A15C00]" />
+                      <span>6. What They Genuinely Do Better (Stated Honestly)</span>
+                    </div>
+                    <p className="text-xs sm:text-[13px] text-[#141412] leading-relaxed">
+                      &quot;{activeProgramBattlecard.honestStrength}&quot;
+                    </p>
+                    <p className="text-[11px] text-[#8A8A84] italic">
+                      💡 Tips AC: Jangan pernah membantah poin ini. Akui kelebihan ini secara elegan, lalu arahkan kembali ke relevansi target karir prospek.
+                    </p>
+                  </div>
+
+                  <div className="p-4 sm:p-5 rounded-xl border border-[#D4EDDA] bg-[#EBF7EE]/60 space-y-2">
+                    <div className="flex items-center gap-2 font-display font-bold text-xs uppercase tracking-wider text-[#1F7A4D]">
+                      <CheckCircle2 className="w-4 h-4 text-[#1F7A4D]" />
+                      <span>7. Where RevoU Wins (Keunggulan Telak RevoU)</span>
+                    </div>
+                    <ul className="text-xs text-[#141412] space-y-1.5 list-disc pl-4 leading-relaxed">
+                      {activeProgramBattlecard.revouWins.map((win, idx) => (
+                        <li key={idx}>
+                          <span>{renderBoldText(win)}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+
+                {/* One Proof Point */}
+                <div className="p-4 rounded-xl border border-[#0E62FE]/30 bg-[#EDF5FF] space-y-1.5">
+                  <div className="flex items-center gap-2 font-display font-bold text-xs uppercase tracking-wider text-[#0E62FE]">
+                    <ShieldCheck className="w-4 h-4 text-[#0E62FE]" />
+                    <span>8. One Proof Point (1 Bukti Konkret Wajib)</span>
+                  </div>
+                  <p className="text-xs sm:text-[13.5px] text-[#141412] font-medium leading-relaxed">
+                    🎯 {activeProgramBattlecard.proofPoint}
+                  </p>
+                </div>
+
+                {/* Catatan Verifikasi Data Kompetitor */}
+                <div className="flex items-start gap-2.5 p-3.5 rounded-xl border border-[#E8E8E4] bg-[#FAFAF8] text-xs text-[#60605B] leading-relaxed">
+                  <Info className="w-4 h-4 text-[#A15C00] shrink-0 mt-0.5" />
+                  <div>
+                    <strong className="text-[#141412] font-semibold">Catatan Data Website Resmi Kompetitor (Okt 2026): </strong>
+                    Completion rate tidak dipublikasikan oleh kompetitor di website resmi. Data biaya, durasi, dan jadwal di atas disinkronkan langsung dari halaman resmi program {activeProgramBattlecard.competitorName} {activeProgramBattlecard.programTitle}.
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
+            </motion.div>
+          )}
         </div>
       )}
 

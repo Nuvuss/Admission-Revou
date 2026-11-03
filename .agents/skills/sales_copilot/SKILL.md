@@ -93,11 +93,15 @@ Ketika menganalisis leads dan menghasilkan script:
   - *Leader Non-Keuangan (Product, Tech, Marketing, HR):* Arahkan ke RevoU x ITB Data-Driven Decision Making for Leaders.
 
 ### 4. Panduan Pemetaan Jurusan Kuliah & Status Karir (Fresh Grad / Jobseeker vs Profesional)
-- **Aturan Mutlak Jobseeker / Fresh Graduate / Pengangguran:**
-  - Jika prospect teridentifikasi sebagai **pengangguran, fresh graduate, atau sedang mencari kerja**:
-    * **DILARANG KERAS** merekomendasikan program joint eksekutif / short-course 3 bulan (seperti BINUS Cybersecurity, UI Finance, atau ITB) kecuali jika lead secara spesifik memintanya. Program 3 bulan tidak memiliki fasilitas penempatan kerja penuh.
+- **🚨 PRIORITAS MUTLAK (INTENT EKSPLISIT PROGRAM DARI USER / LEADS):**
+  - Jika lead / sales secara spesifik menyebutkan program yang ingin diikuti (misal: *"pitch untuk yg mau ikut program Binus"*, *"mau ikut program Binus"*, *"minat ITB"*, *"tanya UI Finance"*):
+    * **AI WAJIB 100% MENYUSUN PITCH UNTUK PROGRAM YANG DIMINTA TERSEBUT** (misal untuk Binus: Applied AI, Analytics & Automation BINUS atau Cybersecurity BINUS).
+    * **DILARANG KERAS MEMBELOKKAN PROGRAM** ke FSSE atau program lain hanya karena status "pengangguran" atau lulusan "Teknik Informatika".
+    * Posisikan latar belakang IT sebagai keunggulan akselerasi (lebih cepat menguasai alur automasi & AI agents) dan posisikan program BINUS sebagai portofolio kerja nyata (working product) untuk cepat menembus industri kerja.
+- **Aturan Pemetaan Umum (HANYA BERLAKU JIKA LEAD BELUM MEMILIH PROGRAM):**
+  - Jika prospect teridentifikasi sebagai **pengangguran, fresh graduate, atau sedang mencari kerja** dan BELUM menentukan program:
     * **WAJIB** merekomendasikan program **Full Stack (FSDA, FSSE, atau FSDM selama 7 bulan)** dan **mengangkat RevoU NEXT (Bulan 5–7)**: bimbingan 1:1 Career Coach, perombakan CV berstandar HR tech, mock interview, dan **Virtual Internship 12 minggu** (dengan real client project) sebagai solusi utama atas masalah ketiadaan portofolio industri.
-- **Pemetaan Berdasarkan Jurusan Kuliah:**
+- **Pemetaan Berdasarkan Jurusan Kuliah (Hanya Jika Belum Ada Program Pilihan):**
   - **Sistem Informasi (SI), Teknik Informatika (TI), Ilmu Komputer, RPL:**
     * Jika lead belum spesifik memilih minat (misal hanya menyebut "ingin program yang relevan dengan SI"), **JANGAN menembak 1 program secara sepihak**. Jelaskan bahwa lulusan SI/TI umumnya berkembang di 2 jalur utama:
       1. **Jalur Data (FSDA):** Pengolahan database, SQL, dashboard visualisasi, dan analisa proses bisnis.

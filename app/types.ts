@@ -24,6 +24,10 @@ export interface ApiPoolStatus {
   totalKeys?: number;
   activeRoundRobinIndex?: number;
   quotaHealth?: "optimal" | "partial_warning" | "all_exhausted";
+  isRedisEnabled?: boolean;
+  storageEngine?: string;
+  isSupabaseVectorEnabled?: boolean;
+  knowledgeEngine?: string;
   summary?: {
     healthy?: number;
   };

@@ -361,6 +361,14 @@ Kisah nyata alumni yang berhasil beralih karir atau meningkatkan karir di bidang
 - **Clara Keneyzia** (Jan 24): Graphic Designer ➔ Finance & Data Analyst di Halmahera Persada Lygend
 - **Chendy Dea Andriany**: Surveyor ➔ Regional Financial Economic Analyst di Central Bank of Indonesia
 
+### Penerapan Data di Industri Olahraga & Entertainment (Sports & Matchday Analytics):
+- **Basith Pahlevi** (Data Analytics Jan 23 / Batch 23): **Sport Presentation Manager di Dewa United** (Purnawaktu / On-site Tangerang)
+  - *Peran & Tanggung Jawab:* Memimpin penyusunan konsep dan pelaksanaan *sport presentation* serta strategi *fan engagement* langsung pada *matchday* berstandar liga profesional & kompetisi internasional.
+  - *Keahlian RevoU:* Tableau, Data Analysis, Google Workspace, Microsoft Office (Nilai: 60,0 / 69,0).
+- **Bryant Andersson Tantra** (Data Analytics Mei 24): **Football Match Statistics Operator di BinaBola** (Pekerja Lepas / Remote Bandung)
+  - *Peran & Tanggung Jawab:* Pengumpulan & analisis statistik pertandingan sepak bola secara real-time untuk kebutuhan data analitik performa olahraga.
+  - *Keahlian RevoU:* Data Analytics, Python Data Analysis, SQL, Spreadsheets, Statistics, Tableau, Data Visualization, Data Presentation.
+
 ---
 
 ## 5. Alumni Profile: Full Stack Digital Marketing (FSDM) — Career Switch & Promosi
@@ -1031,6 +1039,22 @@ Saat menyusun pesan social proof alumni:
   - **Tipe Karir:** Fresh Graduate / Agroteknologi
   - **Ringkasan:** Ridho Agusliandi Putra, lulusan Agroteknologi, berhasil beralih menjadi Data Analyst di Redcomm Indonesia setelah mengikuti program Data Analytics di RevoU. Dengan bantuan RevoU, Ridho mengejar passion-nya di bidang data meski berlatar belakang non-teknologi.
   - **Link Kisah:** [https://www.revou.co/alumni-stories/ridho-agusliandi-putra](https://www.revou.co/alumni-stories/ridho-agusliandi-putra)
+
+- [**Basith Pahlevi**](https://www.revou.co/alumni) — *"[Perjalanan Karir Basith Pahlevi: Dari FSDA RevoU Menjadi Sport Presentation Manager di Dewa United](https://www.revou.co/alumni)"*
+  - **Program:** Data Analytics (Batch 23, Jan–Apr 2023)
+  - **Tipe Karir:** Sports Industry & Fan Engagement / Sport Presentation Manager
+  - **Ringkasan:** Menyelesaikan program Full Stack Data Analytics RevoU Batch 23 dengan nilai 60,0 dari 69,0. Basith kini berkarier purnawaktu sebagai Sport Presentation Manager di Dewa United (Kota Tangerang, Banten). Ia bertanggung jawab memimpin penyusunan konsep dan eksekusi *sport presentation* serta strategi *fan engagement* langsung pada *matchday* berstandar liga profesional dan kompetisi internasional, didukung keahlian Data Analysis dan Tableau.
+  - **Keahlian:** Data Analysis, Tableau, Google Workspace, Microsoft Office.
+  - **Pekerjaan & Lokasi:** Sport Presentation Manager di Dewa United (Purnawaktu / Full-time, On-site di Kota Tangerang, Banten; sejak Januari 2024).
+  - **Link Direktori:** [https://www.revou.co/alumni](https://www.revou.co/alumni)
+
+- [**Bryant Andersson Tantra**](https://www.revou.co/alumni) — *"[Perjalanan Karir Bryant Andersson Tantra: Memanfaatkan Skill Data Analytics untuk Football Match Statistics di BinaBola](https://www.revou.co/alumni)"*
+  - **Program:** Data Analytics (Mei–Sep 2024)
+  - **Tipe Karir:** Sports Analytics & Football Statistics / Remote Freelancer
+  - **Ringkasan:** Mengikuti Full Stack Data Analytics Program RevoU dan menguasai kurikulum lengkap (Statistics, Spreadsheets, SQL, Python Data Analysis, Data Visualization, hingga Tableau). Bryant kini aktif sebagai Football Match Statistics Operator di BinaBola secara lepas (freelance) jarak jauh (remote) dari Bandung, Jawa Barat, mencatat dan menganalisis metrik data statistik pertandingan sepak bola secara real-time.
+  - **Keahlian:** Data Analytics, Python, SQL, Statistics, Spreadsheets, Tableau, Data Visualization, Data Presentation.
+  - **Pekerjaan & Lokasi:** Football Match Statistics Operator di BinaBola (Pekerja Lepas / Freelance, Jarak Jauh / Remote dari Bandung, Jawa Barat; sejak Agustus 2026).
+  - **Link Direktori:** [https://www.revou.co/alumni](https://www.revou.co/alumni)
 
 ---
 

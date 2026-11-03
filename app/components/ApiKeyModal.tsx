@@ -51,14 +51,34 @@ export default function ApiKeyModal({
               <Key className="w-5 h-5 text-[#A15C00]" />
             </div>
             <div>
-              <h3 className="font-display font-bold text-base sm:text-lg text-[#141412] leading-tight flex items-center gap-2">
+              <h3 className="font-display font-bold text-base sm:text-lg text-[#141412] leading-tight flex items-center gap-2 flex-wrap">
                 <span>Pool 5 API Key · Rotasi Round Robin</span>
                 <span className="font-mono text-[11px] px-2 py-0.5 rounded-full bg-[#1F7A4D]/10 text-[#1F7A4D] font-bold">
                   Otomatis
                 </span>
+                {apiPoolStatus?.isRedisEnabled ? (
+                  <span className="font-mono text-[10.5px] px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold flex items-center gap-1 shadow-2xs">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    <span>Redis Cloud Active</span>
+                  </span>
+                ) : (
+                  <span className="font-mono text-[10.5px] px-2 py-0.5 rounded-full bg-[#F5F5F2] text-[#7A7A74] border border-[#E8E8E4] font-medium" title="Konfigurasi UPSTASH_REDIS_REST_URL di .env.local untuk mengaktifkan Redis">
+                    Memory Engine
+                  </span>
+                )}
+                {apiPoolStatus?.isSupabaseVectorEnabled ? (
+                  <span className="font-mono text-[10.5px] px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200 font-semibold flex items-center gap-1 shadow-2xs">
+                    <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
+                    <span>pgvector Semantic Active</span>
+                  </span>
+                ) : (
+                  <span className="font-mono text-[10.5px] px-2 py-0.5 rounded-full bg-[#F5F5F2] text-[#7A7A74] border border-[#E8E8E4] font-medium" title="Konfigurasi NEXT_PUBLIC_SUPABASE_URL di .env.local untuk mengaktifkan semantic retrieval">
+                    Filesystem RAG
+                  </span>
+                )}
               </h3>
               <p className="text-xs text-[#8A8A84] mt-0.5">
-                Merotasi 5 API Key secara bergiliran dan otomatis failover jika kuota habis (429 Rate Limit)
+                Merotasi 5 API Key secara terdistribusi dan otomatis failover jika kuota habis (429 Rate Limit)
               </p>
             </div>
           </div>

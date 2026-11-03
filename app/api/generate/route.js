@@ -8,6 +8,7 @@ import {
   maskApiKey,
   getApiKeysStatus,
 } from "../../../lib/apiKeyManager";
+import { findMatchingPitchTemplate } from "../../../lib/pitchTemplateMatcher";
 
 export const maxDuration = 60;
 export const dynamic = "force-dynamic";
@@ -50,12 +51,6 @@ function getCachedFileContent(filePath) {
 function detectRelevantKnowledgeFiles(situation = "", tab = "pitch") {
   const text = (situation || "").toLowerCase();
 
-  // Dokumen Inti (Core) yang selalu dimuat di tab pitch agar AI selalu punya konteks ekosistem RevoU:
-  const CORE_FILES = [
-    "joint_program_product_knowledge.md",
-    "knowledge_base_sales_script_benchmarks_and_examples.md",
-  ];
-
   // Khusus tab alumni: fokus ke kisah alumni
   if (tab === "alumni") {
     return [
@@ -73,103 +68,120 @@ function detectRelevantKnowledgeFiles(situation = "", tab = "pitch") {
     ];
   }
 
-  // Cek sinyal topik program spesifik dari situasi/pertanyaan leads:
-  const detectedFiles = new Set(CORE_FILES);
-  let matchedSpecificProgram = false;
+  // ── UNTUK TAB PITCH: HANYA MUAT FILE SPESIFIK SESUAI PROGRAM TARGET UNTUK MENCEGAH LONJAKAN TOKEN ──
+  // 1. Deteksi intent eksplisit program (Prioritas Mutlak)
+  const isExplicitCyber = /cyber|security|keamanan|soc\b|pentest|red\s*team|blue\s*team/i.test(text);
+  const isExplicitBinus = !isExplicitCyber && /\bbinus\b|applied\s*ai|ai\s*automation|otomasi\s*ai|ai\s*workflow/i.test(text);
+  const isExplicitITBDataScience = (/data\s*science|applied\s*ds|predictive|churn/i.test(text) && /itb/i.test(text)) || /itb.*data\s*science/i.test(text);
+  const isExplicitITBLeader = !isExplicitITBDataScience && (/\bitb\b|decision\s*making|ai\s*for\s*leaders|pemimpin\s*berbasis\s*data/i.test(text));
+  const isExplicitUI = /\bui\b|strategic\s*finance|keuangan\s*ui|keuangan\s*strategis/i.test(text);
+  const isExplicitHR = /strategic\s*hr|revou\s*hr|\bhr\s*with\s*ai\b|program\s*hr/i.test(text);
+  const isExplicitFSSE = /program\s*(?:fsse|software|coding|web dev|fullstack)|ikut\s*(?:fsse|software|coding|fullstack)|minat\s*(?:fsse|software|coding|fullstack)|\bfsse\b/i.test(text);
+  const isExplicitFSDA = /program\s*(?:fsda|data analytic|data science)|ikut\s*(?:fsda|data analytic)|minat\s*(?:fsda|data analytic)|\bfsda\b/i.test(text);
+  const isExplicitFSDM = /program\s*(?:fsdm|digital marketing|marketing|iklan)|ikut\s*(?:fsdm|digital marketing)|minat\s*(?:fsdm|digital marketing)|\bfsdm\b/i.test(text);
 
-  // 1. Digital Marketing (FSDM)
-  // Keywords program & topik + Jurusan kuliah linear: Komunikasi, DKV, PR, Jurnalistik, Sastra, Perhotelan
-  if (/marketing|fsdm|iklan|ads|meta ads|google ads|seo|sem|social media|sosmed|copywriting|content creator|komunikasi|ilmu komunikasi|\bdkv\b|desain komunikasi|public relation|humas|jurnalistik|sastra|perhotelan|pariwisata/i.test(text)) {
-    detectedFiles.add("fsdm_digital_marketing.md");
-    matchedSpecificProgram = true;
+  if (isExplicitBinus) {
+    return [
+      "knowledge_base_admission_applied_ai_analytics_automation_binus.md",
+      "knowledge_base_syllabus_binus_ai_analytics.md",
+    ];
   }
 
-  // 2. Data Analytics & Data Science (FSDA & Applied DS)
-  // Keywords program & topik + Jurusan kuliah linear: Sistem Informasi, Matematika, Statistika, Teknik Industri, Fisika
-  if (/data analytic|data analyst|fsda|data science|scientist|python|sql|tableau|looker|power bi|dashboard|sistem informasi|\bsi\b|matematika|statistika|teknik industri|fisika/i.test(text)) {
-    detectedFiles.add("fsda_data_analytics.md");
-    detectedFiles.add("knowledge_base_admission_applied_data_science_with_ai.md");
-    matchedSpecificProgram = true;
+  if (isExplicitCyber) {
+    return ["knowledge_base_binus_cybersecurity.md"];
   }
 
-  // 3. Software Engineering (FSSE / Fullstack / Coding)
-  // Keywords program & topik + Jurusan kuliah linear: Sistem Informasi, Teknik Informatika, Ilmu Komputer, TI, RPL
-  if (/software engineer|developer|coding|programmer|fullstack|frontend|backend|fsse|react|javascript|typescript|golang|web dev|sistem informasi|teknik informatika|ilmu komputer|computer science|\bti\b|\brpl\b|rekayasa perangkat lunak/i.test(text)) {
-    detectedFiles.add("knowledge_base_se_fullstack.md");
-    detectedFiles.add("knowledge_base_software_engineering.md");
-    matchedSpecificProgram = true;
+  if (isExplicitITBLeader) {
+    return [
+      "knowledge_base_itb_data_driven_ai_leaders.md",
+      "knowledge_base_syllabus_itb_decision_making.md",
+    ];
   }
 
-  // 4. Strategic HR with AI
-  // Keywords program & topik + Jurusan kuliah linear: Psikologi, Manajemen SDM
+  if (isExplicitITBDataScience) {
+    return ["knowledge_base_admission_applied_data_science_with_ai.md"];
+  }
+
+  if (isExplicitUI) {
+    return ["knowledge_base_admission_ai_strategic_finance_ui.md"];
+  }
+
+  if (isExplicitHR) {
+    return ["knowledge_base_revou_strategic_hr_with_ai.md"];
+  }
+
+  if (isExplicitFSSE) {
+    return [
+      "knowledge_base_se_fullstack.md",
+      "knowledge_base_software_engineering.md",
+    ];
+  }
+
+  if (isExplicitFSDA) {
+    return ["fsda_data_analytics.md"];
+  }
+
+  if (isExplicitFSDM) {
+    return ["fsdm_digital_marketing.md"];
+  }
+
+  // 2. Pemetaan Topik & Jurusan Kuliah (Jika leads belum spesifik memilih program)
+  // Digital Marketing
+  if (/marketing|fsdm|iklan|ads|meta ads|google ads|seo|sem|social media|sosmed|copywriting|komunikasi|\bdkv\b|desain komunikasi|pr\b|humas|jurnalistik|sastra|perhotelan/i.test(text)) {
+    return ["fsdm_digital_marketing.md"];
+  }
+
+  // Software Engineering
+  if (/software engineer|developer|coding|programmer|fullstack|frontend|backend|fsse|react|javascript|typescript|golang|web dev|teknik informatika|ilmu komputer|\brpl\b/i.test(text)) {
+    return [
+      "knowledge_base_se_fullstack.md",
+      "knowledge_base_software_engineering.md",
+    ];
+  }
+
+  // Data Analytics
+  if (/data analytic|data analyst|fsda|data science|python|sql|tableau|looker|power bi|dashboard|sistem informasi|\bsi\b|matematika|statistika|teknik industri|fisika/i.test(text)) {
+    return [
+      "fsda_data_analytics.md",
+      "knowledge_base_admission_applied_data_science_with_ai.md",
+    ];
+  }
+
+  // Strategic HR
   if (/hr|human resource|talent acquisition|recruiter|recruitment|compensation|benefit|remunerasi|payroll|psikologi|manajemen sdm/i.test(text)) {
-    detectedFiles.add("knowledge_base_revou_strategic_hr_with_ai.md");
-    matchedSpecificProgram = true;
+    return ["knowledge_base_revou_strategic_hr_with_ai.md"];
   }
 
-  // 5. Applied AI, Analytics & Automation (BINUS)
-  if (/binus|applied ai|automation|otomasi|ai automation|workflow automation|no-code ai|administrasi bisnis/i.test(text)) {
-    detectedFiles.add("knowledge_base_admission_applied_ai_analytics_automation_binus.md");
-    detectedFiles.add("knowledge_base_syllabus_binus_ai_analytics.md");
-    matchedSpecificProgram = true;
+  // Strategic Finance
+  if (/finance|keuangan|akuntansi|accounting|tax|pajak|fpa|controller|treasury|audit|perpajakan/i.test(text)) {
+    return ["knowledge_base_admission_ai_strategic_finance_ui.md"];
   }
 
-  // 6. Strategic Finance (UI)
-  // Keywords program & topik + Jurusan kuliah linear: Akuntansi, Keuangan, Perpajakan, Fiskal
-  if (/finance|keuangan|akuntansi|accounting|tax|pajak|fpa|controller|treasury|audit|perpajakan|fiskal/i.test(text)) {
-    detectedFiles.add("knowledge_base_admission_ai_strategic_finance_ui.md");
-    // Jika ada indikasi fresh grad / pengangguran / cari kerja / switch ke data:
-    if (/pengangguran|fresh grad|jobseeker|lulusan baru|cari kerja|switch|pindah/i.test(text)) {
-      detectedFiles.add("fsda_data_analytics.md");
-    }
-    matchedSpecificProgram = true;
+  // Leaders / Decision Maker
+  if (/leader|leadership|manager|kepemimpinan|decision maker|decision making|c-level|direktur|head of/i.test(text)) {
+    return [
+      "knowledge_base_itb_data_driven_ai_leaders.md",
+      "knowledge_base_syllabus_itb_decision_making.md",
+    ];
   }
 
-  // 7. Data-Driven Decision Making for Leaders (ITB)
-  if (/itb|leader|leadership|manager|kepemimpinan|decision maker|decision making|c-level|direktur|head of/i.test(text)) {
-    detectedFiles.add("knowledge_base_itb_data_driven_ai_leaders.md");
-    detectedFiles.add("knowledge_base_syllabus_itb_decision_making.md");
-    matchedSpecificProgram = true;
-  }
-
-  // 8. Cybersecurity (BINUS)
-  // Wajib ada kata kunci eksplisit keamanan / cyber / soc / pentest
-  if (/cyber|security|keamanan|soc|pentest|red team|blue team|hacker|hacking/i.test(text)) {
-    detectedFiles.add("knowledge_base_binus_cybersecurity.md");
-    matchedSpecificProgram = true;
-  }
-
-  // 9. Medis / Kesehatan / Paramedis (Career Switcher)
-  if (/bidan|kebidanan|perawat|keperawatan|farmasi|kesehatan|kedokteran|dokter/i.test(text)) {
-    detectedFiles.add("fsdm_digital_marketing.md");
-    detectedFiles.add("fsda_data_analytics.md");
-    matchedSpecificProgram = true;
-  }
-
-  // 10. Competitor Mention (jika lead membandingkan dengan kompetitor di tab pitch)
-  if (/hacktiv8|purwadhika|dibimbing|dqlab|kompetitor|bootcamp lain/i.test(text)) {
-    detectedFiles.add("knowledge_base_competitor_comparison.md");
-  }
-
-  // JIKA TIDAK ADA SINYAL SPESIFIK (Input umum / eksplorasi / rekomendasi):
-  // Fallback 100% aman: return null agar memuat seluruh dokumen program seperti sebelumnya
-  if (!matchedSpecificProgram) {
-    return null;
-  }
-
-  return Array.from(detectedFiles);
+  // Fallback eksplorasi umum: Muat ringkasan program terpilih tanpa file alumni raksasa (144KB) atau battlecard
+  return [
+    "joint_program_product_knowledge.md",
+    "fsda_data_analytics.md",
+    "fsdm_digital_marketing.md",
+    "knowledge_base_se_fullstack.md",
+  ];
 }
 
 // ─────────────────────────────────────────────
 // Load knowledge files from /knowledge/ based on tab & situation (Smart Cached)
 // ─────────────────────────────────────────────
-function loadKnowledgeBase(tab = "pitch", situation = "") {
+function loadKnowledgeBase(tab = "pitch", situation = "", explicitFiles = null) {
   checkCacheValidity();
 
-  const relevantFiles = detectRelevantKnowledgeFiles(situation, tab);
-  const cacheKey = relevantFiles
-    ? `${tab}:${relevantFiles.sort().join(",")}`
-    : `${tab}:all`;
+  const filesToLoad = explicitFiles || detectRelevantKnowledgeFiles(situation, tab);
+  const cacheKey = `${tab}:${filesToLoad.sort().join(",")}`;
 
   if (tabKnowledgeCache.has(cacheKey)) {
     return tabKnowledgeCache.get(cacheKey);
@@ -179,30 +191,12 @@ function loadKnowledgeBase(tab = "pitch", situation = "") {
   let knowledgeContent = "";
   try {
     if (fs.existsSync(knowledgeDir)) {
-      const allFiles = fs.readdirSync(knowledgeDir).sort();
-      for (const file of allFiles) {
-        if (!file.endsWith(".md") && !file.endsWith(".txt")) continue;
-
-        // Jika terdeteksi file relevan spesifik:
-        if (relevantFiles && !relevantFiles.includes(file)) {
-          continue;
-        }
-
-        // Jika fallback (mode lengkap tanpa sinyal spesifik):
-        if (!relevantFiles) {
-          if (tab === "pitch" && file.includes("alumni_success_stories")) continue;
-          if (tab === "alumni" && (
-            file.includes("sales_script_benchmarks") ||
-            file.includes("syllabus_binus") ||
-            file.includes("syllabus_itb") ||
-            file.includes("competitor_comparison")
-          )) continue;
-          if (tab === "comparison" && file.includes("alumni_success_stories")) continue;
-        }
-
+      for (const file of filesToLoad) {
         const filePath = path.join(knowledgeDir, file);
-        const content = getCachedFileContent(filePath);
-        knowledgeContent += `\n\n=== DOKUMEN: ${file} ===\n${content}\n`;
+        if (fs.existsSync(filePath)) {
+          const content = getCachedFileContent(filePath);
+          knowledgeContent += `\n\n=== DOKUMEN: ${file} ===\n${content}\n`;
+        }
       }
     }
   } catch (err) {
@@ -240,22 +234,24 @@ function loadSkillDefinition() {
 }
 
 // ─────────────────────────────────────────────
-// Get System Prompt with Smart Topic Filtering & In-Memory Cache
+// Get System Prompt with Smart In-Memory Cache, Template Matcher & Targeted Fallback
 // ─────────────────────────────────────────────
-function getCachedSystemPrompt(tab, situation = "") {
+async function getCachedSystemPrompt(tab, situation = "", customKeys = null) {
   checkCacheValidity();
 
+  // 1. Deteksi apakah ada template benchmark "Gold Standard" yang cocok (khusus tab pitch)
+  const templateMatch = tab === "pitch" ? findMatchingPitchTemplate(situation) : null;
+
+  // 2. Smart Keyword & Targeted Knowledge Base (In-Memory Fallback Hemat Token)
   const relevantFiles = detectRelevantKnowledgeFiles(situation, tab);
-  const cacheKey = relevantFiles
-    ? `${tab}:${relevantFiles.sort().join(",")}`
-    : `${tab}:all`;
+  const cacheKey = `${tab}:${templateMatch ? templateMatch.templateId : "dynamic"}:${relevantFiles.sort().join(",")}`;
 
   if (systemPromptCache.has(cacheKey)) {
     return systemPromptCache.get(cacheKey);
   }
   const skillInstructions = loadSkillDefinition();
-  const knowledgeBase = loadKnowledgeBase(tab, situation);
-  const prompt = buildSystemPrompt(skillInstructions, knowledgeBase, tab);
+  const knowledgeBase = loadKnowledgeBase(tab, situation, relevantFiles);
+  const prompt = buildSystemPrompt(skillInstructions, knowledgeBase, tab, templateMatch);
   systemPromptCache.set(cacheKey, prompt);
   return prompt;
 }
@@ -263,7 +259,7 @@ function getCachedSystemPrompt(tab, situation = "") {
 // ─────────────────────────────────────────────
 // Build system prompt
 // ─────────────────────────────────────────────
-function buildSystemPrompt(skillInstructions, knowledgeBase, tab) {
+function buildSystemPrompt(skillInstructions, knowledgeBase, tab, templateMatch = null) {
   return `
 Kamu adalah Sales Copilot untuk RevoU Admission Team.
 
@@ -274,6 +270,23 @@ Gaya komunikasi harus:
 - Singkat dan mudah dibaca (WhatsApp-friendly)
 - Empatik dan non-agresif (low-pressure CTA)
 - Grounded 100% pada data di knowledge base
+
+${templateMatch ? `
+## ACUAN BENCHMARK SCRIPT TERPILIH (GOLD STANDARD):
+Profil/situasi leads ini sangat cocok dengan template benchmark resmi RevoU berikut:
+**${templateMatch.title}** (Program Terkait: ${templateMatch.programName})
+AI WAJIB mengadaptasi struktur 3 paragraf, gaya empati, dan cara framing AI dari contoh berikut:
+"""
+${templateMatch.exemplar}
+"""
+` : `
+## PANDUAN DYNAMIC PITCH GENERATION (TARGETED FALLBACK DATA-DRIVEN):
+Tidak ditemukan template benchmark siap pakai untuk situasi ini. AI WAJIB menyusun variasi pitch secara dinamis dengan merujuk data program di KNOWLEDGE BASE di bawah, berpedoman pada struktur 3 paragraf baku RevoU:
+- Paragraf 1 — Empati Spesifik & Validasi Profil (~35-70 kata): Akui beban/kompleksitas/keberanian transisi leads secara tulus berdasarkan data profil mereka.
+- Paragraf 2 — Solusi Program, Modul Konkret & AI Force Multiplier (~70-180 kata): Sambungkan tujuan lead ke USP program, modul spesifik, tools modern, capstone project, dan framing AI sebagai force multiplier (bukan pengganti manusia).
+- Paragraf 3 — Ajakan Penutup Santai (~15-50 kata): Pilih satu opsi CTA santai (konsultasi gratis / bedah real case / ngobrol 1:1).
+Panjang pesan WhatsApp WAJIB minimal 120 kata (rentang 120-300 kata) per variasi.
+`}
 
 ### Prioritaskan Alur Komunikasi (WAJIB DIIKUTI):
 1. **Validasi Keluh Kesah (Empathy & Validation):** Akui dan hargai situasi, tantangan, atau keluh kesah yang dihadapi leads terlebih dahulu ("Makasih sdh sharing kaak...", "Paham banget, di industri sekarang memang...").
@@ -370,29 +383,27 @@ Ketika user/sales mencari alumni di INDUSTRI ATAU BIDANG TERTENTU (seperti: "Man
 3. **FIELD 'industry' HARUS VALID:**
    Isi field 'industry' dengan nama industri resmi yang diminta (misal: "Manufacture"), BUKAN industri lain.
 
-### ATURAN PEMETAAN JURUSAN KULIAH & STATUS KARIR LEADS (JOBSEEKER VS PROFESIONAL):
-1. **Aturan Mutlak Jobseeker / Fresh Graduate / Pengangguran (Wajib RevoU NEXT & Program Full Stack):**
-   - Jika prospect teridentifikasi sebagai **pengangguran, fresh graduate, atau sedang mencari kerja pertama**:
-     * **DILARANG KERAS** merekomendasikan program joint eksekutif / short-course 3 bulan (seperti BINUS Cybersecurity, UI Strategic Finance, atau ITB) kecuali lead secara eksplisit meminta spesialisasi topik tersebut. Program 3 bulan TIDAK memiliki fasilitas pendampingan karir intensif RevoU NEXT.
-     * **WAJIB** merekomendasikan program **Full Stack (FSDA, FSSE, atau FSDM selama 7 bulan)** dan **WAJIB mengangkat RevoU NEXT (Bulan 5–7)**: bimbingan 1:1 Career Coach, perombakan CV berstandar HR tech, mock interview, dan **Virtual Internship 12 minggu** (dengan real client project) sebagai jawaban atas kekhawatiran minimnya portofolio industri.
-2. **Aturan Pemetaan Berdasarkan Jurusan Kuliah:**
-   - **Sistem Informasi (SI), Teknik Informatika (TI), Ilmu Komputer, RPL:**
-     * Latar belakang ini adalah modal emas di dunia teknologi. Jika lead belum spesifik memilih minat (misal hanya menyebut "ingin program yang relevan dengan SI"), **JANGAN menembak 1 program secara sepihak**. Jelaskan bahwa lulusan SI/TI umumnya berkembang di 2 jalur utama:
-       - **Jalur Data (Full Stack Data Analytics - FSDA):** Mengolah database, SQL, dashboard visualisasi, dan analisa proses bisnis.
-       - **Jalur Rekayasa Aplikasi (Full Stack Software Engineering - FSSE):** Software engineering, fullstack web development, dan arsitektur sistem aplikasi.
-       Sertakan *discovery question* ramah di akhir draf untuk menanyakan kecenderungan minat mereka (apakah lebih suka analisa data bisnis atau coding/membangun sistem).
-   - **Matematika, Statistika, Teknik Industri, Fisika:**
-     * Sangat linear ke **Full Stack Data Analytics (FSDA)** (menghubungkan logika kuantitatif ke insight bisnis nyata).
-   - **Komunikasi, DKV, PR, Jurnalistik, Sastra, Perhotelan:**
-     * Sangat linear ke **Full Stack Digital Marketing (FSDM)** (kombinasi kreatif konten & analitik paid ads/SEO).
-   - **Akuntansi, Manajemen Keuangan, Perpajakan:**
-     * Jika Fresh Graduate / Pengangguran / Ingin Switch ke Data ➔ **Full Stack Data Analytics (FSDA)** (menonjolkan analisa finansial berbasis data/SQL).
-     * Jika Profesional Aktif minimal 2 tahun di bidang keuangan/pajak ➔ **RevoU x UI AI-Enabled Strategic Finance**.
-   - **Psikologi, Manajemen SDM, Hukum:**
-     * Jika Praktisi / HR Officer ➔ **RevoU Strategic HR with AI**.
-     * Jika Fresh Graduate / Jobseeker ➔ **FSDM** atau **FSDA**.
-   - **Kesehatan & Medis (Bidan, Farmasi, Keperawatan), Keguruan, Non-IT Lainnya:**
-     * Validasi bahwa RevoU ramah pemula dari nol. Tawarkan **FSDM** (bila tertarik ke media/kreatif/iklan) atau **FSDA** (bila tertarik ke ketelitian analisa data).
+### ATURAN PRIORITAS MUTLAK: INTENT EKSPLISIT PROGRAM MENGALAHKAN LATAR BELAKANG (EXPLICIT TARGET OVERRIDES BACKGROUND)
+1. **PRIORITAS UTAMA (INTENT EKSPLISIT PROGRAM DARI SALES / LEADS):**
+   - Jika Sales / Leads secara eksplisit menyebutkan program atau mitra institusi tertentu yang ingin diikuti (contoh: *"pitch untuk yg mau ikut program Binus"*, *"mau ikut program Binus"*, *"daftar Binus"*, *"minat ke ITB"*, *"tanya UI Strategic Finance"*, *"program FSDA"*, *"program FSSE"*, dll.):
+     * AI **WAJIB 100% MENYUSUN PITCH DAN MEREKOMENDASIKAN PROGRAM YANG DIMINTA TERSEBUT** (misal untuk "Binus": tawarkan **Applied AI, Analytics & Automation Program (RevoU x BINUS)**, atau **Applied Cybersecurity with AI** jika tertarik ke cyber/security).
+     * **DILARANG KERAS MEMBELOKKAN ATAU MENGGANTI PROGRAM** ke program lain (seperti menukar Binus menjadi FSSE atau FSDA) HANYA karena leads berstatus "pengangguran", "fresh graduate", atau lulusan "Teknik Informatika" / "Sistem Informasi"!
+     * Field "program_match" di output JSON **WAJIB** diisi dengan nama program yang diminta (misal: "Applied AI, Analytics & Automation Program (RevoU x BINUS x GreatNusa)" atau "BINUS Applied Cybersecurity with AI").
+     * **Cara Memanfaatkan Latar Belakang (Framing Sebagai Force Multiplier & Solusi Karir):**
+       - **Latar Belakang Kuliah (misal Teknik Informatika):** Posisikan sebagai aset pembeda yang bernilai tinggi (*"Dengan latar belakang IT, kakak punya fondasi logika kuat sehingga lebih cepat menguasai arsitektur automasi AI, n8n workflow, dan agentic AI di program BINUS ini dibanding peserta umum"*).
+       - **Status Karir (misal Pengangguran / Fresh Graduate):** Posisikan program sebagai pembangun portofolio nyata dan kredensial resmi (*"Program 12 minggu BINUS x RevoU ini membekali kakak dengan working product / live AI prototype nyata dan Professional Certificate resmi dari BINUS University & RevoU. Ini jadi portfolio killer yang sangat dicari tech companies untuk memvalidasi skill hands-on kakak dan mempercepat mendapatkan pekerjaan"*).
+
+2. **KAPAN ATURAN PEMETAAN STATUS (JOBSEEKER VS PROFESIONAL) BERLAKU:**
+   - Aturan pemetaan status karir di bawah ini **HANYA BERLAKU JIKA DAN HANYA JIKA leads BELUM menyebutkan pilihan program spesifik** (misal lead bertanya umum: *"saya fresh grad / pengangguran, cocoknya ikut program apa ya?"*):
+     * **Jobseeker / Fresh Graduate / Pengangguran TANPA Pilihan Program:**
+       - Jika belum ada program spesifik yang dituju, baru rekomendasikan program Full Stack (FSDA, FSSE, atau FSDM selama 7 bulan) dan angkat RevoU NEXT (Bulan 5–7): bimbingan 1:1 Career Coach, perombakan CV berstandar HR tech, mock interview, dan Virtual Internship 12 minggu.
+     * **Pemetaan Berdasarkan Jurusan Kuliah TANPA Pilihan Program:**
+       - **Sistem Informasi (SI), Teknik Informatika (TI), Ilmu Komputer, RPL:** Jika belum memilih, jelaskan 2 jalur utama (Jalur Data FSDA vs Jalur Rekayasa Aplikasi FSSE) dan sertakan discovery question ramah di akhir draf.
+       - **Matematika, Statistika, Teknik Industri, Fisika:** Sangat linear ke Full Stack Data Analytics (FSDA).
+       - **Komunikasi, DKV, PR, Jurnalistik, Sastra, Perhotelan:** Sangat linear ke Full Stack Digital Marketing (FSDM).
+       - **Akuntansi, Manajemen Keuangan, Perpajakan:** Jika fresh grad/pengangguran ke FSDA; jika profesional aktif ke RevoU x UI AI-Enabled Strategic Finance.
+       - **Psikologi, Manajemen SDM, Hukum:** Jika praktisi HR ke RevoU Strategic HR with AI; jika fresh grad/jobseeker ke FSDM atau FSDA.
+       - **Kesehatan & Medis, Keguruan, Non-IT Lainnya:** Tawarkan FSDM atau FSDA ramah pemula dari nol.
 
 ## ATURAN MODE & FORMAT OUTPUT KHUSUS BERDASARKAN MENU:
 Menu aktif saat ini: **${tab}**
@@ -798,7 +809,104 @@ function sanitizeAlumniMatches(matches) {
 }
 
 // ─────────────────────────────────────────────
-// POST handler
+// Result Builders
+// ─────────────────────────────────────────────
+// ─────────────────────────────────────────────
+// Result Builders
+// ─────────────────────────────────────────────
+async function buildFinalResult(
+  parsed,
+  modelId,
+  tab,
+  currentCandidate,
+  availableKeys,
+  quotaNotifications,
+  customKeys
+) {
+  const poolStatus = await getApiKeysStatus(customKeys);
+  return {
+    success: true,
+    modelUsed: modelId,
+    apiKeyInfo: {
+      activeKeyIndex: currentCandidate.keyIndex,
+      totalKeys: availableKeys.length,
+      wasRotatedDueToQuota: !currentCandidate.isInitialTurn,
+      quotaNotifications: quotaNotifications,
+      poolStatus,
+    },
+    menu: parsed.menu || tab,
+    persona: parsed.persona || "Prospective Student",
+    whats_happening: parsed.whats_happening || "",
+    recommended_approach: parsed.recommended_approach || "",
+    program_match: parsed.program_match || "",
+    ai_relevancy_statement: parsed.ai_relevancy_statement || "",
+    program_overview_short: parsed.program_overview_short || "",
+    target_audience: parsed.target_audience || "",
+    prerequisites: parsed.prerequisites || "",
+    eligibility_check: parsed.eligibility_check || "",
+    revision_summary: parsed.revision_summary || "",
+    competitor_analysis: parsed.competitor_analysis || null,
+    featured_alumni_summary: sanitizeFeaturedAlumni(parsed.featured_alumni_summary),
+    alumni_matches: sanitizeAlumniMatches(parsed.alumni_matches),
+    scripts: tab === "alumni" ? [] : (Array.isArray(parsed.scripts) ? parsed.scripts : []),
+    knowledge_details: parsed.knowledge_details || null,
+  };
+}
+
+async function buildQuotaExhaustedResult(model, tab, availableKeys, quotaNotifications, customKeys) {
+  const poolStatus = await getApiKeysStatus(customKeys);
+  return {
+    success: false,
+    modelUsed: model || "gemini-3.5-flash",
+    menu: tab,
+    quotaExhausted: true,
+    apiKeyInfo: {
+      totalKeys: availableKeys.length,
+      quotaNotifications: quotaNotifications,
+      poolStatus,
+    },
+    persona: "Semua Kuota API Habis",
+    whats_happening: `Seluruh (${availableKeys.length}) API Key saat ini telah mencapai limit kuota (HTTP 429) atau sedang cooldown.`,
+    recommended_approach: "Silakan tunggu 1-2 menit agar batas kuota per menit mereda, atau tambahkan API Key baru pada panel Manajemen API Key.",
+    program_match: "",
+    scripts: [
+      {
+        badge: "⚠️ Pemberitahuan Kuota API",
+        text: `Semua API Key dalam pool Round Robin telah mencapai batas laju (Rate Limit). Riwayat rotasi:\n${quotaNotifications.map((n) => `• ${n}`).join("\n")}`,
+      },
+    ],
+    knowledge_details: null,
+  };
+}
+
+function buildGeneralFallbackResult(model, tab, availableKeys, lastError) {
+  const hasKeys = availableKeys && availableKeys.length > 0;
+  return {
+    success: false,
+    modelUsed: model || "gemini-3.5-flash",
+    menu: tab,
+    persona: hasKeys ? "Gangguan Server Google Gemini" : "Konfigurasi Diperlukan",
+    whats_happening: hasKeys
+      ? `API Key (${availableKeys.length} key) terkonfigurasi dengan baik, namun Google AI Studio saat ini sedang mengalami lonjakan beban atau timeout: ${lastError || "503 Service Unavailable"}.`
+      : "Koneksi ke Gemini API tidak tersedia atau API Key belum dikonfigurasi.",
+    recommended_approach: hasKeys
+      ? "Coba klik tombol 'Generate Jawaban' lagi (sistem akan merotasi ke key berikutnya) atau pilih model Gemini 3.5 Flash."
+      : "Pastikan minimal 1 hingga 5 GEMINI_API_KEY valid di .env.local atau diisi di panel Manajemen API Key.",
+    program_match: "",
+    scripts: [
+      {
+        badge: hasKeys ? "⚠️ Gangguan Sementara Google" : "⚠️ Konfigurasi Diperlukan",
+        text: hasKeys
+          ? `Google AI Studio sedang mengalami lonjakan antrean server (${lastError || "503 Demand Spike"}). Sistem Round Robin siap merotasi key. Silakan klik Generate ulang.`
+          : "Pastikan minimal 1 sampai 5 GEMINI_API_KEY valid di .env.local atau di panel Manajemen API Key untuk mengaktifkan AI.",
+      },
+    ],
+    knowledge_details: null,
+  };
+}
+
+// ─────────────────────────────────────────────
+// POST handler (Supports SSE Streaming & Synchronous JSON)
 // ─────────────────────────────────────────────
 export async function POST(req) {
   try {
@@ -809,7 +917,10 @@ export async function POST(req) {
       tab = "pitch",
       excluded_alumni = [],
       customKeys = null,
+      stream = false,
     } = body;
+
+    const wantsStream = stream === true || req.headers.get("accept")?.includes("text/event-stream");
 
     if (!situation || !situation.trim()) {
       return NextResponse.json(
@@ -818,7 +929,7 @@ export async function POST(req) {
       );
     }
 
-    const systemPrompt = getCachedSystemPrompt(tab, situation);
+    const systemPrompt = await getCachedSystemPrompt(tab, situation, customKeys);
 
     let exclusionDirective = "";
     if (Array.isArray(excluded_alumni) && excluded_alumni.length > 0) {
@@ -845,14 +956,12 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
 
     // ── Round Robin API Key Management ─────────────
     const availableKeys = resolveApiKeys(customKeys);
+    const keyQueue = [];
 
     if (availableKeys.length > 0) {
-      // Dapatkan key urutan Round Robin saat ini
-      const primaryKeyInfo = getNextRoundRobinKey(customKeys);
+      const primaryKeyInfo = await getNextRoundRobinKey(customKeys);
       const startIndex = (primaryKeyInfo.index - 1 + availableKeys.length) % availableKeys.length;
 
-      // Susun urutan percobaan key (mulai dari giliran Round Robin, melingkar ke key lainnya jika kuota habis)
-      const keyQueue = [];
       for (let i = 0; i < availableKeys.length; i++) {
         const idx = (startIndex + i) % availableKeys.length;
         keyQueue.push({
@@ -862,16 +971,260 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
           isInitialTurn: i === 0,
         });
       }
+    }
 
+    // ── PATH A: SSE RESPONSE STREAMING ─────────────
+    if (wantsStream) {
+      const encoder = new TextEncoder();
+
+      const readableStream = new ReadableStream({
+        async start(controller) {
+          function sendSse(event, data) {
+            try {
+              const payload = typeof data === "string" ? data : JSON.stringify(data);
+              controller.enqueue(encoder.encode(`event: ${event}\ndata: ${payload}\n\n`));
+            } catch (err) {
+              console.error("SSE enqueue error:", err);
+            }
+          }
+
+          try {
+            if (availableKeys.length === 0) {
+              const fallback = buildGeneralFallbackResult(model, tab, [], "Koneksi ke Gemini API tidak tersedia.");
+              sendSse("result", fallback);
+              sendSse("done", { completed: true });
+              controller.close();
+              return;
+            }
+
+            sendSse("status", {
+              message: "Menyiapkan analisis situasi & mengaitkan knowledge base...",
+              totalKeys: availableKeys.length,
+            });
+
+            const quotaNotifications = [];
+            let lastError = null;
+            let executedSuccessfully = false;
+
+            for (let keyAttempt = 0; keyAttempt < keyQueue.length; keyAttempt++) {
+              if (executedSuccessfully) break;
+              const currentCandidate = keyQueue[keyAttempt];
+              const nextCandidate = keyQueue[keyAttempt + 1] || null;
+
+              sendSse("status", {
+                message: `Menghubungkan ke Gemini dengan API Key #${currentCandidate.keyIndex}...`,
+                keyIndex: currentCandidate.keyIndex,
+                attempt: keyAttempt + 1,
+                totalKeys: availableKeys.length,
+              });
+
+              sendSse("key_info", {
+                activeKeyIndex: currentCandidate.keyIndex,
+                totalKeys: availableKeys.length,
+                modelUsed: model,
+                poolStatus: await getApiKeysStatus(customKeys),
+              });
+
+              const candidateModels = [
+                model || "gemini-3.5-flash",
+                "gemini-3.5-flash",
+                "gemini-3.5-flash-lite",
+                "gemini-3.6-flash",
+              ].filter((m, idx, arr) => m && arr.indexOf(m) === idx);
+
+              let keyEncounteredQuota = false;
+              let keyEncounteredInvalid = false;
+
+              for (const modelId of candidateModels) {
+                if (keyEncounteredQuota || keyEncounteredInvalid || executedSuccessfully) break;
+
+                try {
+                  const streamUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelId}:streamGenerateContent?alt=sse&key=${currentCandidate.key}`;
+
+                  const response = await fetch(streamUrl, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    signal: AbortSignal.timeout(45000),
+                    body: JSON.stringify({
+                      contents: [
+                        {
+                          role: "user",
+                          parts: [{ text: fullPrompt }],
+                        },
+                      ],
+                      generationConfig: {
+                        responseMimeType: "application/json",
+                        temperature: 0.25,
+                        maxOutputTokens: 4096,
+                      },
+                    }),
+                  });
+
+                  if (response.ok) {
+                    const reader = response.body.getReader();
+                    const decoder = new TextDecoder();
+                    let accumulatedText = "";
+                    let streamBuffer = "";
+
+                    sendSse("status", {
+                      message: `AI sedang merumuskan draf respons (${modelId})...`,
+                      model: modelId,
+                    });
+
+                    while (true) {
+                      const { done, value } = await reader.read();
+                      if (done) break;
+                      streamBuffer += decoder.decode(value, { stream: true });
+                      const lines = streamBuffer.split("\n");
+                      streamBuffer = lines.pop() || "";
+
+                      for (const line of lines) {
+                        const trimmed = line.trim();
+                        if (trimmed.startsWith("data: ")) {
+                          try {
+                            const parsedChunk = JSON.parse(trimmed.slice(6));
+                            const delta = parsedChunk?.candidates?.[0]?.content?.parts?.[0]?.text;
+                            if (delta) {
+                              accumulatedText += delta;
+                              sendSse("token", { delta });
+                            }
+                          } catch (err) {
+                            // partial / heartbeat line
+                          }
+                        }
+                      }
+                    }
+
+                    if (streamBuffer.trim().startsWith("data: ")) {
+                      try {
+                        const parsedChunk = JSON.parse(streamBuffer.trim().slice(6));
+                        const delta = parsedChunk?.candidates?.[0]?.content?.parts?.[0]?.text;
+                        if (delta) {
+                          accumulatedText += delta;
+                          sendSse("token", { delta });
+                        }
+                      } catch (err) { }
+                    }
+
+                    if (accumulatedText.trim()) {
+                      try {
+                        const cleaned = accumulatedText
+                          .replace(/^```json\s*/i, "")
+                          .replace(/^```\s*/i, "")
+                          .replace(/\s*```$/i, "")
+                          .trim();
+                        const parsed = JSON.parse(cleaned);
+
+                        await recordKeyExecution(currentCandidate.key, currentCandidate.keyIndex, "success", 200);
+
+                        const finalResult = await buildFinalResult(
+                          parsed,
+                          modelId,
+                          tab,
+                          currentCandidate,
+                          availableKeys,
+                          quotaNotifications,
+                          customKeys
+                        );
+
+                        sendSse("result", finalResult);
+                        sendSse("done", { success: true });
+                        executedSuccessfully = true;
+                        break;
+                      } catch (parseErr) {
+                        console.error("JSON parse error in SSE stream for model", modelId, parseErr.message);
+                      }
+                    }
+                  } else if (response.status === 429) {
+                    const errText = await response.text();
+                    console.warn(`[RoundRobin] Key #${currentCandidate.keyIndex} hit 429 quota:`, errText.slice(0, 120));
+                    await recordKeyExecution(currentCandidate.key, currentCandidate.keyIndex, "rate_limited", 429, "Rate limit terlampaui");
+
+                    const rotationMsg = nextCandidate
+                      ? `API ${currentCandidate.keyIndex} mencapai limit kuota (429 Rate Limit). Otomatis dialihkan ke API ${nextCandidate.keyIndex} via Round Robin.`
+                      : `API ${currentCandidate.keyIndex} mencapai limit kuota (429 Rate Limit).`;
+                    quotaNotifications.push(rotationMsg);
+
+                    sendSse("status", {
+                      message: rotationMsg,
+                      rateLimited: true,
+                      activeKeyIndex: currentCandidate.keyIndex,
+                    });
+
+                    keyEncounteredQuota = true;
+                    break;
+                  } else if (response.status === 400 || response.status === 403) {
+                    const errText = await response.text();
+                    console.warn(`[RoundRobin] Key #${currentCandidate.keyIndex} invalid (${response.status}):`, errText.slice(0, 120));
+                    await recordKeyExecution(currentCandidate.key, currentCandidate.keyIndex, "invalid", response.status, "API tidak valid");
+
+                    const rotationMsg = nextCandidate
+                      ? `API ${currentCandidate.keyIndex} tidak valid (${response.status}). Otomatis dialihkan ke API ${nextCandidate.keyIndex} via Round Robin.`
+                      : `API ${currentCandidate.keyIndex} tidak valid (${response.status}).`;
+                    quotaNotifications.push(rotationMsg);
+
+                    sendSse("status", { message: rotationMsg });
+                    keyEncounteredInvalid = true;
+                    break;
+                  } else if (response.status === 503) {
+                    const errText = await response.text();
+                    console.warn(`[Gemini 503 Spike] Model ${modelId} high-demand:`, errText.slice(0, 120));
+                    lastError = `Model ${modelId} mengalami lonjakan trafik (503 Service Unavailable).`;
+                    sendSse("status", { message: `Model ${modelId} sibuk (503), mencoba model alternatif...` });
+                    continue;
+                  } else {
+                    const errText = await response.text();
+                    console.warn(`Gemini API warning on ${modelId} (${response.status}):`, errText.slice(0, 150));
+                    lastError = `Model ${modelId} (${response.status}): ${errText.slice(0, 100)}`;
+                  }
+                } catch (apiErr) {
+                  console.warn(`Gemini API stream exception for ${modelId}:`, apiErr.message);
+                  lastError = apiErr.message;
+                  continue;
+                }
+              }
+            }
+
+            if (!executedSuccessfully) {
+              if (quotaNotifications.length > 0) {
+                const fallback = await buildQuotaExhaustedResult(model, tab, availableKeys, quotaNotifications, customKeys);
+                sendSse("result", fallback);
+              } else {
+                const fallback = buildGeneralFallbackResult(model, tab, availableKeys, lastError);
+                sendSse("result", fallback);
+              }
+              sendSse("done", { success: false });
+            }
+          } catch (streamErr) {
+            console.error("Stream execution error:", streamErr);
+            sendSse("error", { message: streamErr.message || "Internal streaming error" });
+          } finally {
+            try {
+              controller.close();
+            } catch (e) { }
+          }
+        },
+      });
+
+      return new Response(readableStream, {
+        headers: {
+          "Content-Type": "text/event-stream; charset=utf-8",
+          "Cache-Control": "no-cache, no-transform",
+          "Connection": "keep-alive",
+          "X-Accel-Buffering": "no",
+        },
+      });
+    }
+
+    // ── PATH B: SYNCHRONOUS JSON RESPONSE (FALLBACK / NON-STREAM) ──
+    if (availableKeys.length > 0) {
       const quotaNotifications = [];
       let lastError = null;
 
-      // Coba setiap key dalam antrian Round Robin jika terjadi rate-limit (429)
       for (let keyAttempt = 0; keyAttempt < keyQueue.length; keyAttempt++) {
         const currentCandidate = keyQueue[keyAttempt];
         const nextCandidate = keyQueue[keyAttempt + 1] || null;
 
-        // Prioritize fast, stable, and available models
         const candidateModels = [
           model || "gemini-3.5-flash",
           "gemini-3.5-flash",
@@ -891,7 +1244,7 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
             const response = await fetch(url, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              signal: AbortSignal.timeout(35000), // 35s timeout ensures complete response without stalling
+              signal: AbortSignal.timeout(35000),
               body: JSON.stringify({
                 contents: [
                   {
@@ -902,7 +1255,7 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
                 generationConfig: {
                   responseMimeType: "application/json",
                   temperature: 0.25,
-                  maxOutputTokens: 4096, // Optimal size: fast generation without exceeding Vercel timeout
+                  maxOutputTokens: 4096,
                 },
               }),
             });
@@ -920,46 +1273,28 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
                     .trim();
                   const parsed = JSON.parse(cleanedText);
 
-                  // Catat keberhasilan penggunaan key ini
-                  recordKeyExecution(currentCandidate.key, currentCandidate.keyIndex, "success", 200);
+                  await recordKeyExecution(currentCandidate.key, currentCandidate.keyIndex, "success", 200);
 
-                  return NextResponse.json({
-                    success: true,
-                    modelUsed: modelId,
-                    apiKeyInfo: {
-                      activeKeyIndex: currentCandidate.keyIndex,
-                      totalKeys: availableKeys.length,
-                      wasRotatedDueToQuota: !currentCandidate.isInitialTurn,
-                      quotaNotifications: quotaNotifications,
-                      poolStatus: getApiKeysStatus(customKeys),
-                    },
-                    menu: parsed.menu || tab,
-                    persona: parsed.persona || "Prospective Student",
-                    whats_happening: parsed.whats_happening || "",
-                    recommended_approach: parsed.recommended_approach || "",
-                    program_match: parsed.program_match || "",
-                    ai_relevancy_statement: parsed.ai_relevancy_statement || "",
-                    program_overview_short: parsed.program_overview_short || "",
-                    target_audience: parsed.target_audience || "",
-                    prerequisites: parsed.prerequisites || "",
-                    eligibility_check: parsed.eligibility_check || "",
-                    revision_summary: parsed.revision_summary || "",
-                    competitor_analysis: parsed.competitor_analysis || null,
-                    featured_alumni_summary: sanitizeFeaturedAlumni(parsed.featured_alumni_summary),
-                    alumni_matches: sanitizeAlumniMatches(parsed.alumni_matches),
-                    scripts: tab === "alumni" ? [] : (Array.isArray(parsed.scripts) ? parsed.scripts : []),
-                    knowledge_details: parsed.knowledge_details || null,
-                  });
+                  return NextResponse.json(
+                    await buildFinalResult(
+                      parsed,
+                      modelId,
+                      tab,
+                      currentCandidate,
+                      availableKeys,
+                      quotaNotifications,
+                      customKeys
+                    )
+                  );
                 } catch (parseErr) {
                   console.error("JSON parse error for model", modelId, parseErr.message, rawText?.slice(0, 300));
                 }
               }
             } else if (response.status === 429) {
-              // Rate limit / Quota exceeded terdeteksi pada key ini!
               const errText = await response.text();
               console.warn(`[RoundRobin] Key #${currentCandidate.keyIndex} hit 429 quota:`, errText.slice(0, 120));
 
-              recordKeyExecution(currentCandidate.key, currentCandidate.keyIndex, "rate_limited", 429, "Rate limit terlampaui");
+              await recordKeyExecution(currentCandidate.key, currentCandidate.keyIndex, "rate_limited", 429, "Rate limit terlampaui");
 
               const rotationMsg = nextCandidate
                 ? `API ${currentCandidate.keyIndex} mencapai limit kuota (429 Rate Limit). Otomatis dialihkan ke API ${nextCandidate.keyIndex} via Round Robin.`
@@ -967,13 +1302,12 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
               quotaNotifications.push(rotationMsg);
 
               keyEncounteredQuota = true;
-              break; // Segera keluar dari loop model untuk pindah ke key berikutnya!
+              break;
             } else if (response.status === 400 || response.status === 403) {
-              // Key tidak valid atau dinonaktifkan
               const errText = await response.text();
               console.warn(`[RoundRobin] Key #${currentCandidate.keyIndex} invalid (${response.status}):`, errText.slice(0, 120));
 
-              recordKeyExecution(currentCandidate.key, currentCandidate.keyIndex, "invalid", response.status, "API tidak valid");
+              await recordKeyExecution(currentCandidate.key, currentCandidate.keyIndex, "invalid", response.status, "API tidak valid");
 
               const rotationMsg = nextCandidate
                 ? `API ${currentCandidate.keyIndex} tidak valid (${response.status}). Otomatis dialihkan ke API ${nextCandidate.keyIndex} via Round Robin.`
@@ -981,12 +1315,12 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
               quotaNotifications.push(rotationMsg);
 
               keyEncounteredInvalid = true;
-              break; // Keluar untuk mencoba key berikutnya
+              break;
             } else if (response.status === 503) {
               const errText = await response.text();
               console.warn(`[Gemini 503 Spike] Model ${modelId} sedang high-demand:`, errText.slice(0, 120));
               lastError = `Model ${modelId} mengalami lonjakan trafik (503 Service Unavailable).`;
-              continue; // Otomatis coba candidate model berikutnya
+              continue;
             } else {
               const errText = await response.text();
               console.warn(`Gemini API warning on ${modelId} (${response.status}):`, errText.slice(0, 150));
@@ -1000,57 +1334,17 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
         }
       }
 
-      // Jika semua key telah dicoba dan semuanya gagal (misal seluruh 5 key kuotanya habis)
       if (quotaNotifications.length > 0) {
-        return NextResponse.json({
-          success: false,
-          modelUsed: model || "gemini-3.5-flash",
-          menu: tab,
-          quotaExhausted: true,
-          apiKeyInfo: {
-            totalKeys: availableKeys.length,
-            quotaNotifications: quotaNotifications,
-            poolStatus: getApiKeysStatus(customKeys),
-          },
-          persona: "Semua Kuota API Habis",
-          whats_happening: `Seluruh (${availableKeys.length}) API Key saat ini telah mencapai limit kuota (HTTP 429) atau sedang cooldown.`,
-          recommended_approach: "Silakan tunggu 1-2 menit agar batas kuota per menit mereda, atau tambahkan API Key baru pada panel Manajemen API Key.",
-          program_match: "",
-          scripts: [
-            {
-              badge: "⚠️ Pemberitahuan Kuota API",
-              text: `Semua API Key dalam pool Round Robin telah mencapai batas laju (Rate Limit). Riwayat rotasi:\n${quotaNotifications.map((n) => `• ${n}`).join("\n")}`,
-            },
-          ],
-          knowledge_details: null,
-        });
+        return NextResponse.json(
+          await buildQuotaExhaustedResult(model, tab, availableKeys, quotaNotifications, customKeys)
+        );
       }
     }
 
     // ── Fallback ──────────────
-    const hasKeys = availableKeys && availableKeys.length > 0;
-    return NextResponse.json({
-      success: false,
-      modelUsed: model || "gemini-3.5-flash",
-      menu: tab,
-      persona: hasKeys ? "Gangguan Server Google Gemini" : "Konfigurasi Diperlukan",
-      whats_happening: hasKeys
-        ? `API Key (${availableKeys.length} key) terkonfigurasi dengan baik, namun Google AI Studio saat ini sedang mengalami lonjakan beban atau timeout: ${lastError || "503 Service Unavailable"}.`
-        : "Koneksi ke Gemini API tidak tersedia atau API Key belum dikonfigurasi.",
-      recommended_approach: hasKeys
-        ? "Coba klik tombol 'Generate Jawaban' lagi (sistem akan merotasi ke key berikutnya) atau pilih model Gemini 3.5 Flash."
-        : "Pastikan minimal 1 hingga 5 GEMINI_API_KEY valid di .env.local atau diisi di panel Manajemen API Key.",
-      program_match: "",
-      scripts: [
-        {
-          badge: hasKeys ? "⚠️ Gangguan Sementara Google" : "⚠️ Konfigurasi Diperlukan",
-          text: hasKeys
-            ? `Google AI Studio sedang mengalami lonjakan antrean server (${lastError || "503 Demand Spike"}). Sistem Round Robin siap merotasi key. Silakan klik Generate ulang.`
-            : "Pastikan minimal 1 sampai 5 GEMINI_API_KEY valid di .env.local atau di panel Manajemen API Key untuk mengaktifkan AI.",
-        },
-      ],
-      knowledge_details: null,
-    });
+    return NextResponse.json(
+      buildGeneralFallbackResult(model, tab, availableKeys, lastError)
+    );
   } catch (error) {
     console.error("Error in /api/generate:", error);
     return NextResponse.json(

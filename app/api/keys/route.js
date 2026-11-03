@@ -14,7 +14,7 @@ export const dynamic = "force-dynamic";
  */
 export async function GET(request) {
   try {
-    const status = getApiKeysStatus();
+    const status = await getApiKeysStatus();
     return NextResponse.json({
       success: true,
       ...status,
@@ -83,7 +83,7 @@ export async function POST(request) {
     }
 
     // Default action: return status
-    const status = getApiKeysStatus(customKeys);
+    const status = await getApiKeysStatus(customKeys);
     return NextResponse.json({
       success: true,
       ...status,
