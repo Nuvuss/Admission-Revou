@@ -1,91 +1,11 @@
-import { NextResponse } from "next/server";
+﻿import { NextResponse } from "next/server";
 import { getSupabase, getLastSupabaseServerDate } from "../../../../lib/supabaseClient";
 import { getOnlineUsers, trackUserHeartbeat } from "../../../../lib/onlineTracker";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-function normalizeTopic(rawTopic?: string | null, snippet?: string | null, mode?: string | null): string | null {
-  const userSnippet = (snippet || "").toLowerCase().trim();
-  const fallbackTopic = (rawTopic || "").toLowerCase().trim();
-  const primaryText = userSnippet || fallbackTopic;
-
-  if (!primaryText && mode !== "comparison") return null;
-
-  if (mode === "comparison") {
-    if (/\bpurwadhika\b/.test(primaryText)) return "Komparasi vs Purwadhika";
-    if (/\bdibimbing\b/.test(primaryText)) return "Komparasi vs Dibimbing";
-    if (/\b(dqlab|it\s*lab)\b/.test(primaryText)) return "Komparasi vs DQLab";
-    if (/\bhacktiv8\b/.test(primaryText)) return "Komparasi vs Hacktiv8";
-    return "Komparasi Kompetitor";
-  }
-
-  // Prioritaskan analisis langsung dari input_snippet (prompt asli user) dengan word boundary (\b) ketat
-  // agar tidak tertipu oleh kata substring seperti "bisa"/"analisa" (isa), "peluang" (uang), "antusias" (usia), atau "sesuai" (ui)
-  if (
-    /\b(mahal|kemahalan|biaya|biayanya|harga|harganya|cicilan|nyicil|kredit|refund|skema\s+isa|income\s+share|danacita|diskon|promo|budget|angsuran|bayar\s+bertahap|kendala\s+uang|masalah\s+uang|belum\s+ada\s+uang|tidak\s+ada\s+uang)\b/.test(
-      primaryText
-    )
-  ) {
-    return "Keberatan Biaya & Skema Cicilan";
-  }
-  if (
-    /\b(sibuk|tidak\s+ada\s+waktu|susah\s+bagi\s+waktu|jadwal|jadwalnya|kelas\s+malam|lembur|sambil\s+kerja|sambil\s+kuliah|bentrok|offline|tatap\s+muka)\b/.test(
-      primaryText
-    )
-  ) {
-    return "Kendala Waktu & Jadwal Kelas";
-  }
-  if (
-    /\b(izin\s+atasan|izin\s+kantor|izin\s+bos|izin\s+suami|izin\s+istri|izin\s+orang\s+tua|izin\s+ortu|izin\s+keluarga|tanya\s+suami|tanya\s+istri|tanya\s+orang\s+tua|tanya\s+ortu|tanya\s+atasan|diskusi\s+sama|persetujuan\s+atasan|sponsor\s+kantor|dibayarin\s+kantor|suami|istri|orang\s+tua|ortu)\b/.test(
-      primaryText
-    )
-  ) {
-    return "Izin Atasan / Keluarga";
-  }
-  if (
-    /\b(career\s*switch|switch\s*karir|switch\s*career|pindah\s*jalur|pindah\s*karir|non-it|non\s+it|bukan\s+it|tidak\s+ada\s+basic|tanpa\s+basic|gaptek|ragu\s+bisa|takut\s+tidak\s+bisa|faktor\s+usia|faktor\s+umur|terlalu\s+tua|lulusan\s+sma|lulusan\s+smk|ibu\s+rumah\s+tangga|career\s+break)\b/.test(
-      primaryText
-    )
-  ) {
-    return "Keraguan Career Switch / Non-IT";
-  }
-
-  // Deteksi Program Spesifik dari Prompt User
-  if (/\b(itb|ai\s+enabled\s+leaders|decision\s+making)\b/.test(primaryText)) {
-    return "Pitch Program RevoU x ITB (AI & Leaders)";
-  }
-  if (/\b(binus|cyber\s*security|applied\s+ai)\b/.test(primaryText)) {
-    return "Pitch Program RevoU x BINUS (AI & Cyber)";
-  }
-  if (/\b(revou\s*x\s*ui|universitas\s+indonesia|strategic\s+finance|program\s+ui|finance)\b/.test(primaryText)) {
-    return "Pitch Program RevoU x UI (Strategic Finance)";
-  }
-  if (/\b(fsse|software\s+engineering|software\s+engineer|coding|full\s*stack\s+developer|web\s+developer)\b/.test(primaryText)) {
-    return "Pitch Program Software Engineering (FSSE)";
-  }
-  if (/\b(fsdm|digital\s+marketing|marketing|ads|seo|sosmed|e-commerce)\b/.test(primaryText)) {
-    return "Pitch Program Digital Marketing (FSDM)";
-  }
-  if (/\b(fsda|data\s+analytics|data\s+analyst|analisis\s+data|data\s+science|sql|python|tableau)\b/.test(primaryText)) {
-    return "Pitch Program Data Analytics (FSDA)";
-  }
-
-  // Deteksi Profil Prospek / Karir & Alumni
-  if (/\b(fresh\s*grad|fresh\s*graduate|baru\s+lulus|mahasiswa|lulusan\s+baru)\b/.test(primaryText)) {
-    return "Pitch Prospek Fresh Graduate / Mahasiswa";
-  }
-  if (
-    /\b(jaminan\s+kerja|prospek\s+karir|peluang\s+karir|hiring|gaji|salary|magang|internship|portofolio|bumn|manufaktur|kisah\s+alumni|bukti\s+alumni)\b/.test(
-      primaryText
-    )
-  ) {
-    return "Prospek Karir & Bukti Alumni";
-  }
-
-  if (mode === "alumni") return "Pencarian Bukti Kisah Alumni";
-  return "Konsultasi Pitch Program RevoU";
-}
+import { normalizeTopic } from "../../../../lib/topicNormalizer";
 
 export async function GET(req: Request) {
   try {
@@ -260,6 +180,9 @@ export async function GET(req: Request) {
         clarifications: number;
         copies: number;
         comparisons: number;
+        pitch?: number;
+        alumni?: number;
+        comparison?: number;
         totalActions: number;
         lastActive: string;
         responseDurationsMs: number[];
@@ -279,10 +202,13 @@ export async function GET(req: Request) {
       traffic: number;
       scripts: number;
       copies: number;
+      pitch?: number;
+      alumni?: number;
+      comparison?: number;
       activeAgentsSet?: Set<string>;
       agents?: number;
-      byUser?: Record<string, { traffic: number; scripts: number; copies: number }>;
-      actions?: { user: string; role: string; actionLabel: string; topic: string; timestamp?: string }[];
+      byUser?: Record<string, { traffic: number; scripts: number; copies: number; pitch?: number; alumni?: number; comparison?: number }>;
+      actions?: { user: string; role: string; actionLabel: string; topic: string; mode?: string; timestamp?: string }[];
     }[] = [];
 
     if (range === "today") {
@@ -295,6 +221,9 @@ export async function GET(req: Request) {
           traffic: 0,
           scripts: 0,
           copies: 0,
+          pitch: 0,
+          alumni: 0,
+          comparison: 0,
           activeAgentsSet: new Set<string>(),
         });
       }
@@ -313,6 +242,9 @@ export async function GET(req: Request) {
           traffic: 0,
           scripts: 0,
           copies: 0,
+          pitch: 0,
+          alumni: 0,
+          comparison: 0,
           activeAgentsSet: new Set<string>(),
         });
       }
@@ -328,6 +260,9 @@ export async function GET(req: Request) {
           traffic: 0,
           scripts: 0,
           copies: 0,
+          pitch: 0,
+          alumni: 0,
+          comparison: 0,
           activeAgentsSet: new Set<string>(),
         });
       }
@@ -345,6 +280,9 @@ export async function GET(req: Request) {
           traffic: 0,
           scripts: 0,
           copies: 0,
+          pitch: 0,
+          alumni: 0,
+          comparison: 0,
           activeAgentsSet: new Set<string>(),
         });
       } else {
@@ -408,6 +346,9 @@ export async function GET(req: Request) {
           clarifications: 0,
           copies: 0,
           comparisons: 0,
+          pitch: 0,
+          alumni: 0,
+          comparison: 0,
           totalActions: 0,
           lastActive: log.created_at,
           responseDurationsMs: [],
@@ -427,10 +368,13 @@ export async function GET(req: Request) {
       if (isAiScriptGeneration || isComparisonView || action === "view_alumni") {
         if (mode === "pitch") {
           modeDistribution.pitch++;
-        } else if (mode === "alumni") {
+          agentMap[user].pitch = (agentMap[user].pitch || 0) + 1;
+        } else if (mode === "alumni" || action === "view_alumni") {
           modeDistribution.alumni++;
+          agentMap[user].alumni = (agentMap[user].alumni || 0) + 1;
         } else if (mode === "comparison" || isComparisonView) {
           modeDistribution.comparison++;
+          agentMap[user].comparison = (agentMap[user].comparison || 0) + 1;
         }
       }
 
@@ -452,19 +396,37 @@ export async function GET(req: Request) {
             targetPt.traffic++;
             if (isAiScriptGeneration) targetPt.scripts++;
             if (isCopy) targetPt.copies++;
+
+            if (mode === "pitch") targetPt.pitch = (targetPt.pitch || 0) + 1;
+            else if (mode === "alumni" || action === "view_alumni") targetPt.alumni = (targetPt.alumni || 0) + 1;
+            else if (mode === "comparison" || isComparisonView) targetPt.comparison = (targetPt.comparison || 0) + 1;
+
             targetPt.activeAgentsSet?.add(user);
 
             if (!targetPt.byUser) targetPt.byUser = {};
-            if (!targetPt.byUser[user]) targetPt.byUser[user] = { traffic: 0, scripts: 0, copies: 0 };
+            if (!targetPt.byUser[user]) targetPt.byUser[user] = { traffic: 0, scripts: 0, copies: 0, pitch: 0, alumni: 0, comparison: 0 };
             targetPt.byUser[user].traffic++;
             if (isAiScriptGeneration) targetPt.byUser[user].scripts++;
             if (isCopy) targetPt.byUser[user].copies++;
 
+            if (mode === "pitch") targetPt.byUser[user].pitch = (targetPt.byUser[user].pitch || 0) + 1;
+            else if (mode === "alumni" || action === "view_alumni") targetPt.byUser[user].alumni = (targetPt.byUser[user].alumni || 0) + 1;
+            else if (mode === "comparison" || isComparisonView) targetPt.byUser[user].comparison = (targetPt.byUser[user].comparison || 0) + 1;
+
             if (!targetPt.actions) targetPt.actions = [];
-            if (targetPt.actions.length < 8) {
+            if (targetPt.actions.length < 15) {
               const cleanTopic = normalizeTopic(log.topic, log.input_snippet, mode);
+              const actionFeatureMode =
+                mode === "comparison" || isComparisonView
+                  ? "comparison"
+                  : mode === "alumni" || action === "view_alumni"
+                  ? "alumni"
+                  : "pitch";
+
               const actionLabel = isGenerate
-                ? "Generate Script AI"
+                ? actionFeatureMode === "alumni"
+                  ? "Cari Data Alumni"
+                  : "Generate Script AI"
                 : isClarify
                 ? "Revisi Script AI"
                 : isCopy
@@ -472,11 +434,13 @@ export async function GET(req: Request) {
                 : isComparisonView
                 ? "Lihat Komparasi"
                 : "Konsultasi Asisten";
+
               targetPt.actions.push({
                 user,
                 role,
                 actionLabel,
-                topic: cleanTopic || log.topic || "Konsultasi Admisi",
+                topic: cleanTopic || log.topic || (actionFeatureMode === "comparison" ? "Komparasi Kompetitor" : actionFeatureMode === "alumni" ? "Cari Data Alumni" : "Konsultasi Admisi"),
+                mode: actionFeatureMode,
                 timestamp: log.created_at,
               });
             }
@@ -486,7 +450,7 @@ export async function GET(req: Request) {
         }
       }
 
-      // Topic / Objection aggregation: only count once per consultation/feature query (not on copy or login)
+      // Topic / Objection aggregation: count AI script generation & Table Comparison queries (not on login or copy)
       if (isAiScriptGeneration || isComparisonView) {
         const cleanTopic = normalizeTopic(log.topic, log.input_snippet, mode);
         if (cleanTopic) {
@@ -568,7 +532,7 @@ export async function GET(req: Request) {
             .map(([name, count]) => ({ name, count: count as number }))
             .sort((a, b) => b.count - a.count)[0] || null;
 
-        const { responseDurationsMs: _d, topicCounts: _tc, ...restAgent } = agent;
+        const { responseDurationsMs: _d, ...restAgent } = agent;
 
         const onlinePresence = getOnlineUsers();
         const onlineNames = new Set(onlinePresence.users.map((u) => u.userName));

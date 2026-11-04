@@ -65,6 +65,7 @@ import HistoryDrawer from "./components/HistoryDrawer";
 import AlumniCardList from "./components/AlumniCardList";
 import PitchScripts from "./components/PitchScripts";
 import UserRoleModal from "./components/UserRoleModal";
+import AccountModal from "./components/AccountModal";
 import { UserRole, UserSession } from "./types/auth";
 import { ModeKey, ClarificationItem, HistoryItem, ApiPoolStatus, ApiKeyTestResult } from "./types";
 import { renderFormattedTextWithLinks } from "./utils/formatText";
@@ -165,6 +166,7 @@ export default function DashboardPage() {
   // ── Role & User Identity State (RBAC: Owner vs AC/BM) ──
   const [userSession, setUserSession] = useState<UserSession | null>(null);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState<boolean>(false);
+  const [isAccountModalOpen, setIsAccountModalOpen] = useState<boolean>(false);
 
   // Load history & API keys from localStorage and fetch server pool status
   useEffect(() => {
@@ -283,14 +285,16 @@ export default function DashboardPage() {
     router.push("/login");
   };
 
-  const handleSaveSession = (session: UserSession) => {
+  const handleSaveSession = (session: UserSession, silent = false) => {
     setUserSession(session);
     try {
       localStorage.setItem("revou_admission_user_session_v1", JSON.stringify(session));
     } catch (e) {
       console.error("Failed to save user session:", e);
     }
-    showToast(`Masuk sebagai ${session.name} (${session.role})`);
+    if (!silent) {
+      showToast(`Masuk sebagai ${session.name} (${session.role})`);
+    }
   };
 
   const trackActivity = (
@@ -322,6 +326,58 @@ export default function DashboardPage() {
           topic: topic || null,
           inputSnippet: snippet ? snippet.slice(0, 200) : null,
           metadata: meta || {},
+        }),
+      }).catch(() => {});
+    } catch (e) {}
+  };
+
+  // Simpan hasil generate penuh ke database history (khusus dibaca Owner). Gagal tidak mengganggu UX.
+  const getActiveSession = () => {
+    let session = userSession;
+    if (!session) {
+      try {
+        const saved = localStorage.getItem("revou_admission_user_session_v1");
+        if (saved) session = JSON.parse(saved);
+      } catch (e) {}
+    }
+    return session && session.name ? session : null;
+  };
+
+  const saveGenerateHistory = (payload: {
+    clientSessionId: string;
+    mode: ModeKey;
+    inputText: string;
+    topic?: string;
+    resultJson: any;
+    durationMs?: number;
+  }) => {
+    try {
+      const session = getActiveSession();
+      if (!session) return;
+      fetch("/api/analytics/history", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...payload,
+          userName: session.name,
+          userRole: session.role || "AC",
+          modelUsed: selectedModel,
+        }),
+      }).catch(() => {});
+    } catch (e) {}
+  };
+
+  const saveClarificationThread = (clientSessionId: string, thread: ClarificationItem[]) => {
+    try {
+      const session = getActiveSession();
+      if (!session) return;
+      fetch("/api/analytics/history", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userName: session.name,
+          clientSessionId,
+          chatThread: thread,
         }),
       }).catch(() => {});
     } catch (e) {}
@@ -407,6 +463,7 @@ export default function DashboardPage() {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
+        if (isAccountModalOpen) setIsAccountModalOpen(false);
         if (isLogoutModalOpen) setIsLogoutModalOpen(false);
         if (isKeyModalOpen) setIsKeyModalOpen(false);
         if (isHistoryDrawerOpen) setIsHistoryDrawerOpen(false);
@@ -414,7 +471,7 @@ export default function DashboardPage() {
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isHistoryDrawerOpen, isKeyModalOpen, isLogoutModalOpen]);
+  }, [isHistoryDrawerOpen, isKeyModalOpen, isLogoutModalOpen, isAccountModalOpen]);
 
   const showToast = (msg: string) => {
     setHistoryToast(msg);
@@ -693,6 +750,14 @@ export default function DashboardPage() {
         // Auto-save to History in LocalStorage
         const newSessionId = `hist-${Date.now()}`;
         setCurrentSessionId(newSessionId);
+        saveGenerateHistory({
+          clientSessionId: newSessionId,
+          mode,
+          inputText,
+          topic: topicExtracted,
+          resultJson: finalResultData,
+          durationMs,
+        });
         const newItem: HistoryItem = {
           id: newSessionId,
           timestamp: Date.now(),
@@ -899,6 +964,7 @@ INSTRUKSI PENTING:
 
         // Save updated chatThread to history item in localStorage
         if (currentSessionId) {
+          saveClarificationThread(currentSessionId, updatedChatThread);
           setHistoryList((prev) => {
             const updated = prev.map((item) => {
               if (item.id === currentSessionId) {
@@ -1134,20 +1200,18 @@ INSTRUKSI PENTING:
                 </Link>
               )}
 
-              {/* Unified User Profile + Logout Capsule */}
+              {/* User Profile Identity Badge */}
               <div
-                className={`inline-flex items-center rounded-lg border text-xs font-bold shadow-2xs select-none overflow-hidden ${
+                className={`inline-flex items-center rounded-lg border text-xs font-bold shadow-2xs select-none ${
                   userSession?.role === "Owner"
                     ? "bg-[#141412] text-[#FFD84D] border-[#141412]"
                     : userSession?.role === "BM"
                     ? "bg-[#F3E8FF] text-[#7E22CE] border-[#E9D5FF]"
                     : "bg-[#EFF6FF] text-[#1D4ED8] border-[#DBEAFE]"
                 }`}
+                title={`Login sebagai: ${userSession?.name || ""} (${userSession?.role || ""})`}
               >
-                <div
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5"
-                  title={`Login sebagai: ${userSession?.name || ""} (${userSession?.role || ""})`}
-                >
+                <div className="inline-flex items-center gap-1.5 px-3 py-1.5">
                   {userSession?.role === "Owner" ? (
                     <Crown className="w-3.5 h-3.5 text-[#FFD84D]" />
                   ) : userSession?.role === "BM" ? (
@@ -1162,20 +1226,29 @@ INSTRUKSI PENTING:
                     {userSession?.name || "User"}
                   </span>
                 </div>
-
-                <button
-                  type="button"
-                  onClick={() => setIsLogoutModalOpen(true)}
-                  className={`px-2.5 py-1.5 border-l transition-colors cursor-pointer flex items-center justify-center ${
-                    userSession?.role === "Owner"
-                      ? "border-white/15 text-[#A0A09A] hover:bg-[#DA1E28] hover:text-white"
-                      : "border-black/10 text-[#7A7A74] hover:bg-[#FFF1F1] hover:text-[#DA1E28]"
-                  }`}
-                  title="Keluar / Ganti Akun"
-                >
-                  <LogOut className="w-3.5 h-3.5" />
-                </button>
               </div>
+
+              {/* Dedicated "Ganti Password" Button (Opsi 1) */}
+              <button
+                type="button"
+                onClick={() => setIsAccountModalOpen(true)}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#D9D9D4] bg-white hover:bg-[#F5F5F2] hover:border-[#141412] text-xs font-bold text-[#141412] transition-all cursor-pointer shadow-2xs hover:shadow-xs active:scale-95 select-none"
+                title="Kelola Akun & Ganti Password"
+              >
+                <Key className="w-3.5 h-3.5 text-[#D97706]" />
+                <span>Ganti Password</span>
+              </button>
+
+              {/* Logout Button */}
+              <button
+                type="button"
+                onClick={() => setIsLogoutModalOpen(true)}
+                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-[#E8E8E4] bg-white hover:bg-[#FFF1F1] hover:border-[#FFD0D0] text-xs font-bold text-[#7A7A74] hover:text-[#DA1E28] transition-all cursor-pointer shadow-2xs hover:shadow-xs active:scale-95 select-none"
+                title="Keluar / Ganti Akun"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Keluar</span>
+              </button>
             </div>
           </div>
 
@@ -2016,6 +2089,19 @@ INSTRUKSI PENTING:
         onTestKeys={handleTestKeys}
         onSaveCustomKeys={handleSaveCustomKeys}
         onResetKeysToDefault={handleResetKeysToDefault}
+      />
+
+      {/* ========================================================= */}
+      {/* 5.5. MODAL PENGATURAN AKUN & GANTI PASSWORD               */}
+      {/* ========================================================= */}
+      <AccountModal
+        isOpen={isAccountModalOpen}
+        onClose={() => setIsAccountModalOpen(false)}
+        userSession={userSession}
+        onSessionUpdate={(updated) => {
+          handleSaveSession(updated, true);
+          showToast("Profil akun & sesi berhasil diperbarui!");
+        }}
       />
 
       {/* ========================================================= */}

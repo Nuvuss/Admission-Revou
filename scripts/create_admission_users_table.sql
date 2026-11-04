@@ -31,8 +31,9 @@ DROP POLICY IF EXISTS "Allow modify users" ON public.admission_users;
 CREATE POLICY "Allow modify users" 
 ON public.admission_users 
 FOR ALL 
-TO authenticated 
-USING (true);
+TO anon, authenticated 
+USING (true)
+WITH CHECK (true);
 
 -- 4. Sample Users (Anda bisa edit atau tambah langsung via Supabase Table Editor)
 INSERT INTO public.admission_users (email, password, name, role) 

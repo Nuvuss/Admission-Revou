@@ -20,8 +20,11 @@ import {
   Flame,
   CheckCircle2,
   Zap,
+  GraduationCap,
+  Scale,
 } from "lucide-react";
 import { UserSession } from "../types/auth";
+import OwnerHistoryDrawer from "../components/OwnerHistoryDrawer";
 import { getSupabase } from "../../lib/supabaseClient";
 
 // ========================================================
@@ -111,9 +114,10 @@ export default function AnalyticsDashboardPage() {
 
   // Filters & State
   const [timeRange, setTimeRange] = useState<string>("30d");
-  const [chartMode, setChartMode] = useState<"traffic" | "scripts" | "copies">("traffic");
+  const [chartMode, setChartMode] = useState<"all" | "pitch" | "alumni" | "comparison">("all");
   const [roleFilter, setRoleFilter] = useState<"all" | "ac_bm">("all");
   const [selectedUser, setSelectedUser] = useState<string>("all");
+  const [historyTopic, setHistoryTopic] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isSyncing, setIsSyncing] = useState<boolean>(false);
   const [statsData, setStatsData] = useState<any>(null);
@@ -175,7 +179,7 @@ export default function AnalyticsDashboardPage() {
           userName: session.name,
           userRole: session.role || "Owner",
         }),
-      }).catch(() => {});
+      }).catch(() => { });
     };
 
     sendHeartbeat();
@@ -346,7 +350,28 @@ export default function AnalyticsDashboardPage() {
   const compPct = rawModeSum > 0 ? Math.round(((modeDistribution.comparison || 0) / rawModeSum) * 100) : 0;
 
   const topTopics: any[] = statsData?.topTopics || [];
-  const totalTopicMentions = topTopics.reduce((acc, t) => acc + (t.count || 0), 0);
+
+  const rawActiveTopics: { name: string; count: number }[] =
+    selectedUser === "all"
+      ? topTopics
+      : (() => {
+        const found = rawLeaderboard.find((a: any) => a.userName === selectedUser);
+        if (!found || !found.topicCounts) return [];
+        return Object.entries(found.topicCounts)
+          .map(([name, count]) => ({ name, count: count as number }))
+          .sort((a, b) => b.count - a.count)
+          .slice(0, 8);
+      })();
+
+  const activeUserTopics: { name: string; count: number }[] = rawActiveTopics.filter((t) => {
+    if (chartMode === "all") return true;
+    if (chartMode === "comparison") return t.name.startsWith("Komparasi");
+    if (chartMode === "alumni") return t.name.startsWith("Alumni") || t.name.includes("Kisah Alumni");
+    if (chartMode === "pitch") return !t.name.startsWith("Komparasi") && !t.name.startsWith("Alumni") && !t.name.includes("Kisah Alumni");
+    return true;
+  });
+
+  const totalTopicMentions = activeUserTopics.reduce((acc: number, t: any) => acc + (t.count || 0), 0);
 
   // ========================================================
   // COMPACT & PROPORTIONAL AREA CHART DATA PROCESSING
@@ -357,6 +382,9 @@ export default function AnalyticsDashboardPage() {
     count: a.totalActions || 0,
     generates: a.generates || 0,
     copies: a.copies || 0,
+    pitch: a.pitch || 0,
+    alumni: a.alumni || 0,
+    comparison: a.comparison || 0,
     avgResponseTimeSec: a.avgResponseTimeSec,
     topTopic: a.topTopic,
   }));
@@ -366,19 +394,19 @@ export default function AnalyticsDashboardPage() {
 
   const timeline: any[] = statsData?.timeline || [];
   const currentModeValues = timeline.map((pt) => {
+    const key = chartMode === "all" ? "traffic" : chartMode;
     if (selectedUser === "all") {
-      return Number(pt[chartMode] || 0);
+      return Number(pt[key] || 0);
     }
-    return Number(pt.byUser?.[selectedUser]?.[chartMode] || 0);
+    return Number(pt.byUser?.[selectedUser]?.[key] || 0);
   });
   const maxChartVal = Math.max(...currentModeValues, 1);
   const hasChartData = currentModeValues.some((v) => v > 0);
   const totalChartModeSum = currentModeValues.reduce((acc, v) => acc + v, 0);
 
-  // Real Sparkline Series for the 4 KPI Cards
+  // Real Sparkline Series for the 3 KPI Cards
   const sparkGenerates = timeline.slice(-10).map((pt) => Number(pt.scripts || 0));
   const sparkAgents = timeline.slice(-10).map((pt) => Number(pt.agents || 0));
-  const sparkCopies = timeline.slice(-10).map((pt) => Number(pt.copies || 0));
   const sparkUtility = timeline.slice(-10).map((pt) => {
     const s = Number(pt.scripts || 0);
     const c = Number(pt.copies || 0);
@@ -456,8 +484,8 @@ export default function AnalyticsDashboardPage() {
     maxChartVal <= 1
       ? ["1", "0"]
       : maxChartVal === 2
-      ? ["2", "1", "0"]
-      : [
+        ? ["2", "1", "0"]
+        : [
           String(maxChartVal),
           String(Math.round(maxChartVal * 0.5)),
           "0",
@@ -563,9 +591,8 @@ export default function AnalyticsDashboardPage() {
           <div className="flex items-center gap-2">
             <div className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#FAFAF8] border border-[#E8E8E4] text-[10.5px] font-mono text-[#4B4B46]">
               <span
-                className={`w-1.5 h-1.5 rounded-full ${
-                  isSyncing ? "bg-[#D97706] animate-ping" : "bg-[#1F7A4D]"
-                }`}
+                className={`w-1.5 h-1.5 rounded-full ${isSyncing ? "bg-[#D97706] animate-ping" : "bg-[#1F7A4D]"
+                  }`}
               />
               <span>Live Sync: {statsData?.lastUpdatedWib || "Aktif"}</span>
             </div>
@@ -656,9 +683,8 @@ export default function AnalyticsDashboardPage() {
                   <button
                     key={tab.id}
                     onClick={() => handleRangeChange(tab.id)}
-                    className={`relative px-3 py-1 text-xs font-bold transition-colors cursor-pointer z-10 rounded-lg ${
-                      isActive ? "text-white" : "text-[#7A7A74] hover:text-[#141412]"
-                    }`}
+                    className={`relative px-3 py-1 text-xs font-bold transition-colors cursor-pointer z-10 rounded-lg ${isActive ? "text-white" : "text-[#7A7A74] hover:text-[#141412]"
+                      }`}
                   >
                     {isActive && (
                       <motion.span
@@ -676,9 +702,9 @@ export default function AnalyticsDashboardPage() {
         </motion.section>
 
         {/* ========================================================= */}
-        {/* 3. ROW OF 4 REAL-TIME KPI CARDS                           */}
+        {/* 3. ROW OF 3 REAL-TIME KPI CARDS                           */}
         {/* ========================================================= */}
-        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
           {/* Card 1: Total AI Generates (Yellow Tint) */}
           <motion.div
             initial={{ opacity: 0, y: 12 }}
@@ -743,38 +769,11 @@ export default function AnalyticsDashboardPage() {
             </p>
           </motion.div>
 
-          {/* Card 3: Script Di-Copy (Amber Tint) */}
+          {/* Card 3: Copy Utility Rate (Violet Tint) */}
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.45, delay: 0.18, ease: [0.16, 1, 0.3, 1] }}
-            whileHover={{ y: -3 }}
-            className="p-4 rounded-2xl border border-[#FED7AA] bg-gradient-to-br from-[#FFF7ED] via-[#FFFAF5] to-white shadow-2xs card-interactive flex flex-col justify-between"
-          >
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-[#C2410C]">
-                Script Di-Copy
-              </span>
-              <MiniSparkline color="#EA580C" data={sparkCopies} />
-            </div>
-            <div className="flex items-baseline justify-between gap-2">
-              <div className="text-2xl sm:text-[28px] font-display font-black text-[#141412] tracking-tight">
-                <AnimatedCounter value={kpis.totalCopies} />
-              </div>
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#FFEDD5] text-[#C2410C] border border-[#FDBA74]/60">
-                Disalin ke WA
-              </span>
-            </div>
-            <p className="text-[11px] text-[#7A7A74] mt-2 pt-2 border-t border-[#F0F0EC]">
-              Total salin script Pitch, Revisi & Riwayat
-            </p>
-          </motion.div>
-
-          {/* Card 4: Copy Utility Rate (Violet Tint) */}
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.45, delay: 0.23, ease: [0.16, 1, 0.3, 1] }}
             whileHover={{ y: -3 }}
             className="p-4 rounded-2xl border border-[#E9D5FF] bg-gradient-to-br from-[#FAF5FF] via-[#FDFBFF] to-white shadow-2xs card-interactive flex flex-col justify-between"
           >
@@ -816,11 +815,13 @@ export default function AnalyticsDashboardPage() {
                 </h2>
                 <span className="font-mono text-[10.5px] font-bold px-2 py-0.5 rounded-md bg-[#FFF6D1] text-[#A15C00] border border-[#FFD84D]/60">
                   Total: {totalChartModeSum}{" "}
-                  {chartMode === "scripts"
-                    ? "Script"
-                    : chartMode === "copies"
-                    ? "Copy"
-                    : "Aktivitas"}
+                  {chartMode === "pitch"
+                    ? "Pitch"
+                    : chartMode === "alumni"
+                      ? "Alumni"
+                      : chartMode === "comparison"
+                        ? "Komparasi"
+                        : "Aktivitas"}
                   {selectedUserData ? ` · ${selectedUserData.name}` : ""}
                 </span>
               </div>
@@ -831,20 +832,32 @@ export default function AnalyticsDashboardPage() {
             </div>
 
             {/* Segmented Toggle Control with Spring Layout Animation */}
-            <div className="relative inline-flex p-1 rounded-xl bg-[#F5F5F2] border border-[#E8E8E4] text-xs font-bold self-start sm:self-auto">
+            <div className="relative inline-flex p-1 rounded-xl bg-[#F5F5F2] border border-[#E8E8E4] text-xs font-bold self-start sm:self-auto overflow-x-auto max-w-full">
               {[
-                { id: "traffic", label: `Semua Aktivitas (${kpis.totalEvents})` },
-                { id: "scripts", label: `Script AI (${kpis.totalGenerates})` },
-                { id: "copies", label: `Di-Copy (${kpis.totalCopies})` },
+                {
+                  id: "all",
+                  label: `Semua Aktivitas (${selectedUserData ? selectedUserData.count : kpis.totalEvents})`,
+                },
+                {
+                  id: "pitch",
+                  label: `Create Pitch (${selectedUserData ? (selectedUserData.pitch ?? 0) : (modeDistribution.pitch ?? 0)})`,
+                },
+                {
+                  id: "alumni",
+                  label: `Alumni Checker (${selectedUserData ? (selectedUserData.alumni ?? 0) : (modeDistribution.alumni ?? 0)})`,
+                },
+                {
+                  id: "comparison",
+                  label: `Table Comparison (${selectedUserData ? (selectedUserData.comparison ?? 0) : (modeDistribution.comparison ?? 0)})`,
+                },
               ].map((seg) => {
                 const isSelected = chartMode === seg.id;
                 return (
                   <button
                     key={seg.id}
                     onClick={() => setChartMode(seg.id as any)}
-                    className={`relative px-2.5 py-1 rounded-lg transition-colors cursor-pointer z-10 ${
-                      isSelected ? "text-white" : "text-[#7A7A74] hover:text-[#141412]"
-                    }`}
+                    className={`relative px-2.5 py-1 rounded-lg transition-colors cursor-pointer z-10 whitespace-nowrap shrink-0 ${isSelected ? "text-white" : "text-[#7A7A74] hover:text-[#141412]"
+                      }`}
                   >
                     {isSelected && (
                       <motion.span
@@ -875,9 +888,8 @@ export default function AnalyticsDashboardPage() {
                 <button
                   type="button"
                   onClick={() => setSelectedUser("all")}
-                  className={`relative px-2.5 py-1 rounded-lg transition-colors cursor-pointer z-10 flex items-center gap-1.5 shrink-0 ${
-                    selectedUser === "all" ? "text-white" : "text-[#7A7A74] hover:text-[#141412]"
-                  }`}
+                  className={`relative px-2.5 py-1 rounded-lg transition-colors cursor-pointer z-10 flex items-center gap-1.5 shrink-0 ${selectedUser === "all" ? "text-white" : "text-[#7A7A74] hover:text-[#141412]"
+                    }`}
                 >
                   {selectedUser === "all" && (
                     <motion.span
@@ -888,26 +900,33 @@ export default function AnalyticsDashboardPage() {
                   )}
                   <span>Semua User</span>
                   <span className="font-mono text-[10px] opacity-80">
-                    ({chartMode === "scripts" ? kpis.totalGenerates : chartMode === "copies" ? kpis.totalCopies : kpis.totalEvents})
+                    ({chartMode === "all"
+                      ? kpis.totalEvents
+                      : chartMode === "pitch"
+                        ? modeDistribution.pitch || 0
+                        : chartMode === "alumni"
+                          ? modeDistribution.alumni || 0
+                          : modeDistribution.comparison || 0})
                   </span>
                 </button>
 
                 {availableUsers.map((u) => {
                   const isSelected = selectedUser === u.name;
                   const metricVal =
-                    chartMode === "scripts"
-                      ? u.generates
-                      : chartMode === "copies"
-                      ? u.copies
-                      : u.count;
+                    chartMode === "all"
+                      ? u.count
+                      : chartMode === "pitch"
+                        ? u.pitch || 0
+                        : chartMode === "alumni"
+                          ? u.alumni || 0
+                          : u.comparison || 0;
                   return (
                     <button
                       key={u.name}
                       type="button"
                       onClick={() => setSelectedUser(u.name)}
-                      className={`relative px-2.5 py-1 rounded-lg transition-colors cursor-pointer z-10 flex items-center gap-1.5 whitespace-nowrap shrink-0 ${
-                        isSelected ? "text-white" : "text-[#7A7A74] hover:text-[#141412]"
-                      }`}
+                      className={`relative px-2.5 py-1 rounded-lg transition-colors cursor-pointer z-10 flex items-center gap-1.5 whitespace-nowrap shrink-0 ${isSelected ? "text-white" : "text-[#7A7A74] hover:text-[#141412]"
+                        }`}
                     >
                       {isSelected && (
                         <motion.span
@@ -1083,13 +1102,13 @@ export default function AnalyticsDashboardPage() {
                             ? activePoint.pctX > 60
                               ? "translate(-100%, 14px)"
                               : activePoint.pctX < 40
-                              ? "translate(0%, 14px)"
-                              : "translate(-50%, 14px)"
+                                ? "translate(0%, 14px)"
+                                : "translate(-50%, 14px)"
                             : activePoint.pctX > 60
-                            ? "translate(-100%, -108%)"
-                            : activePoint.pctX < 40
-                            ? "translate(0%, -108%)"
-                            : "translate(-50%, -108%)",
+                              ? "translate(-100%, -108%)"
+                              : activePoint.pctX < 40
+                                ? "translate(0%, -108%)"
+                                : "translate(-50%, -108%)",
                       }}
                     >
                       {/* Pop-up Header: Waktu Spesifik & Status */}
@@ -1104,74 +1123,126 @@ export default function AnalyticsDashboardPage() {
                         </div>
                         <span className="font-mono text-[10px] font-bold px-1.5 py-0.2 rounded bg-white/15 text-white">
                           {activePoint.val}{" "}
-                          {chartMode === "scripts"
-                            ? "Script"
-                            : chartMode === "copies"
-                            ? "Copy"
-                            : "Aksi"}
+                          {chartMode === "pitch"
+                            ? "Pitch"
+                            : chartMode === "alumni"
+                              ? "Alumni"
+                              : chartMode === "comparison"
+                                ? "Komparasi"
+                                : "Aksi"}
                         </span>
                       </div>
 
                       {/* Keterangan yang dilakukan */}
                       <div className="space-y-1.5">
-                        {activePoint.val > 0 ? (
-                          <>
-                            {/* Rincian Ringkas Metrik AI & Copy */}
-                            <div className="flex items-center gap-2 text-[10px] text-white/80">
-                              <span className="inline-flex items-center gap-1">
-                                <Zap className="w-2.5 h-2.5 text-[#FFD84D]" />
-                                {Number(activePoint.rawPt?.scripts || 0)} Script AI
-                              </span>
-                              <span>•</span>
-                              <span className="inline-flex items-center gap-1">
-                                <Copy className="w-2.5 h-2.5 text-[#FB923C]" />
-                                {Number(activePoint.rawPt?.copies || 0)} Disalin
-                              </span>
-                            </div>
-
-                            {/* Rincian Aktivitas Spesifik yang Dilakukan */}
-                            {activePoint.rawPt?.actions && activePoint.rawPt.actions.length > 0 ? (
-                              <div className="space-y-1 pt-1 border-t border-white/10 max-h-36 overflow-y-auto">
-                                {activePoint.rawPt.actions
-                                  .filter((act: any) => selectedUser === "all" || act.user === selectedUser)
-                                  .slice(0, 3)
-                                  .map((act: any, idx: number) => (
-                                    <div
-                                      key={idx}
-                                      className="text-[10px] leading-tight bg-white/5 p-1.5 rounded-lg flex items-start gap-1.5"
-                                    >
-                                      <span className="w-1.5 h-1.5 rounded-full bg-[#FFD84D] shrink-0 mt-1" />
-                                      <div className="truncate">
-                                        <div className="text-white">
-                                          <strong className="font-bold">{act.user}</strong>{" "}
-                                          <span className="text-white/60">({act.role})</span> •{" "}
-                                          <span className="text-[#FFD84D] font-medium">{act.actionLabel}</span>
-                                        </div>
-                                        {act.topic && (
-                                          <div className="text-[9px] text-[#A1A19A] truncate mt-0.5">
-                                            {act.topic}
-                                          </div>
-                                        )}
-                                      </div>
-                                    </div>
-                                  ))}
-                              </div>
-                            ) : (
-                              activePoint.rawPt?.byUser && (
-                                <div className="text-[10px] text-white/70 pt-1 border-t border-white/10 truncate">
-                                  Konselor:{" "}
-                                  {Object.entries(activePoint.rawPt.byUser)
-                                    .map(([u, d]: any) => `${u} (${d.traffic} aksi)`)
-                                    .join(", ")}
-                                </div>
-                              )
-                            )}
-                          </>
+                        {/* Rincian Sesuai Filter Metrik Aktif */}
+                        {chartMode === "all" ? (
+                          <div className="flex items-center gap-2 text-[10px] text-white/80 flex-wrap">
+                            <span className="inline-flex items-center gap-1">
+                              <Sparkles className="w-2.5 h-2.5 text-[#FFD84D]" />
+                              {Number(selectedUser !== "all" ? (activePoint.rawPt?.byUser?.[selectedUser]?.pitch ?? 0) : (activePoint.rawPt?.pitch ?? 0))} Pitch
+                            </span>
+                            <span>•</span>
+                            <span className="inline-flex items-center gap-1">
+                              <GraduationCap className="w-2.5 h-2.5 text-[#60A5FA]" />
+                              {Number(selectedUser !== "all" ? (activePoint.rawPt?.byUser?.[selectedUser]?.alumni ?? 0) : (activePoint.rawPt?.alumni ?? 0))} Alumni
+                            </span>
+                            <span>•</span>
+                            <span className="inline-flex items-center gap-1">
+                              <Scale className="w-2.5 h-2.5 text-[#34D399]" />
+                              {Number(selectedUser !== "all" ? (activePoint.rawPt?.byUser?.[selectedUser]?.comparison ?? 0) : (activePoint.rawPt?.comparison ?? 0))} Komparasi
+                            </span>
+                          </div>
+                        ) : chartMode === "pitch" ? (
+                          <div className="flex items-center gap-1.5 text-[10px] text-[#FFD84D] font-medium">
+                            <Sparkles className="w-3 h-3 text-[#FFD84D] shrink-0" />
+                            <span>{activePoint.val} aktivitas Create Pitch</span>
+                          </div>
+                        ) : chartMode === "alumni" ? (
+                          <div className="flex items-center gap-1.5 text-[10px] text-[#93C5FD] font-medium">
+                            <GraduationCap className="w-3 h-3 text-[#60A5FA] shrink-0" />
+                            <span>{activePoint.val} aktivitas Alumni Checker</span>
+                          </div>
                         ) : (
-                          <p className="text-[10.5px] text-white/50 py-0.5">
-                            Tidak ada aktivitas konsultasi pada waktu ini.
-                          </p>
+                          <div className="flex items-center gap-1.5 text-[10px] text-[#6EE7B7] font-medium">
+                            <Scale className="w-3 h-3 text-[#34D399] shrink-0" />
+                            <span>{activePoint.val} aktivitas Table Comparison</span>
+                          </div>
                         )}
+
+                        {/* Rincian Aktivitas Spesifik yang Dilakukan */}
+                        {(() => {
+                          const filteredActs = (activePoint.rawPt?.actions || []).filter((act: any) => {
+                            if (selectedUser !== "all" && act.user !== selectedUser) return false;
+                            if (chartMode !== "all" && act.mode && act.mode !== chartMode) return false;
+                            return true;
+                          });
+
+                          if (filteredActs.length > 0) {
+                            return (
+                              <div className="space-y-1 pt-1.5 border-t border-white/10 max-h-40 overflow-y-auto">
+                                {filteredActs.slice(0, 4).map((act: any, idx: number) => (
+                                  <div
+                                    key={idx}
+                                    className="text-[10px] leading-tight bg-white/5 p-1.5 rounded-lg flex items-start gap-1.5"
+                                  >
+                                    <span
+                                      className={`w-1.5 h-1.5 rounded-full shrink-0 mt-1 ${act.mode === "comparison"
+                                          ? "bg-[#34D399]"
+                                          : act.mode === "alumni"
+                                            ? "bg-[#60A5FA]"
+                                            : "bg-[#FFD84D]"
+                                        }`}
+                                    />
+                                    <div className="truncate">
+                                      <div className="text-white">
+                                        <strong className="font-bold">{act.user}</strong>{" "}
+                                        <span className="text-white/60">({act.role})</span> •{" "}
+                                        <span
+                                          className={`font-medium ${act.mode === "comparison"
+                                              ? "text-[#34D399]"
+                                              : act.mode === "alumni"
+                                                ? "text-[#60A5FA]"
+                                                : "text-[#FFD84D]"
+                                            }`}
+                                        >
+                                          {act.actionLabel}
+                                        </span>
+                                      </div>
+                                      {act.topic && (
+                                        <div className="text-[9.5px] text-[#D4D4CE] truncate mt-0.5 font-mono">
+                                          {act.topic}
+                                        </div>
+                                      )}
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            );
+                          }
+
+                          if (activePoint.val > 0) {
+                            return (
+                              <div className="text-[10px] text-white/70 pt-1 border-t border-white/10">
+                                {activePoint.val} aktivitas {chartMode === "all" ? "" : chartMode} tercatat pada waktu ini.
+                              </div>
+                            );
+                          }
+
+                          return (
+                            <p className="text-[10.5px] text-white/50 py-0.5 border-t border-white/10">
+                              Tidak ada aktivitas{" "}
+                              {chartMode === "pitch"
+                                ? "Create Pitch"
+                                : chartMode === "alumni"
+                                  ? "Alumni Checker"
+                                  : chartMode === "comparison"
+                                    ? "Table Comparison"
+                                    : "konsultasi"}{" "}
+                              pada waktu ini.
+                            </p>
+                          );
+                        })()}
                       </div>
                     </motion.div>
                   </>
@@ -1208,51 +1279,59 @@ export default function AnalyticsDashboardPage() {
             </div>
           </div>
 
-          {/* Bottom 4 Real-Time Summary Sub-Cards */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-3.5 mt-3.5 border-t border-[#F0F0EC]">
+          {/* Bottom 3 Real-Time Summary Sub-Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-3.5 mt-3.5 border-t border-[#F0F0EC]">
             <div className="p-2.5 rounded-xl bg-[#FAFAF8] border border-[#E8E8E4]/70">
-              <p className="text-[10px] font-mono uppercase text-[#7A7A74]">Waktu Respon AI Rata-Rata</p>
+              <p className="text-[10px] font-mono uppercase text-[#7A7A74]">
+                {selectedUserData
+                  ? `Respon AI (${selectedUserData.name.split(" ")[0]})`
+                  : "Waktu Respon AI Rata-Rata"}
+              </p>
               <p className="text-sm font-black text-[#141412] font-mono mt-0.5">
-                {selectedUserData && selectedUserData.avgResponseTimeSec !== null && selectedUserData.avgResponseTimeSec !== undefined
-                  ? `${selectedUserData.avgResponseTimeSec} detik`
+                {selectedUserData
+                  ? selectedUserData.avgResponseTimeSec !== null && selectedUserData.avgResponseTimeSec !== undefined
+                    ? `${selectedUserData.avgResponseTimeSec} detik`
+                    : "-"
                   : kpis.avgResponseTimeSec !== null && kpis.avgResponseTimeSec !== undefined
-                  ? `${kpis.avgResponseTimeSec} detik`
-                  : "Menunggu pengukuran"}
+                    ? `${kpis.avgResponseTimeSec} detik`
+                    : "Menunggu pengukuran"}
               </p>
             </div>
             <div className="p-2.5 rounded-xl bg-[#FAFAF8] border border-[#E8E8E4]/70">
-              <p className="text-[10px] font-mono uppercase text-[#7A7A74]">Keberatan / Topik Utama</p>
+              <p className="text-[10px] font-mono uppercase text-[#7A7A74]">
+                {selectedUserData
+                  ? `Topik Utama (${selectedUserData.name.split(" ")[0]})`
+                  : "Topik Utama (Semua Tim)"}
+              </p>
               <p
                 className="text-sm font-black text-[#141412] font-mono mt-0.5 truncate"
                 title={
-                  selectedUserData?.topTopic
-                    ? `${selectedUserData.topTopic.name} (${selectedUserData.topTopic.count}x)`
+                  selectedUserData
+                    ? selectedUserData.topTopic
+                      ? `${selectedUserData.topTopic.name} (${selectedUserData.topTopic.count}x)`
+                      : `Belum ada data topik untuk ${selectedUserData.name}`
                     : topTopics[0]
-                    ? `${topTopics[0].name} (${topTopics[0].count}x)`
-                    : "Belum ada data topik"
+                      ? `${topTopics[0].name} (${topTopics[0].count}x) - Seluruh Tim`
+                      : "Belum ada data topik"
                 }
               >
-                {selectedUserData?.topTopic
-                  ? `${selectedUserData.topTopic.name} (${selectedUserData.topTopic.count})`
+                {selectedUserData
+                  ? selectedUserData.topTopic
+                    ? `${selectedUserData.topTopic.name} (${selectedUserData.topTopic.count})`
+                    : "-"
                   : topTopics[0]
-                  ? `${topTopics[0].name} (${topTopics[0].count})`
-                  : "-"}
+                    ? `${topTopics[0].name} (${topTopics[0].count})`
+                    : "-"}
               </p>
             </div>
             <div className="p-2.5 rounded-xl bg-[#FAFAF8] border border-[#E8E8E4]/70">
-              <p className="text-[10px] font-mono uppercase text-[#7A7A74]">Total Interaksi Tercatat</p>
+              <p className="text-[10px] font-mono uppercase text-[#7A7A74]">
+                {selectedUserData
+                  ? `Interaksi (${selectedUserData.name.split(" ")[0]})`
+                  : "Total Interaksi Tercatat"}
+              </p>
               <p className="text-sm font-black text-[#1F7A4D] font-mono mt-0.5">
                 {selectedUserData ? `${selectedUserData.count} aktivitas` : `${kpis.totalEvents} aktivitas`}
-              </p>
-            </div>
-            <div className="p-2.5 rounded-xl bg-[#FAFAF8] border border-[#E8E8E4]/70">
-              <p className="text-[10px] font-mono uppercase text-[#7A7A74]">Status Database / Filter</p>
-              <p className="text-sm font-black text-[#D97706] font-mono mt-0.5 truncate">
-                {selectedUserData
-                  ? `User: ${selectedUserData.name} (${selectedUserData.role || "AC"})`
-                  : statsData?.isConfigured !== false
-                  ? "Semua User (Real-Time)"
-                  : "Perlu Konfigurasi"}
               </p>
             </div>
           </div>
@@ -1283,11 +1362,10 @@ export default function AnalyticsDashboardPage() {
                     <button
                       type="button"
                       onClick={() => setRoleFilter("all")}
-                      className={`relative px-2 py-0.5 rounded-md cursor-pointer transition-colors z-10 ${
-                        roleFilter === "all"
+                      className={`relative px-2 py-0.5 rounded-md cursor-pointer transition-colors z-10 ${roleFilter === "all"
                           ? "text-[#FFD84D]"
                           : "text-[#7A7A74] hover:text-[#141412]"
-                      }`}
+                        }`}
                     >
                       {roleFilter === "all" && (
                         <motion.span
@@ -1301,11 +1379,10 @@ export default function AnalyticsDashboardPage() {
                     <button
                       type="button"
                       onClick={() => setRoleFilter("ac_bm")}
-                      className={`relative px-2 py-0.5 rounded-md cursor-pointer transition-colors z-10 ${
-                        roleFilter === "ac_bm"
+                      className={`relative px-2 py-0.5 rounded-md cursor-pointer transition-colors z-10 ${roleFilter === "ac_bm"
                           ? "text-[#FFD84D]"
                           : "text-[#7A7A74] hover:text-[#141412]"
-                      }`}
+                        }`}
                     >
                       {roleFilter === "ac_bm" && (
                         <motion.span
@@ -1391,13 +1468,12 @@ export default function AnalyticsDashboardPage() {
                             </td>
                             <td className="py-2.5 text-center">
                               <span
-                                className={`inline-block font-mono text-[9px] font-black px-2 py-0.5 rounded-md ${
-                                  agent.userRole === "BM"
+                                className={`inline-block font-mono text-[9px] font-black px-2 py-0.5 rounded-md ${agent.userRole === "BM"
                                     ? "bg-[#F3E8FF] text-[#7E22CE] border border-[#E9D5FF]"
                                     : agent.userRole === "Owner"
-                                    ? "bg-[#141412] text-[#FFD84D]"
-                                    : "bg-[#EFF6FF] text-[#1D4ED8] border border-[#DBEAFE]"
-                                }`}
+                                      ? "bg-[#141412] text-[#FFD84D]"
+                                      : "bg-[#EFF6FF] text-[#1D4ED8] border border-[#DBEAFE]"
+                                  }`}
                               >
                                 {agent.userRole || "AC"}
                               </span>
@@ -1467,13 +1543,12 @@ export default function AnalyticsDashboardPage() {
                       <div className="flex-1 h-2.5 rounded-full overflow-hidden relative bg-[#F5F5F2] border border-[#E8E8E4]/60">
                         <div
                           style={{ width: `${Math.max(pct, val > 0 ? 8 : 0)}%` }}
-                          className={`heatmap-bar h-full rounded-full transition-all duration-500 ${
-                            isPeak
+                          className={`heatmap-bar h-full rounded-full transition-all duration-500 ${isPeak
                               ? "peak-pulse bg-[#FFD84D]"
                               : val > 0
-                              ? "bg-[#141412]"
-                              : "bg-transparent"
-                          }`}
+                                ? "bg-[#141412]"
+                                : "bg-transparent"
+                            }`}
                         />
                       </div>
                       <span className="w-7 text-right text-[10px] font-bold text-[#141412] tabular-numbers">
@@ -1592,7 +1667,21 @@ export default function AnalyticsDashboardPage() {
                 <div className="flex items-center gap-2">
                   <BarChart3 className="w-4 h-4 text-[#1F7A4D]" />
                   <h3 className="text-sm font-display font-black uppercase tracking-wider text-[#141412]">
-                    Top Objections & Topik Konsultasi Prospek
+                    {selectedUser === "all"
+                      ? chartMode === "comparison"
+                        ? "Topik Table Comparison"
+                        : chartMode === "alumni"
+                          ? "Topik Alumni Checker"
+                          : chartMode === "pitch"
+                            ? "Top Objections & Create Pitch"
+                            : "Top Objections & Topik Konsultasi Prospek"
+                      : chartMode === "comparison"
+                        ? `Topik Table Comparison (${selectedUser})`
+                        : chartMode === "alumni"
+                          ? `Topik Alumni Checker (${selectedUser})`
+                          : chartMode === "pitch"
+                            ? `Top Objections & Pitch (${selectedUser})`
+                            : `Top Objections & Topik (${selectedUser})`}
                   </h3>
                 </div>
                 <span className="text-[10.5px] font-mono font-bold text-[#4B4B46] bg-[#F5F5F2] px-2 py-0.5 rounded-md border border-[#E8E8E4]">
@@ -1600,29 +1689,33 @@ export default function AnalyticsDashboardPage() {
                 </span>
               </div>
 
-              {topTopics.length === 0 ? (
+              {activeUserTopics.length === 0 ? (
                 <div className="py-8 text-center text-xs text-[#7A7A74]">
-                  Belum ada data topik yang terdeteksi pada periode ini.
+                  {selectedUser === "all"
+                    ? "Belum ada data topik yang terdeteksi pada periode ini."
+                    : `Belum ada data topik ${chartMode === "all" ? "" : chartMode} untuk ${selectedUser} pada periode ini.`}
                 </div>
               ) : (
                 <div
-                  className={`grid grid-cols-1 ${
-                    topTopics.length > 2 ? "sm:grid-cols-2" : ""
-                  } gap-2 pt-0.5`}
+                  className={`grid grid-cols-1 ${activeUserTopics.length > 2 ? "sm:grid-cols-2" : ""
+                    } gap-2 pt-0.5`}
                 >
-                  {topTopics.map((topic, i) => {
+                  {activeUserTopics.map((topic: any, i: number) => {
                     const pct =
                       totalTopicMentions > 0
                         ? Math.round((topic.count / totalTopicMentions) * 100)
                         : 0;
                     return (
-                      <motion.div
+                      <motion.button
+                        type="button"
                         key={topic.name}
+                        onClick={() => setHistoryTopic(topic.name)}
+                        title="Klik untuk melihat riwayat generate topik ini"
                         initial={{ opacity: 0, y: 6 }}
                         animate={{ opacity: 1, y: 0 }}
                         whileHover={{ y: -1.5 }}
                         transition={{ duration: 0.25, delay: i * 0.04 }}
-                        className="flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl border border-[#E8E8E4] bg-[#FAFAF8] hover:border-[#D9D9D4] hover:bg-white text-xs text-[#141412] transition-colors shadow-2xs"
+                        className="flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl border border-[#E8E8E4] bg-[#FAFAF8] hover:border-[#D9D9D4] hover:bg-white text-xs text-[#141412] transition-colors shadow-2xs text-left cursor-pointer"
                       >
                         <div className="flex items-center gap-2 min-w-0">
                           <span className="font-mono text-[10px] font-bold text-[#7A7A74]">
@@ -1638,7 +1731,7 @@ export default function AnalyticsDashboardPage() {
                             {topic.count}
                           </span>
                         </div>
-                      </motion.div>
+                      </motion.button>
                     );
                   })}
                 </div>
@@ -1646,11 +1739,19 @@ export default function AnalyticsDashboardPage() {
             </div>
 
             <p className="text-[10.5px] text-[#7A7A74] pt-1">
-              Diklasifikasikan otomatis dari konteks masalah prospek, keberatan harga/waktu, dan program yang dikonsultasikan.
+              Diklasifikasikan otomatis dari konteks masalah prospek, keberatan harga/waktu, dan program yang dikonsultasikan. Klik topik untuk melihat hasil generate spesifik.
             </p>
           </motion.section>
         </div>
       </div>
+
+      <OwnerHistoryDrawer
+        open={historyTopic !== null}
+        onClose={() => setHistoryTopic(null)}
+        token={session?.token}
+        topic={historyTopic}
+        user={selectedUser !== "all" ? selectedUser : null}
+      />
 
       {/* ========================================================= */}
       {/* 7. TOAST NOTIFICATION WITH DISMISS                         */}

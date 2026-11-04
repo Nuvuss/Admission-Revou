@@ -72,6 +72,7 @@ function MinimalLoginForm() {
       const session: UserSession = {
         name: data.user.name,
         role: data.user.role,
+        email: data.user.email,
         token: data.token,
         savedAt: Date.now(),
       };
