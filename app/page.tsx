@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 import {
   Sparkles,
   Copy,
@@ -33,8 +33,13 @@ import {
   EyeOff,
   Activity,
   Scale,
-  Award
+  Award,
+  Crown,
+  BarChart3,
+  LogOut
 } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 
 // Dynamic import (lazy loading) to split the ~248 KB ComparisonView into a separate chunk
@@ -59,6 +64,8 @@ import ApiKeyModal from "./components/ApiKeyModal";
 import HistoryDrawer from "./components/HistoryDrawer";
 import AlumniCardList from "./components/AlumniCardList";
 import PitchScripts from "./components/PitchScripts";
+import UserRoleModal from "./components/UserRoleModal";
+import { UserRole, UserSession } from "./types/auth";
 import { ModeKey, ClarificationItem, HistoryItem, ApiPoolStatus, ApiKeyTestResult } from "./types";
 import { renderFormattedTextWithLinks } from "./utils/formatText";
 
@@ -121,6 +128,8 @@ const availableModels = [
 ];
 
 export default function DashboardPage() {
+  const router = useRouter();
+  const [isAuthChecking, setIsAuthChecking] = useState<boolean>(true);
   const [mode, setMode] = useState<ModeKey>("pitch");
   const [selectedModel, setSelectedModel] = useState(
     process.env.NEXT_PUBLIC_DEFAULT_MODEL || "gemini-3.5-flash"
@@ -153,8 +162,41 @@ export default function DashboardPage() {
   const [testResults, setTestResults] = useState<ApiKeyTestResult[] | null>(null);
   const [quotaAlertBanner, setQuotaAlertBanner] = useState<string | null>(null);
 
+  // ── Role & User Identity State (RBAC: Owner vs AC/BM) ──
+  const [userSession, setUserSession] = useState<UserSession | null>(null);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState<boolean>(false);
+
   // Load history & API keys from localStorage and fetch server pool status
   useEffect(() => {
+    // ── Enforce Login Gate: Check User Session ──
+    try {
+      const savedSession = localStorage.getItem("revou_admission_user_session_v1");
+      if (savedSession) {
+        const parsed = JSON.parse(savedSession);
+        if (parsed?.name && parsed?.role) {
+          setUserSession(parsed);
+          setIsAuthChecking(false);
+          try {
+            if (sessionStorage.getItem("revou_just_logged_in")) {
+              sessionStorage.removeItem("revou_just_logged_in");
+              setTimeout(() => {
+                showToast(`👋 Selamat datang, ${parsed.name} (${parsed.role})!`);
+              }, 300);
+            }
+          } catch (e) {}
+        } else {
+          router.replace("/login");
+          return;
+        }
+      } else {
+        router.replace("/login");
+        return;
+      }
+    } catch (e) {
+      router.replace("/login");
+      return;
+    }
+
     try {
       const savedHistory = localStorage.getItem("revou_admission_history_v1");
       if (savedHistory) {
@@ -184,6 +226,106 @@ export default function DashboardPage() {
     // Fetch initial API pool status
     fetchApiPoolStatus();
   }, []);
+
+  // Real-Time Online Presence: Heartbeat ping while userSession is active
+  useEffect(() => {
+    if (!userSession?.name) return;
+
+    const sendHeartbeat = () => {
+      fetch("/api/auth/heartbeat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userName: userSession.name,
+          userRole: userSession.role || "AC",
+        }),
+      }).catch(() => {});
+    };
+
+    sendHeartbeat();
+    const interval = setInterval(sendHeartbeat, 20000);
+
+    const handleBeforeUnload = () => {
+      try {
+        if (navigator.sendBeacon) {
+          const blob = new Blob([JSON.stringify({ userName: userSession.name })], {
+            type: "application/json",
+          });
+          navigator.sendBeacon("/api/auth/logout", blob);
+        }
+      } catch (e) {}
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [userSession?.name, userSession?.role]);
+
+  const handleConfirmLogout = () => {
+    if (userSession?.name) {
+      try {
+        fetch("/api/auth/logout", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userName: userSession.name }),
+          keepalive: true,
+        }).catch(() => {});
+      } catch (e) {}
+    }
+    try {
+      localStorage.removeItem("revou_admission_user_session_v1");
+    } catch (e) {}
+    setUserSession(null);
+    setIsLogoutModalOpen(false);
+    router.push("/login");
+  };
+
+  const handleSaveSession = (session: UserSession) => {
+    setUserSession(session);
+    try {
+      localStorage.setItem("revou_admission_user_session_v1", JSON.stringify(session));
+    } catch (e) {
+      console.error("Failed to save user session:", e);
+    }
+    showToast(`Masuk sebagai ${session.name} (${session.role})`);
+  };
+
+  const trackActivity = (
+    actionType: string,
+    customMode?: ModeKey,
+    snippet?: string,
+    topic?: string,
+    meta?: any
+  ) => {
+    try {
+      let session = userSession;
+      if (!session) {
+        try {
+          const saved = localStorage.getItem("revou_admission_user_session_v1");
+          if (saved) session = JSON.parse(saved);
+        } catch (e) {}
+      }
+      if (!session || !session.name) return;
+
+      fetch("/api/analytics/log", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userName: session.name,
+          userRole: session.role || "AC",
+          actionType,
+          mode: customMode || mode,
+          modelUsed: selectedModel,
+          topic: topic || null,
+          inputSnippet: snippet ? snippet.slice(0, 200) : null,
+          metadata: meta || {},
+        }),
+      }).catch(() => {});
+    } catch (e) {}
+  };
 
   const fetchApiPoolStatus = async () => {
     try {
@@ -265,13 +407,14 @@ export default function DashboardPage() {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
+        if (isLogoutModalOpen) setIsLogoutModalOpen(false);
         if (isKeyModalOpen) setIsKeyModalOpen(false);
         if (isHistoryDrawerOpen) setIsHistoryDrawerOpen(false);
       }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isHistoryDrawerOpen, isKeyModalOpen]);
+  }, [isHistoryDrawerOpen, isKeyModalOpen, isLogoutModalOpen]);
 
   const showToast = (msg: string) => {
     setHistoryToast(msg);
@@ -314,6 +457,85 @@ export default function DashboardPage() {
     setActiveScriptTab(0);
   };
 
+  const extractCleanTopic = (text: string, resultData?: any, activeMode: ModeKey = mode): string => {
+    // Gunakan murni input prompt dari user sebagai acuan utama agar tidak tercemar kata umum dari narasi AI (seperti "bisa", "analisa", "peluang", "sesuai", "antusias")
+    const userPrompt = (text || "").toLowerCase().trim();
+    const programMatchHint = (resultData?.program_match || "").toLowerCase().trim();
+
+    if (activeMode === "comparison") {
+      if (/\bpurwadhika\b/.test(userPrompt)) return "Komparasi vs Purwadhika";
+      if (/\bdibimbing\b/.test(userPrompt)) return "Komparasi vs Dibimbing";
+      if (/\b(dqlab|it\s*lab)\b/.test(userPrompt)) return "Komparasi vs DQLab";
+      if (/\bhacktiv8\b/.test(userPrompt)) return "Komparasi vs Hacktiv8";
+      return "Komparasi Kompetitor";
+    }
+
+    // 1. Deteksi Keberatan (Objections) Spesifik dengan Word Boundary (\b) yang ketat
+    if (
+      /\b(mahal|kemahalan|biaya|biayanya|harga|harganya|cicilan|nyicil|kredit|refund|skema\s+isa|income\s+share|danacita|diskon|promo|budget|angsuran|bayar\s+bertahap|kendala\s+uang|masalah\s+uang|belum\s+ada\s+uang|tidak\s+ada\s+uang)\b/.test(
+        userPrompt
+      )
+    ) {
+      return "Keberatan Biaya & Skema Cicilan";
+    }
+    if (
+      /\b(sibuk|tidak\s+ada\s+waktu|susah\s+bagi\s+waktu|jadwal|jadwalnya|kelas\s+malam|lembur|sambil\s+kerja|sambil\s+kuliah|bentrok|offline|tatap\s+muka)\b/.test(
+        userPrompt
+      )
+    ) {
+      return "Kendala Waktu & Jadwal Kelas";
+    }
+    if (
+      /\b(izin\s+atasan|izin\s+kantor|izin\s+bos|izin\s+suami|izin\s+istri|izin\s+orang\s+tua|izin\s+ortu|izin\s+keluarga|tanya\s+suami|tanya\s+istri|tanya\s+orang\s+tua|tanya\s+ortu|tanya\s+atasan|diskusi\s+sama|persetujuan\s+atasan|sponsor\s+kantor|dibayarin\s+kantor|suami|istri|orang\s+tua|ortu)\b/.test(
+        userPrompt
+      )
+    ) {
+      return "Izin Atasan / Keluarga";
+    }
+    if (
+      /\b(career\s*switch|switch\s*karir|switch\s*career|pindah\s*jalur|pindah\s*karir|non-it|non\s+it|bukan\s+it|tidak\s+ada\s+basic|tanpa\s+basic|gaptek|ragu\s+bisa|takut\s+tidak\s+bisa|faktor\s+usia|faktor\s+umur|terlalu\s+tua|lulusan\s+sma|lulusan\s+smk|ibu\s+rumah\s+tangga|career\s+break)\b/.test(
+        userPrompt
+      )
+    ) {
+      return "Keraguan Career Switch / Non-IT";
+    }
+
+    // 2. Deteksi Konsultasi / Pitch Program Spesifik dari Input User
+    const targetText = userPrompt || programMatchHint;
+    if (/\b(itb|ai\s+enabled\s+leaders|decision\s+making)\b/.test(targetText)) {
+      return "Pitch Program RevoU x ITB (AI & Leaders)";
+    }
+    if (/\b(binus|cyber\s*security|applied\s+ai)\b/.test(targetText)) {
+      return "Pitch Program RevoU x BINUS (AI & Cyber)";
+    }
+    if (/\b(revou\s*x\s*ui|universitas\s+indonesia|strategic\s+finance|program\s+ui|finance)\b/.test(targetText)) {
+      return "Pitch Program RevoU x UI (Strategic Finance)";
+    }
+    if (/\b(fsse|software\s+engineering|software\s+engineer|coding|full\s*stack\s+developer|web\s+developer)\b/.test(targetText)) {
+      return "Pitch Program Software Engineering (FSSE)";
+    }
+    if (/\b(fsdm|digital\s+marketing|marketing|ads|seo|sosmed|e-commerce)\b/.test(targetText)) {
+      return "Pitch Program Digital Marketing (FSDM)";
+    }
+    if (/\b(fsda|data\s+analytics|data\s+analyst|analisis\s+data|data\s+science|sql|python|tableau)\b/.test(targetText)) {
+      return "Pitch Program Data Analytics (FSDA)";
+    }
+
+    // 3. Deteksi Profil Prospek / Karir & Alumni
+    if (/\b(fresh\s*grad|fresh\s*graduate|baru\s+lulus|mahasiswa|lulusan\s+baru)\b/.test(userPrompt)) {
+      return "Pitch Prospek Fresh Graduate / Mahasiswa";
+    }
+    if (
+      /\b(jaminan\s+kerja|prospek\s+karir|peluang\s+karir|hiring|gaji|salary|magang|internship|portofolio|bumn|manufaktur|kisah\s+alumni|bukti\s+alumni)\b/.test(
+        userPrompt
+      )
+    ) {
+      return "Prospek Karir & Bukti Alumni";
+    }
+
+    return activeMode === "alumni" ? "Pencarian Bukti Kisah Alumni" : "Konsultasi Pitch Program RevoU";
+  };
+
   const handleModeChange = (newMode: ModeKey) => {
     if (newMode === mode) return;
     setMode(newMode);
@@ -329,6 +551,7 @@ export default function DashboardPage() {
   // Generate POST to /api/generate via Response Streaming (SSE)
   const handleGenerate = async () => {
     if (!inputText.trim()) return;
+    const generateStartMs = Date.now();
     setIsLoading(true);
     setResponseResult(null);
     setErrorMessage(null);
@@ -455,6 +678,18 @@ export default function DashboardPage() {
       }
 
       if (finalResultData) {
+        // Log generate activity to Analytics with clean topic & real response latency
+        const durationMs = Date.now() - generateStartMs;
+        const topicExtracted = extractCleanTopic(inputText, finalResultData, mode);
+
+        trackActivity("generate", mode, inputText, topicExtracted, {
+          model: selectedModel,
+          durationMs,
+          scriptsCount: Array.isArray(finalResultData.scripts) ? finalResultData.scripts.length : 0,
+          alumniCount: Array.isArray(finalResultData.alumni_matches) ? finalResultData.alumni_matches.length : 0,
+          comparisonCount: Array.isArray(finalResultData.comparison_points) ? finalResultData.comparison_points.length : 0,
+        });
+
         // Auto-save to History in LocalStorage
         const newSessionId = `hist-${Date.now()}`;
         setCurrentSessionId(newSessionId);
@@ -494,6 +729,7 @@ export default function DashboardPage() {
   const handleSendClarification = async (customText?: string) => {
     const q = (customText || chatInput).trim();
     if (!q || isChatLoading) return;
+    const clarifyStartMs = Date.now();
 
     const userMsgId = `user-${Date.now()}`;
     const userMsg: ClarificationItem = {
@@ -653,6 +889,14 @@ INSTRUKSI PENTING:
         setChatThread(updatedChatThread);
         // NOTE: setResponseResult(data) is intentionally NOT called to keep initial answer intact!
 
+        // Log clarification event with real duration & clean topic
+        const clarifyDurationMs = Date.now() - clarifyStartMs;
+        trackActivity("clarify", mode, q, extractCleanTopic(q, data, mode), {
+          model: selectedModel,
+          durationMs: clarifyDurationMs,
+          aiResponseLength: aiMessageText.length,
+        });
+
         // Save updated chatThread to history item in localStorage
         if (currentSessionId) {
           setHistoryList((prev) => {
@@ -679,6 +923,10 @@ INSTRUKSI PENTING:
   // Copy helpers for initial generation
   const handleCopyAll = () => {
     if (!responseResult?.scripts) return;
+    trackActivity("copy_script", mode, inputText, undefined, {
+      type: "copy_all",
+      sessionId: currentSessionId,
+    });
     const allText = responseResult.scripts.map((s: any) => `${s.badge}\n${s.text}`).join("\n\n---\n\n");
     navigator.clipboard.writeText(allText);
     setCopiedAll(true);
@@ -686,6 +934,11 @@ INSTRUKSI PENTING:
   };
 
   const handleCopySingle = (text: string, idx: number) => {
+    trackActivity("copy_script", mode, text, undefined, {
+      type: "copy_single",
+      index: idx,
+      sessionId: currentSessionId,
+    });
     navigator.clipboard.writeText(text);
     setCopiedIndex(idx);
     setTimeout(() => setCopiedIndex(null), 2000);
@@ -693,6 +946,11 @@ INSTRUKSI PENTING:
 
   // Copy helpers for clarification responses
   const handleCopyClarificationSingle = (text: string, key: string) => {
+    trackActivity("copy_script", mode, text, undefined, {
+      type: "copy_clarification_single",
+      key,
+      sessionId: currentSessionId,
+    });
     navigator.clipboard.writeText(text);
     setCopiedClarificationKey(key);
     setTimeout(() => setCopiedClarificationKey(null), 2000);
@@ -701,6 +959,11 @@ INSTRUKSI PENTING:
   const handleCopyClarificationAll = (scripts: any[], msgId: string) => {
     if (!scripts || scripts.length === 0) return;
     const allText = scripts.map((s: any) => `${s.badge}\n${s.text}`).join("\n\n---\n\n");
+    trackActivity("copy_script", mode, allText, undefined, {
+      type: "copy_clarification_all",
+      msgId,
+      sessionId: currentSessionId,
+    });
     navigator.clipboard.writeText(allText);
     setCopiedClarificationKey(`${msgId}-all`);
     setTimeout(() => setCopiedClarificationKey(null), 2000);
@@ -795,12 +1058,30 @@ INSTRUKSI PENTING:
       textToCopy = item.inputText;
     }
     navigator.clipboard.writeText(textToCopy);
+    trackActivity("copy_script", item.mode, textToCopy, undefined, {
+      type: "copy_history",
+      sessionId: item.id,
+    });
     setCopiedHistoryId(item.id);
     setTimeout(() => setCopiedHistoryId(null), 2000);
     showToast("Tersalin ke clipboard!");
   };
 
   const favoritesCount = historyList.filter((i) => i.isFavorite).length;
+
+  if (isAuthChecking) {
+    return (
+      <div className="min-h-screen bg-[#FBFBFA] flex items-center justify-center p-4">
+        <div className="flex flex-col items-center gap-3 text-center">
+          <div className="w-10 h-10 rounded-xl border border-[#E8E8E4] bg-white p-1 flex items-center justify-center shadow-xs">
+            <img src="/revou-logo.png" alt="RevoU Logo" className="w-full h-full object-contain" />
+          </div>
+          <div className="w-6 h-6 border-2 border-[#FFD84D] border-t-[#141412] rounded-full animate-spin mt-1" />
+          <p className="text-xs font-mono text-[#7A7A74]">Memverifikasi sesi login...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#FFFFFF] text-[#141412] font-sans antialiased px-4 sm:px-6 py-6 sm:py-10">
@@ -841,56 +1122,60 @@ INSTRUKSI PENTING:
             </div>
 
             <div className="flex items-center gap-2 flex-wrap">
-              {/* 5 API Keys Round Robin Button */}
-              <button
-                type="button"
-                onClick={() => setIsKeyModalOpen(true)}
-                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-[#D9D9D4] bg-white hover:bg-[#F5F5F2] hover:border-[#141412] text-xs font-bold text-[#141412] transition-all cursor-pointer shadow-2xs hover:shadow-xs active:scale-95 select-none"
-                title="Kelola 5 API Keys & Pantau Status Kuota (Round Robin)"
-              >
-                <Key className="w-3.5 h-3.5 text-[#0E62FE]" />
-                <span className="hidden sm:inline">5 API Keys</span>
-                <span className="flex items-center gap-1 font-mono text-[10.5px] px-1.5 py-0.5 rounded bg-[#F5F5F2] text-[#4B4B46] border border-[#E8E8E4]">
-                  <span
-                    className={`w-1.5 h-1.5 rounded-full ${apiPoolStatus?.quotaHealth === "optimal"
-                      ? "bg-[#1F7A4D]"
-                      : apiPoolStatus?.quotaHealth === "partial_warning"
-                        ? "bg-[#D97706] animate-pulse"
-                        : apiPoolStatus?.quotaHealth === "all_exhausted"
-                          ? "bg-[#DA1E28] animate-pulse"
-                          : "bg-[#1F7A4D]"
-                      }`}
-                  />
-                  <span>
-                    {apiPoolStatus?.activeRoundRobinIndex
-                      ? `API ${apiPoolStatus.activeRoundRobinIndex}/${apiPoolStatus.totalKeys || 5}`
-                      : "Round Robin"}
-                  </span>
-                </span>
-              </button>
+              {/* Analytics Dashboard Button (Khusus Role Owner) */}
+              {userSession?.role === "Owner" && (
+                <Link
+                  href="/analytics"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#FFD84D] bg-[#FFD84D] hover:bg-[#F5CD3D] text-xs font-black text-[#141412] transition-all cursor-pointer shadow-2xs hover:shadow-xs active:scale-95 select-none"
+                  title="Buka Traffic & Activity Analytics Dashboard"
+                >
+                  <BarChart3 className="w-3.5 h-3.5 text-[#141412]" />
+                  <span>Analytics</span>
+                </Link>
+              )}
 
-              {/* Favorit & Riwayat Button */}
-              <button
-                type="button"
-                onClick={() => {
-                  setDrawerTab("favorites");
-                  setIsHistoryDrawerOpen(true);
-                }}
-                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-[#D9D9D4] bg-white hover:bg-[#F5F5F2] hover:border-[#141412] text-xs font-bold text-[#141412] transition-all cursor-pointer shadow-2xs hover:shadow-xs active:scale-95 select-none"
-                title="Lihat riwayat percakapan dan skrip tersimpan"
+              {/* Unified User Profile + Logout Capsule */}
+              <div
+                className={`inline-flex items-center rounded-lg border text-xs font-bold shadow-2xs select-none overflow-hidden ${
+                  userSession?.role === "Owner"
+                    ? "bg-[#141412] text-[#FFD84D] border-[#141412]"
+                    : userSession?.role === "BM"
+                    ? "bg-[#F3E8FF] text-[#7E22CE] border-[#E9D5FF]"
+                    : "bg-[#EFF6FF] text-[#1D4ED8] border-[#DBEAFE]"
+                }`}
               >
-                <Bookmark className="w-3.5 h-3.5 text-[#A15C00]" />
-                <span>Favorit &amp; Riwayat</span>
-                {favoritesCount > 0 ? (
-                  <span className="flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] font-mono font-bold rounded-full bg-[#FFD84D] text-[#141412]">
-                    ★ {favoritesCount}
+                <div
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5"
+                  title={`Login sebagai: ${userSession?.name || ""} (${userSession?.role || ""})`}
+                >
+                  {userSession?.role === "Owner" ? (
+                    <Crown className="w-3.5 h-3.5 text-[#FFD84D]" />
+                  ) : userSession?.role === "BM" ? (
+                    <UserCheck className="w-3.5 h-3.5 text-[#7E22CE]" />
+                  ) : (
+                    <ShieldCheck className="w-3.5 h-3.5 text-[#1D4ED8]" />
+                  )}
+                  <span>
+                    <span className="font-mono text-[10px] opacity-80 uppercase mr-1.5">
+                      [{userSession?.role || "AC"}]
+                    </span>
+                    {userSession?.name || "User"}
                   </span>
-                ) : historyList.length > 0 ? (
-                  <span className="flex items-center px-1.5 py-0.5 text-[10px] font-mono rounded-full bg-[#F5F5F2] text-[#8A8A84] border border-[#E8E8E4]">
-                    {historyList.length}
-                  </span>
-                ) : null}
-              </button>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setIsLogoutModalOpen(true)}
+                  className={`px-2.5 py-1.5 border-l transition-colors cursor-pointer flex items-center justify-center ${
+                    userSession?.role === "Owner"
+                      ? "border-white/15 text-[#A0A09A] hover:bg-[#DA1E28] hover:text-white"
+                      : "border-black/10 text-[#7A7A74] hover:bg-[#FFF1F1] hover:text-[#DA1E28]"
+                  }`}
+                  title="Keluar / Ganti Akun"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                </button>
+              </div>
             </div>
           </div>
 
@@ -951,49 +1236,90 @@ INSTRUKSI PENTING:
           transition={{ duration: 0.5, delay: 0.22, ease: [0.16, 1, 0.3, 1] }}
           className="bg-white border border-[#E8E8E4] rounded-2xl p-5 sm:p-6 shadow-xs space-y-6"
         >
-          {/* Segmented Control Pill Navigation Bar (Animated layoutId) */}
-          <div className="p-1 rounded-xl bg-[#F5F5F2] border border-[#E8E8E4] flex gap-1 overflow-x-auto">
-            {[
-              { key: "pitch", label: "Create a Pitch", icon: Sparkles },
-              { key: "alumni", label: "Checking Alumni", icon: UserCheck },
-              { key: "comparison", label: "Comparison Table", icon: Scale }
-            ].map((tab) => {
-              const Icon = tab.icon;
-              const isActive = mode === tab.key;
-              return (
-                <button
-                  key={tab.key}
-                  type="button"
-                  onClick={() => handleModeChange(tab.key as ModeKey)}
-                  className={`relative px-4 py-2.5 text-xs sm:text-sm font-bold rounded-lg transition-colors cursor-pointer select-none flex items-center gap-2 shrink-0 ${isActive ? "text-[#141412]" : "text-[#7A7A74] hover:text-[#141412]"
+          {/* Segmented Control Pill Navigation Bar + Favorit & Riwayat Button */}
+          <div className="flex flex-wrap items-center justify-between gap-2.5">
+            <div className="p-1 rounded-xl bg-[#F5F5F2] border border-[#E8E8E4] flex gap-1 overflow-x-auto">
+              {[
+                { key: "pitch", label: "Create a Pitch", icon: Sparkles },
+                { key: "alumni", label: "Checking Alumni", icon: UserCheck },
+                { key: "comparison", label: "Comparison Table", icon: Scale }
+              ].map((tab) => {
+                const Icon = tab.icon;
+                const isActive = mode === tab.key;
+                return (
+                  <button
+                    key={tab.key}
+                    type="button"
+                    onClick={() => handleModeChange(tab.key as ModeKey)}
+                    className={`relative px-3.5 py-2 text-xs sm:text-[13px] font-bold rounded-lg transition-colors cursor-pointer select-none flex items-center gap-1.5 shrink-0 ${
+                      isActive ? "text-[#141412]" : "text-[#7A7A74] hover:text-[#141412]"
                     }`}
-                >
-                  {isActive && (
-                    <motion.div
-                      layoutId="activeModeTab"
-                      transition={{ type: "spring", stiffness: 450, damping: 32 }}
-                      className="absolute inset-0 bg-[#FFD84D] rounded-lg shadow-2xs border border-[#E5B500]/60"
-                    />
-                  )}
-                  <span className="relative z-10 flex items-center gap-2">
-                    <Icon className={`w-4 h-4 ${isActive ? "text-[#141412]" : "text-[#8A8A84]"}`} />
-                    <span>{tab.label}</span>
-                  </span>
-                </button>
-              );
-            })}
+                  >
+                    {isActive && (
+                      <motion.div
+                        layoutId="activeModeTab"
+                        transition={{ type: "spring", stiffness: 450, damping: 32 }}
+                        className="absolute inset-0 bg-[#FFD84D] rounded-lg shadow-2xs border border-[#E5B500]/60"
+                      />
+                    )}
+                    <span className="relative z-10 flex items-center gap-1.5">
+                      <Icon className={`w-3.5 h-3.5 ${isActive ? "text-[#141412]" : "text-[#8A8A84]"}`} />
+                      <span>{tab.label}</span>
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Favorit & Riwayat Button (Dipindahkan ke baris kerja agar kontekstual) */}
+            <motion.button
+              type="button"
+              whileHover={{ y: -1.5 }}
+              whileTap={{ scale: 0.96 }}
+              onClick={() => {
+                setDrawerTab("favorites");
+                setIsHistoryDrawerOpen(true);
+              }}
+              className="inline-flex items-center gap-2 px-3 py-2 rounded-xl border border-[#D9D9D4] bg-white hover:bg-[#F5F5F2] hover:border-[#141412] text-xs font-bold text-[#141412] transition-colors cursor-pointer shadow-2xs hover:shadow-xs select-none shrink-0"
+              title="Lihat riwayat percakapan dan skrip tersimpan"
+            >
+              <Bookmark className="w-3.5 h-3.5 text-[#A15C00]" />
+              <span>Favorit &amp; Riwayat</span>
+              {favoritesCount > 0 ? (
+                <span className="flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] font-mono font-bold rounded-full bg-[#FFD84D] text-[#141412]">
+                  ★ {favoritesCount}
+                </span>
+              ) : historyList.length > 0 ? (
+                <span className="flex items-center px-1.5 py-0.5 text-[10px] font-mono rounded-full bg-[#F5F5F2] text-[#8A8A84] border border-[#E8E8E4]">
+                  {historyList.length}
+                </span>
+              ) : null}
+            </motion.button>
           </div>
 
-          {/* Dedicated Comparison Table Explorer (Battlecards, General Table, Bootcamp Table) */}
-          {mode === "comparison" && (
-            <div className="pt-1">
-              <ComparisonView />
-            </div>
-          )}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={mode}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+              className="space-y-6"
+            >
+              {/* Dedicated Comparison Table Explorer (Battlecards, General Table, Bootcamp Table) */}
+              {mode === "comparison" && (
+                <div className="pt-1">
+                  <ComparisonView
+                    onTrackActivity={(actionType, topic, snippet, meta) =>
+                      trackActivity(actionType, "comparison", snippet, topic, meta)
+                    }
+                  />
+                </div>
+              )}
 
-          {/* Form and AI Copilot - only rendered for Pitch and Alumni */}
-          {mode !== "comparison" && (
-            <>
+              {/* Form and AI Copilot - only rendered for Pitch and Alumni */}
+              {mode !== "comparison" && (
+                <>
               {/* Describe Your Situation Section */}
               <div className="space-y-2">
                 <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2">
@@ -1095,8 +1421,8 @@ INSTRUKSI PENTING:
                 </button>
               </div>
 
-              {/* Autonote status: 3D Pulsing Beacon */}
-              <div className="flex items-center gap-2 m-0 select-none">
+              {/* Autonote status: 3D Pulsing Beacon + 5 API Keys Engine Status (Khusus Owner) */}
+              <div className="flex flex-wrap items-center justify-between gap-2 m-0 select-none pt-0.5">
                 <div className="beacon-3d-badge inline-flex items-center gap-2 px-2.5 py-1 rounded-full cursor-default">
                   <span className="relative flex h-2.5 w-2.5 items-center justify-center">
                     {/* 3D Wave Ripple */}
@@ -1108,6 +1434,37 @@ INSTRUKSI PENTING:
                     AI siap
                   </span>
                 </div>
+
+                {/* 5 API Keys Round Robin Button (Dipindahkan ke dekat status mesin AI) */}
+                {userSession?.role === "Owner" && (
+                  <button
+                    type="button"
+                    onClick={() => setIsKeyModalOpen(true)}
+                    className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#E8E8E4] bg-[#F5F5F2] hover:bg-white hover:border-[#141412] text-[11px] font-bold text-[#141412] transition-all cursor-pointer shadow-2xs hover:shadow-xs active:scale-95 select-none"
+                    title="Kelola 5 API Keys & Pantau Status Kuota (Round Robin)"
+                  >
+                    <Key className="w-3 h-3 text-[#0E62FE]" />
+                    <span>5 API Keys</span>
+                    <span className="flex items-center gap-1 font-mono text-[10px] px-1.5 py-0.5 rounded-full bg-white text-[#4B4B46] border border-[#E8E8E4]">
+                      <span
+                        className={`w-1.5 h-1.5 rounded-full ${
+                          apiPoolStatus?.quotaHealth === "optimal"
+                            ? "bg-[#1F7A4D]"
+                            : apiPoolStatus?.quotaHealth === "partial_warning"
+                            ? "bg-[#D97706] animate-pulse"
+                            : apiPoolStatus?.quotaHealth === "all_exhausted"
+                            ? "bg-[#DA1E28] animate-pulse"
+                            : "bg-[#1F7A4D]"
+                        }`}
+                      />
+                      <span>
+                        {apiPoolStatus?.activeRoundRobinIndex
+                          ? `API ${apiPoolStatus.activeRoundRobinIndex}/${apiPoolStatus.totalKeys || 5}`
+                          : "Round Robin"}
+                      </span>
+                    </span>
+                  </button>
+                )}
               </div>
 
               {errorMessage && (
@@ -1613,8 +1970,10 @@ INSTRUKSI PENTING:
                   </div>
                 </motion.div>
               )}
-            </>
-          )}
+                </>
+              )}
+            </motion.div>
+          </AnimatePresence>
         </motion.section>
 
         {/* ========================================================= */}
@@ -1658,6 +2017,72 @@ INSTRUKSI PENTING:
         onSaveCustomKeys={handleSaveCustomKeys}
         onResetKeysToDefault={handleResetKeysToDefault}
       />
+
+      {/* ========================================================= */}
+      {/* 6. MODAL KONFIRMASI KELUAR DARI AKUN (REVOU MODAL)         */}
+      {/* ========================================================= */}
+      <AnimatePresence>
+        {isLogoutModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            {/* Backdrop Blur */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.18 }}
+              onClick={() => setIsLogoutModalOpen(false)}
+              className="absolute inset-0 bg-[#141412]/50 backdrop-blur-xs cursor-pointer"
+            />
+
+            {/* Modal Dialog Card */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.94, y: 12 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.94, y: 12 }}
+              transition={{ type: "spring", stiffness: 420, damping: 30 }}
+              className="relative w-full max-w-sm rounded-2xl bg-white border border-[#E8E8E4] p-6 shadow-2xl space-y-4 text-center z-10 overflow-hidden"
+            >
+              {/* Top Warning Icon */}
+              <div className="w-12 h-12 rounded-full bg-[#FFF1F1] border border-[#FFD0D0] text-[#DA1E28] flex items-center justify-center mx-auto shadow-2xs">
+                <LogOut className="w-5 h-5 text-[#DA1E28]" />
+              </div>
+
+              {/* Title & Description */}
+              <div className="space-y-1.5">
+                <h3 className="text-lg font-display font-black text-[#141412] tracking-tight">
+                  Keluar dari akun?
+                </h3>
+                <p className="text-xs text-[#7A7A74] leading-relaxed">
+                  Anda saat ini masuk sebagai{" "}
+                  <strong className="text-[#141412] font-bold">
+                    {userSession?.name || "User"}
+                  </strong>{" "}
+                  [{userSession?.role || "AC"}]. Riwayat konsultasi dan skrip tersimpan Anda tetap aman di browser ini.
+                </p>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="grid grid-cols-2 gap-2.5 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setIsLogoutModalOpen(false)}
+                  className="px-4 py-2.5 rounded-xl border border-[#D9D9D4] bg-white hover:bg-[#F5F5F2] hover:border-[#141412] text-xs font-bold text-[#141412] transition-all cursor-pointer shadow-2xs active:scale-95"
+                >
+                  Batal
+                </button>
+                <button
+                  type="button"
+                  onClick={handleConfirmLogout}
+                  className="px-4 py-2.5 rounded-xl bg-[#DA1E28] hover:bg-[#BA1B23] text-white text-xs font-bold transition-all cursor-pointer shadow-xs active:scale-95 flex items-center justify-center gap-1.5"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                  <span>Ya, Keluar</span>
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       {/* FLOATING TOAST NOTIFICATION */}
       {historyToast && (

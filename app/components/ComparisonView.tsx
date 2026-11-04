@@ -3024,7 +3024,16 @@ function buildProgramBattlecard(
 // Set ke `true` jika tim AC ingin mengaktifkan kembali tab General Comparison (Level Institusi/Makro)
 const SHOW_GENERAL_COMPARISON = false;
 
-export default function ComparisonView() {
+export interface ComparisonViewProps {
+  onTrackActivity?: (
+    actionType: string,
+    topic?: string,
+    snippet?: string,
+    meta?: any
+  ) => void;
+}
+
+export default function ComparisonView({ onTrackActivity }: ComparisonViewProps = {}) {
   const [activeTab, setActiveTab] = useState<"bootcamp" | "general" | "battlecards">("bootcamp");
   const [institutionViewMode, setInstitutionViewMode] = useState<"headToHead" | "allCompetitors">("headToHead");
   const [copiedId, setCopiedId] = useState<string | null>(null);
@@ -3070,7 +3079,7 @@ export default function ComparisonView() {
     }
     const found = uniqueRevoUProgramsForComp.find((item) => item.program === programName);
     if (found) {
-      setSelectedProgramId(found.firstProgramId);
+      handleSelectProgramId(found.firstProgramId);
     }
   };
 
@@ -3080,7 +3089,33 @@ export default function ComparisonView() {
     setSelectedProgramId(""); // Reset program selection so user chooses program for new competitor
   };
 
+  const handleSelectProgramId = (progId: string) => {
+    setSelectedProgramId(progId);
+    if (!progId || progId === selectedProgramId) return;
+    const detail = availableProgramsForSelectedComp.find((p) => p.id === progId);
+    if (detail && onTrackActivity) {
+      onTrackActivity(
+        "view_comparison",
+        `Komparasi vs ${detail.competitorName}`,
+        `RevoU ${detail.revouMatchProgram} vs ${detail.competitorName} ${detail.programTitle}`,
+        {
+          competitor: detail.competitorName,
+          programId: detail.id,
+          revouProgram: detail.revouMatchProgram,
+        }
+      );
+    }
+  };
+
   const handleCopyText = (text: string, id: string) => {
+    if (onTrackActivity) {
+      onTrackActivity(
+        "copy_script",
+        activeProgramDetail ? `Komparasi vs ${activeProgramDetail.competitorName}` : "Komparasi Kompetitor",
+        text,
+        { type: "copy_comparison_script", id }
+      );
+    }
     navigator.clipboard.writeText(text);
     setCopiedId(id);
     setTimeout(() => setCopiedId(null), 2000);
@@ -3228,7 +3263,7 @@ export default function ComparisonView() {
               </label>
               <AnimatedSelect
                 value={selectedProgramId}
-                onChange={(val) => setSelectedProgramId(val)}
+                onChange={(val) => handleSelectProgramId(val)}
                 options={compProgramOptions}
                 placeholder={`— Pilih Program ${competitorDisplayNames[selectedCompetitorKey]} —`}
                 buttonClassName="bg-[#F5F5F2] hover:bg-[#EDEDEA] text-[#141412] font-display font-medium text-xs sm:text-sm rounded-xl px-3.5 py-2.5 border border-[#D4D4CE] hover:border-[#FFD84D] shadow-2xs"

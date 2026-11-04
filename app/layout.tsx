@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import { Analytics } from '@vercel/analytics/next';
 import './globals.css';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'Admission Assistant · RevoU AI Sales Copilot',
   description: 'Turn prospect context into a better pitch. Grounded on RevoU Knowledge Base.',

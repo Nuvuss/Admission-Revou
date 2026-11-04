@@ -215,4 +215,284 @@
 }
 
 
-
+
+
+
+/* ======================================================== */
+/* RevoU Analytics Dashboard Motion & Glassmorphism        */
+/* ======================================================== */
+.glass-revou {
+  background: #FFFFFF;
+  border: 1px solid #E8E8E4;
+  border-radius: 16px;
+  box-shadow: 0 1px 3px rgba(20, 20, 18, 0.04), 0 6px 20px rgba(20, 20, 18, 0.03);
+  backdrop-filter: blur(14px) saturate(120%);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.15s ease;
+}
+
+.enter-stagger {
+  opacity: 0;
+  animation: riseRevou 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: calc(var(--i, 0) * 50ms);
+}
+
+@keyframes riseRevou {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.99);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0px);
+  }
+}
+
+/* Hourly Heatmap & Peak Pulse */
+@keyframes barExpand {
+  from {
+    transform: scaleX(0);
+    opacity: 0.2;
+  }
+  to {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+
+.heatmap-bar {
+  animation: barExpand 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform-origin: left center;
+}
+
+@keyframes peakGlow {
+  0%, 100% {
+    box-shadow: 0 0 4px rgba(255, 216, 77, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 16px rgba(255, 216, 77, 0.85);
+  }
+}
+
+.peak-pulse {
+  background-color: #FFD84D !important;
+  border-right: 2px solid #141412;
+  box-shadow: 0 0 10px rgba(255, 216, 77, 0.4);
+  animation: peakGlow 2.5s ease-in-out infinite;
+}
+
+.tabular-numbers {
+  font-family: 'Red Hat Mono', monospace;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+
+/* ======================================================== */
+/* MOORLY x REVOU DARK GLASSMORPHISM & MOTION ENGINE       */
+/* ======================================================== */
+
+/* Atmospheric Drifting Ambient Waves */
+.waves-container {
+  position: fixed;
+  inset: auto 0 0 0;
+  height: 48vh;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0.18;
+}
+
+.drift-wave {
+  width: 200%;
+  animation: driftWave 24s linear infinite;
+}
+
+.drift-wave:nth-child(2) {
+  animation-duration: 36s;
+  opacity: 0.65;
+}
+
+.drift-wave:nth-child(3) {
+  animation-duration: 48s;
+  opacity: 0.35;
+}
+
+@keyframes driftWave {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Moorly Glass Panels */
+.glass-panel-dark {
+  background: rgba(17, 21, 28, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  backdrop-filter: blur(20px) saturate(140%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07), 0 14px 40px rgba(0, 0, 0, 0.35);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.2s ease;
+}
+
+.glass-panel-dark:hover {
+  border-color: rgba(255, 255, 255, 0.16);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 18px 48px rgba(0, 0, 0, 0.45);
+}
+
+.floating-glass-bar {
+  background: rgba(14, 18, 24, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 9999px;
+  backdrop-filter: blur(24px) saturate(150%);
+  box-shadow: 0 12px 42px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+/* KPI Card Tint Gradients (RevoU Palette) */
+.kpi-card-moorly {
+  padding: 18px 20px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(16px);
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.2s ease;
+}
+
+.kpi-card-moorly:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.35);
+}
+
+.kpi-tint-yellow {
+  background: linear-gradient(135deg, rgba(255, 216, 77, 0.15) 0%, rgba(18, 22, 28, 0.6) 75%);
+  border-color: rgba(255, 216, 77, 0.24);
+}
+.kpi-tint-yellow:hover {
+  border-color: rgba(255, 216, 77, 0.45);
+  box-shadow: 0 0 24px rgba(255, 216, 77, 0.18);
+}
+
+.kpi-tint-emerald {
+  background: linear-gradient(135deg, rgba(31, 122, 77, 0.18) 0%, rgba(18, 22, 28, 0.6) 75%);
+  border-color: rgba(74, 222, 128, 0.22);
+}
+.kpi-tint-emerald:hover {
+  border-color: rgba(74, 222, 128, 0.45);
+  box-shadow: 0 0 24px rgba(34, 197, 94, 0.16);
+}
+
+.kpi-tint-amber {
+  background: linear-gradient(135deg, rgba(217, 119, 6, 0.16) 0%, rgba(18, 22, 28, 0.6) 75%);
+  border-color: rgba(245, 158, 11, 0.22);
+}
+.kpi-tint-amber:hover {
+  border-color: rgba(245, 158, 11, 0.45);
+  box-shadow: 0 0 24px rgba(245, 158, 11, 0.16);
+}
+
+.kpi-tint-violet {
+  background: linear-gradient(135deg, rgba(147, 51, 234, 0.16) 0%, rgba(18, 22, 28, 0.6) 75%);
+  border-color: rgba(168, 85, 247, 0.22);
+}
+.kpi-tint-violet:hover {
+  border-color: rgba(168, 85, 247, 0.45);
+  box-shadow: 0 0 24px rgba(168, 85, 247, 0.16);
+}
+
+/* Staggered Blur-in Entrance */
+@keyframes riseMoorlyBlur {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.98);
+    filter: blur(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0px);
+  }
+}
+
+.enter-blur-stagger {
+  opacity: 0;
+  animation: riseMoorlyBlur 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: calc(var(--i, 0) * 60ms);
+}
+
+/* RevoU Glowing Button */
+.btn-glowing-revou {
+  background: #FFD84D;
+  color: #141412;
+  box-shadow: 0 0 24px rgba(255, 216, 77, 0.35);
+  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+}
+.btn-glowing-revou:hover {
+  box-shadow: 0 0 36px rgba(255, 216, 77, 0.65);
+  transform: translateY(-1.5px);
+}
+.btn-glowing-revou:active {
+  transform: scale(0.96);
+}
+
+/* Chart SVG Animated Line Drawing */
+.chart-draw-line {
+  stroke-dasharray: 1400;
+  stroke-dashoffset: 1400;
+  animation: drawChartLine 1.4s 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes drawChartLine {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.chart-draw-area {
+  opacity: 0;
+  animation: fadeInArea 0.8s 0.8s ease-out forwards;
+}
+
+@keyframes fadeInArea {
+  to {
+    opacity: 1;
+  }
+}
+
+/* Status Pills */
+.pill-moorly {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.pill-moorly-ok {
+  color: #4ADE80;
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(74, 222, 128, 0.25);
+}
+.pill-moorly-warn {
+  color: #FBBF24;
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(251, 191, 36, 0.25);
+}
+.pill-moorly-danger {
+  color: #F87171;
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(248, 113, 113, 0.25);
+}
+.pill-moorly-revou {
+  color: #141412;
+  background: #FFD84D;
+  border: 1px solid #FFCC1A;
+  box-shadow: 0 0 12px rgba(255, 216, 77, 0.35);
+}
