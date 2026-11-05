@@ -9,13 +9,14 @@ import {
   getApiKeysStatus,
 } from "../../../lib/apiKeyManager";
 import { findMatchingPitchTemplate } from "../../../lib/pitchTemplateMatcher";
+import { logMetricsToJsonl, extractUsageMetadata } from "../../../lib/metricsLogger";
 
 export const maxDuration = 60;
 export const dynamic = "force-dynamic";
 
-// ─────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // In-Memory Caching for Knowledge Base & System Prompts
-// ─────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const rawFileCache = new Map();
 const tabKnowledgeCache = new Map();
 const systemPromptCache = new Map();
@@ -45,9 +46,9 @@ function getCachedFileContent(filePath) {
   return content;
 }
 
-// ─────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Smart Topic Filtering: Memetakan kata kunci ke file dokumen relevan
-// ─────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function detectRelevantKnowledgeFiles(situation = "", tab = "pitch") {
   const text = (situation || "").toLowerCase();
 
@@ -68,7 +69,7 @@ function detectRelevantKnowledgeFiles(situation = "", tab = "pitch") {
     ];
   }
 
-  // ── UNTUK TAB PITCH: HANYA MUAT FILE SPESIFIK SESUAI PROGRAM TARGET UNTUK MENCEGAH LONJAKAN TOKEN ──
+  // â”€â”€ UNTUK TAB PITCH: HANYA MUAT FILE SPESIFIK SESUAI PROGRAM TARGET UNTUK MENCEGAH LONJAKAN TOKEN â”€â”€
   // 1. Deteksi intent eksplisit program (Prioritas Mutlak)
   const isExplicitCyber = /cyber|security|keamanan|soc\b|pentest|red\s*team|blue\s*team/i.test(text);
   const isExplicitBinus = !isExplicitCyber && /\bbinus\b|applied\s*ai|ai\s*automation|otomasi\s*ai|ai\s*workflow/i.test(text);
@@ -174,9 +175,9 @@ function detectRelevantKnowledgeFiles(situation = "", tab = "pitch") {
   ];
 }
 
-// ─────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Load knowledge files from /knowledge/ based on tab & situation (Smart Cached)
-// ─────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function loadKnowledgeBase(tab = "pitch", situation = "", explicitFiles = null) {
   checkCacheValidity();
 
@@ -207,9 +208,9 @@ function loadKnowledgeBase(tab = "pitch", situation = "", explicitFiles = null) 
   return knowledgeContent;
 }
 
-// ─────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Load SKILL.md (Cached in Memory)
-// ─────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function loadSkillDefinition() {
   checkCacheValidity();
   if (cachedSkillDefinition) {
@@ -233,9 +234,9 @@ function loadSkillDefinition() {
   return "";
 }
 
-// ─────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Get System Prompt with Smart In-Memory Cache, Template Matcher & Targeted Fallback
-// ─────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 async function getCachedSystemPrompt(tab, situation = "", customKeys = null) {
   checkCacheValidity();
 
@@ -256,9 +257,9 @@ async function getCachedSystemPrompt(tab, situation = "", customKeys = null) {
   return prompt;
 }
 
-// ─────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Build system prompt
-// ─────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function buildSystemPrompt(skillInstructions, knowledgeBase, tab, templateMatch = null) {
   return `
 Kamu adalah Sales Copilot untuk RevoU Admission Team.
@@ -282,9 +283,9 @@ ${templateMatch.exemplar}
 ` : `
 ## PANDUAN DYNAMIC PITCH GENERATION (TARGETED FALLBACK DATA-DRIVEN):
 Tidak ditemukan template benchmark siap pakai untuk situasi ini. AI WAJIB menyusun variasi pitch secara dinamis dengan merujuk data program di KNOWLEDGE BASE di bawah, berpedoman pada struktur 3 paragraf baku RevoU:
-- Paragraf 1 — Empati Spesifik & Validasi Profil (~35-70 kata): Akui beban/kompleksitas/keberanian transisi leads secara tulus berdasarkan data profil mereka.
-- Paragraf 2 — Solusi Program, Modul Konkret & AI Force Multiplier (~70-180 kata): Sambungkan tujuan lead ke USP program, modul spesifik, tools modern, capstone project, dan framing AI sebagai force multiplier (bukan pengganti manusia).
-- Paragraf 3 — Ajakan Penutup Santai (~15-50 kata): Pilih satu opsi CTA santai (konsultasi gratis / bedah real case / ngobrol 1:1).
+- Paragraf 1 â€” Empati Spesifik & Validasi Profil (~35-70 kata): Akui beban/kompleksitas/keberanian transisi leads secara tulus berdasarkan data profil mereka.
+- Paragraf 2 â€” Solusi Program, Modul Konkret & AI Force Multiplier (~70-180 kata): Sambungkan tujuan lead ke USP program, modul spesifik, tools modern, capstone project, dan framing AI sebagai force multiplier (bukan pengganti manusia).
+- Paragraf 3 â€” Ajakan Penutup Santai (~15-50 kata): Pilih satu opsi CTA santai (konsultasi gratis / bedah real case / ngobrol 1:1).
 Panjang pesan WhatsApp WAJIB minimal 120 kata (rentang 120-300 kata) per variasi.
 `}
 
@@ -340,7 +341,7 @@ Sebelum menyusun draf script, kamu WAJIB menganalisis dan menekankan data dari K
 - WAJIB merujuk hanya pada data di dalam KNOWLEDGE BASE di bawah.
 - DILARANG mengarang nama program, harga, batch, modul, atau statistik yang tidak ada di knowledge base.
 - Jika topik tidak ada di knowledge base, jawab jujur bahwa data belum tersedia.
-- Untuk "program_match": pilih nama program yang BENAR-BENAR ada di knowledge base berdasarkan sinyal dari situasi. Jika tidak ada yang cocok, isi dengan "Tidak teridentifikasi — butuh info lebih lanjut."
+- Untuk "program_match": pilih nama program yang BENAR-BENAR ada di knowledge base berdasarkan sinyal dari situasi. Jika tidak ada yang cocok, isi dengan "Tidak teridentifikasi â€” butuh info lebih lanjut."
 
 ### ATURAN KHUSUS ALUMNI PROFILE APPLIED AI & DATA-DRIVEN DECISION MAKING (DILARANG MENGARANG NAMA & POSISI SEBELUMNYA):
 - **TIDAK ADA NAMA INDIVIDU & TIDAK ADA INFORMASI POSISI SEBELUMNYA:** Pada kedua program ini ("Applied AI, Analytics & Automation" kolaborasi BINUS & RevoU dan "Data-Driven Decision Making" kolaborasi ITB & RevoU), data alumni resmi di knowledge base **TIDAK memuat nama orang/individu siapapun** dan **TIDAK ADA informasi mengenai posisi sebelumnya (previous role)**. Data resmi HANYA mencatat:
@@ -349,7 +350,7 @@ Sebelum menyusun draf script, kamu WAJIB menganalisis dan menekankan data dari K
   3. **Industri / Kategori** (misal: "Automotive", "Media & Digital Publishing", "Oil & Gas / Energy", "BUMN & Construction Engineering", "Mining & Resources", "Banking", "Government / Public Sector", dll.)
 - **DILARANG KERAS MENGADA-ADA / MENGARANG NAMA PRIBADI ATAU POSISI SEBELUMNYA:** Ketika men-generate jawaban (baik pada menu alumni, pitch, maupun klarifikasi), DILARANG KERAS mengarang nama orang fiktif (seperti Budi, Rian, Sarah, dsb) atau mengarang riwayat posisi masa lalu / switch karir fiktif untuk kedua program ini.
 - **FORMAT IDENTITAS PROFIL:**
-  - Pada field 'name' di 'alumni_matches' dan 'featured_alumni_summary', gunakan format: "[Job Title] — [Perusahaan]" (contoh: "Asst Chief Digital Innovation — PT Honda Prospect Motor" atau "Production Manager — PT Pertamina (Persero)"). JANGAN isi dengan nama orang buatan.
+  - Pada field 'name' di 'alumni_matches' dan 'featured_alumni_summary', gunakan format: "[Job Title] â€” [Perusahaan]" (contoh: "Asst Chief Digital Innovation â€” PT Honda Prospect Motor" atau "Production Manager â€” PT Pertamina (Persero)"). JANGAN isi dengan nama orang buatan.
   - Pada field 'previous_role', WAJIB isi "-" atau null (karena tidak ada riwayat posisi sebelumnya). JANGAN mengarang posisi sebelumnya!
   - Pada field 'current_role', isi dengan Job Title resmi (misal: "Asst Chief Digital Innovation" atau "Production Manager").
   - Pada field 'company', isi dengan nama perusahaan resmi (misal: "PT Honda Prospect Motor" atau "PT Pertamina (Persero)").
@@ -366,12 +367,12 @@ Ketika user/sales mencari alumni di INDUSTRI ATAU BIDANG TERTENTU (seperti: "Man
      DILARANG KERAS memberikan profil dari industri Oil & Gas (seperti Pertamina), Mining, atau Banking!
      AI WAJIB 100% HANYA mengambil profil dari Kategori Industri "Manufacture", yaitu:
      * Pada Applied AI (Manufacture):
-       - Staff — PT Karcher | Industri: Manufacture
-       - Non-IT role — APP | Industri: Manufacture
-       - Supervisor — PT Trias Sentosa Tbk | Industri: Manufacture
+       - Staff â€” PT Karcher | Industri: Manufacture
+       - Non-IT role â€” APP | Industri: Manufacture
+       - Supervisor â€” PT Trias Sentosa Tbk | Industri: Manufacture
      * Pada Data-Driven Decision Making (Manufacture):
-       - C-Level/VP — Gatra Mapan | Industri: Manufacture
-       - C-level/VP/Head — Komatsu Remanufacturing Asia | Industri: Manufacture
+       - C-Level/VP â€” Gatra Mapan | Industri: Manufacture
+       - C-level/VP/Head â€” Komatsu Remanufacturing Asia | Industri: Manufacture
    - JIKA USER MEMINTA "MARKETING AGENCY":
      AI WAJIB HANYA mengambil profil dari Kategori Industri "Marketing Agency" (seperti: Agency, Involve Asia, Shopcomm, Greenpark Digital, Lynk Media Group)!
    - JIKA USER MEMINTA "CHEMICAL":
@@ -396,7 +397,7 @@ Ketika user/sales mencari alumni di INDUSTRI ATAU BIDANG TERTENTU (seperti: "Man
 2. **KAPAN ATURAN PEMETAAN STATUS (JOBSEEKER VS PROFESIONAL) BERLAKU:**
    - Aturan pemetaan status karir di bawah ini **HANYA BERLAKU JIKA DAN HANYA JIKA leads BELUM menyebutkan pilihan program spesifik** (misal lead bertanya umum: *"saya fresh grad / pengangguran, cocoknya ikut program apa ya?"*):
      * **Jobseeker / Fresh Graduate / Pengangguran TANPA Pilihan Program:**
-       - Jika belum ada program spesifik yang dituju, baru rekomendasikan program Full Stack (FSDA, FSSE, atau FSDM selama 7 bulan) dan angkat RevoU NEXT (Bulan 5–7): bimbingan 1:1 Career Coach, perombakan CV berstandar HR tech, mock interview, dan Virtual Internship 12 minggu.
+       - Jika belum ada program spesifik yang dituju, baru rekomendasikan program Full Stack (FSDA, FSSE, atau FSDM selama 7 bulan) dan angkat RevoU NEXT (Bulan 5â€“7): bimbingan 1:1 Career Coach, perombakan CV berstandar HR tech, mock interview, dan Virtual Internship 12 minggu.
      * **Pemetaan Berdasarkan Jurusan Kuliah TANPA Pilihan Program:**
        - **Sistem Informasi (SI), Teknik Informatika (TI), Ilmu Komputer, RPL:** Jika belum memilih, jelaskan 2 jalur utama (Jalur Data FSDA vs Jalur Rekayasa Aplikasi FSSE) dan sertakan discovery question ramah di akhir draf.
        - **Matematika, Statistika, Teknik Industri, Fisika:** Sangat linear ke Full Stack Data Analytics (FSDA).
@@ -408,43 +409,43 @@ Ketika user/sales mencari alumni di INDUSTRI ATAU BIDANG TERTENTU (seperti: "Man
 ## ATURAN MODE & FORMAT OUTPUT KHUSUS BERDASARKAN MENU:
 Menu aktif saat ini: **${tab}**
 
-### 1. JIKA MENU: "pitch" (Create a Pitch) — ATURAN MUTLAK GENERATE PITCH:
+### 1. JIKA MENU: "pitch" (Create a Pitch) â€” ATURAN MUTLAK GENERATE PITCH:
 - AI menghasilkan **3 variasi draf pesan WhatsApp persuasif** (tiap variasi wajib memakai sudut penyambungan berbeda, misal satu lewat hambatan waktu/fleksibilitas, satu lewat tujuan karier/leveling, satu lewat kasus nyata di pekerjaan/capstone).
-- **ATURAN PANJANG KATA (WAJIB MINIMAL 120 KATA, RENTANG 120–300 KATA):**
+- **ATURAN PANJANG KATA (WAJIB MINIMAL 120 KATA, RENTANG 120â€“300 KATA):**
   * Setiap variasi draf pesan WhatsApp **WAJIB MEMILIKI PANJANG MINIMAL 120 KATA** dengan rentang **120 sampai 300 kata**.
   * **DILARANG KERAS menghasilkan pesan yang terlalu pendek atau di bawah 120 kata!** Pastikan penjelasan empati, kurikulum/USP, dan studi kasus dielaborasi secara kaya, mendalam, dan relevan agar memenuhi standar minimal 120 kata.
 - **STRUKTUR PESAN TIAP VARIASI (2 sampai 3 paragraf, mengalir alami & mendalam):**
-  * **Paragraf 1 — Empati Spesifik & Validasi Profil (~35–70 kata):**
-    - Buka dengan sapaan ramah: "Halo kak 😊", "Kak,", "Halo kak!", "Hai kak [Nama],", atau "Halo kak [Nama], salam kenal 😊 Aku [Nama AC] dari RevoU." (Gunakan nama hanya jika ada di data leads; jika tidak ada, sapa "Halo kak").
+  * **Paragraf 1 â€” Empati Spesifik & Validasi Profil (~35â€“70 kata):**
+    - Buka dengan sapaan ramah: "Halo kak ðŸ˜Š", "Kak,", "Halo kak!", "Hai kak [Nama],", atau "Halo kak [Nama], salam kenal ðŸ˜Š Aku [Nama AC] dari RevoU." (Gunakan nama hanya jika ada di data leads; jika tidak ada, sapa "Halo kak").
     - Sebut fakta nyata dari profil lead (durasi pengalaman, peran saat ini, latar belakang pendidikan, atau kondisi transisi).
     - Validasi beban, kompleksitas, atau tanggung jawabnya secara mendalam dengan kalimat apresiatif yang tulus dan hanya cocok untuk profil itu (hindari pujian klise generik).
     - Jika profil menyiratkan hal sensitif (jeda karier / career break, mengurus rumah tangga di luar negeri, banting setir, tekanan kerja berat), validasi dengan penuh hormat dan tunjukkan sisi tersebut sebagai modal/aset besar yang bernilai.
-  * **Paragraf 2 — Penyambungan Profil ke USP Program, Kurikulum Konkret & Framing AI (~70–180 kata):**
+  * **Paragraf 2 â€” Penyambungan Profil ke USP Program, Kurikulum Konkret & Framing AI (~70â€“180 kata):**
     - Hubungkan eksplisit hambatan & tujuan lead ke USP program di knowledge base memakai kalimat seperti "karena kakak..." atau "jadi kakak bisa...".
     - Paparkan detail konkret dari knowledge base: nama program, minggu materi (misal W1-2), modul spesifik (misal Compensation & Benefits, regression/classification/forecasting/clustering), tools/stack industri (HTML/CSS/JS, TypeScript, Tailwind, React/Next.js, AWS), alur belajar praktikal, dan bentuk capstone project nyata berbasis real case lead.
-    - **WAJIB FRAMING AI SEBAGAI FORCE MULTIPLIER:** Posisikan AI secara jelas sebagai penguat keahlian, bukan pengganti manusia: "Nah, AI itu bukan pengganti, tapi 'force multiplier' buat keahlian kakak 🚀" atau "Di era sekarang AI itu 'force multiplier', bukan pengganti: kerjaan repetitif dibantu AI, kakak fokus ke [strategi / problem solving / analisis]."
-  * **Paragraf 3 — Ajakan Penutup / CTA (~15–50 kata, PILIH SATU OPSI CTA):**
-    - Opsi Konsultasi Gratis / Real Case: "Tujuannya jadi profesional 'Top 1%' di bidang HR 💪 Boleh kita ngobrol singkat via konsultasi gratis, kak? Biar kita bisa bedah bareng real case kakak utk capstone nanti."
-    - Opsi Bertahap: "Mau aku bantu jelasin gambaran kurikulum materinya dulu, atau langsung atur sesi konsultasi gratis kak? Siapa tau kakak bisa jadi profesional Top 1% di bidangnya ✨"
+    - **WAJIB FRAMING AI SEBAGAI FORCE MULTIPLIER:** Posisikan AI secara jelas sebagai penguat keahlian, bukan pengganti manusia: "Nah, AI itu bukan pengganti, tapi 'force multiplier' buat keahlian kakak ðŸš€" atau "Di era sekarang AI itu 'force multiplier', bukan pengganti: kerjaan repetitif dibantu AI, kakak fokus ke [strategi / problem solving / analisis]."
+  * **Paragraf 3 â€” Ajakan Penutup / CTA (~15â€“50 kata, PILIH SATU OPSI CTA):**
+    - Opsi Konsultasi Gratis / Real Case: "Tujuannya jadi profesional 'Top 1%' di bidang HR ðŸ’ª Boleh kita ngobrol singkat via konsultasi gratis, kak? Biar kita bisa bedah bareng real case kakak utk capstone nanti."
+    - Opsi Bertahap: "Mau aku bantu jelasin gambaran kurikulum materinya dulu, atau langsung atur sesi konsultasi gratis kak? Siapa tau kakak bisa jadi profesional Top 1% di bidangnya âœ¨"
     - Opsi Tanya Menjelaskan Lebih Lanjut: "Boleh aku bantu jelaskan lebih lanjut kak tentang kurikulum dan jadwal belajarnya?"
-    - Opsi Ngobrol 1:1: "Mau ngobrol santai 1:1 sama program advisor kami minggu ini? 😊"
+    - Opsi Ngobrol 1:1: "Mau ngobrol santai 1:1 sama program advisor kami minggu ini? ðŸ˜Š"
     (Frasa aspirasional seperti "profesional Top 1% di bidangnya" boleh dipakai di 1-2 variasi saja, jangan di semua pesan).
 - **GAYA BAHASA & FORMAT:**
   * Santai seperti chat WhatsApp sesama profesional, sapaan konsisten "kak".
   * Gunakan singkatan chat lazim WhatsApp: utk, yg, sdh, bgt, krn, dgn, jd, spt, lho.
-  * Tepat 1 emoji per paragraf (maksimal 3 per pesan): 😊, 🚀, 💪, 🙏, ✨, 🙌.
-  * JANGAN gunakan tanda pisah panjang (em dash —) dan titik koma (;).
+  * Tepat 1 emoji per paragraf (maksimal 3 per pesan): ðŸ˜Š, ðŸš€, ðŸ’ª, ðŸ™, âœ¨, ðŸ™Œ.
+  * JANGAN gunakan tanda pisah panjang (em dash â€”) dan titik koma (;).
   * Output HANYA teks isi pesan WhatsApp siap kirim, tanpa penjelasan meta tambahan.
 
-### 2. JIKA MENU: "alumni" (Checking Alumni) — ATURAN MUTLAK (DILARANG MEMBUAT PITCH & HAPUS VARIASI):
+### 2. JIKA MENU: "alumni" (Checking Alumni) â€” ATURAN MUTLAK (DILARANG MEMBUAT PITCH & HAPUS VARIASI):
 - **Tujuan Murni Informational Lookup (DILARANG MEMBUAT PITCH / CHAT SALES "Halo kaak..."):** Menu ini murni untuk mencari informasi data alumni, memverifikasi latar belakang, dan menyajikan bukti perjalanan karir nyata mereka. Jangan membuat pesan sapaan sales pitch atau CTA jualan.
 - **HAPUS SISTEM VARIASI (VARIASI 1, 2, 3 DILARANG):** Jangan buat array variasi pesan. Kolom "scripts" WAJIB dikosongkan ("scripts": []).
-- **Data Alumni Lengkap ("alumni_matches" — MAKSIMAL 200–250 KATA PER ALUMNI):**
-  Untuk setiap alumni di "alumni_matches", susun **"career_journey_summary" maksimal 200–250 kata saja** yang padat dan terstruktur (menguraikan latar belakang asal dari nol, proses belajar & ditempa di RevoU, peran portofolio & Career Coach, hingga pencapaian karir di perusahaan saat ini).
+- **Data Alumni Lengkap ("alumni_matches" â€” MAKSIMAL 200â€“250 KATA PER ALUMNI):**
+  Untuk setiap alumni di "alumni_matches", susun **"career_journey_summary" maksimal 200â€“250 kata saja** yang padat dan terstruktur (menguraikan latar belakang asal dari nol, proses belajar & ditempa di RevoU, peran portofolio & Career Coach, hingga pencapaian karir di perusahaan saat ini).
 - **VALIDASI MUTLAK KRITERIA (CAREER SWITCHER VS UPSKILLING):**
   Jika Sales meminta profil dengan tipe tertentu (misal: Career Switcher), pastikan 100% dari profil yang kamu tampilkan benar-benar berpindah profesi dari bidang yang berbeda nyata. JANGAN PERNAH mencampur atau menyelipkan alumni yang hanya Upskilling (sudah di bidang yang sama) ke dalam permintaan Career Switcher!
 - **KHUSUS ALUMNI PROFILE APPLIED AI & DATA-DRIVEN DECISION MAKING:**
-  Kedua program ini datanya **TIDAK MEMILIKI NAMA ORANG SIAPAPUN DAN TIDAK ADA INFORMASI POSISI SEBELUMNYA**. JANGAN MENGADA-ADA/MENGARANG NAMA ORANG ATAU POSISI SEBELUMNYA. Field 'name' WAJIB diisi "[Job Title] — [Perusahaan]". Field 'previous_role' dikosongkan/diisi "-" atau null. Field 'industry' diisi industri/kategori yang tercatat. Summary WAJIB ditampilkan murni berdasarkan informasi yang ada (Posisi & Perusahaan) dan kategori/industri yang ada.
+  Kedua program ini datanya **TIDAK MEMILIKI NAMA ORANG SIAPAPUN DAN TIDAK ADA INFORMASI POSISI SEBELUMNYA**. JANGAN MENGADA-ADA/MENGARANG NAMA ORANG ATAU POSISI SEBELUMNYA. Field 'name' WAJIB diisi "[Job Title] â€” [Perusahaan]". Field 'previous_role' dikosongkan/diisi "-" atau null. Field 'industry' diisi industri/kategori yang tercatat. Summary WAJIB ditampilkan murni berdasarkan informasi yang ada (Posisi & Perusahaan) dan kategori/industri yang ada.
 - **WAJIB CETAK TEBAL (BOLD **...**) PEMICU AKSI & HIGHLIGHT BAGIAN PENTING:**
   Di dalam teks "career_journey_summary", kamu **WAJIB mencetak tebal (format bold markdown **teks**) atau menghighlight bagian-bagian penting dan pemicu aksi (action triggers)** yang mengubah jalannya karir alumni, seperti:
   1. **Titik awal & hambatan awal:** (misal: **mulai dari nol tanpa background teknis**, **sempat ragu karena latar belakang non-linear**)
@@ -461,27 +462,27 @@ Menu aktif saat ini: **${tab}**
 - **Wajib Sertakan Hyperlink Perjalanan Karir Selengkapnya:**
   Setiap alumni story WAJIB menyertakan hyperlink aktif ke cerita lengkap mereka (Markdown format: [Baca Kisah Lengkap](https://www.revou.co/alumni-stories/<slug>) atau link direktori resmi [Direktori Alumni RevoU](https://www.revou.co/alumni)) agar para tim admission dapat memvalidasi dan memastikannya. DILARANG menyertakan link LinkedIn.
 
-### 3. JIKA MENU: "comparison" (Comparison Table & Competitor Battlecards) — ATURAN MUTLAK (NOTES FOR PITA):
+### 3. JIKA MENU: "comparison" (Comparison Table & Competitor Battlecards) â€” ATURAN MUTLAK (NOTES FOR PITA):
 - **Tujuan:** Membantu tim Admission Counselor (AC) menjawab perbandingan program dan keberatan (*objections*) terkait kompetitor (Hacktiv8, Purwadhika, Dibimbing, IT Lab, dll) secara profesional, elegan, dan berbasis data verified.
-- **SHARED ANSWER PATTERN UNTUK AC (NOTES FOR PITA) — WAJIB DIIKUTI:**
+- **SHARED ANSWER PATTERN UNTUK AC (NOTES FOR PITA) â€” WAJIB DIIKUTI:**
   1. **Tanya Apa yang Menarik (Discovery & Validation):** Mulai pesan dengan menanyakan apa hal spesifik yang membuat lead tertarik dengan kompetitor tersebut (*"Apa yang bikin tertarik sama [X]?"*).
   2. **Bandingkan HANYA pada Poin Tersebut:** Jangan membombardir dengan seluruh isi brosur. Fokuskan perbandingan secara objektif pada hal yang dipertimbangkan lead (misal: harga/cicilan, jadwal kelas malam, portofolio nyata, atau jaminan kerja).
   3. **Dukung dengan 1 Bukti Nyata (One Concrete Proof Point):** Sertakan minimal 1 bukti terverifikasi (Kredensial resmi ITB/BINUS/UI, rentang kenaikan gaji alumni up to 120%, atau portofolio riil 3 bulan RevoU Labs).
   4. **Dua Pantangan Mutlak:**
-     - ❌ **DILARANG KERAS MENJELEKKAN ATAU MENGKRITISI KOMPETITOR (Never criticise the competitor).** Akui kelebihan mereka secara jujur. Sikap elegan dan profesional meningkatkan respek leads kepada RevoU.
-     - ❌ **DILARANG KERAS MENJAWAB "I need to check" / "Saya cek dulu".** Seluruh data perbandingan sudah disiapkan di battlecards.
+     - âŒ **DILARANG KERAS MENJELEKKAN ATAU MENGKRITISI KOMPETITOR (Never criticise the competitor).** Akui kelebihan mereka secara jujur. Sikap elegan dan profesional meningkatkan respek leads kepada RevoU.
+     - âŒ **DILARANG KERAS MENJAWAB "I need to check" / "Saya cek dulu".** Seluruh data perbandingan sudah disiapkan di battlecards.
 - **Variasi Pesan WhatsApp (scripts):**
-  Buat 3 variasi pesan WhatsApp siap kirim (120–250 kata per variasi):
-  - Variasi 1 — Nada Santai & Empatik (Casual WhatsApp)
-  - Variasi 2 — Nada Konsultatif Profesional (Professional Consultative)
-  - Variasi 3 — Perbandingan Nilai Langsung & Bukti (Direct Value & Proof Point)
+  Buat 3 variasi pesan WhatsApp siap kirim (120â€“250 kata per variasi):
+  - Variasi 1 â€” Nada Santai & Empatik (Casual WhatsApp)
+  - Variasi 2 â€” Nada Konsultatif Profesional (Professional Consultative)
+  - Variasi 3 â€” Perbandingan Nilai Langsung & Bukti (Direct Value & Proof Point)
   Semua variasi WAJIB mengikuti 4 shared answer pattern di atas dan diakhiri pertanyaan santai (low-pressure question).
 - **Competitor Analysis Object ("competitor_analysis"):**
   Wajib mengisi objek "competitor_analysis" secara terstruktur sesuai data knowledge base.
 
 ## ATURAN PANJANG RESPONS (WAJIB DIIKUTI)
-- Pada menu "pitch" & "comparison": Tiap draf variasi pesan WhatsApp di "scripts" WAJIB MINIMAL 120 KATA (rentang 120–300 KATA). DILARANG KERAS di bawah 120 kata.
-- Pada menu "alumni": "career_journey_summary" dibuat padat MAKSIMAL 200–250 KATA per alumni di "alumni_matches" dengan menyertakan hyperlink lengkap.
+- Pada menu "pitch" & "comparison": Tiap draf variasi pesan WhatsApp di "scripts" WAJIB MINIMAL 120 KATA (rentang 120â€“300 KATA). DILARANG KERAS di bawah 120 kata.
+- Pada menu "alumni": "career_journey_summary" dibuat padat MAKSIMAL 200â€“250 KATA per alumni di "alumni_matches" dengan menyertakan hyperlink lengkap.
 - Pada menu "alumni": "scripts" WAJIB KOSONG ([]).
 - Penjelasan Program (program_overview_short) & Ringkasan Knowledge: WAJIB KOMPREHENSIF, LENGKAP, dan DETAIL.
 - Kolom "whats_happening": Maksimal 2 kalimat ringkas.
@@ -491,7 +492,7 @@ Menu aktif saat ini: **${tab}**
 ## SKILL INSTRUCTIONS
 ${skillInstructions}
 
-## KNOWLEDGE BASE — SINGLE SOURCE OF TRUTH
+## KNOWLEDGE BASE â€” SINGLE SOURCE OF TRUTH
 ${knowledgeBase}
 
 ## FORMAT OUTPUT (kembalikan HANYA JSON valid ini, tanpa teks pengantar atau markdown block)
@@ -515,13 +516,13 @@ ${knowledgeBase}
     "one_proof_point": "1 bukti konkret (kredensial ITB/BINUS, kenaikan gaji s.d 120%, atau RevoU Labs)"
   },
   "featured_alumni_summary": {
-    "name": "Nama salah satu alumni yang paling relevan (PERHATIAN: Untuk program Applied AI & Data-Driven Decision Making, TIDAK ADA nama orang di data, isi format '[Job Title] — [Perusahaan]', DILARANG mengarang nama orang!)",
+    "name": "Nama salah satu alumni yang paling relevan (PERHATIAN: Untuk program Applied AI & Data-Driven Decision Making, TIDAK ADA nama orang di data, isi format '[Job Title] â€” [Perusahaan]', DILARANG mengarang nama orang!)",
     "summary": "Ringkasan singkat (3-5 kalimat) tentang peran dan relevansi program bagi posisi dan industri tersebut (WAJIB 100% SESUAI DENGAN INDUSTRI YANG DICARI USER; jika user minta Manufaktur, WAJIB profil Manufaktur seperti Komatsu / Karcher / Trias Sentosa / Gatra Mapan, DILARANG menampilkan Oil & Gas / Pertamina!)",
     "profile_url": "URL tautan artikel cerita alumni resmi RevoU (misal: https://www.revou.co/alumni-stories/devina-dea) atau https://www.revou.co/alumni (DILARANG LINK LINKEDIN)"
   },
   "alumni_matches": [
     {
-      "name": "Nama Alumni (PERHATIAN: Untuk program Applied AI & Data-Driven Decision Making, isi format '[Job Title] — [Perusahaan]', DILARANG mengarang nama orang!)",
+      "name": "Nama Alumni (PERHATIAN: Untuk program Applied AI & Data-Driven Decision Making, isi format '[Job Title] â€” [Perusahaan]', DILARANG mengarang nama orang!)",
       "program_batch": "Nama Program & Batch (misal: Full-Stack Digital Marketing, Applied AI, Analytics & Automation, atau Data-Driven Decision Making)",
       "previous_role": "Pekerjaan/Latar Belakang Sebelumnya (PERHATIAN: Untuk Applied AI & Data-Driven Decision Making, TIDAK ADA data posisi sebelumnya, WAJIB ISI '-' ATAU null, DILARANG MENGARANG POSISI SEBELUMNYA!)",
       "current_role": "Pekerjaan/Posisi Sekarang (Job Title resmi dari dokumen)",
@@ -534,13 +535,13 @@ ${knowledgeBase}
     }
   ],
   "scripts": [
-    { "badge": "Variasi 1 — [Nama angle]", "text": "Pesan WA siap kirim (WAJIB MINIMAL 120 KATA, rentang 120-300 kata, HANYA untuk menu pitch & comparison, KOSONGKAN [] jika menu alumni)" },
-    { "badge": "Variasi 2 — [Nama angle]", "text": "Pesan WA siap kirim (WAJIB MINIMAL 120 KATA, rentang 120-300 kata, HANYA untuk menu pitch & comparison, KOSONGKAN [] jika menu alumni)" },
-    { "badge": "Variasi 3 — [Nama angle]", "text": "Pesan WA siap kirim (WAJIB MINIMAL 120 KATA, rentang 120-300 kata, HANYA untuk menu pitch & comparison, KOSONGKAN [] jika menu alumni)" }
+    { "badge": "Variasi 1 â€” [Nama angle]", "text": "Pesan WA siap kirim (WAJIB MINIMAL 120 KATA, rentang 120-300 kata, HANYA untuk menu pitch & comparison, KOSONGKAN [] jika menu alumni)" },
+    { "badge": "Variasi 2 â€” [Nama angle]", "text": "Pesan WA siap kirim (WAJIB MINIMAL 120 KATA, rentang 120-300 kata, HANYA untuk menu pitch & comparison, KOSONGKAN [] jika menu alumni)" },
+    { "badge": "Variasi 3 â€” [Nama angle]", "text": "Pesan WA siap kirim (WAJIB MINIMAL 120 KATA, rentang 120-300 kata, HANYA untuk menu pitch & comparison, KOSONGKAN [] jika menu alumni)" }
   ],
   "knowledge_details": {
     "summary": "Penjelasan komprehensif dan detail dari fakta relevan di knowledge base mengenai topik/program/alumni yang ditanyakan",
-    "points": [{ "fact": "Fakta spesifik", "source": "Nama file — Bagian" }],
+    "points": [{ "fact": "Fakta spesifik", "source": "Nama file â€” Bagian" }],
     "flags": "Catatan jika data tidak lengkap (atau: Data konsisten)",
     "sales_messaging_tip": "Tips singkat untuk tim sales (1-2 kalimat)"
   }
@@ -551,9 +552,9 @@ ${knowledgeBase}
 // Helper to delay
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-// ─────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Verified Alumni URL Resolver (Based on CSV Data)
-// ─────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const VERIFIED_ALUMNI_MAP = {
   "devina dea": "https://www.revou.co/alumni-stories/devina-dea",
   "darryl jannatun fadhlin": "https://www.revou.co/alumni-stories/darryl-jannatun-fadhlin",
@@ -791,7 +792,7 @@ function sanitizeAlumniMatches(matches) {
     }
     const isExecutiveOrApplied =
       (m.program_batch && (m.program_batch.toLowerCase().includes("applied ai") || m.program_batch.toLowerCase().includes("data-driven"))) ||
-      (m.name && m.name.includes("—"));
+      (m.name && m.name.includes("â€”"));
     let prevRole = m.previous_role;
     if (isExecutiveOrApplied || !prevRole || prevRole === "-" || prevRole.toLowerCase() === "tidak ada" || prevRole.toLowerCase() === "null" || prevRole === m.current_role) {
       prevRole = null;
@@ -808,12 +809,12 @@ function sanitizeAlumniMatches(matches) {
   return uniqueMatches;
 }
 
-// ─────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Result Builders
-// ─────────────────────────────────────────────
-// ─────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Result Builders
-// ─────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 async function buildFinalResult(
   parsed,
   modelId,
@@ -871,8 +872,8 @@ async function buildQuotaExhaustedResult(model, tab, availableKeys, quotaNotific
     program_match: "",
     scripts: [
       {
-        badge: "⚠️ Pemberitahuan Kuota API",
-        text: `Semua API Key dalam pool Round Robin telah mencapai batas laju (Rate Limit). Riwayat rotasi:\n${quotaNotifications.map((n) => `• ${n}`).join("\n")}`,
+        badge: "âš ï¸ Pemberitahuan Kuota API",
+        text: `Semua API Key dalam pool Round Robin telah mencapai batas laju (Rate Limit). Riwayat rotasi:\n${quotaNotifications.map((n) => `â€¢ ${n}`).join("\n")}`,
       },
     ],
     knowledge_details: null,
@@ -895,7 +896,7 @@ function buildGeneralFallbackResult(model, tab, availableKeys, lastError) {
     program_match: "",
     scripts: [
       {
-        badge: hasKeys ? "⚠️ Gangguan Sementara Google" : "⚠️ Konfigurasi Diperlukan",
+        badge: hasKeys ? "âš ï¸ Gangguan Sementara Google" : "âš ï¸ Konfigurasi Diperlukan",
         text: hasKeys
           ? `Google AI Studio sedang mengalami lonjakan antrean server (${lastError || "503 Demand Spike"}). Sistem Round Robin siap merotasi key. Silakan klik Generate ulang.`
           : "Pastikan minimal 1 sampai 5 GEMINI_API_KEY valid di .env.local atau di panel Manajemen API Key untuk mengaktifkan AI.",
@@ -905,10 +906,12 @@ function buildGeneralFallbackResult(model, tab, availableKeys, lastError) {
   };
 }
 
-// ─────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // POST handler (Supports SSE Streaming & Synchronous JSON)
-// ─────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export async function POST(req) {
+  const reqStart = performance.now();
+  const requestId = crypto.randomUUID();
   try {
     const body = await req.json();
     const {
@@ -929,7 +932,9 @@ export async function POST(req) {
       );
     }
 
+    const retrievalStart = performance.now();
     const systemPrompt = await getCachedSystemPrompt(tab, situation, customKeys);
+    const retrievalMs = Math.round(performance.now() - retrievalStart);
 
     let exclusionDirective = "";
     if (Array.isArray(excluded_alumni) && excluded_alumni.length > 0) {
@@ -954,7 +959,7 @@ ${situation.trim()}
 
 Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge base, dan hasilkan JSON valid sesuai format.`;
 
-    // ── Round Robin API Key Management ─────────────
+    // â”€â”€ Round Robin API Key Management â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     const availableKeys = resolveApiKeys(customKeys);
     const keyQueue = [];
 
@@ -973,7 +978,7 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
       }
     }
 
-    // ── PATH A: SSE RESPONSE STREAMING ─────────────
+    // â”€â”€ PATH A: SSE RESPONSE STREAMING â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     if (wantsStream) {
       const encoder = new TextEncoder();
 
@@ -1005,6 +1010,11 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
             const quotaNotifications = [];
             let lastError = null;
             let executedSuccessfully = false;
+            let retryCount = 0;
+            let rateLimit429Count = 0;
+            let capturedUsageMetadata = null;
+            let ttftMs = 0;
+            let lastAttemptedModel = model || "gemini-3.5-flash";
 
             for (let keyAttempt = 0; keyAttempt < keyQueue.length; keyAttempt++) {
               if (executedSuccessfully) break;
@@ -1039,6 +1049,8 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
                 if (keyEncounteredQuota || keyEncounteredInvalid || executedSuccessfully) break;
 
                 try {
+                  lastAttemptedModel = modelId;
+                  const llmCallStart = performance.now();
                   const streamUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelId}:streamGenerateContent?alt=sse&key=${currentCandidate.key}`;
 
                   const response = await fetch(streamUrl, {
@@ -1065,6 +1077,7 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
                     const decoder = new TextDecoder();
                     let accumulatedText = "";
                     let streamBuffer = "";
+                    let firstTokenLogged = false;
 
                     sendSse("status", {
                       message: `AI sedang merumuskan draf respons (${modelId})...`,
@@ -1085,8 +1098,18 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
                             const parsedChunk = JSON.parse(trimmed.slice(6));
                             const delta = parsedChunk?.candidates?.[0]?.content?.parts?.[0]?.text;
                             if (delta) {
+                              if (!firstTokenLogged) {
+                                ttftMs = Math.round(performance.now() - llmCallStart);
+                                firstTokenLogged = true;
+                              }
                               accumulatedText += delta;
                               sendSse("token", { delta });
+                            }
+                            if (parsedChunk?.usageMetadata) {
+                              capturedUsageMetadata = {
+                                ...capturedUsageMetadata,
+                                ...parsedChunk.usageMetadata,
+                              };
                             }
                           } catch (err) {
                             // partial / heartbeat line
@@ -1100,8 +1123,18 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
                         const parsedChunk = JSON.parse(streamBuffer.trim().slice(6));
                         const delta = parsedChunk?.candidates?.[0]?.content?.parts?.[0]?.text;
                         if (delta) {
+                          if (!firstTokenLogged) {
+                            ttftMs = Math.round(performance.now() - llmCallStart);
+                            firstTokenLogged = true;
+                          }
                           accumulatedText += delta;
                           sendSse("token", { delta });
+                        }
+                        if (parsedChunk?.usageMetadata) {
+                          capturedUsageMetadata = {
+                            ...capturedUsageMetadata,
+                            ...parsedChunk.usageMetadata,
+                          };
                         }
                       } catch (err) { }
                     }
@@ -1130,12 +1163,31 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
                         sendSse("result", finalResult);
                         sendSse("done", { success: true });
                         executedSuccessfully = true;
+
+                        const totalDurationMs = Math.round(performance.now() - reqStart);
+                        void logMetricsToJsonl({
+                          requestId,
+                          timestamp: new Date().toISOString(),
+                          tab,
+                          model: modelId,
+                          isStream: true,
+                          retrievalMs,
+                          ttftMs,
+                          totalDurationMs,
+                          ...extractUsageMetadata(capturedUsageMetadata),
+                          rateLimit429Count,
+                          retryCount,
+                          status: "completed",
+                          errorMessage: null,
+                        });
                         break;
                       } catch (parseErr) {
                         console.error("JSON parse error in SSE stream for model", modelId, parseErr.message);
                       }
                     }
                   } else if (response.status === 429) {
+                    rateLimit429Count++;
+                    retryCount++;
                     const errText = await response.text();
                     console.warn(`[RoundRobin] Key #${currentCandidate.keyIndex} hit 429 quota:`, errText.slice(0, 120));
                     await recordKeyExecution(currentCandidate.key, currentCandidate.keyIndex, "rate_limited", 429, "Rate limit terlampaui");
@@ -1154,6 +1206,7 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
                     keyEncounteredQuota = true;
                     break;
                   } else if (response.status === 400 || response.status === 403) {
+                    retryCount++;
                     const errText = await response.text();
                     console.warn(`[RoundRobin] Key #${currentCandidate.keyIndex} invalid (${response.status}):`, errText.slice(0, 120));
                     await recordKeyExecution(currentCandidate.key, currentCandidate.keyIndex, "invalid", response.status, "API tidak valid");
@@ -1167,17 +1220,20 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
                     keyEncounteredInvalid = true;
                     break;
                   } else if (response.status === 503) {
+                    retryCount++;
                     const errText = await response.text();
                     console.warn(`[Gemini 503 Spike] Model ${modelId} high-demand:`, errText.slice(0, 120));
                     lastError = `Model ${modelId} mengalami lonjakan trafik (503 Service Unavailable).`;
                     sendSse("status", { message: `Model ${modelId} sibuk (503), mencoba model alternatif...` });
                     continue;
                   } else {
+                    retryCount++;
                     const errText = await response.text();
                     console.warn(`Gemini API warning on ${modelId} (${response.status}):`, errText.slice(0, 150));
                     lastError = `Model ${modelId} (${response.status}): ${errText.slice(0, 100)}`;
                   }
                 } catch (apiErr) {
+                  retryCount++;
                   console.warn(`Gemini API stream exception for ${modelId}:`, apiErr.message);
                   lastError = apiErr.message;
                   continue;
@@ -1186,6 +1242,23 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
             }
 
             if (!executedSuccessfully) {
+              const totalDurationMs = Math.round(performance.now() - reqStart);
+              void logMetricsToJsonl({
+                requestId,
+                timestamp: new Date().toISOString(),
+                tab,
+                model: lastAttemptedModel,
+                isStream: true,
+                retrievalMs,
+                ttftMs,
+                totalDurationMs,
+                ...extractUsageMetadata(capturedUsageMetadata),
+                rateLimit429Count,
+                retryCount,
+                status: "error",
+                errorMessage: lastError || "Stream generation failed",
+              });
+
               if (quotaNotifications.length > 0) {
                 const fallback = await buildQuotaExhaustedResult(model, tab, availableKeys, quotaNotifications, customKeys);
                 sendSse("result", fallback);
@@ -1197,6 +1270,22 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
             }
           } catch (streamErr) {
             console.error("Stream execution error:", streamErr);
+            const totalDurationMs = Math.round(performance.now() - reqStart);
+            void logMetricsToJsonl({
+              requestId,
+              timestamp: new Date().toISOString(),
+              tab,
+              model: lastAttemptedModel,
+              isStream: true,
+              retrievalMs,
+              ttftMs,
+              totalDurationMs,
+              ...extractUsageMetadata(capturedUsageMetadata),
+              rateLimit429Count,
+              retryCount,
+              status: "interrupted",
+              errorMessage: streamErr.message,
+            });
             sendSse("error", { message: streamErr.message || "Internal streaming error" });
           } finally {
             try {
@@ -1220,6 +1309,9 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
     if (availableKeys.length > 0) {
       const quotaNotifications = [];
       let lastError = null;
+      let retryCount = 0;
+      let rateLimit429Count = 0;
+      let lastAttemptedModel = model || "gemini-3.5-flash";
 
       for (let keyAttempt = 0; keyAttempt < keyQueue.length; keyAttempt++) {
         const currentCandidate = keyQueue[keyAttempt];
@@ -1237,8 +1329,10 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
 
         for (const modelId of candidateModels) {
           if (keyEncounteredQuota || keyEncounteredInvalid) break;
+          lastAttemptedModel = modelId;
 
           try {
+            const llmCallStart = performance.now();
             const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelId}:generateContent?key=${currentCandidate.key}`;
 
             const response = await fetch(url, {
@@ -1275,6 +1369,24 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
 
                   await recordKeyExecution(currentCandidate.key, currentCandidate.keyIndex, "success", 200);
 
+                  const ttftMs = Math.round(performance.now() - llmCallStart);
+                  const totalDurationMs = Math.round(performance.now() - reqStart);
+                  void logMetricsToJsonl({
+                    requestId,
+                    timestamp: new Date().toISOString(),
+                    tab,
+                    model: modelId,
+                    isStream: false,
+                    retrievalMs,
+                    ttftMs,
+                    totalDurationMs,
+                    ...extractUsageMetadata(data?.usageMetadata),
+                    rateLimit429Count,
+                    retryCount,
+                    status: "completed",
+                    errorMessage: null,
+                  });
+
                   return NextResponse.json(
                     await buildFinalResult(
                       parsed,
@@ -1291,6 +1403,8 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
                 }
               }
             } else if (response.status === 429) {
+              rateLimit429Count++;
+              retryCount++;
               const errText = await response.text();
               console.warn(`[RoundRobin] Key #${currentCandidate.keyIndex} hit 429 quota:`, errText.slice(0, 120));
 
@@ -1304,6 +1418,7 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
               keyEncounteredQuota = true;
               break;
             } else if (response.status === 400 || response.status === 403) {
+              retryCount++;
               const errText = await response.text();
               console.warn(`[RoundRobin] Key #${currentCandidate.keyIndex} invalid (${response.status}):`, errText.slice(0, 120));
 
@@ -1317,22 +1432,42 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
               keyEncounteredInvalid = true;
               break;
             } else if (response.status === 503) {
+              retryCount++;
               const errText = await response.text();
               console.warn(`[Gemini 503 Spike] Model ${modelId} sedang high-demand:`, errText.slice(0, 120));
               lastError = `Model ${modelId} mengalami lonjakan trafik (503 Service Unavailable).`;
               continue;
             } else {
+              retryCount++;
               const errText = await response.text();
               console.warn(`Gemini API warning on ${modelId} (${response.status}):`, errText.slice(0, 150));
               lastError = `Model ${modelId} (${response.status}): ${errText.slice(0, 100)}`;
             }
           } catch (apiErr) {
+            retryCount++;
             console.warn(`Gemini API call exception for ${modelId}:`, apiErr.message);
             lastError = apiErr.message;
             continue;
           }
         }
       }
+
+      const totalDurationMs = Math.round(performance.now() - reqStart);
+      void logMetricsToJsonl({
+        requestId,
+        timestamp: new Date().toISOString(),
+        tab,
+        model: lastAttemptedModel,
+        isStream: false,
+        retrievalMs,
+        ttftMs: 0,
+        totalDurationMs,
+        ...extractUsageMetadata(null),
+        rateLimit429Count,
+        retryCount,
+        status: "error",
+        errorMessage: lastError || "Synchronous generation failed",
+      });
 
       if (quotaNotifications.length > 0) {
         return NextResponse.json(
@@ -1347,6 +1482,24 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
     );
   } catch (error) {
     console.error("Error in /api/generate:", error);
+    try {
+      const totalDurationMs = typeof reqStart !== "undefined" ? Math.round(performance.now() - reqStart) : 0;
+      void logMetricsToJsonl({
+        requestId: typeof requestId !== "undefined" ? requestId : crypto.randomUUID(),
+        timestamp: new Date().toISOString(),
+        tab: "unknown",
+        model: "unknown",
+        isStream: false,
+        retrievalMs: 0,
+        ttftMs: 0,
+        totalDurationMs,
+        ...extractUsageMetadata(null),
+        rateLimit429Count: 0,
+        retryCount: 0,
+        status: "error",
+        errorMessage: error.message,
+      });
+    } catch (e) { }
     return NextResponse.json(
       { error: "Internal Server Error", details: error.message },
       { status: 500 }

@@ -22,6 +22,9 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+logs/
+*.log
+*.jsonl
 
 # local env files (IMPORTANT: protect your API keys)
 .env*.local

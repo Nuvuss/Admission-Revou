@@ -326,6 +326,8 @@ export default function AnalyticsDashboardPage() {
     totalActiveAgents: 0,
     acBmAgentsCount: 0,
     copyRate: 0,
+    utilityActiveUsers: 0,
+    utilityTotalUsers: 0,
     avgResponseTimeSec: null,
     totalEvents: 0,
   };
@@ -408,9 +410,9 @@ export default function AnalyticsDashboardPage() {
   const sparkGenerates = timeline.slice(-10).map((pt) => Number(pt.scripts || 0));
   const sparkAgents = timeline.slice(-10).map((pt) => Number(pt.agents || 0));
   const sparkUtility = timeline.slice(-10).map((pt) => {
-    const s = Number(pt.scripts || 0);
-    const c = Number(pt.copies || 0);
-    return s > 0 ? Math.min(100, Math.round((c / s) * 100)) : 0;
+    const a = Number(pt.agents || 0);
+    const total = Number(kpis.utilityTotalUsers || 0);
+    return total > 0 ? Math.min(100, Math.round((a / total) * 100)) : 0;
   });
 
   // Peak index & value
@@ -792,7 +794,7 @@ export default function AnalyticsDashboardPage() {
               </span>
             </div>
             <p className="text-[11px] text-[#7A7A74] mt-2 pt-2 border-t border-[#F0F0EC]">
-              Rasio adopsi script ({kpis.totalCopies} disalin dari {kpis.totalGenerates + (kpis.totalComparisons || 0)} sesi)
+              Penetrasi fitur ({kpis.utilityActiveUsers ?? 0} dari {kpis.utilityTotalUsers ?? 0} user memakai Pitch / Alumni / Comparison)
             </p>
           </motion.div>
         </section>

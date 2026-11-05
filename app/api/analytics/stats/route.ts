@@ -1,4 +1,4 @@
-﻿import { NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { getSupabase, getLastSupabaseServerDate } from "../../../../lib/supabaseClient";
 import { getOnlineUsers, trackUserHeartbeat } from "../../../../lib/onlineTracker";
 
@@ -507,13 +507,12 @@ export async function GET(req: Request) {
     const leaderboard = Object.values(agentMap)
       .filter((agent) => agent.totalActions > 0 || Object.keys(agentMap).length <= 5)
       .map((agent) => {
-        const denom = agent.generates + agent.comparisons;
-        const rate =
-          denom > 0
-            ? Math.min(100, Math.round((agent.copies / denom) * 100))
-            : agent.copies > 0
-            ? 100
-            : 0;
+        // Utility per user = cakupan 3 fitur (Create a Pitch, Checking Alumni, Comparison), tanpa salin
+        const featuresUsed =
+          ((agent.pitch || 0) > 0 ? 1 : 0) +
+          ((agent.alumni || 0) > 0 ? 1 : 0) +
+          ((agent.comparison || 0) > 0 ? 1 : 0);
+        const rate = Math.round((featuresUsed / 3) * 100);
 
         const userDurations = agent.responseDurationsMs || [];
         const avgUserResp =
@@ -559,14 +558,14 @@ export async function GET(req: Request) {
     const onlineCounselorsCount = onlinePresence.count;
     const onlineAcBmCount = onlinePresence.acBmCount;
 
-    // Global Copy / Utility Rate (bounded 0% - 100%)
-    const totalFeatureUses = totalGenerates + totalComparisons;
+    // Global Utility Rate (0% - 100%) = penetrasi fitur, tanpa salin:
+    // user yang memakai >=1 dari 3 fitur (pitch / alumni / comparison) ÷ semua user yang tercatat di periode ini
+    const utilityTotalUsers = Object.keys(agentMap).length;
+    const utilityActiveUsers = Object.values(agentMap).filter(
+      (a: any) => (a.pitch || 0) + (a.alumni || 0) + (a.comparison || 0) > 0
+    ).length;
     const globalCopyRate =
-      totalFeatureUses > 0
-        ? Math.min(100, Math.round((totalCopies / totalFeatureUses) * 100))
-        : totalCopies > 0
-        ? 100
-        : 0;
+      utilityTotalUsers > 0 ? Math.round((utilityActiveUsers / utilityTotalUsers) * 100) : 0;
 
     // Average AI Response Time in seconds
     const avgResponseTimeSec =
@@ -620,6 +619,8 @@ export async function GET(req: Request) {
         acBmAgentsCount: onlineAcBmCount,
         historicalActiveCount,
         copyRate: globalCopyRate,
+        utilityActiveUsers,
+        utilityTotalUsers,
         avgResponseTimeSec,
         totalEvents: totalConsultationEvents,
       },
