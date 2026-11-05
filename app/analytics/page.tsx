@@ -115,7 +115,8 @@ export default function AnalyticsDashboardPage() {
   // Filters & State
   const [timeRange, setTimeRange] = useState<string>("30d");
   const [chartMode, setChartMode] = useState<"all" | "pitch" | "alumni" | "comparison">("all");
-  const [roleFilter, setRoleFilter] = useState<"all" | "ac_bm">("all");
+  const [roleFilter, setRoleFilter] = useState<"all" | "ac" | "bm">("all");
+  const [chartRoleFilter, setChartRoleFilter] = useState<"all" | "ac" | "bm">("all");
   const [selectedUser, setSelectedUser] = useState<string>("all");
   const [historyTopic, setHistoryTopic] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -332,11 +333,16 @@ export default function AnalyticsDashboardPage() {
     totalEvents: 0,
   };
 
-  const rawLeaderboard: any[] = statsData?.leaderboard || [];
+  // Leaderboard murni untuk konselor (AC & BM). Owner hanya memantau.
+  const rawLeaderboard: any[] = (statsData?.leaderboard || []).filter(
+    (a: any) => a.userRole === "AC" || a.userRole === "BM"
+  );
   const leaderboard =
-    roleFilter === "ac_bm"
-      ? rawLeaderboard.filter((a) => a.userRole === "AC" || a.userRole === "BM")
-      : rawLeaderboard;
+    roleFilter === "ac"
+      ? rawLeaderboard.filter((a) => a.userRole === "AC")
+      : roleFilter === "bm"
+        ? rawLeaderboard.filter((a) => a.userRole === "BM")
+        : rawLeaderboard;
 
   const hourlyHeatmap: number[] = statsData?.hourlyHeatmap || Array(24).fill(0);
   const totalHourlyInteractions = hourlyHeatmap.reduce((acc, v) => acc + v, 0);
@@ -351,13 +357,52 @@ export default function AnalyticsDashboardPage() {
   const alumniPct = rawModeSum > 0 ? Math.round(((modeDistribution.alumni || 0) / rawModeSum) * 100) : 0;
   const compPct = rawModeSum > 0 ? Math.round(((modeDistribution.comparison || 0) / rawModeSum) * 100) : 0;
 
+  // ========================================================
+  // COMPACT & PROPORTIONAL AREA CHART DATA PROCESSING
+  // Activity graph is strictly for AC and BM counselors (Owner activity is excluded)
+  // ========================================================
+  const allAvailableUsers = rawLeaderboard
+    .filter((a: any) => a.userRole === "AC" || a.userRole === "BM")
+    .map((a: any) => ({
+      name: a.userName,
+      role: a.userRole,
+      count: a.totalActions || 0,
+      generates: a.generates || 0,
+      copies: a.copies || 0,
+      pitch: a.pitch || 0,
+      alumni: a.alumni || 0,
+      comparison: a.comparison || 0,
+      avgResponseTimeSec: a.avgResponseTimeSec,
+      topTopic: a.topTopic,
+    }));
+
+  const availableUsers =
+    chartRoleFilter === "ac"
+      ? allAvailableUsers.filter((u) => u.role === "AC")
+      : chartRoleFilter === "bm"
+        ? allAvailableUsers.filter((u) => u.role === "BM")
+        : allAvailableUsers;
+
+  const totalAcBmEvents = availableUsers.reduce((acc, u) => acc + (u.count || 0), 0);
+  const totalAcBmPitch = availableUsers.reduce((acc, u) => acc + (u.pitch || 0), 0);
+  const totalAcBmAlumni = availableUsers.reduce((acc, u) => acc + (u.alumni || 0), 0);
+  const totalAcBmComp = availableUsers.reduce((acc, u) => acc + (u.comparison || 0), 0);
+
+  // Fallback to 'all' if selectedUser is not an active AC/BM counselor in the active role filter
+  const isSelectedUserValid =
+    selectedUser === "all" || availableUsers.some((u) => u.name === selectedUser);
+  const activeSelectedUser = isSelectedUserValid ? selectedUser : "all";
+
+  const selectedUserData =
+    activeSelectedUser !== "all" ? availableUsers.find((u) => u.name === activeSelectedUser) : null;
+
   const topTopics: any[] = statsData?.topTopics || [];
 
   const rawActiveTopics: { name: string; count: number }[] =
-    selectedUser === "all"
+    activeSelectedUser === "all"
       ? topTopics
       : (() => {
-        const found = rawLeaderboard.find((a: any) => a.userName === selectedUser);
+        const found = rawLeaderboard.find((a: any) => a.userName === activeSelectedUser);
         if (!found || !found.topicCounts) return [];
         return Object.entries(found.topicCounts)
           .map(([name, count]) => ({ name, count: count as number }))
@@ -375,41 +420,27 @@ export default function AnalyticsDashboardPage() {
 
   const totalTopicMentions = activeUserTopics.reduce((acc: number, t: any) => acc + (t.count || 0), 0);
 
-  // ========================================================
-  // COMPACT & PROPORTIONAL AREA CHART DATA PROCESSING
-  // ========================================================
-  const availableUsers = rawLeaderboard.map((a: any) => ({
-    name: a.userName,
-    role: a.userRole,
-    count: a.totalActions || 0,
-    generates: a.generates || 0,
-    copies: a.copies || 0,
-    pitch: a.pitch || 0,
-    alumni: a.alumni || 0,
-    comparison: a.comparison || 0,
-    avgResponseTimeSec: a.avgResponseTimeSec,
-    topTopic: a.topTopic,
-  }));
-
-  const selectedUserData =
-    selectedUser !== "all" ? availableUsers.find((u) => u.name === selectedUser) : null;
-
   const timeline: any[] = statsData?.timeline || [];
   const currentModeValues = timeline.map((pt) => {
     const key = chartMode === "all" ? "traffic" : chartMode;
-    if (selectedUser === "all") {
-      return Number(pt[key] || 0);
+    if (activeSelectedUser !== "all") {
+      return Number(pt.byUser?.[activeSelectedUser]?.[key] || 0);
     }
-    return Number(pt.byUser?.[selectedUser]?.[key] || 0);
+    if (chartRoleFilter === "ac" || chartRoleFilter === "bm") {
+      return availableUsers.reduce((sum, u) => sum + Number(pt.byUser?.[u.name]?.[key] || 0), 0);
+    }
+    return Number(pt[key] || 0);
   });
   const maxChartVal = Math.max(...currentModeValues, 1);
   const hasChartData = currentModeValues.some((v) => v > 0);
   const totalChartModeSum = currentModeValues.reduce((acc, v) => acc + v, 0);
 
   // Real Sparkline Series for the 3 KPI Cards
-  const sparkGenerates = timeline.slice(-10).map((pt) => Number(pt.scripts || 0));
-  const sparkAgents = timeline.slice(-10).map((pt) => Number(pt.agents || 0));
-  const sparkUtility = timeline.slice(-10).map((pt) => {
+  // Pada filter "Hari Ini", gunakan seluruh jam (24 jam) agar generate di jam pagi/siang tidak terpotong oleh .slice(-10)
+  const sparkSeries = timeRange === "today" ? timeline : timeline.slice(-10);
+  const sparkGenerates = sparkSeries.map((pt) => Number(pt.scripts || 0));
+  const sparkAgents = sparkSeries.map((pt) => Number(pt.agents || 0));
+  const sparkUtility = sparkSeries.map((pt) => {
     const a = Number(pt.agents || 0);
     const total = Number(kpis.utilityTotalUsers || 0);
     return total > 0 ? Math.min(100, Math.round((a / total) * 100)) : 0;
@@ -666,7 +697,7 @@ export default function AnalyticsDashboardPage() {
             </h1>
             <p className="text-xs sm:text-[13px] font-medium text-[#7A7A74]">
               {kpis.totalEvents > 0
-                ? `${kpis.totalEvents} total aktivitas tercatat (${kpis.totalGenerates} generate AI · ${kpis.totalCopies} script disalin · ${kpis.totalActiveAgents} user online).`
+                ? `${kpis.totalEvents} total aktivitas konselor (${kpis.totalGenerates} generate AI · ${kpis.totalCopies} script disalin · ${kpis.acBmAgentsCount} konselor online).`
                 : "Pantau trafik interaksi prospek, performa script AI, dan konselor online secara real-time."}
             </p>
           </div>
@@ -756,18 +787,18 @@ export default function AnalyticsDashboardPage() {
             </div>
             <div className="flex items-baseline justify-between gap-2">
               <div className="text-2xl sm:text-[28px] font-display font-black text-[#141412] tracking-tight">
-                <AnimatedCounter value={kpis.totalActiveAgents} />
+                <AnimatedCounter value={kpis.acBmAgentsCount} />
               </div>
               <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#DCFCE7] text-[#1F7A4D] border border-[#86EFAC]/60">
                 {kpis.acBmAgentsCount > 0
                   ? `${kpis.acBmAgentsCount} AC/BM Online`
-                  : "Aktif Sekarang"}
+                  : "Konselor Aktif"}
               </span>
             </div>
             <p className="text-[11px] text-[#7A7A74] mt-2 pt-2 border-t border-[#F0F0EC]">
-              {kpis.totalActiveAgents > 0
-                ? `${kpis.acBmAgentsCount} AC/BM · ${Math.max(0, kpis.totalActiveAgents - kpis.acBmAgentsCount)} Owner online`
-                : "Tidak ada sesi online saat ini"}
+              {kpis.acBmAgentsCount > 0
+                ? `${kpis.acBmAgentsCount} konselor (AC & BM) sedang online saat ini`
+                : "Tidak ada konselor AC/BM yang online saat ini"}
             </p>
           </motion.div>
 
@@ -794,7 +825,7 @@ export default function AnalyticsDashboardPage() {
               </span>
             </div>
             <p className="text-[11px] text-[#7A7A74] mt-2 pt-2 border-t border-[#F0F0EC]">
-              Penetrasi fitur ({kpis.utilityActiveUsers ?? 0} dari {kpis.utilityTotalUsers ?? 0} user memakai Pitch / Alumni / Comparison)
+              Penetrasi fitur ({kpis.utilityActiveUsers ?? 0} dari {kpis.utilityTotalUsers ?? 0} konselor memakai Pitch / Alumni / Comparison)
             </p>
           </motion.div>
         </section>
@@ -824,12 +855,24 @@ export default function AnalyticsDashboardPage() {
                       : chartMode === "comparison"
                         ? "Komparasi"
                         : "Aktivitas"}
-                  {selectedUserData ? ` · ${selectedUserData.name}` : ""}
+                  {selectedUserData
+                    ? ` · ${selectedUserData.name} (${selectedUserData.role})`
+                    : chartRoleFilter === "ac"
+                      ? " · Tim AC"
+                      : chartRoleFilter === "bm"
+                        ? " · Tim BM"
+                        : " · AC & BM"}
                 </span>
               </div>
               <p className="text-xs text-[#7A7A74] mt-0.5">
                 Tren {timeRange === "today" ? "per jam hari ini (WIB)" : timeRange === "7d" ? "7 hari terakhir" : timeRange === "30d" ? "30 hari terakhir" : "seluruh riwayat tanggal aktif"}
-                {selectedUserData ? ` untuk konselor ${selectedUserData.name}` : " seluruh tim konselor"}
+                {selectedUserData
+                  ? ` untuk konselor ${selectedUserData.name} (${selectedUserData.role})`
+                  : chartRoleFilter === "ac"
+                    ? " seluruh konselor AC"
+                    : chartRoleFilter === "bm"
+                      ? " seluruh konselor BM"
+                      : " seluruh konselor (AC & BM)"}
               </p>
             </div>
 
@@ -838,19 +881,19 @@ export default function AnalyticsDashboardPage() {
               {[
                 {
                   id: "all",
-                  label: `Semua Aktivitas (${selectedUserData ? selectedUserData.count : kpis.totalEvents})`,
+                  label: `Semua Aktivitas (${selectedUserData ? selectedUserData.count : totalAcBmEvents})`,
                 },
                 {
                   id: "pitch",
-                  label: `Create Pitch (${selectedUserData ? (selectedUserData.pitch ?? 0) : (modeDistribution.pitch ?? 0)})`,
+                  label: `Create Pitch (${selectedUserData ? (selectedUserData.pitch ?? 0) : totalAcBmPitch})`,
                 },
                 {
                   id: "alumni",
-                  label: `Alumni Checker (${selectedUserData ? (selectedUserData.alumni ?? 0) : (modeDistribution.alumni ?? 0)})`,
+                  label: `Alumni Checker (${selectedUserData ? (selectedUserData.alumni ?? 0) : totalAcBmAlumni})`,
                 },
                 {
                   id: "comparison",
-                  label: `Table Comparison (${selectedUserData ? (selectedUserData.comparison ?? 0) : (modeDistribution.comparison ?? 0)})`,
+                  label: `Table Comparison (${selectedUserData ? (selectedUserData.comparison ?? 0) : totalAcBmComp})`,
                 },
               ].map((seg) => {
                 const isSelected = chartMode === seg.id;
@@ -881,8 +924,72 @@ export default function AnalyticsDashboardPage() {
               <div className="flex items-center gap-1.5 text-xs font-bold text-[#7A7A74]">
                 <Users className="w-3.5 h-3.5 text-[#0E62FE]" />
                 <span className="font-mono text-[10.5px] uppercase tracking-wider text-[#4B4B46]">
-                  Filter User:
+                  Filter Role:
                 </span>
+              </div>
+
+              {/* Role Toggle: Semua --- AC --- BM */}
+              <div className="relative inline-flex p-0.5 rounded-lg bg-[#F5F5F2] border border-[#E8E8E4] text-[10.5px] font-mono font-bold">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setChartRoleFilter("all");
+                    setSelectedUser("all");
+                  }}
+                  className={`relative px-2 py-0.5 rounded-md cursor-pointer transition-colors z-10 ${chartRoleFilter === "all"
+                      ? "text-[#FFD84D]"
+                      : "text-[#7A7A74] hover:text-[#141412]"
+                    }`}
+                >
+                  {chartRoleFilter === "all" && (
+                    <motion.span
+                      layoutId="chartRoleFilterActivePill"
+                      className="absolute inset-0 bg-[#141412] rounded-md -z-10 shadow-2xs"
+                      transition={{ type: "spring", stiffness: 450, damping: 35 }}
+                    />
+                  )}
+                  Semua ({allAvailableUsers.length})
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setChartRoleFilter("ac");
+                    setSelectedUser("all");
+                  }}
+                  className={`relative px-2 py-0.5 rounded-md cursor-pointer transition-colors z-10 ${chartRoleFilter === "ac"
+                      ? "text-[#FFD84D]"
+                      : "text-[#7A7A74] hover:text-[#141412]"
+                    }`}
+                >
+                  {chartRoleFilter === "ac" && (
+                    <motion.span
+                      layoutId="chartRoleFilterActivePill"
+                      className="absolute inset-0 bg-[#141412] rounded-md -z-10 shadow-2xs"
+                      transition={{ type: "spring", stiffness: 450, damping: 35 }}
+                    />
+                  )}
+                  AC ({allAvailableUsers.filter((u) => u.role === "AC").length})
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setChartRoleFilter("bm");
+                    setSelectedUser("all");
+                  }}
+                  className={`relative px-2 py-0.5 rounded-md cursor-pointer transition-colors z-10 ${chartRoleFilter === "bm"
+                      ? "text-[#FFD84D]"
+                      : "text-[#7A7A74] hover:text-[#141412]"
+                    }`}
+                >
+                  {chartRoleFilter === "bm" && (
+                    <motion.span
+                      layoutId="chartRoleFilterActivePill"
+                      className="absolute inset-0 bg-[#141412] rounded-md -z-10 shadow-2xs"
+                      transition={{ type: "spring", stiffness: 450, damping: 35 }}
+                    />
+                  )}
+                  BM ({allAvailableUsers.filter((u) => u.role === "BM").length})
+                </button>
               </div>
 
               {/* Tab pills */}
@@ -890,30 +997,30 @@ export default function AnalyticsDashboardPage() {
                 <button
                   type="button"
                   onClick={() => setSelectedUser("all")}
-                  className={`relative px-2.5 py-1 rounded-lg transition-colors cursor-pointer z-10 flex items-center gap-1.5 shrink-0 ${selectedUser === "all" ? "text-white" : "text-[#7A7A74] hover:text-[#141412]"
+                  className={`relative px-2.5 py-1 rounded-lg transition-colors cursor-pointer z-10 flex items-center gap-1.5 shrink-0 ${activeSelectedUser === "all" ? "text-white" : "text-[#7A7A74] hover:text-[#141412]"
                     }`}
                 >
-                  {selectedUser === "all" && (
+                  {activeSelectedUser === "all" && (
                     <motion.span
                       layoutId="chartUserActivePill"
                       className="absolute inset-0 bg-[#141412] rounded-lg -z-10 shadow-2xs"
                       transition={{ type: "spring", stiffness: 450, damping: 35 }}
                     />
                   )}
-                  <span>Semua User</span>
+                  <span>Semua {chartRoleFilter === "ac" ? "AC" : chartRoleFilter === "bm" ? "BM" : "Konselor"}</span>
                   <span className="font-mono text-[10px] opacity-80">
                     ({chartMode === "all"
-                      ? kpis.totalEvents
+                      ? totalAcBmEvents
                       : chartMode === "pitch"
-                        ? modeDistribution.pitch || 0
+                        ? totalAcBmPitch
                         : chartMode === "alumni"
-                          ? modeDistribution.alumni || 0
-                          : modeDistribution.comparison || 0})
+                          ? totalAcBmAlumni
+                          : totalAcBmComp})
                   </span>
                 </button>
 
                 {availableUsers.map((u) => {
-                  const isSelected = selectedUser === u.name;
+                  const isSelected = activeSelectedUser === u.name;
                   const metricVal =
                     chartMode === "all"
                       ? u.count
@@ -937,12 +1044,27 @@ export default function AnalyticsDashboardPage() {
                           transition={{ type: "spring", stiffness: 450, damping: 35 }}
                         />
                       )}
-                      {u.role === "Owner" ? (
-                        <Crown className={`w-3 h-3 ${isSelected ? "text-[#FFD84D]" : "text-[#D97706]"}`} />
-                      ) : (
-                        <span className={`w-1.5 h-1.5 rounded-full ${isSelected ? "bg-[#FFD84D]" : "bg-[#1F7A4D]"}`} />
-                      )}
+                      <span
+                        className={`w-1.5 h-1.5 rounded-full ${isSelected
+                          ? "bg-[#FFD84D]"
+                          : u.role === "BM"
+                            ? "bg-[#9333EA]"
+                            : "bg-[#1F7A4D]"
+                          }`}
+                      />
                       <span>{u.name}</span>
+                      <span
+                        className={`text-[9.5px] font-mono font-bold px-1.5 py-0.2 rounded ${u.role === "BM"
+                          ? isSelected
+                            ? "bg-purple-900/60 text-purple-200"
+                            : "bg-purple-100 text-purple-700"
+                          : isSelected
+                            ? "bg-emerald-900/60 text-emerald-200"
+                            : "bg-emerald-100 text-emerald-700"
+                          }`}
+                      >
+                        {u.role}
+                      </span>
                       <span className="font-mono text-[10px] opacity-80">({metricVal})</span>
                     </button>
                   );
@@ -950,16 +1072,16 @@ export default function AnalyticsDashboardPage() {
               </div>
             </div>
 
-            {selectedUser !== "all" && (
+            {activeSelectedUser !== "all" && (
               <div className="flex items-center gap-2 text-[11px] font-mono text-[#A15C00] bg-[#FFF6D1] px-2.5 py-1 rounded-lg border border-[#FFD84D]/70 shadow-2xs">
                 <span>
-                  Fokus: <strong>{selectedUser}</strong>
+                  Fokus: <strong>{activeSelectedUser}</strong> {selectedUserData?.role ? `(${selectedUserData.role})` : ""}
                 </span>
                 <button
                   type="button"
                   onClick={() => setSelectedUser("all")}
                   className="text-[#141412] hover:bg-[#FFD84D] px-1.5 py-0.2 rounded transition-colors font-bold cursor-pointer"
-                  title="Tampilkan Semua User"
+                  title="Tampilkan Semua Konselor AC & BM"
                 >
                   ✕ Reset
                 </button>
@@ -1038,7 +1160,7 @@ export default function AnalyticsDashboardPage() {
 
                 {/* Proportional SVG Curve with Animated Line & Area */}
                 <svg
-                  key={`${timeRange}-${chartMode}-${selectedUser}-${timeline.length}`}
+                  key={`${timeRange}-${chartMode}-${activeSelectedUser}-${timeline.length}`}
                   className="w-full h-full"
                   viewBox={`0 0 ${svgW} ${svgH}`}
                   preserveAspectRatio="none"
@@ -1142,17 +1264,17 @@ export default function AnalyticsDashboardPage() {
                           <div className="flex items-center gap-2 text-[10px] text-white/80 flex-wrap">
                             <span className="inline-flex items-center gap-1">
                               <Sparkles className="w-2.5 h-2.5 text-[#FFD84D]" />
-                              {Number(selectedUser !== "all" ? (activePoint.rawPt?.byUser?.[selectedUser]?.pitch ?? 0) : (activePoint.rawPt?.pitch ?? 0))} Pitch
+                              {Number(activeSelectedUser !== "all" ? (activePoint.rawPt?.byUser?.[activeSelectedUser]?.pitch ?? 0) : (activePoint.rawPt?.pitch ?? 0))} Pitch
                             </span>
                             <span>•</span>
                             <span className="inline-flex items-center gap-1">
                               <GraduationCap className="w-2.5 h-2.5 text-[#60A5FA]" />
-                              {Number(selectedUser !== "all" ? (activePoint.rawPt?.byUser?.[selectedUser]?.alumni ?? 0) : (activePoint.rawPt?.alumni ?? 0))} Alumni
+                              {Number(activeSelectedUser !== "all" ? (activePoint.rawPt?.byUser?.[activeSelectedUser]?.alumni ?? 0) : (activePoint.rawPt?.alumni ?? 0))} Alumni
                             </span>
                             <span>•</span>
                             <span className="inline-flex items-center gap-1">
                               <Scale className="w-2.5 h-2.5 text-[#34D399]" />
-                              {Number(selectedUser !== "all" ? (activePoint.rawPt?.byUser?.[selectedUser]?.comparison ?? 0) : (activePoint.rawPt?.comparison ?? 0))} Komparasi
+                              {Number(activeSelectedUser !== "all" ? (activePoint.rawPt?.byUser?.[activeSelectedUser]?.comparison ?? 0) : (activePoint.rawPt?.comparison ?? 0))} Komparasi
                             </span>
                           </div>
                         ) : chartMode === "pitch" ? (
@@ -1175,7 +1297,8 @@ export default function AnalyticsDashboardPage() {
                         {/* Rincian Aktivitas Spesifik yang Dilakukan */}
                         {(() => {
                           const filteredActs = (activePoint.rawPt?.actions || []).filter((act: any) => {
-                            if (selectedUser !== "all" && act.user !== selectedUser) return false;
+                            if (act.role === "Owner") return false;
+                            if (activeSelectedUser !== "all" && act.user !== activeSelectedUser) return false;
                             if (chartMode !== "all" && act.mode && act.mode !== chartMode) return false;
                             return true;
                           });
@@ -1287,7 +1410,7 @@ export default function AnalyticsDashboardPage() {
               <p className="text-[10px] font-mono uppercase text-[#7A7A74]">
                 {selectedUserData
                   ? `Respon AI (${selectedUserData.name.split(" ")[0]})`
-                  : "Waktu Respon AI Rata-Rata"}
+                  : "Waktu Respon AI Rata-Rata (AC & BM)"}
               </p>
               <p className="text-sm font-black text-[#141412] font-mono mt-0.5">
                 {selectedUserData
@@ -1303,7 +1426,7 @@ export default function AnalyticsDashboardPage() {
               <p className="text-[10px] font-mono uppercase text-[#7A7A74]">
                 {selectedUserData
                   ? `Topik Utama (${selectedUserData.name.split(" ")[0]})`
-                  : "Topik Utama (Semua Tim)"}
+                  : "Topik Utama (Tim AC & BM)"}
               </p>
               <p
                 className="text-sm font-black text-[#141412] font-mono mt-0.5 truncate"
@@ -1313,7 +1436,7 @@ export default function AnalyticsDashboardPage() {
                       ? `${selectedUserData.topTopic.name} (${selectedUserData.topTopic.count}x)`
                       : `Belum ada data topik untuk ${selectedUserData.name}`
                     : topTopics[0]
-                      ? `${topTopics[0].name} (${topTopics[0].count}x) - Seluruh Tim`
+                      ? `${topTopics[0].name} (${topTopics[0].count}x) - Tim AC & BM`
                       : "Belum ada data topik"
                 }
               >
@@ -1330,10 +1453,10 @@ export default function AnalyticsDashboardPage() {
               <p className="text-[10px] font-mono uppercase text-[#7A7A74]">
                 {selectedUserData
                   ? `Interaksi (${selectedUserData.name.split(" ")[0]})`
-                  : "Total Interaksi Tercatat"}
+                  : "Total Interaksi Tercatat (AC & BM)"}
               </p>
               <p className="text-sm font-black text-[#1F7A4D] font-mono mt-0.5">
-                {selectedUserData ? `${selectedUserData.count} aktivitas` : `${kpis.totalEvents} aktivitas`}
+                {selectedUserData ? `${selectedUserData.count} aktivitas` : `${totalAcBmEvents} aktivitas`}
               </p>
             </div>
           </div>
@@ -1380,20 +1503,37 @@ export default function AnalyticsDashboardPage() {
                     </button>
                     <button
                       type="button"
-                      onClick={() => setRoleFilter("ac_bm")}
-                      className={`relative px-2 py-0.5 rounded-md cursor-pointer transition-colors z-10 ${roleFilter === "ac_bm"
+                      onClick={() => setRoleFilter("ac")}
+                      className={`relative px-2 py-0.5 rounded-md cursor-pointer transition-colors z-10 ${roleFilter === "ac"
                           ? "text-[#FFD84D]"
                           : "text-[#7A7A74] hover:text-[#141412]"
                         }`}
                     >
-                      {roleFilter === "ac_bm" && (
+                      {roleFilter === "ac" && (
                         <motion.span
                           layoutId="roleFilterActivePill"
                           className="absolute inset-0 bg-[#141412] rounded-md -z-10 shadow-2xs"
                           transition={{ type: "spring", stiffness: 450, damping: 35 }}
                         />
                       )}
-                      AC & BM ({rawLeaderboard.filter((a) => a.userRole === "AC" || a.userRole === "BM").length})
+                      AC ({rawLeaderboard.filter((a) => a.userRole === "AC").length})
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setRoleFilter("bm")}
+                      className={`relative px-2 py-0.5 rounded-md cursor-pointer transition-colors z-10 ${roleFilter === "bm"
+                          ? "text-[#FFD84D]"
+                          : "text-[#7A7A74] hover:text-[#141412]"
+                        }`}
+                    >
+                      {roleFilter === "bm" && (
+                        <motion.span
+                          layoutId="roleFilterActivePill"
+                          className="absolute inset-0 bg-[#141412] rounded-md -z-10 shadow-2xs"
+                          transition={{ type: "spring", stiffness: 450, damping: 35 }}
+                        />
+                      )}
+                      BM ({rawLeaderboard.filter((a) => a.userRole === "BM").length})
                     </button>
                   </div>
                 </div>
@@ -1472,9 +1612,7 @@ export default function AnalyticsDashboardPage() {
                               <span
                                 className={`inline-block font-mono text-[9px] font-black px-2 py-0.5 rounded-md ${agent.userRole === "BM"
                                     ? "bg-[#F3E8FF] text-[#7E22CE] border border-[#E9D5FF]"
-                                    : agent.userRole === "Owner"
-                                      ? "bg-[#141412] text-[#FFD84D]"
-                                      : "bg-[#EFF6FF] text-[#1D4ED8] border border-[#DBEAFE]"
+                                    : "bg-[#EFF6FF] text-[#1D4ED8] border border-[#DBEAFE]"
                                   }`}
                               >
                                 {agent.userRole || "AC"}
@@ -1564,7 +1702,7 @@ export default function AnalyticsDashboardPage() {
 
             <div className="p-2.5 rounded-xl text-[11px] mt-3 flex items-center gap-2 bg-[#FAFAF8] border border-[#E8E8E4] text-[#7A7A74]">
               <span className="w-2.5 h-2.5 rounded-full bg-[#FFD84D] border border-[#141412] shrink-0" />
-              <span>Menampilkan seluruh jam aktif konsultasi (termasuk jam 12:00, 18:00, dan 22:00 WIB).</span>
+              <span>Menampilkan seluruh jam aktif konsultasi konselor AC & BM (termasuk jam 12:00, 18:00, dan 22:00 WIB).</span>
             </div>
           </motion.section>
         </div>
@@ -1669,7 +1807,7 @@ export default function AnalyticsDashboardPage() {
                 <div className="flex items-center gap-2">
                   <BarChart3 className="w-4 h-4 text-[#1F7A4D]" />
                   <h3 className="text-sm font-display font-black uppercase tracking-wider text-[#141412]">
-                    {selectedUser === "all"
+                    {activeSelectedUser === "all"
                       ? chartMode === "comparison"
                         ? "Topik Table Comparison"
                         : chartMode === "alumni"
@@ -1678,12 +1816,12 @@ export default function AnalyticsDashboardPage() {
                             ? "Top Objections & Create Pitch"
                             : "Top Objections & Topik Konsultasi Prospek"
                       : chartMode === "comparison"
-                        ? `Topik Table Comparison (${selectedUser})`
+                        ? `Topik Table Comparison (${activeSelectedUser})`
                         : chartMode === "alumni"
-                          ? `Topik Alumni Checker (${selectedUser})`
+                          ? `Topik Alumni Checker (${activeSelectedUser})`
                           : chartMode === "pitch"
-                            ? `Top Objections & Pitch (${selectedUser})`
-                            : `Top Objections & Topik (${selectedUser})`}
+                            ? `Top Objections & Pitch (${activeSelectedUser})`
+                            : `Top Objections & Topik (${activeSelectedUser})`}
                   </h3>
                 </div>
                 <span className="text-[10.5px] font-mono font-bold text-[#4B4B46] bg-[#F5F5F2] px-2 py-0.5 rounded-md border border-[#E8E8E4]">
@@ -1693,9 +1831,9 @@ export default function AnalyticsDashboardPage() {
 
               {activeUserTopics.length === 0 ? (
                 <div className="py-8 text-center text-xs text-[#7A7A74]">
-                  {selectedUser === "all"
+                  {activeSelectedUser === "all"
                     ? "Belum ada data topik yang terdeteksi pada periode ini."
-                    : `Belum ada data topik ${chartMode === "all" ? "" : chartMode} untuk ${selectedUser} pada periode ini.`}
+                    : `Belum ada data topik ${chartMode === "all" ? "" : chartMode} untuk ${activeSelectedUser} pada periode ini.`}
                 </div>
               ) : (
                 <div
@@ -1752,7 +1890,7 @@ export default function AnalyticsDashboardPage() {
         onClose={() => setHistoryTopic(null)}
         token={session?.token}
         topic={historyTopic}
-        user={selectedUser !== "all" ? selectedUser : null}
+        user={activeSelectedUser !== "all" ? activeSelectedUser : null}
       />
 
       {/* ========================================================= */}

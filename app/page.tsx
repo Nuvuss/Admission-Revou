@@ -122,10 +122,18 @@ const MODES: Record<ModeKey, ModeConfig> = {
 };
 
 const availableModels = [
-  { id: "gemini-3.5-flash", name: "Gemini 3.5 Flash (Paling Stabil & Cepat - Rekomendasi)" },
-  { id: "gemini-3.5-flash-lite", name: "Gemini 3.5 Flash Lite (Respon Singkat & Ringan)" },
-  { id: "gemini-3.6-flash", name: "Gemini 3.6 Flash (Tinggi Akurasi)" },
-  { id: "gemini-3.8-flash", name: "Gemini 3.8 Flash (Experimental)" },
+  {
+    id: "anthropic/claude-sonnet-4.5",
+    name: "Claude 3.5 Sonnet (Model Utama - Kualitas Terbaik & Persuasif)",
+  },
+  {
+    id: "google/gemini-3.8-flash",
+    name: "Gemini 3.8 Flash (Paling Hemat & Analitis)",
+  },
+  {
+    id: "anthropic/claude-haiku-4.5",
+    name: "Claude Haiku (Cepat & Ringan - Chat Harian)",
+  },
 ];
 
 export default function DashboardPage() {
@@ -133,7 +141,7 @@ export default function DashboardPage() {
   const [isAuthChecking, setIsAuthChecking] = useState<boolean>(true);
   const [mode, setMode] = useState<ModeKey>("pitch");
   const [selectedModel, setSelectedModel] = useState(
-    process.env.NEXT_PUBLIC_DEFAULT_MODEL || "gemini-3.5-flash"
+    process.env.NEXT_PUBLIC_DEFAULT_MODEL || "anthropic/claude-sonnet-4.5"
   );
   const [inputText, setInputText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -185,7 +193,7 @@ export default function DashboardPage() {
                 showToast(`👋 Selamat datang, ${parsed.name} (${parsed.role})!`);
               }, 300);
             }
-          } catch (e) {}
+          } catch (e) { }
         } else {
           router.replace("/login");
           return;
@@ -216,9 +224,17 @@ export default function DashboardPage() {
       if (savedKeys) {
         const parsedKeys = JSON.parse(savedKeys);
         if (Array.isArray(parsedKeys)) {
-          // ensure 5 slots
-          const normalized = [...parsedKeys, "", "", "", "", ""].slice(0, 5);
-          setCustomApiKeys(normalized);
+          // Jika key tersimpan di browser adalah key lama Google Gemini (AQ. / AIza), bersihkan otomatis
+          const hasLegacyKeys = parsedKeys.some(
+            (k: string) => typeof k === "string" && (k.startsWith("AQ.") || k.startsWith("AIza"))
+          );
+          if (hasLegacyKeys) {
+            localStorage.removeItem("revou_admission_custom_api_keys_v2");
+            setCustomApiKeys(["", "", "", "", ""]);
+          } else {
+            const normalized = [...parsedKeys, "", "", "", "", ""].slice(0, 5);
+            setCustomApiKeys(normalized);
+          }
         }
       }
     } catch (e) {
@@ -241,7 +257,7 @@ export default function DashboardPage() {
           userName: userSession.name,
           userRole: userSession.role || "AC",
         }),
-      }).catch(() => {});
+      }).catch(() => { });
     };
 
     sendHeartbeat();
@@ -255,7 +271,7 @@ export default function DashboardPage() {
           });
           navigator.sendBeacon("/api/auth/logout", blob);
         }
-      } catch (e) {}
+      } catch (e) { }
     };
 
     window.addEventListener("beforeunload", handleBeforeUnload);
@@ -274,12 +290,12 @@ export default function DashboardPage() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ userName: userSession.name }),
           keepalive: true,
-        }).catch(() => {});
-      } catch (e) {}
+        }).catch(() => { });
+      } catch (e) { }
     }
     try {
       localStorage.removeItem("revou_admission_user_session_v1");
-    } catch (e) {}
+    } catch (e) { }
     setUserSession(null);
     setIsLogoutModalOpen(false);
     router.push("/login");
@@ -310,9 +326,11 @@ export default function DashboardPage() {
         try {
           const saved = localStorage.getItem("revou_admission_user_session_v1");
           if (saved) session = JSON.parse(saved);
-        } catch (e) {}
+        } catch (e) { }
       }
       if (!session || !session.name) return;
+      // Owner tugasnya hanya memantau, jangan catat log konsultasi / aktivitas
+      if (session.role === "Owner") return;
 
       fetch("/api/analytics/log", {
         method: "POST",
@@ -327,8 +345,8 @@ export default function DashboardPage() {
           inputSnippet: snippet ? snippet.slice(0, 200) : null,
           metadata: meta || {},
         }),
-      }).catch(() => {});
-    } catch (e) {}
+      }).catch(() => { });
+    } catch (e) { }
   };
 
   // Simpan hasil generate penuh ke database history (khusus dibaca Owner). Gagal tidak mengganggu UX.
@@ -338,7 +356,7 @@ export default function DashboardPage() {
       try {
         const saved = localStorage.getItem("revou_admission_user_session_v1");
         if (saved) session = JSON.parse(saved);
-      } catch (e) {}
+      } catch (e) { }
     }
     return session && session.name ? session : null;
   };
@@ -354,6 +372,7 @@ export default function DashboardPage() {
     try {
       const session = getActiveSession();
       if (!session) return;
+      if (session.role === "Owner") return;
       fetch("/api/analytics/history", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -363,14 +382,15 @@ export default function DashboardPage() {
           userRole: session.role || "AC",
           modelUsed: selectedModel,
         }),
-      }).catch(() => {});
-    } catch (e) {}
+      }).catch(() => { });
+    } catch (e) { }
   };
 
   const saveClarificationThread = (clientSessionId: string, thread: ClarificationItem[]) => {
     try {
       const session = getActiveSession();
       if (!session) return;
+      if (session.role === "Owner") return;
       fetch("/api/analytics/history", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -379,8 +399,8 @@ export default function DashboardPage() {
           clientSessionId,
           chatThread: thread,
         }),
-      }).catch(() => {});
-    } catch (e) {}
+      }).catch(() => { });
+    } catch (e) { }
   };
 
   const fetchApiPoolStatus = async () => {
@@ -731,7 +751,7 @@ export default function DashboardPage() {
             finalResultData = payload;
             setResponseResult(payload);
           }
-        } catch (e) {}
+        } catch (e) { }
       }
 
       if (finalResultData) {
@@ -1080,7 +1100,7 @@ INSTRUKSI PENTING:
   const handleLoadSession = (item: HistoryItem) => {
     setMode(item.mode);
     setInputText(item.inputText);
-    setSelectedModel(item.model || "gemini-3.5-flash-lite");
+    setSelectedModel(item.model || "anthropic/claude-sonnet-4.5");
     setResponseResult(item.responseResult);
     setChatThread(item.chatThread || []);
     setActiveScriptTab(0);
@@ -1202,13 +1222,12 @@ INSTRUKSI PENTING:
 
               {/* User Profile Identity Badge */}
               <div
-                className={`inline-flex items-center rounded-lg border text-xs font-bold shadow-2xs select-none ${
-                  userSession?.role === "Owner"
-                    ? "bg-[#141412] text-[#FFD84D] border-[#141412]"
-                    : userSession?.role === "BM"
+                className={`inline-flex items-center rounded-lg border text-xs font-bold shadow-2xs select-none ${userSession?.role === "Owner"
+                  ? "bg-[#141412] text-[#FFD84D] border-[#141412]"
+                  : userSession?.role === "BM"
                     ? "bg-[#F3E8FF] text-[#7E22CE] border-[#E9D5FF]"
                     : "bg-[#EFF6FF] text-[#1D4ED8] border-[#DBEAFE]"
-                }`}
+                  }`}
                 title={`Login sebagai: ${userSession?.name || ""} (${userSession?.role || ""})`}
               >
                 <div className="inline-flex items-center gap-1.5 px-3 py-1.5">
@@ -1324,9 +1343,8 @@ INSTRUKSI PENTING:
                     key={tab.key}
                     type="button"
                     onClick={() => handleModeChange(tab.key as ModeKey)}
-                    className={`relative px-3.5 py-2 text-xs sm:text-[13px] font-bold rounded-lg transition-colors cursor-pointer select-none flex items-center gap-1.5 shrink-0 ${
-                      isActive ? "text-[#141412]" : "text-[#7A7A74] hover:text-[#141412]"
-                    }`}
+                    className={`relative px-3.5 py-2 text-xs sm:text-[13px] font-bold rounded-lg transition-colors cursor-pointer select-none flex items-center gap-1.5 shrink-0 ${isActive ? "text-[#141412]" : "text-[#7A7A74] hover:text-[#141412]"
+                      }`}
                   >
                     {isActive && (
                       <motion.div
@@ -1393,656 +1411,655 @@ INSTRUKSI PENTING:
               {/* Form and AI Copilot - only rendered for Pitch and Alumni */}
               {mode !== "comparison" && (
                 <>
-              {/* Describe Your Situation Section */}
-              <div className="space-y-2">
-                <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2">
-                  <label
-                    htmlFor="situation-input"
-                    className="font-bold text-[14.5px] text-[#141412] block"
-                  >
-                    {mode === "pitch"
-                      ? "Describe your situation"
-                      : "Cari data alumni / latar belakang leads"}
-                  </label>
+                  {/* Describe Your Situation Section */}
+                  <div className="space-y-2">
+                    <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2">
+                      <label
+                        htmlFor="situation-input"
+                        className="font-bold text-[14.5px] text-[#141412] block"
+                      >
+                        {mode === "pitch"
+                          ? "Describe your situation"
+                          : "Cari data alumni / latar belakang leads"}
+                      </label>
 
-                  {/* Model Selector Pill */}
-                  <div className="dropdown-wrapper group inline-flex items-center gap-1.5 bg-[#F5F5F2] hover:bg-white px-3 py-1 rounded-full border border-[#E8E8E4] hover:border-[#FFD84D] transition-all self-start sm:self-auto shadow-2xs hover:shadow-xs">
-                    <Cpu className="w-3.5 h-3.5 text-[#8A8A84] group-hover:text-[#A15C00] transition-colors" />
-                    <select
-                      value={selectedModel}
-                      onChange={(e) => setSelectedModel(e.target.value)}
-                      className="font-mono text-[11px] text-[#4B4B46] group-hover:text-[#141412] bg-transparent focus:outline-none cursor-pointer pr-1"
-                    >
-                      {availableModels.map((m) => (
-                        <option key={m.id} value={m.id}>
-                          {m.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                {/* Mode Line: Pill + Lead */}
-                <div key={mode} className="flex flex-wrap gap-2 items-baseline animate-tab-content">
-                  <span className="font-mono text-[10.5px] uppercase tracking-wider px-2 py-0.5 rounded-md bg-[#FFD84D] text-[#141412] font-bold shadow-2xs">
-                    {curConfig.title}
-                  </span>
-                  <span className="text-[13px] text-[#8A8A84] leading-relaxed">
-                    {curConfig.lead}
-                  </span>
-                </div>
-
-                {/* Textarea Input */}
-                <div className="relative">
-                  <textarea
-                    id="situation-input"
-                    rows={5}
-                    value={inputText}
-                    onChange={(e) => setInputText(e.target.value)}
-                    onKeyDown={(e) => {
-                      if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
-                        e.preventDefault();
-                        handleGenerate();
-                      }
-                    }}
-                    placeholder={curConfig.placeholder}
-                    className="w-full text-[14.5px] text-[#141412] bg-white border border-[#D9D9D4] rounded-xl p-3.5 focus:outline-none focus:border-[#141412] focus:ring-2 focus:ring-[#FFD84D]/40 transition-all resize-y min-h-[120px] leading-relaxed placeholder:text-[#8A8A84]"
-                  />
-                  {inputText.length > 0 && (
-                    <span className="absolute bottom-2.5 right-3 font-mono text-[11px] text-[#8A8A84] bg-white/90 px-1.5 py-0.5 rounded border border-[#E8E8E4]">
-                      {inputText.trim() ? inputText.trim().split(/\s+/).length : 0} kata &middot; ⌘+Enter
-                    </span>
-                  )}
-                </div>
-
-
-              </div>
-
-              {/* Action Buttons Row */}
-              <div className="flex flex-wrap items-center gap-2.5 pt-1">
-                <motion.button
-                  type="button"
-                  disabled={isLoading || !inputText.trim()}
-                  onClick={handleGenerate}
-                  whileHover={!isLoading && inputText.trim() ? { y: -1 } : {}}
-                  whileTap={!isLoading && inputText.trim() ? { scale: 0.98 } : {}}
-                  className={`inline-flex items-center gap-2 font-display font-bold text-sm sm:text-base px-6 py-3 rounded-xl select-none transition-all duration-150 ${!inputText.trim() || isLoading
-                      ? "bg-[#E8E8E4] text-[#8A8A84] cursor-not-allowed border border-[#D9D9D4]"
-                      : "bg-[#FFD84D] hover:bg-[#FFCC1A] text-[#141412] border border-[#E5B500] shadow-xs cursor-pointer active:bg-[#E5B500]"
-                    }`}
-                >
-                  {isLoading ? (
-                    <>
-                      <div className="w-4 h-4 border-2 border-[#141412] border-t-transparent rounded-full animate-spin shrink-0" />
-                      <span className="font-semibold">Menganalisis dengan RevoU Copilot…</span>
-                    </>
-                  ) : (
-                    <span className="flex items-center gap-2">
-                      <Sparkles className="w-4 h-4 text-[#141412]" />
-                      <span>Generate Rekomendasi Script</span>
-                      <ChevronRight className="w-4 h-4" />
-                    </span>
-                  )}
-                </motion.button>
-
-                <button
-                  type="button"
-                  onClick={handleClear}
-                  className="inline-flex items-center font-display font-semibold text-sm px-4 py-3 rounded-xl border border-[#D9D9D4] bg-white text-[#4B4B46] hover:text-[#141412] hover:bg-[#F5F5F2] hover:border-[#8A8A84] transition-all cursor-pointer shadow-2xs active:scale-98"
-                >
-                  Clear
-                </button>
-              </div>
-
-              {/* Autonote status: 3D Pulsing Beacon + 5 API Keys Engine Status (Khusus Owner) */}
-              <div className="flex flex-wrap items-center justify-between gap-2 m-0 select-none pt-0.5">
-                <div className="beacon-3d-badge inline-flex items-center gap-2 px-2.5 py-1 rounded-full cursor-default">
-                  <span className="relative flex h-2.5 w-2.5 items-center justify-center">
-                    {/* 3D Wave Ripple */}
-                    <span className="beacon-3d-ripple absolute inline-flex h-full w-full rounded-full" />
-                    {/* 3D Spherical Dot with light reflection */}
-                    <span className="beacon-3d-dot relative inline-flex rounded-full h-2 w-2" />
-                  </span>
-                  <span className="font-mono text-[11px] font-bold tracking-wider text-[#166534] uppercase drop-shadow-[0_1px_0_rgba(255,255,255,0.8)]">
-                    AI siap
-                  </span>
-                </div>
-
-                {/* 5 API Keys Round Robin Button (Dipindahkan ke dekat status mesin AI) */}
-                {userSession?.role === "Owner" && (
-                  <button
-                    type="button"
-                    onClick={() => setIsKeyModalOpen(true)}
-                    className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#E8E8E4] bg-[#F5F5F2] hover:bg-white hover:border-[#141412] text-[11px] font-bold text-[#141412] transition-all cursor-pointer shadow-2xs hover:shadow-xs active:scale-95 select-none"
-                    title="Kelola 5 API Keys & Pantau Status Kuota (Round Robin)"
-                  >
-                    <Key className="w-3 h-3 text-[#0E62FE]" />
-                    <span>5 API Keys</span>
-                    <span className="flex items-center gap-1 font-mono text-[10px] px-1.5 py-0.5 rounded-full bg-white text-[#4B4B46] border border-[#E8E8E4]">
-                      <span
-                        className={`w-1.5 h-1.5 rounded-full ${
-                          apiPoolStatus?.quotaHealth === "optimal"
-                            ? "bg-[#1F7A4D]"
-                            : apiPoolStatus?.quotaHealth === "partial_warning"
-                            ? "bg-[#D97706] animate-pulse"
-                            : apiPoolStatus?.quotaHealth === "all_exhausted"
-                            ? "bg-[#DA1E28] animate-pulse"
-                            : "bg-[#1F7A4D]"
-                        }`}
-                      />
-                      <span>
-                        {apiPoolStatus?.activeRoundRobinIndex
-                          ? `API ${apiPoolStatus.activeRoundRobinIndex}/${apiPoolStatus.totalKeys || 5}`
-                          : "Round Robin"}
-                      </span>
-                    </span>
-                  </button>
-                )}
-              </div>
-
-              {errorMessage && (
-                <div className="p-3 bg-red-50 border border-red-200 text-[#B42318] text-xs rounded-lg">
-                  {errorMessage}
-                </div>
-              )}
-
-              {/* ========================================================= */}
-              {/* LIVE SSE STREAMING INDICATOR & REAL-TIME PREVIEW          */}
-              {/* ========================================================= */}
-              {isLoading && (
-                <motion.div
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="border border-[#FFD84D]/80 bg-[#FFFDF5] rounded-2xl p-4 sm:p-5 shadow-xs space-y-3"
-                >
-                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#FFD84D]/40 pb-2.5">
-                    <div className="flex items-center gap-2">
-                      <span className="relative flex h-2.5 w-2.5 items-center justify-center">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#E5B500] opacity-75" />
-                        <span className="relative inline-flex rounded-full h-2 w-2 bg-[#FFCC1A]" />
-                      </span>
-                      <span className="font-display font-bold text-xs uppercase tracking-wider text-[#A15C00]">
-                        ⚡ Real-Time Response Streaming (SSE)
-                      </span>
-                    </div>
-                    <span className="font-mono text-[11px] text-[#4B4B46] bg-white px-2.5 py-0.5 rounded-full border border-[#E8E8E4] flex items-center gap-1.5 shadow-2xs">
-                      <Sparkles className="w-3 h-3 text-[#E5B500]" />
-                      <span>{streamStatus || "Sedang memproses..."}</span>
-                    </span>
-                  </div>
-
-                  {streamDeltaText ? (
-                    <div className="space-y-1.5">
-                      <div className="flex justify-between items-center text-[11px] font-mono text-[#8A8A84]">
-                        <span>Live AI Generation Tokens:</span>
-                        <span>{streamDeltaText.length} karakter mengalir</span>
-                      </div>
-                      <div className="bg-white border border-[#E8E8E4] rounded-xl p-3.5 max-h-48 overflow-y-auto font-mono text-xs text-[#2B2B28] leading-relaxed whitespace-pre-wrap shadow-inner">
-                        {streamDeltaText}
-                        <span className="inline-block w-1.5 h-3.5 bg-[#FFCC1A] ml-1 animate-pulse align-middle" />
+                      {/* Model Selector Pill */}
+                      <div className="dropdown-wrapper group inline-flex items-center gap-1.5 bg-[#F5F5F2] hover:bg-white px-3 py-1 rounded-full border border-[#E8E8E4] hover:border-[#FFD84D] transition-all self-start sm:self-auto shadow-2xs hover:shadow-xs">
+                        <Cpu className="w-3.5 h-3.5 text-[#8A8A84] group-hover:text-[#A15C00] transition-colors" />
+                        <select
+                          value={selectedModel}
+                          onChange={(e) => setSelectedModel(e.target.value)}
+                          className="font-mono text-[11px] text-[#4B4B46] group-hover:text-[#141412] bg-transparent focus:outline-none cursor-pointer pr-1"
+                        >
+                          {availableModels.map((m) => (
+                            <option key={m.id} value={m.id}>
+                              {m.name}
+                            </option>
+                          ))}
+                        </select>
                       </div>
                     </div>
-                  ) : (
-                    <div className="flex items-center gap-3 py-2 text-xs text-[#4B4B46]">
-                      <div className="w-4 h-4 border-2 border-[#141412] border-t-transparent rounded-full animate-spin shrink-0" />
-                      <span>{streamStatus || "Menghubungkan ke Google Gemini API via Server-Sent Events..."}</span>
-                    </div>
-                  )}
-                </motion.div>
-              )}
 
-              {/* ========================================================= */}
-              {/* D. REVISED STRUCTURED RESULTS AREA (.out)                 */}
-              {/* ========================================================= */}
-              {responseResult && (
-                <motion.div
-                  initial={{ opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-                  className="border-t border-[#E8E8E4] pt-5 mt-6 space-y-6"
-                >
-                  {/* Output Header */}
-                  <div className="flex flex-wrap justify-between items-center gap-2.5 pb-2">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="font-mono text-[11px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#F5F5F2] text-[#4B4B46] font-semibold">
+                    {/* Mode Line: Pill + Lead */}
+                    <div key={mode} className="flex flex-wrap gap-2 items-baseline animate-tab-content">
+                      <span className="font-mono text-[10.5px] uppercase tracking-wider px-2 py-0.5 rounded-md bg-[#FFD84D] text-[#141412] font-bold shadow-2xs">
                         {curConfig.title}
                       </span>
-                      {responseResult.apiKeyInfo && (
-                        <span
-                          className="font-mono text-[11px] px-2.5 py-0.5 rounded-full bg-[#EFF6FF] text-[#1D4ED8] border border-[#BFDBFE] font-medium flex items-center gap-1.5"
-                          title="API Key yang memproses jawaban ini dalam pool Round Robin"
-                        >
-                          <Key className="w-3 h-3 text-[#2563EB]" />
-                          <span>
-                            API {responseResult.apiKeyInfo.activeKeyIndex || 1}/{responseResult.apiKeyInfo.totalKeys || 5}
-                          </span>
-                          {responseResult.apiKeyInfo.wasRotatedDueToQuota && (
-                            <span className="text-[10px] bg-[#FEF3C7] text-[#92400E] px-1 rounded font-bold">
-                              Auto-Rotated (429)
-                            </span>
-                          )}
-                        </span>
-                      )}
+                      <span className="text-[13px] text-[#8A8A84] leading-relaxed">
+                        {curConfig.lead}
+                      </span>
                     </div>
 
-                    <div className="flex gap-2 flex-wrap items-center">
-                      <button
-                        type="button"
-                        onClick={toggleCurrentSessionFavorite}
-                        className={`font-sans text-xs font-semibold px-3 py-1.5 rounded-lg border transition-all cursor-pointer flex items-center gap-1.5 select-none active:scale-95 ${isCurrentFavorite
-                          ? "bg-[#FFF6D1] text-[#A15C00] border-[#FFD84D] shadow-2xs font-bold"
-                          : "bg-white text-[#141412] border-[#D9D9D4] hover:bg-[#F5F5F2]"
-                          }`}
-                        title={isCurrentFavorite ? "Hapus dari Favorit" : "Simpan draf ini ke koleksi Favorit"}
-                      >
-                        <Star
-                          className={`w-3.5 h-3.5 transition-colors ${isCurrentFavorite ? "fill-[#FFCC1A] text-[#A15C00]" : "text-[#8A8A84]"
-                            }`}
-                        />
-                        <span>{isCurrentFavorite ? "Tersimpan di Favorit" : "Simpan ke Favorit"}</span>
-                      </button>
-
-                      {responseResult.scripts && responseResult.scripts.length > 0 && (
-                        <button
-                          type="button"
-                          onClick={handleCopyAll}
-                          className="font-sans text-xs font-semibold px-3 py-1.5 rounded-lg border border-[#D9D9D4] bg-white hover:bg-[#F5F5F2] text-[#141412] transition-all cursor-pointer"
-                        >
-                          {copiedAll ? "Tersalin ✓" : "Salin semua script"}
-                        </button>
-                      )}
-
-                      <button
-                        type="button"
-                        onClick={handleGenerate}
-                        className="font-sans text-xs font-semibold px-3 py-1.5 rounded-lg border border-[#D9D9D4] bg-white hover:bg-[#F5F5F2] text-[#141412] transition-all cursor-pointer"
-                      >
-                        Buat ulang
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* ===================================================== */}
-                  {/* SPECIFIC STRUCTURE BY ACTIVE MENU                     */}
-                  {/* ===================================================== */}
-
-                  {/* SECTION: OUTPUT CONTENT */}
-                  <div className="space-y-4">
-
-                    {/* ALUMNI MATCHES CARDS GRID (Hanya untuk menu alumni) */}
-                    {mode === "alumni" && responseResult.alumni_matches && responseResult.alumni_matches.length > 0 && (
-                      <AlumniCardList matches={responseResult.alumni_matches} />
-                    )}
-
-                    {/* 2. Recommended approach */}
-                    {mode === "pitch" && responseResult.recommended_approach && (
-                      <div className="bg-[#FFF6D1]/60 p-4 sm:p-5 rounded-xl border border-[#FFD84D]/60 space-y-1.5 card-interactive">
-                        <div className="flex items-center gap-2 font-display font-bold text-xs uppercase tracking-wider text-[#A15C00]">
-                          <Lightbulb className="w-3.5 h-3.5 text-[#A15C00]" />
-                          <span>Recommended approach for Sales</span>
-                        </div>
-                        <p className="text-sm text-[#141412] leading-relaxed">
-                          {responseResult.recommended_approach}
-                        </p>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* 3. SUGGESTED RESPONSE (TAB UI SYSTEM — UNTUK MENU PITCH) */}
-                  {mode === "pitch" && responseResult.scripts && responseResult.scripts.length > 0 && (
-                    <PitchScripts
-                      scripts={responseResult.scripts}
-                      activeTab={activeScriptTab}
-                      onTabChange={setActiveScriptTab}
-                      onCopySingle={handleCopySingle}
-                      copiedIndex={copiedIndex}
-                    />
-                  )}
-
-                  {/* ===================================================== */}
-                  {/* Revision / Clarification Section (.chat)             */}
-                  {/* ===================================================== */}
-                  <div className="border-t border-[#E8E8E4] pt-5 mt-6 space-y-4">
-                    <div className="flex flex-wrap items-center justify-between gap-2">
-                      <div>
-                        <label
-                          htmlFor="chat-input"
-                          className="block font-mono text-xs font-bold uppercase tracking-wider text-[#8A8A84]"
-                        >
-                          Kurang pas? Klarifikasi ke AI
-                        </label>
-                        <p className="text-[12.5px] text-[#8A8A84] mt-0.5">
-                          Kirim pertanyaan atau instruksi revisi. Jawaban dan draf baru akan ditampilkan di bawah tanpa mengubah hasil awal di atas.
-                        </p>
-                      </div>
-
-                      {chatThread.length > 0 && (
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setChatThread([]);
-                            setClarificationTabs({});
-                          }}
-                          className="text-xs font-mono text-[#8A8A84] hover:text-[#B42318] hover:underline transition-all cursor-pointer"
-                        >
-                          Hapus riwayat klarifikasi
-                        </button>
-                      )}
-                    </div>
-
-                    {/* Clarification Input Box */}
-                    <div className="flex gap-2 items-end">
+                    {/* Textarea Input */}
+                    <div className="relative">
                       <textarea
-                        id="chat-input"
-                        rows={2}
-                        value={chatInput}
-                        onChange={(e) => setChatInput(e.target.value)}
+                        id="situation-input"
+                        rows={5}
+                        value={inputText}
+                        onChange={(e) => setInputText(e.target.value)}
                         onKeyDown={(e) => {
-                          if (e.key === "Enter" && !e.shiftKey) {
+                          if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
                             e.preventDefault();
-                            handleSendClarification();
+                            handleGenerate();
                           }
                         }}
-                        placeholder={
-                          mode === "alumni"
-                            ? "Contoh: Ada contoh alumni lainnya? / Berikan profil alumni yang berbeda dari sebelumnya..."
-                            : "Contoh: prospect ini sebenarnya sudah kerja 5 tahun, bukan fresh grad. Tolong sesuaikan scriptnya."
-                        }
-                        className="flex-1 text-sm text-[#141412] bg-white border border-[#D9D9D4] rounded-[10px] p-2.5 focus:outline-none focus:border-[#141412] focus:ring-2 focus:ring-[#FFF6D1] resize-none"
+                        placeholder={curConfig.placeholder}
+                        className="w-full text-[14.5px] text-[#141412] bg-white border border-[#D9D9D4] rounded-xl p-3.5 focus:outline-none focus:border-[#141412] focus:ring-2 focus:ring-[#FFD84D]/40 transition-all resize-y min-h-[120px] leading-relaxed placeholder:text-[#8A8A84]"
                       />
-                      <button
-                        type="button"
-                        disabled={isChatLoading || !chatInput.trim()}
-                        onClick={() => handleSendClarification()}
-                        className="font-display font-bold text-sm px-4 py-2.5 rounded-[10px] bg-[#FFD84D] hover:bg-[#FFCC1A] hover:shadow-xs hover:-translate-y-0.5 active:translate-y-0.5 active:scale-95 active:bg-[#E5B500] text-[#141412] border border-[#FFD84D] transition-all duration-150 cursor-pointer shrink-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none select-none"
-                      >
-                        {isChatLoading ? "..." : "Kirim"}
-                      </button>
-                    </div>
-
-                    {/* Quick clarification chips */}
-                    <div className="flex flex-wrap gap-1.5">
-                      {mode === "alumni" ? (
-                        <>
-                          <button
-                            type="button"
-                            onClick={() => handleSendClarification("Berikan contoh alumni lainnya yang berbeda dari yang sudah ditampilkan sebelumnya.")}
-                            className="font-mono text-xs px-2.5 py-1 rounded-full bg-[#FFD84D] text-[#141412] font-semibold cursor-pointer hover:bg-[#FFCC1A] active:scale-95 active:bg-[#E5B500] transition-all select-none flex items-center gap-1.5 shadow-2xs"
-                          >
-                            <UserCheck className="w-3.5 h-3.5 text-[#141412]" />
-                            <span>Contoh alumni lainnya</span>
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => handleSendClarification("Cari contoh alumni yang murni Career Switcher dari latar belakang non-IT.")}
-                            className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] hover:bg-[#F5F5F2] active:scale-95 active:bg-[#E8E8E4] bg-white transition-all cursor-pointer select-none"
-                          >
-                            Career Switcher non-IT
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => handleSendClarification("Cari alumni yang mendapatkan kenaikan gaji (salary increase) tinggi.")}
-                            className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] hover:bg-[#F5F5F2] active:scale-95 active:bg-[#E8E8E4] bg-white transition-all cursor-pointer select-none"
-                          >
-                            Kenaikan gaji tinggi
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => handleSendClarification("Cari alumni yang Hired Before Graduation (diterima kerja sebelum lulus).")}
-                            className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] hover:bg-[#F5F5F2] active:scale-95 active:bg-[#E8E8E4] bg-white transition-all cursor-pointer select-none"
-                          >
-                            Hired Before Graduation
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => handleSendClarification("Cari alumni dari industri Manufaktur, BUMN, atau Korporasi besar.")}
-                            className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] hover:bg-[#F5F5F2] active:scale-95 active:bg-[#E8E8E4] bg-white transition-all cursor-pointer select-none"
-                          >
-                            Manufaktur / BUMN
-                          </button>
-                        </>
-                      ) : (
-                        <>
-                          <button
-                            type="button"
-                            onClick={() => handleSendClarification("Buat use case konkret pemetaan AI framework")}
-                            className="font-mono text-xs px-2.5 py-1 rounded-full bg-[#FFD84D] text-[#141412] font-semibold cursor-pointer hover:bg-[#FFCC1A] active:scale-95 active:bg-[#E5B500] transition-all select-none"
-                          >
-                            Buat use case
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => handleSendClarification("Program yang direkomendasikan kurang tepat. Tolong beri alternatif program lain.")}
-                            className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] hover:bg-[#F5F5F2] active:scale-95 active:bg-[#E8E8E4] bg-white transition-all cursor-pointer select-none"
-                          >
-                            Program kurang tepat
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => handleSendClarification("Persona yang kamu tebak salah. Tolong sesuaikan.")}
-                            className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] hover:bg-[#F5F5F2] active:scale-95 active:bg-[#E8E8E4] bg-white transition-all cursor-pointer select-none"
-                          >
-                            Persona salah
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => handleSendClarification("Buat script-nya lebih singkat dan to the point.")}
-                            className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] hover:bg-[#F5F5F2] active:scale-95 active:bg-[#E8E8E4] bg-white transition-all cursor-pointer select-none"
-                          >
-                            Lebih singkat
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => handleSendClarification("Buat nadanya lebih formal dan sopan.")}
-                            className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] hover:bg-[#F5F5F2] active:scale-95 active:bg-[#E8E8E4] bg-white transition-all cursor-pointer select-none"
-                          >
-                            Lebih formal
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => handleSendClarification("Buat 2 variasi baru dengan angle yang berbeda.")}
-                            className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] hover:bg-[#F5F5F2] active:scale-95 active:bg-[#E8E8E4] bg-white transition-all cursor-pointer select-none"
-                          >
-                            Variasi lain
-                          </button>
-                        </>
+                      {inputText.length > 0 && (
+                        <span className="absolute bottom-2.5 right-3 font-mono text-[11px] text-[#8A8A84] bg-white/90 px-1.5 py-0.5 rounded border border-[#E8E8E4]">
+                          {inputText.trim() ? inputText.trim().split(/\s+/).length : 0} kata &middot; ⌘+Enter
+                        </span>
                       )}
                     </div>
 
-                    {/* Loading indicator while waiting for clarification response */}
-                    {isChatLoading && (
-                      <div className="p-4 bg-[#FFF6D1]/50 border border-[#FFD84D]/60 rounded-xl flex items-center gap-3 animate-pulse">
-                        <div className="w-4 h-4 border-2 border-[#141412] border-t-transparent rounded-full animate-spin shrink-0" />
-                        <span className="text-sm font-medium text-[#141412]">
-                          AI sedang memproses klarifikasi dan menyesuaikan draf script...
+
+                  </div>
+
+                  {/* Action Buttons Row */}
+                  <div className="flex flex-wrap items-center gap-2.5 pt-1">
+                    <motion.button
+                      type="button"
+                      disabled={isLoading || !inputText.trim()}
+                      onClick={handleGenerate}
+                      whileHover={!isLoading && inputText.trim() ? { y: -1 } : {}}
+                      whileTap={!isLoading && inputText.trim() ? { scale: 0.98 } : {}}
+                      className={`inline-flex items-center gap-2 font-display font-bold text-sm sm:text-base px-6 py-3 rounded-xl select-none transition-all duration-150 ${!inputText.trim() || isLoading
+                        ? "bg-[#E8E8E4] text-[#8A8A84] cursor-not-allowed border border-[#D9D9D4]"
+                        : "bg-[#FFD84D] hover:bg-[#FFCC1A] text-[#141412] border border-[#E5B500] shadow-xs cursor-pointer active:bg-[#E5B500]"
+                        }`}
+                    >
+                      {isLoading ? (
+                        <>
+                          <div className="w-4 h-4 border-2 border-[#141412] border-t-transparent rounded-full animate-spin shrink-0" />
+                          <span className="font-semibold">Menganalisis dengan RevoU Copilot…</span>
+                        </>
+                      ) : (
+                        <span className="flex items-center gap-2">
+                          <Sparkles className="w-4 h-4 text-[#141412]" />
+                          <span>Generate Rekomendasi Script</span>
+                          <ChevronRight className="w-4 h-4" />
+                        </span>
+                      )}
+                    </motion.button>
+
+                    <button
+                      type="button"
+                      onClick={handleClear}
+                      className="inline-flex items-center font-display font-semibold text-sm px-4 py-3 rounded-xl border border-[#D9D9D4] bg-white text-[#4B4B46] hover:text-[#141412] hover:bg-[#F5F5F2] hover:border-[#8A8A84] transition-all cursor-pointer shadow-2xs active:scale-98"
+                    >
+                      Clear
+                    </button>
+                  </div>
+
+                  {/* Autonote status: 3D Pulsing Beacon + 5 API Keys Engine Status (Khusus Owner) */}
+                  <div className="flex flex-wrap items-center justify-between gap-2 m-0 select-none pt-0.5">
+                    <div className="beacon-3d-badge inline-flex items-center gap-2 px-2.5 py-1 rounded-full cursor-default">
+                      <span className="relative flex h-2.5 w-2.5 items-center justify-center">
+                        {/* 3D Wave Ripple */}
+                        <span className="beacon-3d-ripple absolute inline-flex h-full w-full rounded-full" />
+                        {/* 3D Spherical Dot with light reflection */}
+                        <span className="beacon-3d-dot relative inline-flex rounded-full h-2 w-2" />
+                      </span>
+                      <span className="font-mono text-[11px] font-bold tracking-wider text-[#166534] uppercase drop-shadow-[0_1px_0_rgba(255,255,255,0.8)]">
+                        AI siap
+                      </span>
+                    </div>
+
+                    {/* 5 API Keys Round Robin Button (Dipindahkan ke dekat status mesin AI) */}
+                    {userSession?.role === "Owner" && (
+                      <button
+                        type="button"
+                        onClick={() => setIsKeyModalOpen(true)}
+                        className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#E8E8E4] bg-[#F5F5F2] hover:bg-white hover:border-[#141412] text-[11px] font-bold text-[#141412] transition-all cursor-pointer shadow-2xs hover:shadow-xs active:scale-95 select-none"
+                        title="Kelola 5 API Keys & Pantau Status Kuota (Round Robin)"
+                      >
+                        <Key className="w-3 h-3 text-[#0E62FE]" />
+                        <span>API Keys</span>
+                        <span className="flex items-center gap-1 font-mono text-[10px] px-1.5 py-0.5 rounded-full bg-white text-[#4B4B46] border border-[#E8E8E4]">
+                          <span
+                            className={`w-1.5 h-1.5 rounded-full ${apiPoolStatus?.quotaHealth === "optimal"
+                              ? "bg-[#1F7A4D]"
+                              : apiPoolStatus?.quotaHealth === "partial_warning"
+                                ? "bg-[#D97706] animate-pulse"
+                                : apiPoolStatus?.quotaHealth === "all_exhausted"
+                                  ? "bg-[#DA1E28] animate-pulse"
+                                  : "bg-[#1F7A4D]"
+                              }`}
+                          />
+                          <span>
+                            {apiPoolStatus?.activeRoundRobinIndex
+                              ? `API ${apiPoolStatus.activeRoundRobinIndex}/${apiPoolStatus.totalKeys || 5}`
+                              : "Round Robin"}
+                          </span>
+                        </span>
+                      </button>
+                    )}
+                  </div>
+
+                  {errorMessage && (
+                    <div className="p-3 bg-red-50 border border-red-200 text-[#B42318] text-xs rounded-lg">
+                      {errorMessage}
+                    </div>
+                  )}
+
+                  {/* ========================================================= */}
+                  {/* LIVE SSE STREAMING INDICATOR & REAL-TIME PREVIEW          */}
+                  {/* ========================================================= */}
+                  {isLoading && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="border border-[#FFD84D]/80 bg-[#FFFDF5] rounded-2xl p-4 sm:p-5 shadow-xs space-y-3"
+                    >
+                      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#FFD84D]/40 pb-2.5">
+                        <div className="flex items-center gap-2">
+                          <span className="relative flex h-2.5 w-2.5 items-center justify-center">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#E5B500] opacity-75" />
+                            <span className="relative inline-flex rounded-full h-2 w-2 bg-[#FFCC1A]" />
+                          </span>
+                          <span className="font-display font-bold text-xs uppercase tracking-wider text-[#A15C00]">
+                            ⚡ Real-Time Response Streaming (SSE)
+                          </span>
+                        </div>
+                        <span className="font-mono text-[11px] text-[#4B4B46] bg-white px-2.5 py-0.5 rounded-full border border-[#E8E8E4] flex items-center gap-1.5 shadow-2xs">
+                          <Sparkles className="w-3 h-3 text-[#E5B500]" />
+                          <span>{streamStatus || "Sedang memproses..."}</span>
                         </span>
                       </div>
-                    )}
 
-                    {/* Clarification Responses List (Placed Below the Box) */}
-                    {chatThread.length > 0 && (
-                      <div className="pt-2 space-y-5">
-                        <div className="flex items-center gap-2">
-                          <span className="w-2 h-2 rounded-full bg-[#FFCC1A]" />
-                          <h3 className="font-display font-bold text-sm text-[#141412]">
-                            Hasil & Riwayat Klarifikasi ({Math.ceil(chatThread.length / 2)} sesi)
-                          </h3>
+                      {streamDeltaText ? (
+                        <div className="space-y-1.5">
+                          <div className="flex justify-between items-center text-[11px] font-mono text-[#8A8A84]">
+                            <span>Live AI Generation Tokens:</span>
+                            <span>{streamDeltaText.length} karakter mengalir</span>
+                          </div>
+                          <div className="bg-white border border-[#E8E8E4] rounded-xl p-3.5 max-h-48 overflow-y-auto font-mono text-xs text-[#2B2B28] leading-relaxed whitespace-pre-wrap shadow-inner">
+                            {streamDeltaText}
+                            <span className="inline-block w-1.5 h-3.5 bg-[#FFCC1A] ml-1 animate-pulse align-middle" />
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-3 py-2 text-xs text-[#4B4B46]">
+                          <div className="w-4 h-4 border-2 border-[#141412] border-t-transparent rounded-full animate-spin shrink-0" />
+                          <span>{streamStatus || "Menghubungkan ke Google Gemini API via Server-Sent Events..."}</span>
+                        </div>
+                      )}
+                    </motion.div>
+                  )}
+
+                  {/* ========================================================= */}
+                  {/* D. REVISED STRUCTURED RESULTS AREA (.out)                 */}
+                  {/* ========================================================= */}
+                  {responseResult && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 16 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+                      className="border-t border-[#E8E8E4] pt-5 mt-6 space-y-6"
+                    >
+                      {/* Output Header */}
+                      <div className="flex flex-wrap justify-between items-center gap-2.5 pb-2">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="font-mono text-[11px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#F5F5F2] text-[#4B4B46] font-semibold">
+                            {curConfig.title}
+                          </span>
+                          {responseResult.apiKeyInfo && (
+                            <span
+                              className="font-mono text-[11px] px-2.5 py-0.5 rounded-full bg-[#EFF6FF] text-[#1D4ED8] border border-[#BFDBFE] font-medium flex items-center gap-1.5"
+                              title="API Key yang memproses jawaban ini dalam pool Round Robin"
+                            >
+                              <Key className="w-3 h-3 text-[#2563EB]" />
+                              <span>
+                                API {responseResult.apiKeyInfo.activeKeyIndex || 1}/{responseResult.apiKeyInfo.totalKeys || 5}
+                              </span>
+                              {responseResult.apiKeyInfo.wasRotatedDueToQuota && (
+                                <span className="text-[10px] bg-[#FEF3C7] text-[#92400E] px-1 rounded font-bold">
+                                  Auto-Rotated (429)
+                                </span>
+                              )}
+                            </span>
+                          )}
                         </div>
 
-                        {chatThread.map((msg, i) => {
-                          if (msg.role === "user") {
-                            return (
-                              <div key={msg.id || i} className="flex justify-end pt-1">
-                                <div className="max-w-[85%] bg-[#141412] text-white px-4 py-2.5 rounded-[14px_14px_4px_14px] text-sm shadow-2xs">
-                                  <div className="flex items-center justify-between gap-3 font-mono text-[10.5px] text-[#D9D9D4] mb-1">
-                                    <span>💬 Klarifikasi Kamu</span>
-                                    {msg.timestamp && <span>{msg.timestamp}</span>}
-                                  </div>
-                                  <p className="leading-relaxed font-normal">{msg.text}</p>
-                                </div>
-                              </div>
-                            );
-                          }
+                        <div className="flex gap-2 flex-wrap items-center">
+                          <button
+                            type="button"
+                            onClick={toggleCurrentSessionFavorite}
+                            className={`font-sans text-xs font-semibold px-3 py-1.5 rounded-lg border transition-all cursor-pointer flex items-center gap-1.5 select-none active:scale-95 ${isCurrentFavorite
+                              ? "bg-[#FFF6D1] text-[#A15C00] border-[#FFD84D] shadow-2xs font-bold"
+                              : "bg-white text-[#141412] border-[#D9D9D4] hover:bg-[#F5F5F2]"
+                              }`}
+                            title={isCurrentFavorite ? "Hapus dari Favorit" : "Simpan draf ini ke koleksi Favorit"}
+                          >
+                            <Star
+                              className={`w-3.5 h-3.5 transition-colors ${isCurrentFavorite ? "fill-[#FFCC1A] text-[#A15C00]" : "text-[#8A8A84]"
+                                }`}
+                            />
+                            <span>{isCurrentFavorite ? "Tersimpan di Favorit" : "Simpan ke Favorit"}</span>
+                          </button>
 
-                          // AI Response Card
-                          const currentTab = clarificationTabs[msg.id] ?? 0;
-                          const scripts = msg.data?.scripts || [];
-
-                          return (
-                            <div
-                              key={msg.id || i}
-                              className="bg-[#FFFFFF] border-2 border-[#FFD84D]/80 rounded-[14px] p-4 sm:p-5 shadow-[0_2px_8px_rgba(255,216,77,0.15)] space-y-4"
+                          {responseResult.scripts && responseResult.scripts.length > 0 && (
+                            <button
+                              type="button"
+                              onClick={handleCopyAll}
+                              className="font-sans text-xs font-semibold px-3 py-1.5 rounded-lg border border-[#D9D9D4] bg-white hover:bg-[#F5F5F2] text-[#141412] transition-all cursor-pointer"
                             >
-                              {/* Header */}
-                              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#E8E8E4] pb-3">
-                                <div className="flex items-center gap-2">
-                                  <div className="w-6 h-6 rounded-full overflow-hidden border border-[#FFD84D] bg-[#FFD84D] shrink-0 flex items-center justify-center">
-                                    <img
-                                      src="/revou-logo.png"
-                                      alt="RevoU AI"
-                                      className="w-full h-full object-cover"
-                                    />
+                              {copiedAll ? "Tersalin ✓" : "Salin semua script"}
+                            </button>
+                          )}
+
+                          <button
+                            type="button"
+                            onClick={handleGenerate}
+                            className="font-sans text-xs font-semibold px-3 py-1.5 rounded-lg border border-[#D9D9D4] bg-white hover:bg-[#F5F5F2] text-[#141412] transition-all cursor-pointer"
+                          >
+                            Buat ulang
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* ===================================================== */}
+                      {/* SPECIFIC STRUCTURE BY ACTIVE MENU                     */}
+                      {/* ===================================================== */}
+
+                      {/* SECTION: OUTPUT CONTENT */}
+                      <div className="space-y-4">
+
+                        {/* ALUMNI MATCHES CARDS GRID (Hanya untuk menu alumni) */}
+                        {mode === "alumni" && responseResult.alumni_matches && responseResult.alumni_matches.length > 0 && (
+                          <AlumniCardList matches={responseResult.alumni_matches} />
+                        )}
+
+                        {/* 2. Recommended approach */}
+                        {mode === "pitch" && responseResult.recommended_approach && (
+                          <div className="bg-[#FFF6D1]/60 p-4 sm:p-5 rounded-xl border border-[#FFD84D]/60 space-y-1.5 card-interactive">
+                            <div className="flex items-center gap-2 font-display font-bold text-xs uppercase tracking-wider text-[#A15C00]">
+                              <Lightbulb className="w-3.5 h-3.5 text-[#A15C00]" />
+                              <span>Recommended approach for Sales</span>
+                            </div>
+                            <p className="text-sm text-[#141412] leading-relaxed">
+                              {responseResult.recommended_approach}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* 3. SUGGESTED RESPONSE (TAB UI SYSTEM — UNTUK MENU PITCH) */}
+                      {mode === "pitch" && responseResult.scripts && responseResult.scripts.length > 0 && (
+                        <PitchScripts
+                          scripts={responseResult.scripts}
+                          activeTab={activeScriptTab}
+                          onTabChange={setActiveScriptTab}
+                          onCopySingle={handleCopySingle}
+                          copiedIndex={copiedIndex}
+                        />
+                      )}
+
+                      {/* ===================================================== */}
+                      {/* Revision / Clarification Section (.chat)             */}
+                      {/* ===================================================== */}
+                      <div className="border-t border-[#E8E8E4] pt-5 mt-6 space-y-4">
+                        <div className="flex flex-wrap items-center justify-between gap-2">
+                          <div>
+                            <label
+                              htmlFor="chat-input"
+                              className="block font-mono text-xs font-bold uppercase tracking-wider text-[#8A8A84]"
+                            >
+                              Kurang pas? Klarifikasi ke AI
+                            </label>
+                            <p className="text-[12.5px] text-[#8A8A84] mt-0.5">
+                              Kirim pertanyaan atau instruksi revisi. Jawaban dan draf baru akan ditampilkan di bawah tanpa mengubah hasil awal di atas.
+                            </p>
+                          </div>
+
+                          {chatThread.length > 0 && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setChatThread([]);
+                                setClarificationTabs({});
+                              }}
+                              className="text-xs font-mono text-[#8A8A84] hover:text-[#B42318] hover:underline transition-all cursor-pointer"
+                            >
+                              Hapus riwayat klarifikasi
+                            </button>
+                          )}
+                        </div>
+
+                        {/* Clarification Input Box */}
+                        <div className="flex gap-2 items-end">
+                          <textarea
+                            id="chat-input"
+                            rows={2}
+                            value={chatInput}
+                            onChange={(e) => setChatInput(e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter" && !e.shiftKey) {
+                                e.preventDefault();
+                                handleSendClarification();
+                              }
+                            }}
+                            placeholder={
+                              mode === "alumni"
+                                ? "Contoh: Ada contoh alumni lainnya? / Berikan profil alumni yang berbeda dari sebelumnya..."
+                                : "Contoh: prospect ini sebenarnya sudah kerja 5 tahun, bukan fresh grad. Tolong sesuaikan scriptnya."
+                            }
+                            className="flex-1 text-sm text-[#141412] bg-white border border-[#D9D9D4] rounded-[10px] p-2.5 focus:outline-none focus:border-[#141412] focus:ring-2 focus:ring-[#FFF6D1] resize-none"
+                          />
+                          <button
+                            type="button"
+                            disabled={isChatLoading || !chatInput.trim()}
+                            onClick={() => handleSendClarification()}
+                            className="font-display font-bold text-sm px-4 py-2.5 rounded-[10px] bg-[#FFD84D] hover:bg-[#FFCC1A] hover:shadow-xs hover:-translate-y-0.5 active:translate-y-0.5 active:scale-95 active:bg-[#E5B500] text-[#141412] border border-[#FFD84D] transition-all duration-150 cursor-pointer shrink-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none select-none"
+                          >
+                            {isChatLoading ? "..." : "Kirim"}
+                          </button>
+                        </div>
+
+                        {/* Quick clarification chips */}
+                        <div className="flex flex-wrap gap-1.5">
+                          {mode === "alumni" ? (
+                            <>
+                              <button
+                                type="button"
+                                onClick={() => handleSendClarification("Berikan contoh alumni lainnya yang berbeda dari yang sudah ditampilkan sebelumnya.")}
+                                className="font-mono text-xs px-2.5 py-1 rounded-full bg-[#FFD84D] text-[#141412] font-semibold cursor-pointer hover:bg-[#FFCC1A] active:scale-95 active:bg-[#E5B500] transition-all select-none flex items-center gap-1.5 shadow-2xs"
+                              >
+                                <UserCheck className="w-3.5 h-3.5 text-[#141412]" />
+                                <span>Contoh alumni lainnya</span>
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleSendClarification("Cari contoh alumni yang murni Career Switcher dari latar belakang non-IT.")}
+                                className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] hover:bg-[#F5F5F2] active:scale-95 active:bg-[#E8E8E4] bg-white transition-all cursor-pointer select-none"
+                              >
+                                Career Switcher non-IT
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleSendClarification("Cari alumni yang mendapatkan kenaikan gaji (salary increase) tinggi.")}
+                                className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] hover:bg-[#F5F5F2] active:scale-95 active:bg-[#E8E8E4] bg-white transition-all cursor-pointer select-none"
+                              >
+                                Kenaikan gaji tinggi
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleSendClarification("Cari alumni yang Hired Before Graduation (diterima kerja sebelum lulus).")}
+                                className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] hover:bg-[#F5F5F2] active:scale-95 active:bg-[#E8E8E4] bg-white transition-all cursor-pointer select-none"
+                              >
+                                Hired Before Graduation
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleSendClarification("Cari alumni dari industri Manufaktur, BUMN, atau Korporasi besar.")}
+                                className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] hover:bg-[#F5F5F2] active:scale-95 active:bg-[#E8E8E4] bg-white transition-all cursor-pointer select-none"
+                              >
+                                Manufaktur / BUMN
+                              </button>
+                            </>
+                          ) : (
+                            <>
+                              <button
+                                type="button"
+                                onClick={() => handleSendClarification("Buat use case konkret pemetaan AI framework")}
+                                className="font-mono text-xs px-2.5 py-1 rounded-full bg-[#FFD84D] text-[#141412] font-semibold cursor-pointer hover:bg-[#FFCC1A] active:scale-95 active:bg-[#E5B500] transition-all select-none"
+                              >
+                                Buat use case
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleSendClarification("Program yang direkomendasikan kurang tepat. Tolong beri alternatif program lain.")}
+                                className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] hover:bg-[#F5F5F2] active:scale-95 active:bg-[#E8E8E4] bg-white transition-all cursor-pointer select-none"
+                              >
+                                Program kurang tepat
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleSendClarification("Persona yang kamu tebak salah. Tolong sesuaikan.")}
+                                className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] hover:bg-[#F5F5F2] active:scale-95 active:bg-[#E8E8E4] bg-white transition-all cursor-pointer select-none"
+                              >
+                                Persona salah
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleSendClarification("Buat script-nya lebih singkat dan to the point.")}
+                                className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] hover:bg-[#F5F5F2] active:scale-95 active:bg-[#E8E8E4] bg-white transition-all cursor-pointer select-none"
+                              >
+                                Lebih singkat
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleSendClarification("Buat nadanya lebih formal dan sopan.")}
+                                className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] hover:bg-[#F5F5F2] active:scale-95 active:bg-[#E8E8E4] bg-white transition-all cursor-pointer select-none"
+                              >
+                                Lebih formal
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleSendClarification("Buat 2 variasi baru dengan angle yang berbeda.")}
+                                className="text-xs px-2.5 py-1 rounded-full border border-[#D9D9D4] text-[#4B4B46] hover:text-[#141412] hover:border-[#8A8A84] hover:bg-[#F5F5F2] active:scale-95 active:bg-[#E8E8E4] bg-white transition-all cursor-pointer select-none"
+                              >
+                                Variasi lain
+                              </button>
+                            </>
+                          )}
+                        </div>
+
+                        {/* Loading indicator while waiting for clarification response */}
+                        {isChatLoading && (
+                          <div className="p-4 bg-[#FFF6D1]/50 border border-[#FFD84D]/60 rounded-xl flex items-center gap-3 animate-pulse">
+                            <div className="w-4 h-4 border-2 border-[#141412] border-t-transparent rounded-full animate-spin shrink-0" />
+                            <span className="text-sm font-medium text-[#141412]">
+                              AI sedang memproses klarifikasi dan menyesuaikan draf script...
+                            </span>
+                          </div>
+                        )}
+
+                        {/* Clarification Responses List (Placed Below the Box) */}
+                        {chatThread.length > 0 && (
+                          <div className="pt-2 space-y-5">
+                            <div className="flex items-center gap-2">
+                              <span className="w-2 h-2 rounded-full bg-[#FFCC1A]" />
+                              <h3 className="font-display font-bold text-sm text-[#141412]">
+                                Hasil & Riwayat Klarifikasi ({Math.ceil(chatThread.length / 2)} sesi)
+                              </h3>
+                            </div>
+
+                            {chatThread.map((msg, i) => {
+                              if (msg.role === "user") {
+                                return (
+                                  <div key={msg.id || i} className="flex justify-end pt-1">
+                                    <div className="max-w-[85%] bg-[#141412] text-white px-4 py-2.5 rounded-[14px_14px_4px_14px] text-sm shadow-2xs">
+                                      <div className="flex items-center justify-between gap-3 font-mono text-[10.5px] text-[#D9D9D4] mb-1">
+                                        <span>💬 Klarifikasi Kamu</span>
+                                        {msg.timestamp && <span>{msg.timestamp}</span>}
+                                      </div>
+                                      <p className="leading-relaxed font-normal">{msg.text}</p>
+                                    </div>
                                   </div>
-                                  <span className="font-display font-bold text-sm text-[#141412]">
-                                    Tanggapan & Penyesuaian AI
-                                  </span>
-                                </div>
+                                );
+                              }
 
-                                <div className="flex items-center gap-2">
-                                  {scripts.length > 0 && (
-                                    <button
-                                      type="button"
-                                      onClick={() => handleCopyClarificationAll(scripts, msg.id)}
-                                      className="font-sans text-[11.5px] font-semibold px-2.5 py-1 rounded-md border border-[#D9D9D4] bg-[#F5F5F2] hover:bg-[#E8E8E4] text-[#141412] transition-all cursor-pointer"
-                                    >
-                                      {copiedClarificationKey === `${msg.id}-all`
-                                        ? "Semua Tersalin ✓"
-                                        : "Salin Semua Variasi Revisi"}
-                                    </button>
-                                  )}
-                                  {msg.timestamp && (
-                                    <span className="font-mono text-[11px] text-[#8A8A84]">
-                                      {msg.timestamp}
-                                    </span>
-                                  )}
-                                </div>
-                              </div>
+                              // AI Response Card
+                              const currentTab = clarificationTabs[msg.id] ?? 0;
+                              const scripts = msg.data?.scripts || [];
 
-                              {/* AI Explanation Text */}
-                              <div className="bg-[#FFF6D1]/70 p-3.5 rounded-xl border border-[#FFD84D]/50 text-sm text-[#141412] leading-relaxed">
-                                <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-[#A15C00] block mb-1">
-                                  💡 Catatan Penyesuaian:
-                                </span>
-                                <p className="font-medium">{msg.text}</p>
-                              </div>
+                              return (
+                                <div
+                                  key={msg.id || i}
+                                  className="bg-[#FFFFFF] border-2 border-[#FFD84D]/80 rounded-[14px] p-4 sm:p-5 shadow-[0_2px_8px_rgba(255,216,77,0.15)] space-y-4"
+                                >
+                                  {/* Header */}
+                                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#E8E8E4] pb-3">
+                                    <div className="flex items-center gap-2">
+                                      <div className="w-6 h-6 rounded-full overflow-hidden border border-[#FFD84D] bg-[#FFD84D] shrink-0 flex items-center justify-center">
+                                        <img
+                                          src="/revou-logo.png"
+                                          alt="RevoU AI"
+                                          className="w-full h-full object-cover"
+                                        />
+                                      </div>
+                                      <span className="font-display font-bold text-sm text-[#141412]">
+                                        Tanggapan & Penyesuaian AI
+                                      </span>
+                                    </div>
 
-                              {/* Recommended Approach if available and in pitch mode */}
-                              {mode === "pitch" && msg.data?.recommended_approach && msg.data.recommended_approach !== msg.text && (
-                                <div className="p-3 bg-[#F5F5F2] rounded-xl border border-[#E8E8E4] text-xs leading-relaxed space-y-1">
-                                  <span className="font-mono text-[10.5px] font-bold uppercase tracking-wider text-[#8A8A84] block">
-                                    🎯 Saran Pendekatan Revisi:
-                                  </span>
-                                  <p className="text-[#141412] font-medium">{msg.data.recommended_approach}</p>
-                                </div>
-                              )}
-
-
-
-                              {/* ALUMNI MATCHES CARDS GRID (From Clarification - Hanya untuk menu alumni) */}
-                              {mode === "alumni" && msg.data?.alumni_matches && msg.data.alumni_matches.length > 0 && (
-                                <AlumniCardList
-                                  matches={msg.data.alumni_matches}
-                                  title="Data Alumni Hasil Klarifikasi"
-                                />
-                              )}
-
-                              {/* Revised Script Variations (for pitch mode) */}
-                              {mode === "pitch" && scripts.length > 0 && (
-                                <div className="space-y-2.5 pt-1">
-                                  <div className="flex items-center justify-between gap-2">
-                                    <span className="font-mono text-xs font-bold uppercase tracking-wider text-[#8A8A84] flex items-center gap-1.5">
-                                      <Layers className="w-3.5 h-3.5 text-[#8A8A84]" />
-                                      <span>Draf Script Hasil Klarifikasi ({scripts.length} Variasi)</span>
-                                    </span>
-                                  </div>
-
-                                  {/* Tabs Bar */}
-                                  <div className="flex border-b border-[#E8E8E4] gap-1 overflow-x-auto pb-px">
-                                    {scripts.map((s: any, idx: number) => {
-                                      const isActive = currentTab === idx;
-                                      return (
+                                    <div className="flex items-center gap-2">
+                                      {scripts.length > 0 && (
                                         <button
-                                          key={idx}
                                           type="button"
-                                          onClick={() =>
-                                            setClarificationTabs((prev) => ({ ...prev, [msg.id]: idx }))
-                                          }
-                                          className={`px-3 py-1.5 text-xs font-semibold rounded-t-lg transition-all border-b-2 whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${isActive
-                                            ? "bg-[#F5F5F2] text-[#141412] border-[#FFD84D] font-bold"
-                                            : "text-[#8A8A84] hover:text-[#141412] hover:bg-[#F5F5F2]/60 border-transparent"
-                                            }`}
+                                          onClick={() => handleCopyClarificationAll(scripts, msg.id)}
+                                          className="font-sans text-[11.5px] font-semibold px-2.5 py-1 rounded-md border border-[#D9D9D4] bg-[#F5F5F2] hover:bg-[#E8E8E4] text-[#141412] transition-all cursor-pointer"
                                         >
-                                          <span
-                                            className={`w-2 h-2 rounded-full ${isActive ? "bg-[#FFCC1A]" : "bg-[#D9D9D4]"
-                                              }`}
-                                          />
-                                          <span>{s.badge?.split("—")[0]?.trim() || `Variasi ${idx + 1}`}</span>
+                                          {copiedClarificationKey === `${msg.id}-all`
+                                            ? "Semua Tersalin ✓"
+                                            : "Salin Semua Variasi Revisi"}
                                         </button>
-                                      );
-                                    })}
+                                      )}
+                                      {msg.timestamp && (
+                                        <span className="font-mono text-[11px] text-[#8A8A84]">
+                                          {msg.timestamp}
+                                        </span>
+                                      )}
+                                    </div>
                                   </div>
 
-                                  {/* Active Script Content */}
-                                  {scripts[currentTab] && (
-                                    <div className="relative rounded-[12px] bg-[#F5F5F2] border border-[#E8E8E4] p-4 text-[14.5px] leading-relaxed">
-                                      <div className="font-mono text-[11px] uppercase tracking-wider text-[#8A8A84] mb-2 font-semibold flex items-center justify-between">
-                                        <span>{scripts[currentTab].badge}</span>
-                                        {scripts[currentTab]?.text && (
-                                          <span className="bg-white/80 px-2 py-0.5 rounded border border-[#E8E8E4] text-[#4B4B46] font-medium">
-                                            {scripts[currentTab].text.trim().split(/\s+/).length} kata
-                                          </span>
-                                        )}
+                                  {/* AI Explanation Text */}
+                                  <div className="bg-[#FFF6D1]/70 p-3.5 rounded-xl border border-[#FFD84D]/50 text-sm text-[#141412] leading-relaxed">
+                                    <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-[#A15C00] block mb-1">
+                                      💡 Catatan Penyesuaian:
+                                    </span>
+                                    <p className="font-medium">{msg.text}</p>
+                                  </div>
+
+                                  {/* Recommended Approach if available and in pitch mode */}
+                                  {mode === "pitch" && msg.data?.recommended_approach && msg.data.recommended_approach !== msg.text && (
+                                    <div className="p-3 bg-[#F5F5F2] rounded-xl border border-[#E8E8E4] text-xs leading-relaxed space-y-1">
+                                      <span className="font-mono text-[10.5px] font-bold uppercase tracking-wider text-[#8A8A84] block">
+                                        🎯 Saran Pendekatan Revisi:
+                                      </span>
+                                      <p className="text-[#141412] font-medium">{msg.data.recommended_approach}</p>
+                                    </div>
+                                  )}
+
+
+
+                                  {/* ALUMNI MATCHES CARDS GRID (From Clarification - Hanya untuk menu alumni) */}
+                                  {mode === "alumni" && msg.data?.alumni_matches && msg.data.alumni_matches.length > 0 && (
+                                    <AlumniCardList
+                                      matches={msg.data.alumni_matches}
+                                      title="Data Alumni Hasil Klarifikasi"
+                                    />
+                                  )}
+
+                                  {/* Revised Script Variations (for pitch mode) */}
+                                  {mode === "pitch" && scripts.length > 0 && (
+                                    <div className="space-y-2.5 pt-1">
+                                      <div className="flex items-center justify-between gap-2">
+                                        <span className="font-mono text-xs font-bold uppercase tracking-wider text-[#8A8A84] flex items-center gap-1.5">
+                                          <Layers className="w-3.5 h-3.5 text-[#8A8A84]" />
+                                          <span>Draf Script Hasil Klarifikasi ({scripts.length} Variasi)</span>
+                                        </span>
                                       </div>
 
-                                      <blockquote className="whitespace-pre-line text-[#141412] font-normal leading-relaxed pb-8">
-                                        {renderFormattedTextWithLinks(scripts[currentTab].text)}
-                                      </blockquote>
+                                      {/* Tabs Bar */}
+                                      <div className="flex border-b border-[#E8E8E4] gap-1 overflow-x-auto pb-px">
+                                        {scripts.map((s: any, idx: number) => {
+                                          const isActive = currentTab === idx;
+                                          return (
+                                            <button
+                                              key={idx}
+                                              type="button"
+                                              onClick={() =>
+                                                setClarificationTabs((prev) => ({ ...prev, [msg.id]: idx }))
+                                              }
+                                              className={`px-3 py-1.5 text-xs font-semibold rounded-t-lg transition-all border-b-2 whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${isActive
+                                                ? "bg-[#F5F5F2] text-[#141412] border-[#FFD84D] font-bold"
+                                                : "text-[#8A8A84] hover:text-[#141412] hover:bg-[#F5F5F2]/60 border-transparent"
+                                                }`}
+                                            >
+                                              <span
+                                                className={`w-2 h-2 rounded-full ${isActive ? "bg-[#FFCC1A]" : "bg-[#D9D9D4]"
+                                                  }`}
+                                              />
+                                              <span>{s.badge?.split("—")[0]?.trim() || `Variasi ${idx + 1}`}</span>
+                                            </button>
+                                          );
+                                        })}
+                                      </div>
 
-                                      {/* Copy Button */}
-                                      <button
-                                        type="button"
-                                        onClick={() =>
-                                          handleCopyClarificationSingle(
-                                            scripts[currentTab].text,
-                                            `${msg.id}-${currentTab}`
-                                          )
-                                        }
-                                        className="absolute right-3 bottom-3 font-mono text-[11px] tracking-wide font-bold px-2.5 py-1 rounded-[6px] bg-[#FFD84D] text-[#141412] hover:bg-[#FFCC1A] transition-all cursor-pointer active:scale-95 shadow-2xs flex items-center gap-1"
-                                      >
-                                        {copiedClarificationKey === `${msg.id}-${currentTab}` ? (
-                                          <>
-                                            <Check className="w-3 h-3 text-[#141412]" />
-                                            <span>Tersalin</span>
-                                          </>
-                                        ) : (
-                                          <>
-                                            <Copy className="w-3 h-3 text-[#141412]" />
-                                            <span>Salin</span>
-                                          </>
-                                        )}
-                                      </button>
+                                      {/* Active Script Content */}
+                                      {scripts[currentTab] && (
+                                        <div className="relative rounded-[12px] bg-[#F5F5F2] border border-[#E8E8E4] p-4 text-[14.5px] leading-relaxed">
+                                          <div className="font-mono text-[11px] uppercase tracking-wider text-[#8A8A84] mb-2 font-semibold flex items-center justify-between">
+                                            <span>{scripts[currentTab].badge}</span>
+                                            {scripts[currentTab]?.text && (
+                                              <span className="bg-white/80 px-2 py-0.5 rounded border border-[#E8E8E4] text-[#4B4B46] font-medium">
+                                                {scripts[currentTab].text.trim().split(/\s+/).length} kata
+                                              </span>
+                                            )}
+                                          </div>
+
+                                          <blockquote className="whitespace-pre-line text-[#141412] font-normal leading-relaxed pb-8">
+                                            {renderFormattedTextWithLinks(scripts[currentTab].text)}
+                                          </blockquote>
+
+                                          {/* Copy Button */}
+                                          <button
+                                            type="button"
+                                            onClick={() =>
+                                              handleCopyClarificationSingle(
+                                                scripts[currentTab].text,
+                                                `${msg.id}-${currentTab}`
+                                              )
+                                            }
+                                            className="absolute right-3 bottom-3 font-mono text-[11px] tracking-wide font-bold px-2.5 py-1 rounded-[6px] bg-[#FFD84D] text-[#141412] hover:bg-[#FFCC1A] transition-all cursor-pointer active:scale-95 shadow-2xs flex items-center gap-1"
+                                          >
+                                            {copiedClarificationKey === `${msg.id}-${currentTab}` ? (
+                                              <>
+                                                <Check className="w-3 h-3 text-[#141412]" />
+                                                <span>Tersalin</span>
+                                              </>
+                                            ) : (
+                                              <>
+                                                <Copy className="w-3 h-3 text-[#141412]" />
+                                                <span>Salin</span>
+                                              </>
+                                            )}
+                                          </button>
+                                        </div>
+                                      )}
                                     </div>
                                   )}
                                 </div>
-                              )}
-                            </div>
-                          );
-                        })}
+                              );
+                            })}
+                          </div>
+                        )}
                       </div>
-                    )}
-                  </div>
-                </motion.div>
-              )}
+                    </motion.div>
+                  )}
                 </>
               )}
             </motion.div>

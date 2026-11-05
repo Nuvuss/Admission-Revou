@@ -61,12 +61,31 @@ export function extractUsageMetadata(rawMetadata: any) {
     }
   }
 
-  const prompt = typeof rawMetadata.promptTokenCount === "number" ? rawMetadata.promptTokenCount : 0;
-  const candidates = typeof rawMetadata.candidatesTokenCount === "number" ? rawMetadata.candidatesTokenCount : 0;
-  const cached = typeof rawMetadata.cachedContentTokenCount === "number" ? rawMetadata.cachedContentTokenCount : 0;
+  // Support both Gemini (promptTokenCount / candidatesTokenCount) and OpenRouter (prompt_tokens / completion_tokens)
+  const prompt =
+    typeof rawMetadata.promptTokenCount === "number"
+      ? rawMetadata.promptTokenCount
+      : typeof rawMetadata.prompt_tokens === "number"
+      ? rawMetadata.prompt_tokens
+      : 0;
+
+  const candidates =
+    typeof rawMetadata.candidatesTokenCount === "number"
+      ? rawMetadata.candidatesTokenCount
+      : typeof rawMetadata.completion_tokens === "number"
+      ? rawMetadata.completion_tokens
+      : 0;
+
+  const cached =
+    typeof rawMetadata.cachedContentTokenCount === "number"
+      ? rawMetadata.cachedContentTokenCount
+      : 0;
+
   const total =
     typeof rawMetadata.totalTokenCount === "number"
       ? rawMetadata.totalTokenCount
+      : typeof rawMetadata.total_tokens === "number"
+      ? rawMetadata.total_tokens
       : prompt + candidates + thoughts;
 
   return {

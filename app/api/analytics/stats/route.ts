@@ -156,10 +156,13 @@ export async function GET(req: Request) {
       timeThresholdMs = startOf30dWib.getTime() - WIB_OFFSET;
     }
 
-    const allLogs =
+    // Owner tugasnya hanya memantau, bukan konselor admisi.
+    // Seluruh data analitik (KPI, leaderboard, grafik, heatmap, dsb.) khusus memantau tim konselor (AC & BM).
+    const allLogs = (
       timeThresholdMs !== null
         ? fetchedLogs.filter((log) => new Date(log.created_at).getTime() >= timeThresholdMs!)
-        : fetchedLogs;
+        : fetchedLogs
+    ).filter((log) => log.user_role !== "Owner");
 
     // 1. KPI Accumulators
     let initialGenerates = 0;
@@ -310,6 +313,7 @@ export async function GET(req: Request) {
       const user = (log.user_name || "Unknown").trim();
       const mode = log.mode || "pitch";
       const meta = log.metadata && typeof log.metadata === "object" ? log.metadata : {};
+      const isAcOrBm = role === "AC" || role === "BM";
 
       // Ignore any accidental tab_switch or un-clicked comparison logs
       if (
@@ -356,10 +360,10 @@ export async function GET(req: Request) {
         };
       }
 
-      // Collect real AI response latency if recorded
+      // Collect real AI response latency if recorded (exclude Owner from counselor latency averages)
       const dur = Number(meta.durationMs || meta.latency_ms || 0);
       if (isAiScriptGeneration && dur > 100 && dur < 120000) {
-        responseDurationsMs.push(dur);
+        if (isAcOrBm) responseDurationsMs.push(dur);
         agentMap[user].responseDurationsMs.push(dur);
       }
 
@@ -379,8 +383,8 @@ export async function GET(req: Request) {
       }
 
       // Hourly Heatmap & Timeline Matching (WIB is UTC+7)
-      // Exclude passive "login" events from consultation traffic & heatmap so charts show real assistant usage
-      if (!isLogin) {
+      // Only include AC and BM consultation traffic & heatmap so activity graphs only display AC and BM counselor activity (exclude Owner)
+      if (!isLogin && isAcOrBm) {
         try {
           const logDateWib = new Date(new Date(log.created_at).getTime() + WIB_OFFSET);
           const hour = logDateWib.getUTCHours();
@@ -615,7 +619,7 @@ export async function GET(req: Request) {
         totalClarifications,
         totalCopies,
         totalComparisons,
-        totalActiveAgents: onlineCounselorsCount, // Pendekatan 1: Real-time Online Presence
+        totalActiveAgents: onlineAcBmCount, // Murni menghitung konselor AC/BM yang online (Owner hanya memantau)
         acBmAgentsCount: onlineAcBmCount,
         historicalActiveCount,
         copyRate: globalCopyRate,

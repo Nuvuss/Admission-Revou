@@ -52,7 +52,7 @@ export default function ApiKeyModal({
             </div>
             <div>
               <h3 className="font-display font-bold text-base sm:text-lg text-[#141412] leading-tight flex items-center gap-2 flex-wrap">
-                <span>Pool 5 API Key · Rotasi Round Robin</span>
+                <span>Pool API Key · OpenRouter &amp; Failover</span>
                 <span className="font-mono text-[11px] px-2 py-0.5 rounded-full bg-[#1F7A4D]/10 text-[#1F7A4D] font-bold">
                   Otomatis
                 </span>
@@ -78,7 +78,7 @@ export default function ApiKeyModal({
                 )}
               </h3>
               <p className="text-xs text-[#8A8A84] mt-0.5">
-                Merotasi 5 API Key secara terdistribusi dan otomatis failover jika kuota habis (429 Rate Limit)
+                Mendukung OpenRouter (sk-or-v1-...) &amp; failover otomatis jika saldo atau kuota habis
               </p>
             </div>
           </div>
@@ -226,7 +226,7 @@ export default function ApiKeyModal({
                           ? "••••••••••••••••••••••••••••••••••••"
                           : poolRec?.isConfigured
                             ? "Terkonfigurasi di server (Ketik untuk mengganti)"
-                            : `Masukkan API ${keyNumber}...`
+                            : `Masukkan API Key #${keyNumber} (sk-or-v1-...)...`
                       }
                       className="w-full text-xs font-mono px-3 py-2 pr-16 bg-white border border-[#D9D9D4] rounded-lg text-[#141412] focus:outline-none focus:border-[#0E62FE] focus:ring-1 focus:ring-[#0E62FE] placeholder:text-[#A8A8A2]"
                     />
@@ -283,7 +283,7 @@ export default function ApiKeyModal({
               onClick={onTestKeys}
               disabled={isTestingKeys}
               className="font-sans text-xs font-semibold px-3 py-2 rounded-xl border border-[#D9D9D4] bg-white hover:bg-[#F5F5F2] text-[#141412] transition-all cursor-pointer flex items-center gap-1.5 active:scale-95 disabled:opacity-50"
-              title="Ping dan periksa sisa kuota ke-5 API Key di Google AI Studio"
+              title="Periksa validitas, saldo & kuota API Key di OpenRouter"
             >
               <RefreshCw
                 className={`w-3.5 h-3.5 text-[#0E62FE] ${
