@@ -11,8 +11,17 @@ import {
 import { findMatchingPitchTemplate } from "../../../lib/pitchTemplateMatcher";
 import { logMetricsToJsonl, extractUsageMetadata } from "../../../lib/metricsLogger";
 
-export const maxDuration = 60;
+export const maxDuration = 120;
 export const dynamic = "force-dynamic";
+
+function getFriendlyModelName(modelId) {
+  if (!modelId) return "AI Model";
+  const lower = modelId.toLowerCase();
+  if (lower.includes("sonnet")) return "Claude 3.5 Sonnet";
+  if (lower.includes("gemini")) return "Gemini 3.8 Flash";
+  if (lower.includes("haiku")) return "Claude Haiku";
+  return modelId;
+}
 
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // In-Memory Caching for Knowledge Base & System Prompts
@@ -1054,566 +1063,577 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
                   ? "anthropic/claude-sonnet-4.5"
                   : "google/gemini-3.8-flash";
 
-      const candidateModels = [primaryModel, secondaryModel].filter(
-        (m, idx, arr) => m && arr.indexOf(m) === idx
-      );
+              const candidateModels = [primaryModel, secondaryModel].filter(
+                (m, idx, arr) => m && arr.indexOf(m) === idx
+              );
 
-      let keyEncounteredQuota = false;
-      let keyEncounteredInvalid = false;
+              let keyEncounteredQuota = false;
+              let keyEncounteredInvalid = false;
 
-      for (const modelId of candidateModels) {
-        if (keyEncounteredQuota || keyEncounteredInvalid || executedSuccessfully) break;
+              for (const modelId of candidateModels) {
+                if (keyEncounteredQuota || keyEncounteredInvalid || executedSuccessfully) break;
 
-        try {
-          lastAttemptedModel = modelId;
-          const llmCallStart = performance.now();
-          const trimmedKey = (currentCandidate.key || "").trim();
-          const isOpenRouter =
-            trimmedKey.startsWith("sk-or-") ||
-            modelId.includes("/") ||
-            Boolean(process.env.OPENROUTER_API_KEY);
+                try {
+                  lastAttemptedModel = modelId;
+                  const llmCallStart = performance.now();
+                  const trimmedKey = (currentCandidate.key || "").trim();
+                  const isOpenRouter =
+                    trimmedKey.startsWith("sk-or-") ||
+                    modelId.includes("/") ||
+                    Boolean(process.env.OPENROUTER_API_KEY);
 
-          let streamUrl;
-          let fetchHeaders;
-          let fetchBody;
+                  let streamUrl;
+                  let fetchHeaders;
+                  let fetchBody;
 
-          if (isOpenRouter) {
-            streamUrl = "https://openrouter.ai/api/v1/chat/completions";
-            fetchHeaders = {
-              "Content-Type": "application/json",
-              "Authorization": `Bearer ${trimmedKey}`,
-              "HTTP-Referer": "https://revou-admission-assistant.local",
-              "X-Title": "RevoU Admission Assistant",
-            };
-            fetchBody = JSON.stringify({
-              model: modelId,
-              messages: [
-                { role: "system", content: systemPrompt },
-                {
-                  role: "user",
-                  content: `SITUASI DARI TIM SALES (Menu Aktif: ${tab}):\n"""\n${situation.trim()}\n"""\n${exclusionDirective}\n\nInstruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge base, dan hasilkan output HANYA berupa JSON valid sesuai format.`,
-                },
-              ],
-              response_format: { type: "json_object" },
-              temperature: 0.25,
-              stream: true,
-            });
-          } else {
-            streamUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelId}:streamGenerateContent?alt=sse&key=${trimmedKey}`;
-            fetchHeaders = { "Content-Type": "application/json" };
-            fetchBody = JSON.stringify({
-              contents: [
-                {
-                  role: "user",
-                  parts: [{ text: fullPrompt }],
-                },
-              ],
-              generationConfig: {
-                responseMimeType: "application/json",
-                temperature: 0.25,
-                maxOutputTokens: 4096,
-              },
-            });
-          }
+                  if (isOpenRouter) {
+                    streamUrl = "https://openrouter.ai/api/v1/chat/completions";
+                    fetchHeaders = {
+                      "Content-Type": "application/json",
+                      "Authorization": `Bearer ${trimmedKey}`,
+                      "HTTP-Referer": "https://revou-admission-assistant.local",
+                      "X-Title": "RevoU Admission Assistant",
+                    };
+                    fetchBody = JSON.stringify({
+                      model: modelId,
+                      messages: [
+                        { role: "system", content: systemPrompt },
+                        {
+                          role: "user",
+                          content: `SITUASI DARI TIM SALES (Menu Aktif: ${tab}):\n"""\n${situation.trim()}\n"""\n${exclusionDirective}\n\nInstruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge base, dan hasilkan output HANYA berupa JSON valid sesuai format.`,
+                        },
+                      ],
+                      response_format: { type: "json_object" },
+                      temperature: 0.25,
+                      stream: true,
+                    });
+                  } else {
+                    streamUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelId}:streamGenerateContent?alt=sse&key=${trimmedKey}`;
+                    fetchHeaders = { "Content-Type": "application/json" };
+                    fetchBody = JSON.stringify({
+                      contents: [
+                        {
+                          role: "user",
+                          parts: [{ text: fullPrompt }],
+                        },
+                      ],
+                      generationConfig: {
+                        responseMimeType: "application/json",
+                        temperature: 0.25,
+                        maxOutputTokens: 4096,
+                      },
+                    });
+                  }
 
-          const response = await fetch(streamUrl, {
-            method: "POST",
-            headers: fetchHeaders,
-            signal: AbortSignal.timeout(45000),
-            body: fetchBody,
-          });
+                  const response = await fetch(streamUrl, {
+                    method: "POST",
+                    headers: fetchHeaders,
+                    signal: AbortSignal.timeout(75000),
+                    body: fetchBody,
+                  });
 
-          if (response.ok) {
-            const reader = response.body.getReader();
-            const decoder = new TextDecoder();
-            let accumulatedText = "";
-            let streamBuffer = "";
-            let firstTokenLogged = false;
+                  if (response.ok) {
+                    const reader = response.body.getReader();
+                    const decoder = new TextDecoder();
+                    let accumulatedText = "";
+                    let streamBuffer = "";
+                    let firstTokenLogged = false;
 
-            sendSse("status", {
-              message: `AI sedang merumuskan draf respons (${modelId})...`,
-              model: modelId,
-            });
+                    const friendlyName = getFriendlyModelName(modelId);
+                    const isFailover = modelId !== primaryModel;
 
-            while (true) {
-              const { done, value } = await reader.read();
-              if (done) break;
-              streamBuffer += decoder.decode(value, { stream: true });
-              const lines = streamBuffer.split("\n");
-              streamBuffer = lines.pop() || "";
+                    sendSse("status", {
+                      message: isFailover
+                        ? `AI sedang merumuskan draf respons (${friendlyName} - failover otomatis)...`
+                        : `AI sedang merumuskan draf respons (${friendlyName})...`,
+                      model: modelId,
+                      isFailover,
+                    });
 
-              for (const line of lines) {
-                const trimmed = line.trim();
-                if (trimmed === "data: [DONE]") {
-                  break;
-                }
-                if (trimmed.startsWith("data: ")) {
-                  try {
-                    const parsedChunk = JSON.parse(trimmed.slice(6));
-                    const delta =
-                      parsedChunk?.choices?.[0]?.delta?.content ||
-                      parsedChunk?.candidates?.[0]?.content?.parts?.[0]?.text;
-                    if (delta) {
-                      if (!firstTokenLogged) {
-                        ttftMs = Math.round(performance.now() - llmCallStart);
-                        firstTokenLogged = true;
+                    while (true) {
+                      const { done, value } = await reader.read();
+                      if (done) break;
+                      streamBuffer += decoder.decode(value, { stream: true });
+                      const lines = streamBuffer.split("\n");
+                      streamBuffer = lines.pop() || "";
+
+                      for (const line of lines) {
+                        const trimmed = line.trim();
+                        if (trimmed === "data: [DONE]") {
+                          break;
+                        }
+                        if (trimmed.startsWith("data: ")) {
+                          try {
+                            const parsedChunk = JSON.parse(trimmed.slice(6));
+                            const delta =
+                              parsedChunk?.choices?.[0]?.delta?.content ||
+                              parsedChunk?.candidates?.[0]?.content?.parts?.[0]?.text;
+                            if (delta) {
+                              if (!firstTokenLogged) {
+                                ttftMs = Math.round(performance.now() - llmCallStart);
+                                firstTokenLogged = true;
+                              }
+                              accumulatedText += delta;
+                              sendSse("token", { delta });
+                            }
+                            if (parsedChunk?.usage) {
+                              capturedUsageMetadata = {
+                                ...capturedUsageMetadata,
+                                ...parsedChunk.usage,
+                              };
+                            } else if (parsedChunk?.usageMetadata) {
+                              capturedUsageMetadata = {
+                                ...capturedUsageMetadata,
+                                ...parsedChunk.usageMetadata,
+                              };
+                            }
+                          } catch (err) {
+                            // partial / heartbeat line
+                          }
+                        }
                       }
-                      accumulatedText += delta;
-                      sendSse("token", { delta });
                     }
-                    if (parsedChunk?.usage) {
-                      capturedUsageMetadata = {
-                        ...capturedUsageMetadata,
-                        ...parsedChunk.usage,
-                      };
-                    } else if (parsedChunk?.usageMetadata) {
-                      capturedUsageMetadata = {
-                        ...capturedUsageMetadata,
-                        ...parsedChunk.usageMetadata,
-                      };
+
+                    if (streamBuffer.trim().startsWith("data: ") && streamBuffer.trim() !== "data: [DONE]") {
+                      try {
+                        const parsedChunk = JSON.parse(streamBuffer.trim().slice(6));
+                        const delta =
+                          parsedChunk?.choices?.[0]?.delta?.content ||
+                          parsedChunk?.candidates?.[0]?.content?.parts?.[0]?.text;
+                        if (delta) {
+                          if (!firstTokenLogged) {
+                            ttftMs = Math.round(performance.now() - llmCallStart);
+                            firstTokenLogged = true;
+                          }
+                          accumulatedText += delta;
+                          sendSse("token", { delta });
+                        }
+                        if (parsedChunk?.usage) {
+                          capturedUsageMetadata = {
+                            ...capturedUsageMetadata,
+                            ...parsedChunk.usage,
+                          };
+                        } else if (parsedChunk?.usageMetadata) {
+                          capturedUsageMetadata = {
+                            ...capturedUsageMetadata,
+                            ...parsedChunk.usageMetadata,
+                          };
+                        }
+                      } catch (err) { }
                     }
-                  } catch (err) {
-                    // partial / heartbeat line
+
+                    if (accumulatedText.trim()) {
+                      try {
+                        const cleaned = accumulatedText
+                          .replace(/^```json\s*/i, "")
+                          .replace(/^```\s*/i, "")
+                          .replace(/\s*```$/i, "")
+                          .trim();
+                        const parsed = JSON.parse(cleaned);
+
+                        await recordKeyExecution(currentCandidate.key, currentCandidate.keyIndex, "success", 200);
+
+                        const finalResult = await buildFinalResult(
+                          parsed,
+                          modelId,
+                          tab,
+                          currentCandidate,
+                          availableKeys,
+                          quotaNotifications,
+                          customKeys
+                        );
+
+                        sendSse("result", finalResult);
+                        sendSse("done", { success: true });
+                        executedSuccessfully = true;
+
+                        const totalDurationMs = Math.round(performance.now() - reqStart);
+                        void logMetricsToJsonl({
+                          requestId,
+                          timestamp: new Date().toISOString(),
+                          tab,
+                          model: modelId,
+                          isStream: true,
+                          retrievalMs,
+                          ttftMs,
+                          totalDurationMs,
+                          ...extractUsageMetadata(capturedUsageMetadata),
+                          rateLimit429Count,
+                          retryCount,
+                          status: "completed",
+                          errorMessage: null,
+                        });
+                        break;
+                      } catch (parseErr) {
+                        console.error("JSON parse error in SSE stream for model", modelId, parseErr.message);
+                      }
+                    }
+                  } else if (response.status === 429 || response.status === 402) {
+                    rateLimit429Count++;
+                    retryCount++;
+                    const errText = await response.text();
+                    const isPayment = response.status === 402;
+                    const reason = isPayment ? "Saldo OpenRouter habis (402 Payment Required)" : "Rate limit terlampaui (429)";
+                    console.warn(`[RoundRobin] Key #${currentCandidate.keyIndex} hit quota (${response.status}):`, errText.slice(0, 120));
+                    await recordKeyExecution(currentCandidate.key, currentCandidate.keyIndex, "rate_limited", response.status, reason);
+
+                    const rotationMsg = nextCandidate
+                      ? `API Key #${currentCandidate.keyIndex} limit kuota/saldo (${response.status}). Otomatis dialihkan ke API Key #${nextCandidate.keyIndex}.`
+                      : `API Key #${currentCandidate.keyIndex} limit kuota/saldo (${response.status}).`;
+                    quotaNotifications.push(rotationMsg);
+
+                    sendSse("status", {
+                      message: rotationMsg,
+                      rateLimited: true,
+                      activeKeyIndex: currentCandidate.keyIndex,
+                    });
+
+                    keyEncounteredQuota = true;
+                    break;
+                  } else if (response.status === 400 || response.status === 401 || response.status === 403) {
+                    retryCount++;
+                    const errText = await response.text();
+                    console.warn(`[RoundRobin] Key #${currentCandidate.keyIndex} invalid (${response.status}):`, errText.slice(0, 120));
+                    await recordKeyExecution(currentCandidate.key, currentCandidate.keyIndex, "invalid", response.status, "API Key tidak valid");
+
+                    const rotationMsg = nextCandidate
+                      ? `API Key #${currentCandidate.keyIndex} tidak valid (${response.status}). Otomatis dialihkan ke API Key #${nextCandidate.keyIndex}.`
+                      : `API Key #${currentCandidate.keyIndex} tidak valid (${response.status}).`;
+                    quotaNotifications.push(rotationMsg);
+
+                    sendSse("status", { message: rotationMsg });
+                    keyEncounteredInvalid = true;
+                    break;
+                  } else if (response.status >= 500) {
+                    retryCount++;
+                    const errText = await response.text();
+                    console.warn(`[Model ${response.status}] ${modelId}:`, errText.slice(0, 120));
+                    lastError = `Model ${modelId} (${response.status}): ${errText.slice(0, 100)}`;
+                    sendSse("status", {
+                      message: `${getFriendlyModelName(modelId)} sedang sibuk (${response.status}), mengalihkan ke model cadangan...`,
+                    });
+                    continue;
+                  } else {
+                    retryCount++;
+                    const errText = await response.text();
+                    console.warn(`API warning on ${modelId} (${response.status}):`, errText.slice(0, 150));
+                    lastError = `Model ${modelId} (${response.status}): ${errText.slice(0, 100)}`;
                   }
+                } catch (apiErr) {
+                  retryCount++;
+                  console.warn(`API stream exception for ${modelId}:`, apiErr.message);
+                  lastError = apiErr.message;
+                  sendSse("status", {
+                    message: `${getFriendlyModelName(modelId)} antrean timeout (${apiErr.message}), mengalihkan ke model cadangan...`,
+                  });
+                  continue;
                 }
               }
             }
 
-            if (streamBuffer.trim().startsWith("data: ") && streamBuffer.trim() !== "data: [DONE]") {
-              try {
-                const parsedChunk = JSON.parse(streamBuffer.trim().slice(6));
-                const delta =
-                  parsedChunk?.choices?.[0]?.delta?.content ||
-                  parsedChunk?.candidates?.[0]?.content?.parts?.[0]?.text;
-                if (delta) {
-                  if (!firstTokenLogged) {
-                    ttftMs = Math.round(performance.now() - llmCallStart);
-                    firstTokenLogged = true;
-                  }
-                  accumulatedText += delta;
-                  sendSse("token", { delta });
-                }
-                if (parsedChunk?.usage) {
-                  capturedUsageMetadata = {
-                    ...capturedUsageMetadata,
-                    ...parsedChunk.usage,
-                  };
-                } else if (parsedChunk?.usageMetadata) {
-                  capturedUsageMetadata = {
-                    ...capturedUsageMetadata,
-                    ...parsedChunk.usageMetadata,
-                  };
-                }
-              } catch (err) { }
-            }
+            if (!executedSuccessfully) {
+              const totalDurationMs = Math.round(performance.now() - reqStart);
+              void logMetricsToJsonl({
+                requestId,
+                timestamp: new Date().toISOString(),
+                tab,
+                model: lastAttemptedModel,
+                isStream: true,
+                retrievalMs,
+                ttftMs,
+                totalDurationMs,
+                ...extractUsageMetadata(capturedUsageMetadata),
+                rateLimit429Count,
+                retryCount,
+                status: "error",
+                errorMessage: lastError || "Stream generation failed",
+              });
 
-            if (accumulatedText.trim()) {
-              try {
-                const cleaned = accumulatedText
-                  .replace(/^```json\s*/i, "")
-                  .replace(/^```\s*/i, "")
-                  .replace(/\s*```$/i, "")
-                  .trim();
-                const parsed = JSON.parse(cleaned);
-
-                await recordKeyExecution(currentCandidate.key, currentCandidate.keyIndex, "success", 200);
-
-                const finalResult = await buildFinalResult(
-                  parsed,
-                  modelId,
-                  tab,
-                  currentCandidate,
-                  availableKeys,
-                  quotaNotifications,
-                  customKeys
-                );
-
-                sendSse("result", finalResult);
-                sendSse("done", { success: true });
-                executedSuccessfully = true;
-
-                const totalDurationMs = Math.round(performance.now() - reqStart);
-                void logMetricsToJsonl({
-                  requestId,
-                  timestamp: new Date().toISOString(),
-                  tab,
-                  model: modelId,
-                  isStream: true,
-                  retrievalMs,
-                  ttftMs,
-                  totalDurationMs,
-                  ...extractUsageMetadata(capturedUsageMetadata),
-                  rateLimit429Count,
-                  retryCount,
-                  status: "completed",
-                  errorMessage: null,
-                });
-                break;
-              } catch (parseErr) {
-                console.error("JSON parse error in SSE stream for model", modelId, parseErr.message);
+              if (quotaNotifications.length > 0) {
+                const fallback = await buildQuotaExhaustedResult(model, tab, availableKeys, quotaNotifications, customKeys);
+                sendSse("result", fallback);
+              } else {
+                const fallback = buildGeneralFallbackResult(model, tab, availableKeys, lastError);
+                sendSse("result", fallback);
               }
+              sendSse("done", { success: false });
             }
-          } else if (response.status === 429 || response.status === 402) {
-            rateLimit429Count++;
-            retryCount++;
-            const errText = await response.text();
-            const isPayment = response.status === 402;
-            const reason = isPayment ? "Saldo OpenRouter habis (402 Payment Required)" : "Rate limit terlampaui (429)";
-            console.warn(`[RoundRobin] Key #${currentCandidate.keyIndex} hit quota (${response.status}):`, errText.slice(0, 120));
-            await recordKeyExecution(currentCandidate.key, currentCandidate.keyIndex, "rate_limited", response.status, reason);
-
-            const rotationMsg = nextCandidate
-              ? `API Key #${currentCandidate.keyIndex} limit kuota/saldo (${response.status}). Otomatis dialihkan ke API Key #${nextCandidate.keyIndex}.`
-              : `API Key #${currentCandidate.keyIndex} limit kuota/saldo (${response.status}).`;
-            quotaNotifications.push(rotationMsg);
-
-            sendSse("status", {
-              message: rotationMsg,
-              rateLimited: true,
-              activeKeyIndex: currentCandidate.keyIndex,
+          } catch (streamErr) {
+            console.error("Stream execution error:", streamErr);
+            const totalDurationMs = Math.round(performance.now() - reqStart);
+            void logMetricsToJsonl({
+              requestId,
+              timestamp: new Date().toISOString(),
+              tab,
+              model: lastAttemptedModel,
+              isStream: true,
+              retrievalMs,
+              ttftMs,
+              totalDurationMs,
+              ...extractUsageMetadata(capturedUsageMetadata),
+              rateLimit429Count,
+              retryCount,
+              status: "interrupted",
+              errorMessage: streamErr.message,
             });
-
-            keyEncounteredQuota = true;
-            break;
-          } else if (response.status === 400 || response.status === 401 || response.status === 403) {
-            retryCount++;
-            const errText = await response.text();
-            console.warn(`[RoundRobin] Key #${currentCandidate.keyIndex} invalid (${response.status}):`, errText.slice(0, 120));
-            await recordKeyExecution(currentCandidate.key, currentCandidate.keyIndex, "invalid", response.status, "API Key tidak valid");
-
-            const rotationMsg = nextCandidate
-              ? `API Key #${currentCandidate.keyIndex} tidak valid (${response.status}). Otomatis dialihkan ke API Key #${nextCandidate.keyIndex}.`
-              : `API Key #${currentCandidate.keyIndex} tidak valid (${response.status}).`;
-            quotaNotifications.push(rotationMsg);
-
-            sendSse("status", { message: rotationMsg });
-            keyEncounteredInvalid = true;
-            break;
-          } else if (response.status === 503) {
-            retryCount++;
-            const errText = await response.text();
-            console.warn(`[Model 503 Spike] Model ${modelId} high-demand:`, errText.slice(0, 120));
-            lastError = `Model ${modelId} mengalami lonjakan trafik (503 Service Unavailable).`;
-            sendSse("status", { message: `Model ${modelId} sibuk (503), mencoba model alternatif...` });
-            continue;
-          } else {
-            retryCount++;
-            const errText = await response.text();
-            console.warn(`Gemini API warning on ${modelId} (${response.status}):`, errText.slice(0, 150));
-            lastError = `Model ${modelId} (${response.status}): ${errText.slice(0, 100)}`;
+            sendSse("error", { message: streamErr.message || "Internal streaming error" });
+          } finally {
+            try {
+              controller.close();
+            } catch (e) { }
           }
-        } catch (apiErr) {
-          retryCount++;
-          console.warn(`Gemini API stream exception for ${modelId}:`, apiErr.message);
-          lastError = apiErr.message;
-          continue;
-        }
-      }
+        },
+      });
+
+      return new Response(readableStream, {
+        headers: {
+          "Content-Type": "text/event-stream; charset=utf-8",
+          "Cache-Control": "no-cache, no-transform",
+          "Connection": "keep-alive",
+          "X-Accel-Buffering": "no",
+        },
+      });
     }
 
-    if (!executedSuccessfully) {
+    // ── PATH B: SYNCHRONOUS JSON RESPONSE (FALLBACK / NON-STREAM) ──
+    if (availableKeys.length > 0) {
+      const quotaNotifications = [];
+      let lastError = null;
+      let retryCount = 0;
+      let rateLimit429Count = 0;
+      let lastAttemptedModel = model || "google/gemini-3.8-flash";
+
+      for (let keyAttempt = 0; keyAttempt < keyQueue.length; keyAttempt++) {
+        const currentCandidate = keyQueue[keyAttempt];
+        const nextCandidate = keyQueue[keyAttempt + 1] || null;
+
+        const primaryModel = effectiveModel;
+        const secondaryModel =
+          primaryModel === "google/gemini-3.8-flash"
+            ? "anthropic/claude-sonnet-4.5"
+            : "google/gemini-3.8-flash";
+
+        const candidateModels = [primaryModel, secondaryModel].filter(
+          (m, idx, arr) => m && arr.indexOf(m) === idx
+        );
+
+        let keyEncounteredQuota = false;
+        let keyEncounteredInvalid = false;
+
+        for (const modelId of candidateModels) {
+          if (keyEncounteredQuota || keyEncounteredInvalid) break;
+          lastAttemptedModel = modelId;
+
+          try {
+            const llmCallStart = performance.now();
+            const trimmedKey = (currentCandidate.key || "").trim();
+            const isOpenRouter =
+              trimmedKey.startsWith("sk-or-") ||
+              modelId.includes("/") ||
+              Boolean(process.env.OPENROUTER_API_KEY);
+
+            let syncUrl;
+            let fetchHeaders;
+            let fetchBody;
+
+            if (isOpenRouter) {
+              syncUrl = "https://openrouter.ai/api/v1/chat/completions";
+              fetchHeaders = {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${trimmedKey}`,
+                "HTTP-Referer": "https://revou-admission-assistant.local",
+                "X-Title": "RevoU Admission Assistant",
+              };
+              fetchBody = JSON.stringify({
+                model: modelId,
+                messages: [
+                  { role: "system", content: systemPrompt },
+                  {
+                    role: "user",
+                    content: `SITUASI DARI TIM SALES (Menu Aktif: ${tab}):\n"""\n${situation.trim()}\n"""\n${exclusionDirective}\n\nInstruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge base, dan hasilkan output HANYA berupa JSON valid sesuai format.`,
+                  },
+                ],
+                response_format: { type: "json_object" },
+                temperature: 0.25,
+              });
+            } else {
+              syncUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelId}:generateContent?key=${trimmedKey}`;
+              fetchHeaders = { "Content-Type": "application/json" };
+              fetchBody = JSON.stringify({
+                contents: [
+                  {
+                    role: "user",
+                    parts: [{ text: fullPrompt }],
+                  },
+                ],
+                generationConfig: {
+                  responseMimeType: "application/json",
+                  temperature: 0.25,
+                  maxOutputTokens: 4096,
+                },
+              });
+            }
+
+            const response = await fetch(syncUrl, {
+              method: "POST",
+              headers: fetchHeaders,
+              signal: AbortSignal.timeout(75000),
+              body: fetchBody,
+            });
+
+            if (response.ok) {
+              const data = await response.json();
+              const rawText =
+                data?.choices?.[0]?.message?.content ||
+                data?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+              if (rawText) {
+                try {
+                  const cleanedText = rawText
+                    .replace(/^```json\s*/i, "")
+                    .replace(/^```\s*/i, "")
+                    .replace(/\s*```$/i, "")
+                    .trim();
+                  const parsed = JSON.parse(cleanedText);
+
+                  await recordKeyExecution(currentCandidate.key, currentCandidate.keyIndex, "success", 200);
+
+                  const ttftMs = Math.round(performance.now() - llmCallStart);
+                  const totalDurationMs = Math.round(performance.now() - reqStart);
+                  void logMetricsToJsonl({
+                    requestId,
+                    timestamp: new Date().toISOString(),
+                    tab,
+                    model: modelId,
+                    isStream: false,
+                    retrievalMs,
+                    ttftMs,
+                    totalDurationMs,
+                    ...extractUsageMetadata(data?.usage || data?.usageMetadata),
+                    rateLimit429Count,
+                    retryCount,
+                    status: "completed",
+                    errorMessage: null,
+                  });
+
+                  return NextResponse.json(
+                    await buildFinalResult(
+                      parsed,
+                      modelId,
+                      tab,
+                      currentCandidate,
+                      availableKeys,
+                      quotaNotifications,
+                      customKeys
+                    )
+                  );
+                } catch (parseErr) {
+                  console.error("JSON parse error for model", modelId, parseErr.message, rawText?.slice(0, 300));
+                }
+              }
+            } else if (response.status === 429 || response.status === 402) {
+              rateLimit429Count++;
+              retryCount++;
+              const errText = await response.text();
+              const isPayment = response.status === 402;
+              const reason = isPayment ? "Saldo OpenRouter habis (402 Payment Required)" : "Rate limit terlampaui (429)";
+              console.warn(`[RoundRobin] Key #${currentCandidate.keyIndex} hit quota (${response.status}):`, errText.slice(0, 120));
+
+              await recordKeyExecution(currentCandidate.key, currentCandidate.keyIndex, "rate_limited", response.status, reason);
+
+              const rotationMsg = nextCandidate
+                ? `API Key #${currentCandidate.keyIndex} limit kuota/saldo (${response.status}). Otomatis dialihkan ke API Key #${nextCandidate.keyIndex}.`
+                : `API Key #${currentCandidate.keyIndex} limit kuota/saldo (${response.status}).`;
+              quotaNotifications.push(rotationMsg);
+
+              keyEncounteredQuota = true;
+              break;
+            } else if (response.status === 400 || response.status === 401 || response.status === 403) {
+              retryCount++;
+              const errText = await response.text();
+              console.warn(`[RoundRobin] Key #${currentCandidate.keyIndex} invalid (${response.status}):`, errText.slice(0, 120));
+
+              await recordKeyExecution(currentCandidate.key, currentCandidate.keyIndex, "invalid", response.status, "API Key tidak valid");
+
+              const rotationMsg = nextCandidate
+                ? `API Key #${currentCandidate.keyIndex} tidak valid (${response.status}). Otomatis dialihkan ke API Key #${nextCandidate.keyIndex}.`
+                : `API Key #${currentCandidate.keyIndex} tidak valid (${response.status}).`;
+              quotaNotifications.push(rotationMsg);
+
+              keyEncounteredInvalid = true;
+              break;
+            } else if (response.status === 503) {
+              retryCount++;
+              const errText = await response.text();
+              console.warn(`[Gemini 503 Spike] Model ${modelId} sedang high-demand:`, errText.slice(0, 120));
+              lastError = `Model ${modelId} mengalami lonjakan trafik (503 Service Unavailable).`;
+              continue;
+            } else {
+              retryCount++;
+              const errText = await response.text();
+              console.warn(`Gemini API warning on ${modelId} (${response.status}):`, errText.slice(0, 150));
+              lastError = `Model ${modelId} (${response.status}): ${errText.slice(0, 100)}`;
+            }
+          } catch (apiErr) {
+            retryCount++;
+            console.warn(`Gemini API call exception for ${modelId}:`, apiErr.message);
+            lastError = apiErr.message;
+            continue;
+          }
+        }
+      }
+
       const totalDurationMs = Math.round(performance.now() - reqStart);
       void logMetricsToJsonl({
         requestId,
         timestamp: new Date().toISOString(),
         tab,
         model: lastAttemptedModel,
-        isStream: true,
+        isStream: false,
         retrievalMs,
-        ttftMs,
+        ttftMs: 0,
         totalDurationMs,
-        ...extractUsageMetadata(capturedUsageMetadata),
+        ...extractUsageMetadata(null),
         rateLimit429Count,
         retryCount,
         status: "error",
-        errorMessage: lastError || "Stream generation failed",
+        errorMessage: lastError || "Synchronous generation failed",
       });
 
       if (quotaNotifications.length > 0) {
-        const fallback = await buildQuotaExhaustedResult(model, tab, availableKeys, quotaNotifications, customKeys);
-        sendSse("result", fallback);
-      } else {
-        const fallback = buildGeneralFallbackResult(model, tab, availableKeys, lastError);
-        sendSse("result", fallback);
-      }
-      sendSse("done", { success: false });
-    }
-  } catch (streamErr) {
-    console.error("Stream execution error:", streamErr);
-    const totalDurationMs = Math.round(performance.now() - reqStart);
-    void logMetricsToJsonl({
-      requestId,
-      timestamp: new Date().toISOString(),
-      tab,
-      model: lastAttemptedModel,
-      isStream: true,
-      retrievalMs,
-      ttftMs,
-      totalDurationMs,
-      ...extractUsageMetadata(capturedUsageMetadata),
-      rateLimit429Count,
-      retryCount,
-      status: "interrupted",
-      errorMessage: streamErr.message,
-    });
-    sendSse("error", { message: streamErr.message || "Internal streaming error" });
-  } finally {
-    try {
-      controller.close();
-    } catch (e) { }
-  }
-},
-      });
-
-return new Response(readableStream, {
-  headers: {
-    "Content-Type": "text/event-stream; charset=utf-8",
-    "Cache-Control": "no-cache, no-transform",
-    "Connection": "keep-alive",
-    "X-Accel-Buffering": "no",
-  },
-});
-    }
-
-// ── PATH B: SYNCHRONOUS JSON RESPONSE (FALLBACK / NON-STREAM) ──
-if (availableKeys.length > 0) {
-  const quotaNotifications = [];
-  let lastError = null;
-  let retryCount = 0;
-  let rateLimit429Count = 0;
-  let lastAttemptedModel = model || "google/gemini-3.8-flash";
-
-  for (let keyAttempt = 0; keyAttempt < keyQueue.length; keyAttempt++) {
-    const currentCandidate = keyQueue[keyAttempt];
-    const nextCandidate = keyQueue[keyAttempt + 1] || null;
-
-    const primaryModel = effectiveModel;
-    const secondaryModel =
-      primaryModel === "google/gemini-3.8-flash"
-        ? "anthropic/claude-sonnet-4.5"
-        : "google/gemini-3.8-flash";
-
-    const candidateModels = [primaryModel, secondaryModel].filter(
-      (m, idx, arr) => m && arr.indexOf(m) === idx
-    );
-
-    let keyEncounteredQuota = false;
-    let keyEncounteredInvalid = false;
-
-    for (const modelId of candidateModels) {
-      if (keyEncounteredQuota || keyEncounteredInvalid) break;
-      lastAttemptedModel = modelId;
-
-      try {
-        const llmCallStart = performance.now();
-        const trimmedKey = (currentCandidate.key || "").trim();
-        const isOpenRouter =
-          trimmedKey.startsWith("sk-or-") ||
-          modelId.includes("/") ||
-          Boolean(process.env.OPENROUTER_API_KEY);
-
-        let syncUrl;
-        let fetchHeaders;
-        let fetchBody;
-
-        if (isOpenRouter) {
-          syncUrl = "https://openrouter.ai/api/v1/chat/completions";
-          fetchHeaders = {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${trimmedKey}`,
-            "HTTP-Referer": "https://revou-admission-assistant.local",
-            "X-Title": "RevoU Admission Assistant",
-          };
-          fetchBody = JSON.stringify({
-            model: modelId,
-            messages: [
-              { role: "system", content: systemPrompt },
-              {
-                role: "user",
-                content: `SITUASI DARI TIM SALES (Menu Aktif: ${tab}):\n"""\n${situation.trim()}\n"""\n${exclusionDirective}\n\nInstruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge base, dan hasilkan output HANYA berupa JSON valid sesuai format.`,
-              },
-            ],
-            response_format: { type: "json_object" },
-            temperature: 0.25,
-          });
-        } else {
-          syncUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelId}:generateContent?key=${trimmedKey}`;
-          fetchHeaders = { "Content-Type": "application/json" };
-          fetchBody = JSON.stringify({
-            contents: [
-              {
-                role: "user",
-                parts: [{ text: fullPrompt }],
-              },
-            ],
-            generationConfig: {
-              responseMimeType: "application/json",
-              temperature: 0.25,
-              maxOutputTokens: 4096,
-            },
-          });
-        }
-
-        const response = await fetch(syncUrl, {
-          method: "POST",
-          headers: fetchHeaders,
-          signal: AbortSignal.timeout(35000),
-          body: fetchBody,
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          const rawText =
-            data?.choices?.[0]?.message?.content ||
-            data?.candidates?.[0]?.content?.parts?.[0]?.text;
-
-          if (rawText) {
-            try {
-              const cleanedText = rawText
-                .replace(/^```json\s*/i, "")
-                .replace(/^```\s*/i, "")
-                .replace(/\s*```$/i, "")
-                .trim();
-              const parsed = JSON.parse(cleanedText);
-
-              await recordKeyExecution(currentCandidate.key, currentCandidate.keyIndex, "success", 200);
-
-              const ttftMs = Math.round(performance.now() - llmCallStart);
-              const totalDurationMs = Math.round(performance.now() - reqStart);
-              void logMetricsToJsonl({
-                requestId,
-                timestamp: new Date().toISOString(),
-                tab,
-                model: modelId,
-                isStream: false,
-                retrievalMs,
-                ttftMs,
-                totalDurationMs,
-                ...extractUsageMetadata(data?.usage || data?.usageMetadata),
-                rateLimit429Count,
-                retryCount,
-                status: "completed",
-                errorMessage: null,
-              });
-
-              return NextResponse.json(
-                await buildFinalResult(
-                  parsed,
-                  modelId,
-                  tab,
-                  currentCandidate,
-                  availableKeys,
-                  quotaNotifications,
-                  customKeys
-                )
-              );
-            } catch (parseErr) {
-              console.error("JSON parse error for model", modelId, parseErr.message, rawText?.slice(0, 300));
-            }
-          }
-        } else if (response.status === 429 || response.status === 402) {
-          rateLimit429Count++;
-          retryCount++;
-          const errText = await response.text();
-          const isPayment = response.status === 402;
-          const reason = isPayment ? "Saldo OpenRouter habis (402 Payment Required)" : "Rate limit terlampaui (429)";
-          console.warn(`[RoundRobin] Key #${currentCandidate.keyIndex} hit quota (${response.status}):`, errText.slice(0, 120));
-
-          await recordKeyExecution(currentCandidate.key, currentCandidate.keyIndex, "rate_limited", response.status, reason);
-
-          const rotationMsg = nextCandidate
-            ? `API Key #${currentCandidate.keyIndex} limit kuota/saldo (${response.status}). Otomatis dialihkan ke API Key #${nextCandidate.keyIndex}.`
-            : `API Key #${currentCandidate.keyIndex} limit kuota/saldo (${response.status}).`;
-          quotaNotifications.push(rotationMsg);
-
-          keyEncounteredQuota = true;
-          break;
-        } else if (response.status === 400 || response.status === 401 || response.status === 403) {
-          retryCount++;
-          const errText = await response.text();
-          console.warn(`[RoundRobin] Key #${currentCandidate.keyIndex} invalid (${response.status}):`, errText.slice(0, 120));
-
-          await recordKeyExecution(currentCandidate.key, currentCandidate.keyIndex, "invalid", response.status, "API Key tidak valid");
-
-          const rotationMsg = nextCandidate
-            ? `API Key #${currentCandidate.keyIndex} tidak valid (${response.status}). Otomatis dialihkan ke API Key #${nextCandidate.keyIndex}.`
-            : `API Key #${currentCandidate.keyIndex} tidak valid (${response.status}).`;
-          quotaNotifications.push(rotationMsg);
-
-          keyEncounteredInvalid = true;
-          break;
-        } else if (response.status === 503) {
-          retryCount++;
-          const errText = await response.text();
-          console.warn(`[Gemini 503 Spike] Model ${modelId} sedang high-demand:`, errText.slice(0, 120));
-          lastError = `Model ${modelId} mengalami lonjakan trafik (503 Service Unavailable).`;
-          continue;
-        } else {
-          retryCount++;
-          const errText = await response.text();
-          console.warn(`Gemini API warning on ${modelId} (${response.status}):`, errText.slice(0, 150));
-          lastError = `Model ${modelId} (${response.status}): ${errText.slice(0, 100)}`;
-        }
-      } catch (apiErr) {
-        retryCount++;
-        console.warn(`Gemini API call exception for ${modelId}:`, apiErr.message);
-        lastError = apiErr.message;
-        continue;
+        return NextResponse.json(
+          await buildQuotaExhaustedResult(model, tab, availableKeys, quotaNotifications, customKeys)
+        );
       }
     }
-  }
 
-  const totalDurationMs = Math.round(performance.now() - reqStart);
-  void logMetricsToJsonl({
-    requestId,
-    timestamp: new Date().toISOString(),
-    tab,
-    model: lastAttemptedModel,
-    isStream: false,
-    retrievalMs,
-    ttftMs: 0,
-    totalDurationMs,
-    ...extractUsageMetadata(null),
-    rateLimit429Count,
-    retryCount,
-    status: "error",
-    errorMessage: lastError || "Synchronous generation failed",
-  });
-
-  if (quotaNotifications.length > 0) {
+    // ── Fallback ──────────────
     return NextResponse.json(
-      await buildQuotaExhaustedResult(model, tab, availableKeys, quotaNotifications, customKeys)
+      buildGeneralFallbackResult(model, tab, availableKeys, lastError)
+    );
+  } catch (error) {
+    console.error("Error in /api/generate:", error);
+    try {
+      const totalDurationMs = typeof reqStart !== "undefined" ? Math.round(performance.now() - reqStart) : 0;
+      void logMetricsToJsonl({
+        requestId: typeof requestId !== "undefined" ? requestId : crypto.randomUUID(),
+        timestamp: new Date().toISOString(),
+        tab: "unknown",
+        model: "unknown",
+        isStream: false,
+        retrievalMs: 0,
+        ttftMs: 0,
+        totalDurationMs,
+        ...extractUsageMetadata(null),
+        rateLimit429Count: 0,
+        retryCount: 0,
+        status: "error",
+        errorMessage: error.message,
+      });
+    } catch (e) { }
+    return NextResponse.json(
+      { error: "Internal Server Error", details: error.message },
+      { status: 500 }
     );
   }
-}
-
-// ── Fallback ──────────────
-return NextResponse.json(
-  buildGeneralFallbackResult(model, tab, availableKeys, lastError)
-);
-  } catch (error) {
-  console.error("Error in /api/generate:", error);
-  try {
-    const totalDurationMs = typeof reqStart !== "undefined" ? Math.round(performance.now() - reqStart) : 0;
-    void logMetricsToJsonl({
-      requestId: typeof requestId !== "undefined" ? requestId : crypto.randomUUID(),
-      timestamp: new Date().toISOString(),
-      tab: "unknown",
-      model: "unknown",
-      isStream: false,
-      retrievalMs: 0,
-      ttftMs: 0,
-      totalDurationMs,
-      ...extractUsageMetadata(null),
-      rateLimit429Count: 0,
-      retryCount: 0,
-      status: "error",
-      errorMessage: error.message,
-    });
-  } catch (e) { }
-  return NextResponse.json(
-    { error: "Internal Server Error", details: error.message },
-    { status: 500 }
-  );
-}
 }
