@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getSupabase } from "../../../../lib/supabaseClient";
+import { normalizeTopic } from "../../../../lib/topicNormalizer";
 
 export async function POST(req: Request) {
   try {
@@ -38,6 +39,10 @@ export async function POST(req: Request) {
       ? String(inputSnippet).slice(0, 200).trim()
       : null;
 
+    const normalizedTopic =
+      normalizeTopic(topic, sanitizedSnippet, mode) ||
+      (topic ? String(topic).slice(0, 100).trim() : null);
+
     const { data, error } = await supabase.from("admission_activity_logs").insert([
       {
         user_name: String(userName).slice(0, 100).trim(),
@@ -46,7 +51,7 @@ export async function POST(req: Request) {
         action_type: String(actionType).slice(0, 50).trim(),
         mode: String(mode).slice(0, 50).trim(),
         model_used: modelUsed ? String(modelUsed).slice(0, 50).trim() : null,
-        topic: topic ? String(topic).slice(0, 100).trim() : null,
+        topic: normalizedTopic,
         input_snippet: sanitizedSnippet,
         metadata: metadata && typeof metadata === "object" ? metadata : {},
       },

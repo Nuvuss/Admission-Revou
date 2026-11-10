@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSupabase, getLastSupabaseServerDate } from "../../../../lib/supabaseClient";
-import { getOnlineUsers, trackUserHeartbeat } from "../../../../lib/onlineTracker";
+import { getOnlineUsers } from "../../../../lib/onlineTracker";
+import { redisGet, redisSet } from "../../../../lib/redisClient";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -10,13 +11,39 @@ import { normalizeTopic } from "../../../../lib/topicNormalizer";
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
-    const range = searchParams.get("range") || "30d"; // today, 7d, 30d, all
-    const activeUser = searchParams.get("activeUser");
-    const activeRole = searchParams.get("activeRole") || "Owner";
+    const range = searchParams.get("range") || "30d"; // today, yesterday, 7d, 30d, all
+    // Presence Owner dicatat lewat /api/auth/heartbeat (bukan dari query stats) agar tidak double-write.
+    // Real-time presence dibaca sekali per request (Redis / fallback memori).
+    const onlinePresence = await getOnlineUsers();
+    const onlineNameSet = new Set(onlinePresence.users.map((u) => u.userName.trim().toLowerCase()));
 
-    // Register active user heartbeat if passed in stats query
-    if (activeUser && activeUser.trim()) {
-      trackUserHeartbeat(activeUser.trim(), activeRole);
+    // Cache lookup: jika ada di Redis, kembalikan dengan onlinePresence yang selalu real-time
+    const cacheKey = `cache:stats:v3:${range}`;
+    const cachedStats: any = await redisGet(cacheKey);
+    if (cachedStats && typeof cachedStats === "object" && cachedStats.isConfigured) {
+      const liveLeaderboard = (cachedStats.leaderboard || []).map((agent: any) => ({
+        ...agent,
+        isOnline: onlineNameSet.has(String(agent.userName || "").trim().toLowerCase()),
+      }));
+
+      return NextResponse.json({
+        ...cachedStats,
+        kpis: {
+          ...cachedStats.kpis,
+          totalActiveAgents: onlinePresence.acBmCount,
+          acBmAgentsCount: onlinePresence.acBmCount,
+        },
+        onlinePresence: {
+          count: onlinePresence.count,
+          acBmCount: onlinePresence.acBmCount,
+          acBmActiveCount: onlinePresence.acBmActiveCount,
+          acBmIdleCount: onlinePresence.acBmIdleCount,
+          storage: onlinePresence.storage,
+          serverTime: onlinePresence.serverTime,
+          users: onlinePresence.users,
+        },
+        leaderboard: liveLeaderboard,
+      });
     }
 
     const supabase = getSupabase();
@@ -137,13 +164,23 @@ export async function GET(req: Request) {
     }
     const nowWib = new Date(nowUtc.getTime() + WIB_OFFSET);
 
-    // Determine timestamp threshold in UTC
+    // Determine timestamp bounds in UTC
     let timeThresholdMs: number | null = null;
+    let timeUpperBoundMs: number | null = null;
     if (range === "today") {
       const startOfDayWib = new Date(
         Date.UTC(nowWib.getUTCFullYear(), nowWib.getUTCMonth(), nowWib.getUTCDate(), 0, 0, 0, 0)
       );
       timeThresholdMs = startOfDayWib.getTime() - WIB_OFFSET;
+    } else if (range === "yesterday") {
+      const startOfYesterdayWib = new Date(
+        Date.UTC(nowWib.getUTCFullYear(), nowWib.getUTCMonth(), nowWib.getUTCDate() - 1, 0, 0, 0, 0)
+      );
+      const startOfTodayWib = new Date(
+        Date.UTC(nowWib.getUTCFullYear(), nowWib.getUTCMonth(), nowWib.getUTCDate(), 0, 0, 0, 0)
+      );
+      timeThresholdMs = startOfYesterdayWib.getTime() - WIB_OFFSET;
+      timeUpperBoundMs = startOfTodayWib.getTime() - WIB_OFFSET;
     } else if (range === "7d") {
       const startOf7dWib = new Date(
         Date.UTC(nowWib.getUTCFullYear(), nowWib.getUTCMonth(), nowWib.getUTCDate() - 6, 0, 0, 0, 0)
@@ -158,11 +195,13 @@ export async function GET(req: Request) {
 
     // Owner tugasnya hanya memantau, bukan konselor admisi.
     // Seluruh data analitik (KPI, leaderboard, grafik, heatmap, dsb.) khusus memantau tim konselor (AC & BM).
-    const allLogs = (
-      timeThresholdMs !== null
-        ? fetchedLogs.filter((log) => new Date(log.created_at).getTime() >= timeThresholdMs!)
-        : fetchedLogs
-    ).filter((log) => log.user_role !== "Owner");
+    const allLogs = fetchedLogs.filter((log) => {
+      if (log.user_role === "Owner") return false;
+      const logMs = new Date(log.created_at).getTime();
+      if (timeThresholdMs !== null && logMs < timeThresholdMs) return false;
+      if (timeUpperBoundMs !== null && logMs >= timeUpperBoundMs) return false;
+      return true;
+    });
 
     // 1. KPI Accumulators
     let initialGenerates = 0;
@@ -186,6 +225,11 @@ export async function GET(req: Request) {
         pitch?: number;
         alumni?: number;
         comparison?: number;
+        byMode: {
+          pitch: { generates: number; copies: number; comparisons: number; totalActions: number };
+          alumni: { generates: number; copies: number; comparisons: number; totalActions: number };
+          comparison: { generates: number; copies: number; comparisons: number; totalActions: number };
+        };
         totalActions: number;
         lastActive: string;
         responseDurationsMs: number[];
@@ -214,7 +258,7 @@ export async function GET(req: Request) {
       actions?: { user: string; role: string; actionLabel: string; topic: string; mode?: string; timestamp?: string }[];
     }[] = [];
 
-    if (range === "today") {
+    if (range === "today" || range === "yesterday") {
       for (let h = 0; h < 24; h++) {
         const hourStr = `${String(h).padStart(2, "0")}:00`;
         timeline.push({
@@ -353,6 +397,11 @@ export async function GET(req: Request) {
           pitch: 0,
           alumni: 0,
           comparison: 0,
+          byMode: {
+            pitch: { generates: 0, copies: 0, comparisons: 0, totalActions: 0 },
+            alumni: { generates: 0, copies: 0, comparisons: 0, totalActions: 0 },
+            comparison: { generates: 0, copies: 0, comparisons: 0, totalActions: 0 },
+          },
           totalActions: 0,
           lastActive: log.created_at,
           responseDurationsMs: [],
@@ -392,7 +441,7 @@ export async function GET(req: Request) {
 
           const logDayKey = `${logDateWib.getUTCFullYear()}-${String(logDateWib.getUTCMonth() + 1).padStart(2, "0")}-${String(logDateWib.getUTCDate()).padStart(2, "0")}`;
           const targetPt =
-            range === "today"
+            range === "today" || range === "yesterday"
               ? timeline[hour]
               : timeline.find((t) => t.key === logDayKey);
 
@@ -461,38 +510,39 @@ export async function GET(req: Request) {
           topicCounts[cleanTopic] = (topicCounts[cleanTopic] || 0) + 1;
           agentMap[user].topicCounts[cleanTopic] =
             (agentMap[user].topicCounts[cleanTopic] || 0) + 1;
-
-          // Auto-heal database row if previously saved topic was misclassified
-          if (log.id && log.topic !== cleanTopic) {
-            supabase
-              .from("admission_activity_logs")
-              .update({ topic: cleanTopic })
-              .eq("id", log.id)
-              .then(() => {});
-          }
         }
       }
+
+      const resolvedMode: "pitch" | "alumni" | "comparison" =
+        mode === "comparison" || isComparisonView
+          ? "comparison"
+          : mode === "alumni" || action === "view_alumni"
+            ? "alumni"
+            : "pitch";
+      const modeBucket = agentMap[user].byMode[resolvedMode];
 
       if (isGenerate) {
         agentMap[user].initialGenerates++;
         agentMap[user].generates++;
+        modeBucket.generates++;
       }
       if (isClarify) {
         agentMap[user].clarifications++;
         agentMap[user].generates++;
+        modeBucket.generates++;
       }
-      if (isCopy) agentMap[user].copies++;
-      if (isComparisonView) agentMap[user].comparisons++;
-      if (!isLogin) agentMap[user].totalActions++;
-    }
-
-    if (hasBogusTabSwitchLogs) {
-      supabase
-        .from("admission_activity_logs")
-        .delete()
-        .eq("action_type", "view_comparison")
-        .eq("input_snippet", "Membuka menu Comparison Table")
-        .then(() => {});
+      if (isCopy) {
+        agentMap[user].copies++;
+        modeBucket.copies++;
+      }
+      if (isComparisonView) {
+        agentMap[user].comparisons++;
+        modeBucket.comparisons++;
+      }
+      if (!isLogin) {
+        agentMap[user].totalActions++;
+        modeBucket.totalActions++;
+      }
     }
 
     const totalGenerates = initialGenerates + totalClarifications;
@@ -537,15 +587,12 @@ export async function GET(req: Request) {
 
         const { responseDurationsMs: _d, ...restAgent } = agent;
 
-        const onlinePresence = getOnlineUsers();
-        const onlineNames = new Set(onlinePresence.users.map((u) => u.userName));
-
         return {
           ...restAgent,
           copyRate: rate,
           avgResponseTimeSec: avgUserResp,
           topTopic: userTopTopic,
-          isOnline: onlineNames.has(agent.userName),
+          isOnline: onlineNameSet.has(agent.userName.trim().toLowerCase()),
         };
       })
       .sort((a, b) => {
@@ -558,7 +605,6 @@ export async function GET(req: Request) {
     const historicalActiveCount = activeAgentsList.length;
 
     // Real-Time Online Presence (Pendekatan 1: Murni menghitung sesi yang sedang login saat ini)
-    const onlinePresence = getOnlineUsers();
     const onlineCounselorsCount = onlinePresence.count;
     const onlineAcBmCount = onlinePresence.acBmCount;
 
@@ -608,7 +654,7 @@ export async function GET(req: Request) {
     const peakScripts = findPeak("scripts");
     const peakCopies = findPeak("copies");
 
-    return NextResponse.json({
+    const finalResponse = {
       isConfigured: true,
       range,
       referenceTimeIso: nowUtc.toISOString(),
@@ -631,6 +677,10 @@ export async function GET(req: Request) {
       onlinePresence: {
         count: onlineCounselorsCount,
         acBmCount: onlineAcBmCount,
+        acBmActiveCount: onlinePresence.acBmActiveCount,
+        acBmIdleCount: onlinePresence.acBmIdleCount,
+        storage: onlinePresence.storage,
+        serverTime: onlinePresence.serverTime,
         users: onlinePresence.users,
       },
       timeline: cleanTimeline,
@@ -643,7 +693,12 @@ export async function GET(req: Request) {
       hourlyHeatmap,
       modeDistribution,
       topTopics,
-    });
+    };
+
+    // Simpan ke Redis selama 12 detik agar polling 6 detik tidak membebani kuota Supabase
+    redisSet(cacheKey, finalResponse, 12).catch(() => {});
+
+    return NextResponse.json(finalResponse);
   } catch (err: any) {
     console.error("Stats API exception:", err);
     return NextResponse.json(

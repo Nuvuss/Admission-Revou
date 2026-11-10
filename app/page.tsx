@@ -38,6 +38,7 @@ import {
   BarChart3,
   LogOut
 } from "lucide-react";
+import { usePresenceHeartbeat } from "./hooks/usePresenceHeartbeat";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
@@ -245,42 +246,15 @@ export default function DashboardPage() {
     fetchApiPoolStatus();
   }, []);
 
-  // Real-Time Online Presence: Heartbeat ping while userSession is active
-  useEffect(() => {
-    if (!userSession?.name) return;
-
-    const sendHeartbeat = () => {
-      fetch("/api/auth/heartbeat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userName: userSession.name,
-          userRole: userSession.role || "AC",
-        }),
-      }).catch(() => { });
-    };
-
-    sendHeartbeat();
-    const interval = setInterval(sendHeartbeat, 20000);
-
-    const handleBeforeUnload = () => {
-      try {
-        if (navigator.sendBeacon) {
-          const blob = new Blob([JSON.stringify({ userName: userSession.name })], {
-            type: "application/json",
-          });
-          navigator.sendBeacon("/api/auth/logout", blob);
-        }
-      } catch (e) { }
-    };
-
-    window.addEventListener("beforeunload", handleBeforeUnload);
-
-    return () => {
-      clearInterval(interval);
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, [userSession?.name, userSession?.role]);
+  // Real-Time Online Presence: heartbeat per tab (status active/idle + mode fitur aktif)
+  usePresenceHeartbeat({
+    userName: userSession?.name,
+    userRole: userSession?.role || "AC",
+    userEmail: userSession?.email,
+    mode,
+    page: "assistant",
+    silent: true,
+  });
 
   const handleConfirmLogout = () => {
     if (userSession?.name) {
@@ -288,7 +262,7 @@ export default function DashboardPage() {
         fetch("/api/auth/logout", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ userName: userSession.name }),
+          body: JSON.stringify({ userName: userSession.name, userEmail: userSession.email, allSessions: true }),
           keepalive: true,
         }).catch(() => { });
       } catch (e) { }

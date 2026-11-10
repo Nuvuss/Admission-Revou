@@ -25,6 +25,8 @@ import {
 } from "lucide-react";
 import { UserSession } from "../types/auth";
 import OwnerHistoryDrawer from "../components/OwnerHistoryDrawer";
+import ActivityAreaChart from "../components/ActivityAreaChart";
+import { usePresenceHeartbeat } from "../hooks/usePresenceHeartbeat";
 import { getSupabase } from "../../lib/supabaseClient";
 
 // ========================================================
@@ -116,6 +118,9 @@ export default function AnalyticsDashboardPage() {
   const [timeRange, setTimeRange] = useState<string>("30d");
   const [chartMode, setChartMode] = useState<"all" | "pitch" | "alumni" | "comparison">("all");
   const [roleFilter, setRoleFilter] = useState<"all" | "ac" | "bm">("all");
+  const [leaderboardActivityFilter, setLeaderboardActivityFilter] = useState<
+    "all" | "pitch" | "alumni" | "comparison"
+  >("all");
   const [chartRoleFilter, setChartRoleFilter] = useState<"all" | "ac" | "bm">("all");
   const [selectedUser, setSelectedUser] = useState<string>("all");
   const [historyTopic, setHistoryTopic] = useState<string | null>(null);
@@ -124,7 +129,6 @@ export default function AnalyticsDashboardPage() {
   const [statsData, setStatsData] = useState<any>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
-  const [hoveredPointIdx, setHoveredPointIdx] = useState<number | null>(null);
 
   const timeRangeRef = useRef(timeRange);
   useEffect(() => {
@@ -136,16 +140,12 @@ export default function AnalyticsDashboardPage() {
     sessionRef.current = session;
   }, [session]);
 
-  const fetchStats = useCallback(async (range: string, silent = false, userOverride?: UserSession) => {
+  const fetchStats = useCallback(async (range: string, silent = false) => {
     if (!silent) setIsLoading(true);
     setIsSyncing(true);
     if (!silent) setErrorMessage(null);
     try {
-      const activeUser = userOverride || sessionRef.current;
-      const userParam = activeUser?.name
-        ? `&activeUser=${encodeURIComponent(activeUser.name)}&activeRole=${encodeURIComponent(activeUser.role || "Owner")}`
-        : "";
-      const res = await fetch(`/api/analytics/stats?range=${range}${userParam}&_t=${Date.now()}`, {
+      const res = await fetch(`/api/analytics/stats?range=${range}&_t=${Date.now()}`, {
         cache: "no-store",
         headers: {
           "Cache-Control": "no-cache, no-store, must-revalidate",
@@ -168,25 +168,14 @@ export default function AnalyticsDashboardPage() {
     }
   }, []);
 
-  // Heartbeat ping while viewing analytics dashboard
-  useEffect(() => {
-    if (!session?.name) return;
-
-    const sendHeartbeat = () => {
-      fetch("/api/auth/heartbeat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userName: session.name,
-          userRole: session.role || "Owner",
-        }),
-      }).catch(() => { });
-    };
-
-    sendHeartbeat();
-    const interval = setInterval(sendHeartbeat, 20000);
-    return () => clearInterval(interval);
-  }, [session?.name, session?.role]);
+  // Heartbeat presence per tab saat Owner membuka dashboard analitik
+  usePresenceHeartbeat({
+    userName: session?.name,
+    userRole: session?.role || "Owner",
+    userEmail: session?.email,
+    page: "analytics",
+    silent: true,
+  });
 
   // Check Owner Authorization on Mount
   useEffect(() => {
@@ -197,7 +186,7 @@ export default function AnalyticsDashboardPage() {
         setSession(parsed);
         if (parsed.role === "Owner" && parsed.token) {
           setIsAuthorized(true);
-          fetchStats("30d", false, parsed);
+          fetchStats("30d", false);
           return;
         }
       }
@@ -337,12 +326,72 @@ export default function AnalyticsDashboardPage() {
   const rawLeaderboard: any[] = (statsData?.leaderboard || []).filter(
     (a: any) => a.userRole === "AC" || a.userRole === "BM"
   );
-  const leaderboard =
+  const roleFilteredLeaderboard =
     roleFilter === "ac"
       ? rawLeaderboard.filter((a) => a.userRole === "AC")
       : roleFilter === "bm"
         ? rawLeaderboard.filter((a) => a.userRole === "BM")
         : rawLeaderboard;
+
+  const leaderboardActivityCounts = {
+    all: roleFilteredLeaderboard.reduce((acc, a) => acc + (a.totalActions || 0), 0),
+    pitch: roleFilteredLeaderboard.reduce(
+      (acc, a) => acc + (a.byMode?.pitch?.totalActions ?? a.pitch ?? 0),
+      0
+    ),
+    alumni: roleFilteredLeaderboard.reduce(
+      (acc, a) => acc + (a.byMode?.alumni?.totalActions ?? a.alumni ?? 0),
+      0
+    ),
+    comparison: roleFilteredLeaderboard.reduce(
+      (acc, a) => acc + (a.byMode?.comparison?.totalActions ?? a.comparison ?? 0),
+      0
+    ),
+  };
+
+  const leaderboard = roleFilteredLeaderboard
+    .map((agent) => {
+      if (leaderboardActivityFilter === "all") {
+        return {
+          ...agent,
+          displayPrimaryMetric: agent.generates || 0,
+          displayCopies: agent.copies || 0,
+          displayTotalActions: agent.totalActions || (agent.generates || 0) + (agent.copies || 0),
+        };
+      }
+      const modeStats = agent.byMode?.[leaderboardActivityFilter];
+      const fallbackPrimary =
+        leaderboardActivityFilter === "pitch"
+          ? agent.pitch || 0
+          : leaderboardActivityFilter === "alumni"
+            ? agent.alumni || 0
+            : agent.comparison || 0;
+      const primaryMetric =
+        leaderboardActivityFilter === "comparison"
+          ? modeStats?.comparisons ?? fallbackPrimary
+          : modeStats?.generates ?? fallbackPrimary;
+      const copiesMetric = modeStats?.copies ?? 0;
+      const totalMetric = modeStats?.totalActions ?? fallbackPrimary;
+
+      return {
+        ...agent,
+        displayPrimaryMetric: primaryMetric,
+        displayCopies: copiesMetric,
+        displayTotalActions: totalMetric,
+      };
+    })
+    .filter((agent) =>
+      leaderboardActivityFilter === "all" ? true : agent.displayTotalActions > 0
+    )
+    .sort((a, b) => {
+      if (b.displayPrimaryMetric !== a.displayPrimaryMetric) {
+        return b.displayPrimaryMetric - a.displayPrimaryMetric;
+      }
+      if (b.displayCopies !== a.displayCopies) {
+        return b.displayCopies - a.displayCopies;
+      }
+      return b.displayTotalActions - a.displayTotalActions;
+    });
 
   const hourlyHeatmap: number[] = statsData?.hourlyHeatmap || Array(24).fill(0);
   const totalHourlyInteractions = hourlyHeatmap.reduce((acc, v) => acc + v, 0);
@@ -421,23 +470,10 @@ export default function AnalyticsDashboardPage() {
   const totalTopicMentions = activeUserTopics.reduce((acc: number, t: any) => acc + (t.count || 0), 0);
 
   const timeline: any[] = statsData?.timeline || [];
-  const currentModeValues = timeline.map((pt) => {
-    const key = chartMode === "all" ? "traffic" : chartMode;
-    if (activeSelectedUser !== "all") {
-      return Number(pt.byUser?.[activeSelectedUser]?.[key] || 0);
-    }
-    if (chartRoleFilter === "ac" || chartRoleFilter === "bm") {
-      return availableUsers.reduce((sum, u) => sum + Number(pt.byUser?.[u.name]?.[key] || 0), 0);
-    }
-    return Number(pt[key] || 0);
-  });
-  const maxChartVal = Math.max(...currentModeValues, 1);
-  const hasChartData = currentModeValues.some((v) => v > 0);
-  const totalChartModeSum = currentModeValues.reduce((acc, v) => acc + v, 0);
 
   // Real Sparkline Series for the 3 KPI Cards
-  // Pada filter "Hari Ini", gunakan seluruh jam (24 jam) agar generate di jam pagi/siang tidak terpotong oleh .slice(-10)
-  const sparkSeries = timeRange === "today" ? timeline : timeline.slice(-10);
+  // Pada filter "Hari Ini" & "Kemarin", gunakan seluruh jam (24 jam) agar generate di jam pagi/siang tidak terpotong oleh .slice(-10)
+  const sparkSeries = timeRange === "today" || timeRange === "yesterday" ? timeline : timeline.slice(-10);
   const sparkGenerates = sparkSeries.map((pt) => Number(pt.scripts || 0));
   const sparkAgents = sparkSeries.map((pt) => Number(pt.agents || 0));
   const sparkUtility = sparkSeries.map((pt) => {
@@ -445,125 +481,6 @@ export default function AnalyticsDashboardPage() {
     const total = Number(kpis.utilityTotalUsers || 0);
     return total > 0 ? Math.min(100, Math.round((a / total) * 100)) : 0;
   });
-
-  // Peak index & value
-  let peakIdx = 0;
-  let peakVal = 0;
-  currentModeValues.forEach((val, i) => {
-    if (val > peakVal) {
-      peakVal = val;
-      peakIdx = i;
-    }
-  });
-
-  // Normalized SVG coordinates (viewBox 0 0 600 120, compact height without text distortion)
-  const svgW = 600;
-  const svgH = 120;
-  const padTop = 16;
-  const padBottom = 8;
-  const plotH = svgH - padTop - padBottom; // 96
-
-  const pointsCoords = timeline.map((pt, i) => {
-    const pctX = timeline.length > 1 ? i / (timeline.length - 1) : 0.5;
-    const x = pctX * svgW;
-    const val = currentModeValues[i] ?? 0;
-    const rawPctY = hasChartData && maxChartVal > 0 ? val / maxChartVal : 0;
-    const boundedPctY = Math.max(0, Math.min(1, rawPctY));
-    const y = padTop + plotH * (1 - boundedPctY);
-    return {
-      x,
-      y,
-      pctX: pctX * 100,
-      pctY: (y / svgH) * 100,
-      val,
-      label: pt.label,
-      sublabel: pt.sublabel,
-      key: pt.key,
-      rawPt: pt,
-    };
-  });
-
-  // Smooth Bezier Curve Path
-  let chartStrokePath = "";
-  let chartAreaPath = "";
-
-  if (pointsCoords.length > 0) {
-    if (pointsCoords.length === 1) {
-      chartStrokePath = `M 0,${pointsCoords[0].y.toFixed(1)} L ${svgW},${pointsCoords[0].y.toFixed(1)}`;
-      chartAreaPath = `${chartStrokePath} L ${svgW},${svgH} L 0,${svgH} Z`;
-    } else {
-      chartStrokePath = `M ${pointsCoords[0].x.toFixed(1)},${pointsCoords[0].y.toFixed(1)}`;
-      for (let i = 0; i < pointsCoords.length - 1; i++) {
-        const curr = pointsCoords[i];
-        const next = pointsCoords[i + 1];
-        const cpX = curr.x + (next.x - curr.x) / 2;
-        chartStrokePath += ` C ${cpX.toFixed(1)},${curr.y.toFixed(1)} ${cpX.toFixed(1)},${next.y.toFixed(1)} ${next.x.toFixed(1)},${next.y.toFixed(1)}`;
-      }
-      chartAreaPath = `${chartStrokePath} L ${svgW},${svgH} L 0,${svgH} Z`;
-    }
-  } else {
-    chartStrokePath = `M 0,${padTop + plotH} L ${svgW},${padTop + plotH}`;
-    chartAreaPath = `${chartStrokePath} L ${svgW},${svgH} L 0,${svgH} Z`;
-  }
-
-  // Active Point for Pop-up Tooltip (Hover only - hidden by default until user hovers/touches the chart)
-  const activePoint =
-    hoveredPointIdx !== null && hoveredPointIdx >= 0 && hoveredPointIdx < pointsCoords.length
-      ? pointsCoords[hoveredPointIdx]
-      : null;
-
-  // Y-Axis Ticks (Clean integer labels)
-  const yTicks =
-    maxChartVal <= 1
-      ? ["1", "0"]
-      : maxChartVal === 2
-        ? ["2", "1", "0"]
-        : [
-          String(maxChartVal),
-          String(Math.round(maxChartVal * 0.5)),
-          "0",
-        ];
-
-  // X-Axis Ticks (carrying original timeline index so peak highlighting is 100% accurate)
-  const xTicks = (() => {
-    if (!timeline.length) return [];
-    if (timeRange === "today") {
-      const targetHours = [0, 4, 8, 12, 16, 20, 23];
-      return targetHours.map((h) => ({
-        timelineIdx: h,
-        label: `${String(h).padStart(2, "0")}:00`,
-      }));
-    }
-    if (timeRange === "7d") {
-      return timeline.map((pt, i) => ({
-        timelineIdx: i,
-        label: pt.sublabel ? `${pt.label} (${pt.sublabel})` : pt.label,
-      }));
-    }
-    if (timeRange === "30d") {
-      const indices = [0, 6, 12, 18, 24, timeline.length - 1];
-      return indices.map((idx) => {
-        const i = Math.min(idx, timeline.length - 1);
-        return {
-          timelineIdx: i,
-          label: timeline[i]?.label || "",
-        };
-      });
-    }
-    // "all"
-    if (timeline.length <= 7) {
-      return timeline.map((pt, i) => ({
-        timelineIdx: i,
-        label: pt.label,
-      }));
-    }
-    const step = Math.floor((timeline.length - 1) / 5);
-    const indices = [0, step, step * 2, step * 3, step * 4, timeline.length - 1];
-    return indices.map((i) => ({
-      timelineIdx: i,
-      label: timeline[i]?.label || "",
-    }));
-  })();
 
   // Complete Working Hours for Jam Sibuk Konsultasi (08:00 - 22:00 without skipping 12:00/18:00/22:00 + any outside hour with data)
   const displayHours = (() => {
@@ -707,6 +624,7 @@ export default function AnalyticsDashboardPage() {
             <div className="relative inline-flex p-1 rounded-xl bg-[#F5F5F2] border border-[#E8E8E4]">
               {[
                 { id: "today", label: "Hari Ini" },
+                { id: "yesterday", label: "Kemarin" },
                 { id: "7d", label: "7 Hari" },
                 { id: "30d", label: "30 Hari" },
                 { id: "all", label: "Semua" },
@@ -797,7 +715,7 @@ export default function AnalyticsDashboardPage() {
             </div>
             <p className="text-[11px] text-[#7A7A74] mt-2 pt-2 border-t border-[#F0F0EC]">
               {kpis.acBmAgentsCount > 0
-                ? `${kpis.acBmAgentsCount} konselor (AC & BM) sedang online saat ini`
+                ? `${statsData?.onlinePresence?.acBmActiveCount ?? kpis.acBmAgentsCount} aktif · ${statsData?.onlinePresence?.acBmIdleCount ?? 0} idle (AC & BM) saat ini`
                 : "Tidak ada konselor AC/BM yang online saat ini"}
             </p>
           </motion.div>
@@ -833,634 +751,17 @@ export default function AnalyticsDashboardPage() {
         {/* ========================================================= */}
         {/* 4. COMPACT & PROPORTIONAL AREA CHART                      */}
         {/* ========================================================= */}
-        <motion.section
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.26, ease: [0.16, 1, 0.3, 1] }}
-          className="w-full p-4 sm:p-5 rounded-2xl bg-white border border-[#E8E8E4] shadow-2xs flex flex-col justify-between card-interactive"
-        >
-          {/* Chart Header & Metric Mode Controls */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2.5">
-            <div>
-              <div className="flex items-center gap-2">
-                <h2 className="text-sm sm:text-base font-display font-black tracking-tight text-[#141412]">
-                  Trafik Konsultasi & Penggunaan Asisten
-                </h2>
-                <span className="font-mono text-[10.5px] font-bold px-2 py-0.5 rounded-md bg-[#FFF6D1] text-[#A15C00] border border-[#FFD84D]/60">
-                  Total: {totalChartModeSum}{" "}
-                  {chartMode === "pitch"
-                    ? "Pitch"
-                    : chartMode === "alumni"
-                      ? "Alumni"
-                      : chartMode === "comparison"
-                        ? "Komparasi"
-                        : "Aktivitas"}
-                  {selectedUserData
-                    ? ` · ${selectedUserData.name} (${selectedUserData.role})`
-                    : chartRoleFilter === "ac"
-                      ? " · Tim AC"
-                      : chartRoleFilter === "bm"
-                        ? " · Tim BM"
-                        : " · AC & BM"}
-                </span>
-              </div>
-              <p className="text-xs text-[#7A7A74] mt-0.5">
-                Tren {timeRange === "today" ? "per jam hari ini (WIB)" : timeRange === "7d" ? "7 hari terakhir" : timeRange === "30d" ? "30 hari terakhir" : "seluruh riwayat tanggal aktif"}
-                {selectedUserData
-                  ? ` untuk konselor ${selectedUserData.name} (${selectedUserData.role})`
-                  : chartRoleFilter === "ac"
-                    ? " seluruh konselor AC"
-                    : chartRoleFilter === "bm"
-                      ? " seluruh konselor BM"
-                      : " seluruh konselor (AC & BM)"}
-              </p>
-            </div>
-
-            {/* Segmented Toggle Control with Spring Layout Animation */}
-            <div className="relative inline-flex p-1 rounded-xl bg-[#F5F5F2] border border-[#E8E8E4] text-xs font-bold self-start sm:self-auto overflow-x-auto max-w-full">
-              {[
-                {
-                  id: "all",
-                  label: `Semua Aktivitas (${selectedUserData ? selectedUserData.count : totalAcBmEvents})`,
-                },
-                {
-                  id: "pitch",
-                  label: `Create Pitch (${selectedUserData ? (selectedUserData.pitch ?? 0) : totalAcBmPitch})`,
-                },
-                {
-                  id: "alumni",
-                  label: `Alumni Checker (${selectedUserData ? (selectedUserData.alumni ?? 0) : totalAcBmAlumni})`,
-                },
-                {
-                  id: "comparison",
-                  label: `Table Comparison (${selectedUserData ? (selectedUserData.comparison ?? 0) : totalAcBmComp})`,
-                },
-              ].map((seg) => {
-                const isSelected = chartMode === seg.id;
-                return (
-                  <button
-                    key={seg.id}
-                    onClick={() => setChartMode(seg.id as any)}
-                    className={`relative px-2.5 py-1 rounded-lg transition-colors cursor-pointer z-10 whitespace-nowrap shrink-0 ${isSelected ? "text-white" : "text-[#7A7A74] hover:text-[#141412]"
-                      }`}
-                  >
-                    {isSelected && (
-                      <motion.span
-                        layoutId="chartMetricActivePill"
-                        className="absolute inset-0 bg-[#141412] rounded-lg -z-10 shadow-2xs"
-                        transition={{ type: "spring", stiffness: 450, damping: 35 }}
-                      />
-                    )}
-                    {seg.label}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* User Filter Tabs Row */}
-          <div className="flex flex-wrap items-center justify-between gap-2 pt-2.5 pb-2 mb-2 border-t border-[#F0F0EC]">
-            <div className="flex items-center gap-2 flex-wrap">
-              <div className="flex items-center gap-1.5 text-xs font-bold text-[#7A7A74]">
-                <Users className="w-3.5 h-3.5 text-[#0E62FE]" />
-                <span className="font-mono text-[10.5px] uppercase tracking-wider text-[#4B4B46]">
-                  Filter Role:
-                </span>
-              </div>
-
-              {/* Role Toggle: Semua --- AC --- BM */}
-              <div className="relative inline-flex p-0.5 rounded-lg bg-[#F5F5F2] border border-[#E8E8E4] text-[10.5px] font-mono font-bold">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setChartRoleFilter("all");
-                    setSelectedUser("all");
-                  }}
-                  className={`relative px-2 py-0.5 rounded-md cursor-pointer transition-colors z-10 ${chartRoleFilter === "all"
-                      ? "text-[#FFD84D]"
-                      : "text-[#7A7A74] hover:text-[#141412]"
-                    }`}
-                >
-                  {chartRoleFilter === "all" && (
-                    <motion.span
-                      layoutId="chartRoleFilterActivePill"
-                      className="absolute inset-0 bg-[#141412] rounded-md -z-10 shadow-2xs"
-                      transition={{ type: "spring", stiffness: 450, damping: 35 }}
-                    />
-                  )}
-                  Semua ({allAvailableUsers.length})
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setChartRoleFilter("ac");
-                    setSelectedUser("all");
-                  }}
-                  className={`relative px-2 py-0.5 rounded-md cursor-pointer transition-colors z-10 ${chartRoleFilter === "ac"
-                      ? "text-[#FFD84D]"
-                      : "text-[#7A7A74] hover:text-[#141412]"
-                    }`}
-                >
-                  {chartRoleFilter === "ac" && (
-                    <motion.span
-                      layoutId="chartRoleFilterActivePill"
-                      className="absolute inset-0 bg-[#141412] rounded-md -z-10 shadow-2xs"
-                      transition={{ type: "spring", stiffness: 450, damping: 35 }}
-                    />
-                  )}
-                  AC ({allAvailableUsers.filter((u) => u.role === "AC").length})
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setChartRoleFilter("bm");
-                    setSelectedUser("all");
-                  }}
-                  className={`relative px-2 py-0.5 rounded-md cursor-pointer transition-colors z-10 ${chartRoleFilter === "bm"
-                      ? "text-[#FFD84D]"
-                      : "text-[#7A7A74] hover:text-[#141412]"
-                    }`}
-                >
-                  {chartRoleFilter === "bm" && (
-                    <motion.span
-                      layoutId="chartRoleFilterActivePill"
-                      className="absolute inset-0 bg-[#141412] rounded-md -z-10 shadow-2xs"
-                      transition={{ type: "spring", stiffness: 450, damping: 35 }}
-                    />
-                  )}
-                  BM ({allAvailableUsers.filter((u) => u.role === "BM").length})
-                </button>
-              </div>
-
-              {/* Tab pills */}
-              <div className="relative inline-flex p-1 rounded-xl bg-[#F5F5F2] border border-[#E8E8E4] text-xs font-bold gap-1 overflow-x-auto max-w-full">
-                <button
-                  type="button"
-                  onClick={() => setSelectedUser("all")}
-                  className={`relative px-2.5 py-1 rounded-lg transition-colors cursor-pointer z-10 flex items-center gap-1.5 shrink-0 ${activeSelectedUser === "all" ? "text-white" : "text-[#7A7A74] hover:text-[#141412]"
-                    }`}
-                >
-                  {activeSelectedUser === "all" && (
-                    <motion.span
-                      layoutId="chartUserActivePill"
-                      className="absolute inset-0 bg-[#141412] rounded-lg -z-10 shadow-2xs"
-                      transition={{ type: "spring", stiffness: 450, damping: 35 }}
-                    />
-                  )}
-                  <span>Semua {chartRoleFilter === "ac" ? "AC" : chartRoleFilter === "bm" ? "BM" : "Konselor"}</span>
-                  <span className="font-mono text-[10px] opacity-80">
-                    ({chartMode === "all"
-                      ? totalAcBmEvents
-                      : chartMode === "pitch"
-                        ? totalAcBmPitch
-                        : chartMode === "alumni"
-                          ? totalAcBmAlumni
-                          : totalAcBmComp})
-                  </span>
-                </button>
-
-                {availableUsers.map((u) => {
-                  const isSelected = activeSelectedUser === u.name;
-                  const metricVal =
-                    chartMode === "all"
-                      ? u.count
-                      : chartMode === "pitch"
-                        ? u.pitch || 0
-                        : chartMode === "alumni"
-                          ? u.alumni || 0
-                          : u.comparison || 0;
-                  return (
-                    <button
-                      key={u.name}
-                      type="button"
-                      onClick={() => setSelectedUser(u.name)}
-                      className={`relative px-2.5 py-1 rounded-lg transition-colors cursor-pointer z-10 flex items-center gap-1.5 whitespace-nowrap shrink-0 ${isSelected ? "text-white" : "text-[#7A7A74] hover:text-[#141412]"
-                        }`}
-                    >
-                      {isSelected && (
-                        <motion.span
-                          layoutId="chartUserActivePill"
-                          className="absolute inset-0 bg-[#141412] rounded-lg -z-10 shadow-2xs"
-                          transition={{ type: "spring", stiffness: 450, damping: 35 }}
-                        />
-                      )}
-                      <span
-                        className={`w-1.5 h-1.5 rounded-full ${isSelected
-                          ? "bg-[#FFD84D]"
-                          : u.role === "BM"
-                            ? "bg-[#9333EA]"
-                            : "bg-[#1F7A4D]"
-                          }`}
-                      />
-                      <span>{u.name}</span>
-                      <span
-                        className={`text-[9.5px] font-mono font-bold px-1.5 py-0.2 rounded ${u.role === "BM"
-                          ? isSelected
-                            ? "bg-purple-900/60 text-purple-200"
-                            : "bg-purple-100 text-purple-700"
-                          : isSelected
-                            ? "bg-emerald-900/60 text-emerald-200"
-                            : "bg-emerald-100 text-emerald-700"
-                          }`}
-                      >
-                        {u.role}
-                      </span>
-                      <span className="font-mono text-[10px] opacity-80">({metricVal})</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {activeSelectedUser !== "all" && (
-              <div className="flex items-center gap-2 text-[11px] font-mono text-[#A15C00] bg-[#FFF6D1] px-2.5 py-1 rounded-lg border border-[#FFD84D]/70 shadow-2xs">
-                <span>
-                  Fokus: <strong>{activeSelectedUser}</strong> {selectedUserData?.role ? `(${selectedUserData.role})` : ""}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => setSelectedUser("all")}
-                  className="text-[#141412] hover:bg-[#FFD84D] px-1.5 py-0.2 rounded transition-colors font-bold cursor-pointer"
-                  title="Tampilkan Semua Konselor AC & BM"
-                >
-                  ✕ Reset
-                </button>
-              </div>
-            )}
-          </div>
-
-          {/* Compact Plot Area (h-36 / 144px) with Non-Distorted HTML Labels */}
-          <div className="w-full pt-1">
-            <div className="flex items-stretch gap-2.5">
-              {/* Crisp HTML Y-Axis Column (Never stretched by SVG) */}
-              <div className="w-7 flex flex-col justify-between text-right font-mono text-[10px] font-semibold text-[#7A7A74] py-1 select-none shrink-0">
-                {yTicks.map((val, i) => (
-                  <span key={i} className="leading-none">
-                    {val}
-                  </span>
-                ))}
-              </div>
-
-              {/* Plot Canvas */}
-              <div
-                className="flex-1 h-32 sm:h-36 relative border-b border-l border-[#E8E8E4] bg-[#FAFAF8]/50 rounded-tr-lg cursor-crosshair select-none"
-                onMouseEnter={(e) => {
-                  if (!pointsCoords.length) return;
-                  const rect = e.currentTarget.getBoundingClientRect();
-                  const relX = Math.max(0, Math.min(rect.width, e.clientX - rect.left));
-                  const ratio = relX / rect.width;
-                  const nearestIdx = Math.min(
-                    pointsCoords.length - 1,
-                    Math.max(0, Math.round(ratio * (pointsCoords.length - 1)))
-                  );
-                  setHoveredPointIdx(nearestIdx);
-                }}
-                onMouseMove={(e) => {
-                  if (!pointsCoords.length) return;
-                  const rect = e.currentTarget.getBoundingClientRect();
-                  const relX = Math.max(0, Math.min(rect.width, e.clientX - rect.left));
-                  const ratio = relX / rect.width;
-                  const nearestIdx = Math.min(
-                    pointsCoords.length - 1,
-                    Math.max(0, Math.round(ratio * (pointsCoords.length - 1)))
-                  );
-                  setHoveredPointIdx(nearestIdx);
-                }}
-                onTouchStart={(e) => {
-                  if (!pointsCoords.length || !e.touches[0]) return;
-                  const rect = e.currentTarget.getBoundingClientRect();
-                  const relX = Math.max(0, Math.min(rect.width, e.touches[0].clientX - rect.left));
-                  const ratio = relX / rect.width;
-                  const nearestIdx = Math.min(
-                    pointsCoords.length - 1,
-                    Math.max(0, Math.round(ratio * (pointsCoords.length - 1)))
-                  );
-                  setHoveredPointIdx(nearestIdx);
-                }}
-                onTouchMove={(e) => {
-                  if (!pointsCoords.length || !e.touches[0]) return;
-                  const rect = e.currentTarget.getBoundingClientRect();
-                  const relX = Math.max(0, Math.min(rect.width, e.touches[0].clientX - rect.left));
-                  const ratio = relX / rect.width;
-                  const nearestIdx = Math.min(
-                    pointsCoords.length - 1,
-                    Math.max(0, Math.round(ratio * (pointsCoords.length - 1)))
-                  );
-                  setHoveredPointIdx(nearestIdx);
-                }}
-                onMouseLeave={() => setHoveredPointIdx(null)}
-                onTouchEnd={() => setTimeout(() => setHoveredPointIdx(null), 3000)}
-              >
-                {/* Horizontal Dashed Reference Lines */}
-                <div className="absolute inset-0 flex flex-col justify-between pointer-events-none py-2">
-                  <div className="border-b border-dashed border-[#E8E8E4]" />
-                  <div className="border-b border-dashed border-[#E8E8E4]" />
-                  <div />
-                </div>
-
-                {/* Proportional SVG Curve with Animated Line & Area */}
-                <svg
-                  key={`${timeRange}-${chartMode}-${activeSelectedUser}-${timeline.length}`}
-                  className="w-full h-full"
-                  viewBox={`0 0 ${svgW} ${svgH}`}
-                  preserveAspectRatio="none"
-                >
-                  <defs>
-                    <linearGradient id="whiteRevouChartGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                      <stop offset="0%" stopColor="#FFD84D" stopOpacity="0.42" />
-                      <stop offset="100%" stopColor="#FFD84D" stopOpacity="0.02" />
-                    </linearGradient>
-                  </defs>
-
-                  {chartAreaPath && (
-                    <path
-                      d={chartAreaPath}
-                      fill="url(#whiteRevouChartGrad)"
-                      className="chart-draw-area"
-                    />
-                  )}
-
-                  {chartStrokePath && (
-                    <path
-                      d={chartStrokePath}
-                      fill="none"
-                      stroke="#D97706"
-                      strokeWidth="2.2"
-                      vectorEffect="non-scaling-stroke"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="chart-draw-line"
-                    />
-                  )}
-                </svg>
-
-                {/* Interactive Tooltip & Point Guideline (Replaces Old Static Puncak Badge) */}
-                {activePoint && hasChartData && (
-                  <>
-                    {/* Vertical Dashed Guide Line */}
-                    <div
-                      className="absolute top-0 bottom-0 w-px border-l border-dashed border-[#D97706]/70 pointer-events-none z-10"
-                      style={{ left: `${activePoint.pctX}%` }}
-                    />
-
-                    {/* Active Focal Point Dot */}
-                    <div
-                      className="absolute w-3 h-3 rounded-full bg-[#D97706] ring-4 ring-[#FFD84D]/70 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-20 shadow-md"
-                      style={{
-                        left: `${activePoint.pctX}%`,
-                        top: `${activePoint.pctY}%`,
-                      }}
-                    />
-
-                    {/* Rich Interactive Information Pop-up */}
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.96 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ duration: 0.12 }}
-                      className="absolute p-2.5 rounded-xl bg-[#141412] text-white shadow-xl border border-white/10 z-30 pointer-events-none min-w-[210px] max-w-[290px]"
-                      style={{
-                        left: `${Math.max(8, Math.min(92, activePoint.pctX))}%`,
-                        top: `${activePoint.pctY}%`,
-                        transform:
-                          activePoint.pctY < 42
-                            ? activePoint.pctX > 60
-                              ? "translate(-100%, 14px)"
-                              : activePoint.pctX < 40
-                                ? "translate(0%, 14px)"
-                                : "translate(-50%, 14px)"
-                            : activePoint.pctX > 60
-                              ? "translate(-100%, -108%)"
-                              : activePoint.pctX < 40
-                                ? "translate(0%, -108%)"
-                                : "translate(-50%, -108%)",
-                      }}
-                    >
-                      {/* Pop-up Header: Waktu Spesifik & Status */}
-                      <div className="flex items-center justify-between gap-2 pb-1.5 mb-1.5 border-b border-white/10">
-                        <div className="flex items-center gap-1.5 font-mono text-[11px] font-bold text-[#FFD84D]">
-                          <Clock className="w-3 h-3 text-[#FFD84D] shrink-0" />
-                          <span>
-                            {timeRange === "today"
-                              ? `Pukul ${activePoint.label} WIB`
-                              : `${activePoint.label}${activePoint.sublabel ? ` (${activePoint.sublabel})` : ""}`}
-                          </span>
-                        </div>
-                        <span className="font-mono text-[10px] font-bold px-1.5 py-0.2 rounded bg-white/15 text-white">
-                          {activePoint.val}{" "}
-                          {chartMode === "pitch"
-                            ? "Pitch"
-                            : chartMode === "alumni"
-                              ? "Alumni"
-                              : chartMode === "comparison"
-                                ? "Komparasi"
-                                : "Aksi"}
-                        </span>
-                      </div>
-
-                      {/* Keterangan yang dilakukan */}
-                      <div className="space-y-1.5">
-                        {/* Rincian Sesuai Filter Metrik Aktif */}
-                        {chartMode === "all" ? (
-                          <div className="flex items-center gap-2 text-[10px] text-white/80 flex-wrap">
-                            <span className="inline-flex items-center gap-1">
-                              <Sparkles className="w-2.5 h-2.5 text-[#FFD84D]" />
-                              {Number(activeSelectedUser !== "all" ? (activePoint.rawPt?.byUser?.[activeSelectedUser]?.pitch ?? 0) : (activePoint.rawPt?.pitch ?? 0))} Pitch
-                            </span>
-                            <span>•</span>
-                            <span className="inline-flex items-center gap-1">
-                              <GraduationCap className="w-2.5 h-2.5 text-[#60A5FA]" />
-                              {Number(activeSelectedUser !== "all" ? (activePoint.rawPt?.byUser?.[activeSelectedUser]?.alumni ?? 0) : (activePoint.rawPt?.alumni ?? 0))} Alumni
-                            </span>
-                            <span>•</span>
-                            <span className="inline-flex items-center gap-1">
-                              <Scale className="w-2.5 h-2.5 text-[#34D399]" />
-                              {Number(activeSelectedUser !== "all" ? (activePoint.rawPt?.byUser?.[activeSelectedUser]?.comparison ?? 0) : (activePoint.rawPt?.comparison ?? 0))} Komparasi
-                            </span>
-                          </div>
-                        ) : chartMode === "pitch" ? (
-                          <div className="flex items-center gap-1.5 text-[10px] text-[#FFD84D] font-medium">
-                            <Sparkles className="w-3 h-3 text-[#FFD84D] shrink-0" />
-                            <span>{activePoint.val} aktivitas Create Pitch</span>
-                          </div>
-                        ) : chartMode === "alumni" ? (
-                          <div className="flex items-center gap-1.5 text-[10px] text-[#93C5FD] font-medium">
-                            <GraduationCap className="w-3 h-3 text-[#60A5FA] shrink-0" />
-                            <span>{activePoint.val} aktivitas Alumni Checker</span>
-                          </div>
-                        ) : (
-                          <div className="flex items-center gap-1.5 text-[10px] text-[#6EE7B7] font-medium">
-                            <Scale className="w-3 h-3 text-[#34D399] shrink-0" />
-                            <span>{activePoint.val} aktivitas Table Comparison</span>
-                          </div>
-                        )}
-
-                        {/* Rincian Aktivitas Spesifik yang Dilakukan */}
-                        {(() => {
-                          const filteredActs = (activePoint.rawPt?.actions || []).filter((act: any) => {
-                            if (act.role === "Owner") return false;
-                            if (activeSelectedUser !== "all" && act.user !== activeSelectedUser) return false;
-                            if (chartMode !== "all" && act.mode && act.mode !== chartMode) return false;
-                            return true;
-                          });
-
-                          if (filteredActs.length > 0) {
-                            return (
-                              <div className="space-y-1 pt-1.5 border-t border-white/10 max-h-40 overflow-y-auto">
-                                {filteredActs.slice(0, 4).map((act: any, idx: number) => (
-                                  <div
-                                    key={idx}
-                                    className="text-[10px] leading-tight bg-white/5 p-1.5 rounded-lg flex items-start gap-1.5"
-                                  >
-                                    <span
-                                      className={`w-1.5 h-1.5 rounded-full shrink-0 mt-1 ${act.mode === "comparison"
-                                          ? "bg-[#34D399]"
-                                          : act.mode === "alumni"
-                                            ? "bg-[#60A5FA]"
-                                            : "bg-[#FFD84D]"
-                                        }`}
-                                    />
-                                    <div className="truncate">
-                                      <div className="text-white">
-                                        <strong className="font-bold">{act.user}</strong>{" "}
-                                        <span className="text-white/60">({act.role})</span> •{" "}
-                                        <span
-                                          className={`font-medium ${act.mode === "comparison"
-                                              ? "text-[#34D399]"
-                                              : act.mode === "alumni"
-                                                ? "text-[#60A5FA]"
-                                                : "text-[#FFD84D]"
-                                            }`}
-                                        >
-                                          {act.actionLabel}
-                                        </span>
-                                      </div>
-                                      {act.topic && (
-                                        <div className="text-[9.5px] text-[#D4D4CE] truncate mt-0.5 font-mono">
-                                          {act.topic}
-                                        </div>
-                                      )}
-                                    </div>
-                                  </div>
-                                ))}
-                              </div>
-                            );
-                          }
-
-                          if (activePoint.val > 0) {
-                            return (
-                              <div className="text-[10px] text-white/70 pt-1 border-t border-white/10">
-                                {activePoint.val} aktivitas {chartMode === "all" ? "" : chartMode} tercatat pada waktu ini.
-                              </div>
-                            );
-                          }
-
-                          return (
-                            <p className="text-[10.5px] text-white/50 py-0.5 border-t border-white/10">
-                              Tidak ada aktivitas{" "}
-                              {chartMode === "pitch"
-                                ? "Create Pitch"
-                                : chartMode === "alumni"
-                                  ? "Alumni Checker"
-                                  : chartMode === "comparison"
-                                    ? "Table Comparison"
-                                    : "konsultasi"}{" "}
-                              pada waktu ini.
-                            </p>
-                          );
-                        })()}
-                      </div>
-                    </motion.div>
-                  </>
-                )}
-
-                {/* If chart has no data at all */}
-                {!hasChartData && (
-                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                    <span className="px-3 py-1 rounded-lg bg-white/90 border border-[#E8E8E4] text-[#7A7A74] font-mono text-[11px]">
-                      Belum ada aktivitas pada rentang waktu ini
-                    </span>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Crisp HTML X-Axis Labels */}
-            <div className="flex items-center justify-between pl-9 pt-1.5 text-[10px] font-mono text-[#7A7A74] select-none">
-              {xTicks.map((tick, idx) => {
-                const isPeakLabel = hasChartData && peakVal > 0 && tick.timelineIdx === peakIdx;
-                return (
-                  <span
-                    key={idx}
-                    className={
-                      isPeakLabel
-                        ? "font-bold text-[#D97706] bg-[#FFFBEB] px-1.5 py-0.5 rounded border border-[#FDE68A]"
-                        : "font-medium"
-                    }
-                  >
-                    {tick.label}
-                  </span>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Bottom 3 Real-Time Summary Sub-Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-3.5 mt-3.5 border-t border-[#F0F0EC]">
-            <div className="p-2.5 rounded-xl bg-[#FAFAF8] border border-[#E8E8E4]/70">
-              <p className="text-[10px] font-mono uppercase text-[#7A7A74]">
-                {selectedUserData
-                  ? `Respon AI (${selectedUserData.name.split(" ")[0]})`
-                  : "Waktu Respon AI Rata-Rata (AC & BM)"}
-              </p>
-              <p className="text-sm font-black text-[#141412] font-mono mt-0.5">
-                {selectedUserData
-                  ? selectedUserData.avgResponseTimeSec !== null && selectedUserData.avgResponseTimeSec !== undefined
-                    ? `${selectedUserData.avgResponseTimeSec} detik`
-                    : "-"
-                  : kpis.avgResponseTimeSec !== null && kpis.avgResponseTimeSec !== undefined
-                    ? `${kpis.avgResponseTimeSec} detik`
-                    : "Menunggu pengukuran"}
-              </p>
-            </div>
-            <div className="p-2.5 rounded-xl bg-[#FAFAF8] border border-[#E8E8E4]/70">
-              <p className="text-[10px] font-mono uppercase text-[#7A7A74]">
-                {selectedUserData
-                  ? `Topik Utama (${selectedUserData.name.split(" ")[0]})`
-                  : "Topik Utama (Tim AC & BM)"}
-              </p>
-              <p
-                className="text-sm font-black text-[#141412] font-mono mt-0.5 truncate"
-                title={
-                  selectedUserData
-                    ? selectedUserData.topTopic
-                      ? `${selectedUserData.topTopic.name} (${selectedUserData.topTopic.count}x)`
-                      : `Belum ada data topik untuk ${selectedUserData.name}`
-                    : topTopics[0]
-                      ? `${topTopics[0].name} (${topTopics[0].count}x) - Tim AC & BM`
-                      : "Belum ada data topik"
-                }
-              >
-                {selectedUserData
-                  ? selectedUserData.topTopic
-                    ? `${selectedUserData.topTopic.name} (${selectedUserData.topTopic.count})`
-                    : "-"
-                  : topTopics[0]
-                    ? `${topTopics[0].name} (${topTopics[0].count})`
-                    : "-"}
-              </p>
-            </div>
-            <div className="p-2.5 rounded-xl bg-[#FAFAF8] border border-[#E8E8E4]/70">
-              <p className="text-[10px] font-mono uppercase text-[#7A7A74]">
-                {selectedUserData
-                  ? `Interaksi (${selectedUserData.name.split(" ")[0]})`
-                  : "Total Interaksi Tercatat (AC & BM)"}
-              </p>
-              <p className="text-sm font-black text-[#1F7A4D] font-mono mt-0.5">
-                {selectedUserData ? `${selectedUserData.count} aktivitas` : `${totalAcBmEvents} aktivitas`}
-              </p>
-            </div>
-          </div>
-        </motion.section>
+        <ActivityAreaChart
+          timeline={timeline}
+          timeRange={timeRange}
+          rawLeaderboard={rawLeaderboard}
+          kpis={kpis}
+          topTopics={topTopics}
+          chartMode={chartMode}
+          onChartModeChange={setChartMode}
+          selectedUser={selectedUser}
+          onSelectUser={setSelectedUser}
+        />
 
         {/* ========================================================= */}
         {/* 5. LEADERBOARD & HOURLY HEATMAP GRID                      */}
@@ -1539,6 +840,35 @@ export default function AnalyticsDashboardPage() {
                 </div>
               </div>
 
+              {/* Activity Filter Tabs (Semua Aktivitas / Create Pitch / Alumni Checker / Table Comparison) */}
+              <div className="relative inline-flex p-1 rounded-xl bg-[#F5F5F2] border border-[#E8E8E4] text-xs font-bold overflow-x-auto max-w-full">
+                {[
+                  { id: "all", label: `Semua Aktivitas (${leaderboardActivityCounts.all})` },
+                  { id: "pitch", label: `Create Pitch (${leaderboardActivityCounts.pitch})` },
+                  { id: "alumni", label: `Alumni Checker (${leaderboardActivityCounts.alumni})` },
+                  { id: "comparison", label: `Table Comparison (${leaderboardActivityCounts.comparison})` },
+                ].map((seg) => {
+                  const isSelected = leaderboardActivityFilter === seg.id;
+                  return (
+                    <button
+                      key={seg.id}
+                      type="button"
+                      onClick={() => setLeaderboardActivityFilter(seg.id as any)}
+                      className={`relative px-2.5 py-1 rounded-lg transition-colors cursor-pointer z-10 whitespace-nowrap shrink-0 ${isSelected ? "text-white" : "text-[#7A7A74] hover:text-[#141412]"}`}
+                    >
+                      {isSelected && (
+                        <motion.span
+                          layoutId="leaderboardActivityActivePill"
+                          className="absolute inset-0 bg-[#141412] rounded-lg -z-10 shadow-2xs"
+                          transition={{ type: "spring", stiffness: 450, damping: 35 }}
+                        />
+                      )}
+                      {seg.label}
+                    </button>
+                  );
+                })}
+              </div>
+
               {leaderboard.length === 0 ? (
                 <div className="py-10 text-center text-xs space-y-2 text-[#7A7A74]">
                   <Users className="w-7 h-7 mx-auto opacity-30" />
@@ -1552,7 +882,9 @@ export default function AnalyticsDashboardPage() {
                         <th className="pb-2 font-bold">Rank</th>
                         <th className="pb-2 font-bold">Konselor</th>
                         <th className="pb-2 font-bold text-center">Role</th>
-                        <th className="pb-2 font-bold text-right">Generates</th>
+                        <th className="pb-2 font-bold text-right">
+                          {leaderboardActivityFilter === "comparison" ? "Komparasi" : "Generates"}
+                        </th>
                         <th className="pb-2 font-bold text-right">Copies</th>
                         <th className="pb-2 font-bold text-right">Total Aksi</th>
                         <th className="pb-2 font-bold text-right">Utility</th>
@@ -1619,13 +951,13 @@ export default function AnalyticsDashboardPage() {
                               </span>
                             </td>
                             <td className="py-2.5 text-right font-mono font-black text-[#141412] tabular-numbers">
-                              {agent.generates}
+                              {agent.displayPrimaryMetric}
                             </td>
                             <td className="py-2.5 text-right font-mono text-[#4B4B46] tabular-numbers">
-                              {agent.copies}
+                              {agent.displayCopies}
                             </td>
                             <td className="py-2.5 text-right font-mono text-[#7A7A74] tabular-numbers">
-                              {agent.totalActions || agent.generates + agent.copies}
+                              {agent.displayTotalActions}
                             </td>
                             <td className="py-2.5 text-right font-mono font-bold text-[#1F7A4D] tabular-numbers">
                               {agent.copyRate}%
@@ -1640,10 +972,15 @@ export default function AnalyticsDashboardPage() {
             </div>
 
             <div className="p-2.5 rounded-xl text-[11px] bg-[#FAFAF8] border border-[#E8E8E4] text-[#7A7A74] flex items-center justify-between">
-              <span>Total Generates dari seluruh konselor di atas:</span>
+              <span>
+                {leaderboardActivityFilter === "comparison"
+                  ? "Total Komparasi dari seluruh konselor di atas:"
+                  : "Total Generates dari seluruh konselor di atas:"}
+              </span>
               <span className="font-mono font-bold text-[#141412]">
-                {leaderboard.reduce((acc, a) => acc + (a.generates || 0), 0)} Generates ·{" "}
-                {leaderboard.reduce((acc, a) => acc + (a.copies || 0), 0)} Copies
+                {leaderboard.reduce((acc, a) => acc + (a.displayPrimaryMetric || 0), 0)}{" "}
+                {leaderboardActivityFilter === "comparison" ? "Komparasi" : "Generates"} ·{" "}
+                {leaderboard.reduce((acc, a) => acc + (a.displayCopies || 0), 0)} Copies
               </span>
             </div>
           </motion.section>

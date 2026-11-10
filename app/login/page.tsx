@@ -86,7 +86,7 @@ function MinimalLoginForm() {
             fetch("/api/auth/logout", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ userName: prevSession.name }),
+              body: JSON.stringify({ userName: prevSession.name, userEmail: prevSession.email, allSessions: true }),
             }).catch(() => {});
           }
         }
@@ -94,15 +94,7 @@ function MinimalLoginForm() {
 
       localStorage.setItem("revou_admission_user_session_v1", JSON.stringify(session));
 
-      // Register new user online presence immediately
-      fetch("/api/auth/heartbeat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userName: data.user.name,
-          userRole: data.user.role,
-        }),
-      }).catch(() => {});
+      // Online presence didaftarkan otomatis oleh usePresenceHeartbeat di halaman utama (per tab)
 
       // Log login event asynchronously
       fetch("/api/analytics/log", {
