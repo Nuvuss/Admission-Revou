@@ -34,7 +34,13 @@ export default function AccountModal({
   userSession,
   onSessionUpdate,
 }: AccountModalProps) {
+  const [activeTab, setActiveTab] = useState<"email" | "password">("email");
+
   const [email, setEmail] = useState<string>("");
+  const [newEmail, setNewEmail] = useState<string>("");
+  const [emailConfirmPassword, setEmailConfirmPassword] = useState<string>("");
+  const [showEmailConfirmPassword, setShowEmailConfirmPassword] = useState<boolean>(false);
+
   const [oldPassword, setOldPassword] = useState<string>("");
   const [newPassword, setNewPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
@@ -55,6 +61,8 @@ export default function AccountModal({
     if (isOpen) {
       setErrorMessage(null);
       setSuccessMessage(null);
+      setNewEmail("");
+      setEmailConfirmPassword("");
       setOldPassword("");
       setNewPassword("");
       setConfirmPassword("");
@@ -78,6 +86,12 @@ export default function AccountModal({
 
   if (!isOpen) return null;
 
+  const handleTabChange = (tab: "email" | "password") => {
+    setActiveTab(tab);
+    setErrorMessage(null);
+    setSuccessMessage(null);
+  };
+
   // Real-time strength checks (triggered when user focuses or types password)
   const isPasswordTriggered =
     isNewPasswordFocused ||
@@ -96,6 +110,76 @@ export default function AccountModal({
     (hasMixedCase ? 1 : 0) +
     (hasNumberOrSymbol ? 1 : 0) +
     (isMatch ? 1 : 0);
+
+  const handleChangeEmailSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setErrorMessage(null);
+    setSuccessMessage(null);
+
+    const trimmedCurrentEmail = email.trim().toLowerCase();
+    const trimmedNewEmail = newEmail.trim().toLowerCase();
+    const trimmedPwd = emailConfirmPassword.trim();
+
+    if (!trimmedCurrentEmail) {
+      setErrorMessage("Email saat ini wajib diisi.");
+      return;
+    }
+
+    if (!trimmedNewEmail) {
+      setErrorMessage("Silakan masukkan email baru.");
+      return;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedNewEmail)) {
+      setErrorMessage("Format email baru tidak valid.");
+      return;
+    }
+
+    if (trimmedNewEmail === trimmedCurrentEmail) {
+      setErrorMessage("Email baru tidak boleh sama dengan email saat ini.");
+      return;
+    }
+
+    if (!trimmedPwd) {
+      setErrorMessage("Masukkan password Anda saat ini untuk konfirmasi perubahan email.");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const res = await fetch("/api/auth/change-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          currentEmail: trimmedCurrentEmail,
+          newEmail: trimmedNewEmail,
+          password: trimmedPwd,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        setErrorMessage(data.message || "Gagal memperbarui email.");
+        return;
+      }
+
+      const updatedEmail = data.email || trimmedNewEmail;
+      setEmail(updatedEmail);
+      setNewEmail("");
+      setEmailConfirmPassword("");
+      setSuccessMessage(data.message || "Email akun berhasil diperbarui!");
+
+      if (userSession && onSessionUpdate) {
+        onSessionUpdate({ ...userSession, email: updatedEmail });
+      }
+    } catch (err: any) {
+      setErrorMessage("Terjadi gangguan koneksi. Silakan periksa koneksi Anda.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -229,10 +313,10 @@ export default function AccountModal({
               </div>
               <div>
                 <h2 className="text-lg font-black tracking-tight text-[#141412]">
-                  Pengaturan Akun
+                  Profil Akun
                 </h2>
                 <p className="text-xs text-[#7A7A74] font-medium">
-                  Kelola profil & perbarui kata sandi Anda
+                  Kelola profil, ganti email &amp; perbarui kata sandi Anda
                 </p>
               </div>
             </div>
@@ -270,7 +354,147 @@ export default function AccountModal({
               </div>
             </div>
 
-            {/* Change Password Form */}
+            {/* Action Selector: Ganti Email / Ganti Password */}
+            <div className="relative grid grid-cols-2 p-1 rounded-xl bg-[#F5F5F2] border border-[#EAEAE6]">
+              {[
+                { id: "email" as const, label: "Ganti Email", icon: Mail },
+                { id: "password" as const, label: "Ganti Password", icon: Key },
+              ].map((tab) => {
+                const isSelected = activeTab === tab.id;
+                const Icon = tab.icon;
+                return (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => handleTabChange(tab.id)}
+                    className={`relative flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-bold transition-colors cursor-pointer z-10 ${
+                      isSelected ? "text-white" : "text-[#7A7A74] hover:text-[#141412]"
+                    }`}
+                  >
+                    {isSelected && (
+                      <motion.span
+                        layoutId="accountModalTabPill"
+                        className="absolute inset-0 bg-[#141412] rounded-lg -z-10 shadow-xs"
+                        transition={{ type: "spring", stiffness: 450, damping: 35 }}
+                      />
+                    )}
+                    <Icon className={`w-3.5 h-3.5 ${isSelected ? "text-[#FFD84D]" : ""}`} />
+                    <span>{tab.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {activeTab === "email" ? (
+              <form onSubmit={handleChangeEmailSubmit} className="space-y-4">
+                <div className="flex items-center gap-2 text-sm font-black text-[#141412]">
+                  <Mail className="w-4 h-4 text-[#141412]" />
+                  <span>Ganti Email Akun</span>
+                </div>
+
+                {/* Current Email */}
+                <div>
+                  <label className="block text-[12px] font-semibold text-[#141412] mb-1">
+                    Email Saat Ini
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="email.lama@revou.co"
+                      className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-[#F5F5F2] text-xs text-[#141412] placeholder-[#9E9E98] border border-transparent focus:border-[#181816] focus:bg-white focus:outline-none transition-all font-medium"
+                      required
+                    />
+                    <Mail className="w-3.5 h-3.5 text-[#7A7A74] absolute left-3 top-1/2 -translate-y-1/2" />
+                  </div>
+                </div>
+
+                {/* New Email */}
+                <div>
+                  <label className="block text-[12px] font-semibold text-[#141412] mb-1">
+                    Email Baru
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="email"
+                      value={newEmail}
+                      onChange={(e) => setNewEmail(e.target.value)}
+                      placeholder="email.baru@revou.co"
+                      className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-[#F5F5F2] text-xs text-[#141412] placeholder-[#9E9E98] border border-transparent focus:border-[#181816] focus:bg-white focus:outline-none transition-all font-medium"
+                      required
+                    />
+                    <Mail className="w-3.5 h-3.5 text-[#7A7A74] absolute left-3 top-1/2 -translate-y-1/2" />
+                  </div>
+                </div>
+
+                {/* Password Confirmation */}
+                <div>
+                  <label className="block text-[12px] font-semibold text-[#141412] mb-1">
+                    Password Saat Ini (Verifikasi)
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={showEmailConfirmPassword ? "text" : "password"}
+                      value={emailConfirmPassword}
+                      onChange={(e) => setEmailConfirmPassword(e.target.value)}
+                      placeholder="Masukkan password untuk verifikasi"
+                      className="w-full pl-9 pr-10 py-2.5 rounded-xl bg-[#F5F5F2] text-xs text-[#141412] placeholder-[#9E9E98] border border-transparent focus:border-[#181816] focus:bg-white focus:outline-none transition-all font-mono"
+                      required
+                    />
+                    <Lock className="w-3.5 h-3.5 text-[#7A7A74] absolute left-3 top-1/2 -translate-y-1/2" />
+                    <button
+                      type="button"
+                      onClick={() => setShowEmailConfirmPassword(!showEmailConfirmPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-[#7A7A74] hover:text-[#141412] p-0.5 cursor-pointer"
+                    >
+                      {showEmailConfirmPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Error Message */}
+                {errorMessage && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="p-3 rounded-xl bg-[#FFF1F1] border border-[#FFD0D0] text-[#DA1E28] text-xs flex items-center gap-2"
+                  >
+                    <AlertCircle className="w-4 h-4 shrink-0" />
+                    <span>{errorMessage}</span>
+                  </motion.div>
+                )}
+
+                {/* Success Message */}
+                {successMessage && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="p-3 rounded-xl bg-[#ECFDF5] border border-[#A7F3D0] text-[#065F46] text-xs flex items-center gap-2"
+                  >
+                    <CheckCircle2 className="w-4 h-4 shrink-0 text-[#10B981]" />
+                    <span>{successMessage}</span>
+                  </motion.div>
+                )}
+
+                {/* Submit Button */}
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full py-3 px-4 rounded-xl bg-[#141412] hover:bg-[#2D2D2A] active:bg-[#FFD84D] active:text-[#141412] text-white text-xs font-bold transition-all shadow-sm active:scale-[0.99] disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      <span>Menyimpan Email...</span>
+                    </>
+                  ) : (
+                    <span>Perbarui Email</span>
+                  )}
+                </button>
+              </form>
+            ) : (
+            /* Change Password Form */
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="flex items-center gap-2 text-sm font-black text-[#141412]">
                 <Key className="w-4 h-4 text-[#141412]" />
@@ -665,6 +889,7 @@ export default function AccountModal({
                 )}
               </button>
             </form>
+            )}
           </div>
         </motion.div>
       </div>

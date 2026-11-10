@@ -36,7 +36,8 @@ import {
   Award,
   Crown,
   BarChart3,
-  LogOut
+  LogOut,
+  User
 } from "lucide-react";
 import { usePresenceHeartbeat } from "./hooks/usePresenceHeartbeat";
 import Link from "next/link";
@@ -1221,15 +1222,15 @@ INSTRUKSI PENTING:
                 </div>
               </div>
 
-              {/* Dedicated "Ganti Password" Button (Opsi 1) */}
+              {/* Dedicated "Profil Akun" Button */}
               <button
                 type="button"
                 onClick={() => setIsAccountModalOpen(true)}
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#D9D9D4] bg-white hover:bg-[#F5F5F2] hover:border-[#141412] text-xs font-bold text-[#141412] transition-all cursor-pointer shadow-2xs hover:shadow-xs active:scale-95 select-none"
-                title="Kelola Akun & Ganti Password"
+                title="Profil Akun (Ganti Email & Password)"
               >
-                <Key className="w-3.5 h-3.5 text-[#D97706]" />
-                <span>Ganti Password</span>
+                <User className="w-3.5 h-3.5 text-[#D97706]" />
+                <span>Profil Akun</span>
               </button>
 
               {/* Logout Button */}
@@ -2083,7 +2084,7 @@ INSTRUKSI PENTING:
       />
 
       {/* ========================================================= */}
-      {/* 5.5. MODAL PENGATURAN AKUN & GANTI PASSWORD               */}
+      {/* 5.5. MODAL PROFIL AKUN (GANTI EMAIL & PASSWORD)           */}
       {/* ========================================================= */}
       <AccountModal
         isOpen={isAccountModalOpen}
