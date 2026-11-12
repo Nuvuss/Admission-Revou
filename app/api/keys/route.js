@@ -5,14 +5,18 @@ import {
   testSingleApiKey,
   maskApiKey,
 } from "../../../lib/apiKeyManager";
+import { requireOwner } from "../../../lib/authSession";
 
 export const dynamic = "force-dynamic";
 
 /**
  * GET /api/keys
- * Mengembalikan status kuota dan rotasi dari pool API Keys yang aktif
+ * Mengembalikan status kuota dan rotasi dari pool API Keys yang aktif (khusus Owner)
  */
 export async function GET(request) {
+  const auth = await requireOwner(request);
+  if (auth.errorResponse) return auth.errorResponse;
+
   try {
     const status = await getApiKeysStatus();
     return NextResponse.json({
@@ -35,6 +39,9 @@ export async function GET(request) {
  * 2. action: "test" -> Test langsung setiap key (ping Gemini) untuk validasi & cek ketersediaan kuota
  */
 export async function POST(request) {
+  const auth = await requireOwner(request);
+  if (auth.errorResponse) return auth.errorResponse;
+
   try {
     const body = await request.json().catch(() => ({}));
     const { action = "status", customKeys = null } = body;

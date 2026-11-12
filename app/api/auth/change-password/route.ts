@@ -1,10 +1,15 @@
 import { NextResponse } from "next/server";
 import { getSupabase } from "../../../../lib/supabaseClient";
+import { hashPassword, verifyPassword } from "../../../../lib/passwordHash";
+import { requireSession } from "../../../../lib/authSession";
 
 export async function POST(req: Request) {
+  const auth = await requireSession(req);
+  if (auth.errorResponse) return auth.errorResponse;
+
   try {
     const body = await req.json();
-    const { email, oldPassword, newPassword } = body;
+    const { email, oldPassword, newPassword } = body || {};
 
     if (!email || !oldPassword || !newPassword) {
       return NextResponse.json(
@@ -16,6 +21,13 @@ export async function POST(req: Request) {
     const normalizedEmail = String(email).trim().toLowerCase();
     const normalizedOldPassword = String(oldPassword).trim();
     const normalizedNewPassword = String(newPassword).trim();
+
+    if (auth.session.email && auth.session.email !== normalizedEmail) {
+      return NextResponse.json(
+        { success: false, message: "Anda hanya dapat mengubah password akun yang sedang login." },
+        { status: 403 }
+      );
+    }
 
     if (normalizedNewPassword.length < 6) {
       return NextResponse.json(
@@ -54,17 +66,19 @@ export async function POST(req: Request) {
     }
 
     // Verify old password
-    if (user.password !== normalizedOldPassword) {
+    const { valid } = verifyPassword(normalizedOldPassword, user.password);
+    if (!valid) {
       return NextResponse.json(
         { success: false, message: "Password saat ini / lama tidak cocok." },
         { status: 401 }
       );
     }
 
-    // Update password in database
+    // Store hashed password in database
+    const hashedNewPassword = hashPassword(normalizedNewPassword);
     const { error: updateError } = await supabase
       .from("admission_users")
-      .update({ password: normalizedNewPassword })
+      .update({ password: hashedNewPassword })
       .eq("id", user.id);
 
     if (updateError) {
@@ -87,4 +101,3 @@ export async function POST(req: Request) {
     );
   }
 }
-

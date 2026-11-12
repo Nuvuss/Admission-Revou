@@ -22,12 +22,14 @@ import {
   Zap,
   GraduationCap,
   Scale,
+  ChevronRight,
 } from "lucide-react";
 import { UserSession } from "../types/auth";
 import OwnerHistoryDrawer from "../components/OwnerHistoryDrawer";
 import ActivityAreaChart from "../components/ActivityAreaChart";
 import { usePresenceHeartbeat } from "../hooks/usePresenceHeartbeat";
 import { getSupabase } from "../../lib/supabaseClient";
+import { getModeColorToken, getRoleColorToken } from "../utils/analyticsColors";
 
 // ========================================================
 // 1. HELPER COMPONENTS
@@ -114,21 +116,18 @@ export default function AnalyticsDashboardPage() {
   const [session, setSession] = useState<UserSession | null>(null);
   const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null);
 
-  // Filters & State
+  // Filters & State (Single Source of Truth)
   const [timeRange, setTimeRange] = useState<string>("30d");
-  const [chartMode, setChartMode] = useState<"all" | "pitch" | "alumni" | "comparison">("all");
   const [roleFilter, setRoleFilter] = useState<"all" | "ac" | "bm">("all");
-  const [leaderboardActivityFilter, setLeaderboardActivityFilter] = useState<
-    "all" | "pitch" | "alumni" | "comparison"
-  >("all");
-  const [chartRoleFilter, setChartRoleFilter] = useState<"all" | "ac" | "bm">("all");
+  const [chartMode, setChartMode] = useState<"all" | "pitch" | "alumni" | "comparison">("all");
   const [selectedUser, setSelectedUser] = useState<string>("all");
   const [historyTopic, setHistoryTopic] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isSyncing, setIsSyncing] = useState<boolean>(false);
   const [statsData, setStatsData] = useState<any>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
+  const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const timeRangeRef = useRef(timeRange);
   useEffect(() => {
@@ -140,33 +139,39 @@ export default function AnalyticsDashboardPage() {
     sessionRef.current = session;
   }, [session]);
 
-  const fetchStats = useCallback(async (range: string, silent = false) => {
-    if (!silent) setIsLoading(true);
-    setIsSyncing(true);
-    if (!silent) setErrorMessage(null);
-    try {
-      const res = await fetch(`/api/analytics/stats?range=${range}&_t=${Date.now()}`, {
-        cache: "no-store",
-        headers: {
-          "Cache-Control": "no-cache, no-store, must-revalidate",
-          Pragma: "no-cache",
-        },
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.error || "Gagal mengambil data analitik.");
+  const fetchStats = useCallback(
+    async (range: string, silent = false): Promise<{ ok: boolean; error?: string }> => {
+      if (!silent) setIsLoading(true);
+      setIsSyncing(true);
+      if (!silent) setErrorMessage(null);
+      try {
+        const res = await fetch(`/api/analytics/stats?range=${range}&_t=${Date.now()}`, {
+          cache: "no-store",
+          headers: {
+            "Cache-Control": "no-cache, no-store, must-revalidate",
+            Pragma: "no-cache",
+          },
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.error || "Gagal mengambil data analitik.");
+        }
+        setStatsData(data);
+        return { ok: true };
+      } catch (err: any) {
+        console.error("Fetch stats error:", err);
+        const msg = err?.message || "Terjadi kesalahan saat memuat data analitik.";
+        if (!silent) {
+          setErrorMessage(msg);
+        }
+        return { ok: false, error: msg };
+      } finally {
+        if (!silent) setIsLoading(false);
+        setIsSyncing(false);
       }
-      setStatsData(data);
-    } catch (err: any) {
-      console.error("Fetch stats error:", err);
-      if (!silent) {
-        setErrorMessage(err?.message || "Terjadi kesalahan saat memuat data analitik.");
-      }
-    } finally {
-      if (!silent) setIsLoading(false);
-      setIsSyncing(false);
-    }
-  }, []);
+    },
+    []
+  );
 
   // Heartbeat presence per tab saat Owner membuka dashboard analitik
   usePresenceHeartbeat({
@@ -177,29 +182,44 @@ export default function AnalyticsDashboardPage() {
     silent: true,
   });
 
-  // Check Owner Authorization on Mount
+  // Check Owner Authorization on Mount (via HttpOnly server session)
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem("revou_admission_user_session_v1");
-      if (saved) {
-        const parsed: UserSession = JSON.parse(saved);
-        setSession(parsed);
-        if (parsed.role === "Owner" && parsed.token) {
-          setIsAuthorized(true);
-          fetchStats("30d", false);
-          return;
+    let active = true;
+    const verifyOwnerSession = async () => {
+      try {
+        const res = await fetch("/api/auth/me", { cache: "no-store" });
+        if (res.ok) {
+          const data = await res.json();
+          if (data?.authenticated && data?.user?.role === "Owner") {
+            const verified: UserSession = {
+              name: data.user.name,
+              role: data.user.role,
+              email: data.user.email,
+              savedAt: Date.now(),
+            };
+            try {
+              localStorage.setItem("revou_admission_user_session_v1", JSON.stringify(verified));
+            } catch (e) {}
+            if (!active) return;
+            setSession(verified);
+            setIsAuthorized(true);
+            fetchStats("30d", false);
+            return;
+          }
         }
-      }
+      } catch (e) {}
+
+      if (!active) return;
       setIsAuthorized(false);
       setTimeout(() => {
         router.push("/");
       }, 2000);
-    } catch (e) {
-      setIsAuthorized(false);
-      setTimeout(() => {
-        router.push("/");
-      }, 2000);
-    }
+    };
+
+    verifyOwnerSession();
+    return () => {
+      active = false;
+    };
   }, [router, fetchStats]);
 
   // Real-Time Synchronization: Supabase Realtime + Auto-Polling + Window Focus
@@ -255,10 +275,14 @@ export default function AnalyticsDashboardPage() {
     fetchStats(range);
   };
 
-  const showToast = (msg: string) => {
-    setToastMessage(msg);
-    setTimeout(() => {
-      setToastMessage(null);
+  const showToast = (message: string, type: "success" | "error" = "success") => {
+    if (toastTimerRef.current) {
+      clearTimeout(toastTimerRef.current);
+    }
+    setToast({ message, type });
+    toastTimerRef.current = setTimeout(() => {
+      setToast(null);
+      toastTimerRef.current = null;
     }, 3500);
   };
 
@@ -351,7 +375,7 @@ export default function AnalyticsDashboardPage() {
 
   const leaderboard = roleFilteredLeaderboard
     .map((agent) => {
-      if (leaderboardActivityFilter === "all") {
+      if (chartMode === "all") {
         return {
           ...agent,
           displayPrimaryMetric: agent.generates || 0,
@@ -359,15 +383,15 @@ export default function AnalyticsDashboardPage() {
           displayTotalActions: agent.totalActions || (agent.generates || 0) + (agent.copies || 0),
         };
       }
-      const modeStats = agent.byMode?.[leaderboardActivityFilter];
+      const modeStats = agent.byMode?.[chartMode];
       const fallbackPrimary =
-        leaderboardActivityFilter === "pitch"
+        chartMode === "pitch"
           ? agent.pitch || 0
-          : leaderboardActivityFilter === "alumni"
+          : chartMode === "alumni"
             ? agent.alumni || 0
             : agent.comparison || 0;
       const primaryMetric =
-        leaderboardActivityFilter === "comparison"
+        chartMode === "comparison"
           ? modeStats?.comparisons ?? fallbackPrimary
           : modeStats?.generates ?? fallbackPrimary;
       const copiesMetric = modeStats?.copies ?? 0;
@@ -380,9 +404,7 @@ export default function AnalyticsDashboardPage() {
         displayTotalActions: totalMetric,
       };
     })
-    .filter((agent) =>
-      leaderboardActivityFilter === "all" ? true : agent.displayTotalActions > 0
-    )
+    .filter((agent) => (chartMode === "all" ? true : agent.displayTotalActions > 0))
     .sort((a, b) => {
       if (b.displayPrimaryMetric !== a.displayPrimaryMetric) {
         return b.displayPrimaryMetric - a.displayPrimaryMetric;
@@ -392,10 +414,6 @@ export default function AnalyticsDashboardPage() {
       }
       return b.displayTotalActions - a.displayTotalActions;
     });
-
-  const hourlyHeatmap: number[] = statsData?.hourlyHeatmap || Array(24).fill(0);
-  const totalHourlyInteractions = hourlyHeatmap.reduce((acc, v) => acc + v, 0);
-  const maxHourlyValue = Math.max(...hourlyHeatmap, 1);
 
   const modeDistribution = statsData?.modeDistribution || { pitch: 0, alumni: 0, comparison: 0 };
   const rawModeSum =
@@ -426,11 +444,25 @@ export default function AnalyticsDashboardPage() {
     }));
 
   const availableUsers =
-    chartRoleFilter === "ac"
+    roleFilter === "ac"
       ? allAvailableUsers.filter((u) => u.role === "AC")
-      : chartRoleFilter === "bm"
+      : roleFilter === "bm"
         ? allAvailableUsers.filter((u) => u.role === "BM")
         : allAvailableUsers;
+
+  const handleRoleFilterChange = (nextRole: "all" | "ac" | "bm") => {
+    setRoleFilter(nextRole);
+    if (selectedUser !== "all") {
+      const userObj = allAvailableUsers.find((u) => u.name === selectedUser);
+      if (
+        !userObj ||
+        (nextRole === "ac" && userObj.role !== "AC") ||
+        (nextRole === "bm" && userObj.role !== "BM")
+      ) {
+        setSelectedUser("all");
+      }
+    }
+  };
 
   const totalAcBmEvents = availableUsers.reduce((acc, u) => acc + (u.count || 0), 0);
   const totalAcBmPitch = availableUsers.reduce((acc, u) => acc + (u.pitch || 0), 0);
@@ -470,6 +502,29 @@ export default function AnalyticsDashboardPage() {
   const totalTopicMentions = activeUserTopics.reduce((acc: number, t: any) => acc + (t.count || 0), 0);
 
   const timeline: any[] = statsData?.timeline || [];
+
+  // Hourly Heatmap: respects selected role, user, and mode on hourly ranges (today / yesterday);
+  // falls back to global AC & BM hourlyHeatmap on multi-day ranges where API buckets timeline by date.
+  const isHourlyFilterable = timeRange === "today" || timeRange === "yesterday";
+  const hourlyHeatmap: number[] = (() => {
+    if (isHourlyFilterable && timeline.length === 24) {
+      const key = chartMode === "all" ? "traffic" : chartMode;
+      return Array.from({ length: 24 }, (_, h) => {
+        const pt = timeline[h];
+        if (!pt) return 0;
+        if (activeSelectedUser !== "all") {
+          return Number(pt.byUser?.[activeSelectedUser]?.[key] || 0);
+        }
+        if (roleFilter === "ac" || roleFilter === "bm") {
+          return availableUsers.reduce((sum, u) => sum + Number(pt.byUser?.[u.name]?.[key] || 0), 0);
+        }
+        return Number(pt[key] || 0);
+      });
+    }
+    return statsData?.hourlyHeatmap || Array(24).fill(0);
+  })();
+  const totalHourlyInteractions = hourlyHeatmap.reduce((acc, v) => acc + v, 0);
+  const maxHourlyValue = Math.max(...hourlyHeatmap, 1);
 
   // Real Sparkline Series for the 3 KPI Cards
   // Pada filter "Hari Ini" & "Kemarin", gunakan seluruh jam (24 jam) agar generate di jam pagi/siang tidak terpotong oleh .slice(-10)
@@ -548,9 +603,13 @@ export default function AnalyticsDashboardPage() {
             </div>
 
             <button
-              onClick={() => {
-                fetchStats(timeRange);
-                showToast("Data analitik berhasil disinkronkan secara real-time");
+              onClick={async () => {
+                const result = await fetchStats(timeRange);
+                if (result.ok) {
+                  showToast("Data analitik berhasil disinkronkan secara real-time", "success");
+                } else {
+                  showToast(result.error || "Gagal menyinkronkan data analitik.", "error");
+                }
               }}
               disabled={isLoading}
               className="p-2 rounded-xl border border-[#E8E8E4] bg-neutral-50 hover:bg-neutral-100 hover:border-[#141412] text-[#141412] transition-all active:scale-95 shadow-2xs cursor-pointer"
@@ -600,13 +659,13 @@ export default function AnalyticsDashboardPage() {
         )}
 
         {/* ========================================================= */}
-        {/* 2. GREETING & CONTEXTUAL SUMMARY LINE                     */}
+        {/* 2. GREETING & COMPACT GLOBAL FILTER BAR                   */}
         {/* ========================================================= */}
         <motion.section
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.45, delay: 0.05, ease: [0.16, 1, 0.3, 1] }}
-          className="pt-1 flex flex-col md:flex-row md:items-end justify-between gap-3"
+          className="pt-1 space-y-3"
         >
           <div className="space-y-0.5">
             <h1 className="text-xl sm:text-2xl font-display font-black tracking-tight text-[#141412]">
@@ -619,32 +678,102 @@ export default function AnalyticsDashboardPage() {
             </p>
           </div>
 
-          {/* Time Range Filter Pills in Top Section for Easy Global Control */}
-          <div className="flex items-center gap-2 flex-wrap">
-            <div className="relative inline-flex p-1 rounded-xl bg-[#F5F5F2] border border-[#E8E8E4]">
+          {/* Unified Compact Global Filter Bar (Time Range + Role + Mode) */}
+          <div className="p-2.5 sm:p-3 rounded-2xl bg-white border border-[#E8E8E4] shadow-2xs flex flex-wrap items-center justify-between gap-2.5">
+            <div className="flex flex-wrap items-center gap-2">
+              {/* Time Range Filter */}
+              <div className="relative inline-flex p-1 rounded-xl bg-[#F5F5F2] border border-[#E8E8E4]">
+                {[
+                  { id: "today", label: "Hari Ini" },
+                  { id: "yesterday", label: "Kemarin" },
+                  { id: "7d", label: "7 Hari" },
+                  { id: "30d", label: "30 Hari" },
+                  { id: "all", label: "Semua" },
+                ].map((tab) => {
+                  const isActive = timeRange === tab.id;
+                  return (
+                    <button
+                      key={tab.id}
+                      type="button"
+                      onClick={() => handleRangeChange(tab.id)}
+                      className={`relative px-2.5 py-1 text-xs font-bold transition-colors cursor-pointer z-10 rounded-lg ${
+                        isActive ? "text-white" : "text-[#7A7A74] hover:text-[#141412]"
+                      }`}
+                    >
+                      {isActive && (
+                        <motion.span
+                          layoutId="globalTimeRangePill"
+                          className="absolute inset-0 bg-[#141412] rounded-lg -z-10 shadow-xs"
+                          transition={{ type: "spring", stiffness: 450, damping: 35 }}
+                        />
+                      )}
+                      {tab.label}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Role Filter: Semua / AC / BM */}
+              <div className="relative inline-flex p-1 rounded-xl bg-[#F5F5F2] border border-[#E8E8E4] text-xs font-mono font-bold">
+                {[
+                  { id: "all", label: `Semua Role (${rawLeaderboard.length})` },
+                  { id: "ac", label: `AC (${rawLeaderboard.filter((a) => a.userRole === "AC").length})` },
+                  { id: "bm", label: `BM (${rawLeaderboard.filter((a) => a.userRole === "BM").length})` },
+                ].map((r) => {
+                  const isActive = roleFilter === r.id;
+                  return (
+                    <button
+                      key={r.id}
+                      type="button"
+                      onClick={() => handleRoleFilterChange(r.id as "all" | "ac" | "bm")}
+                      className={`relative px-2.5 py-1 rounded-lg cursor-pointer transition-colors z-10 ${
+                        isActive ? "text-[#FFD84D]" : "text-[#7A7A74] hover:text-[#141412]"
+                      }`}
+                    >
+                      {isActive && (
+                        <motion.span
+                          layoutId="globalRoleFilterPill"
+                          className="absolute inset-0 bg-[#141412] rounded-lg -z-10 shadow-2xs"
+                          transition={{ type: "spring", stiffness: 450, damping: 35 }}
+                        />
+                      )}
+                      {r.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Mode Filter: Semua Aktivitas / Create Pitch / Alumni Checker / Table Comparison */}
+            <div className="relative inline-flex p-1 rounded-xl bg-[#F5F5F2] border border-[#E8E8E4] text-xs font-bold overflow-x-auto max-w-full">
               {[
-                { id: "today", label: "Hari Ini" },
-                { id: "yesterday", label: "Kemarin" },
-                { id: "7d", label: "7 Hari" },
-                { id: "30d", label: "30 Hari" },
-                { id: "all", label: "Semua" },
-              ].map((tab) => {
-                const isActive = timeRange === tab.id;
+                { id: "all", label: `Semua Aktivitas (${selectedUserData ? selectedUserData.count : leaderboardActivityCounts.all})` },
+                { id: "pitch", label: `Create Pitch (${selectedUserData ? (selectedUserData.pitch ?? 0) : leaderboardActivityCounts.pitch})` },
+                { id: "alumni", label: `Alumni Checker (${selectedUserData ? (selectedUserData.alumni ?? 0) : leaderboardActivityCounts.alumni})` },
+                { id: "comparison", label: `Table Comparison (${selectedUserData ? (selectedUserData.comparison ?? 0) : leaderboardActivityCounts.comparison})` },
+              ].map((seg) => {
+                const isSelected = chartMode === seg.id;
+                const segToken = getModeColorToken(seg.id);
                 return (
                   <button
-                    key={tab.id}
-                    onClick={() => handleRangeChange(tab.id)}
-                    className={`relative px-3 py-1 text-xs font-bold transition-colors cursor-pointer z-10 rounded-lg ${isActive ? "text-white" : "text-[#7A7A74] hover:text-[#141412]"
-                      }`}
+                    key={seg.id}
+                    type="button"
+                    onClick={() => setChartMode(seg.id as any)}
+                    className={`relative px-2.5 py-1 rounded-lg transition-colors cursor-pointer z-10 whitespace-nowrap shrink-0 inline-flex items-center gap-1.5 ${
+                      isSelected ? "text-white" : "text-[#7A7A74] hover:text-[#141412]"
+                    }`}
                   >
-                    {isActive && (
+                    {isSelected && (
                       <motion.span
-                        layoutId="whiteActivePill"
-                        className="absolute inset-0 bg-[#141412] rounded-lg -z-10 shadow-xs"
+                        layoutId="globalModeActivePill"
+                        className="absolute inset-0 bg-[#141412] rounded-lg -z-10 shadow-2xs"
                         transition={{ type: "spring", stiffness: 450, damping: 35 }}
                       />
                     )}
-                    {tab.label}
+                    {seg.id !== "all" && (
+                      <span className={`w-1.5 h-1.5 rounded-full ${isSelected ? segToken.darkDotClass : segToken.dotClass}`} />
+                    )}
+                    {seg.label}
                   </button>
                 );
               })}
@@ -656,96 +785,121 @@ export default function AnalyticsDashboardPage() {
         {/* 3. ROW OF 3 REAL-TIME KPI CARDS                           */}
         {/* ========================================================= */}
         <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
-          {/* Card 1: Total AI Generates (Yellow Tint) */}
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.45, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
-            whileHover={{ y: -3 }}
-            className="p-4 rounded-2xl border border-[#FDE68A] bg-gradient-to-br from-[#FFFBEB] via-[#FFFDF5] to-white shadow-2xs card-interactive flex flex-col justify-between"
-          >
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-[#A15C00]">
-                Total AI Generates
-              </span>
-              <MiniSparkline color="#D97706" data={sparkGenerates} />
-            </div>
-            <div className="flex items-baseline justify-between gap-2">
-              <div className="text-2xl sm:text-[28px] font-display font-black text-[#141412] tracking-tight">
-                <AnimatedCounter value={kpis.totalGenerates} />
+          {isLoading && !statsData ? (
+            [
+              "border-[#FDE68A] from-[#FFFBEB] via-[#FFFDF5]",
+              "border-[#BBF7D0] from-[#F0FDF4] via-[#F7FDF9]",
+              "border-[#E9D5FF] from-[#FAF5FF] via-[#FDFBFF]",
+            ].map((tint, idx) => (
+              <div
+                key={idx}
+                aria-hidden="true"
+                className={`p-4 rounded-2xl border ${tint} bg-gradient-to-br to-white shadow-2xs flex flex-col justify-between animate-pulse`}
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <div className="h-3 w-28 rounded bg-[#E8E8E4]/80" />
+                  <div className="h-5 w-16 rounded bg-[#E8E8E4]/70" />
+                </div>
+                <div className="flex items-baseline justify-between gap-2 my-1">
+                  <div className="h-8 w-20 rounded-lg bg-[#E8E8E4]/90" />
+                  <div className="h-5 w-24 rounded-full bg-[#E8E8E4]/70" />
+                </div>
+                <div className="mt-2 pt-2 border-t border-[#F0F0EC]">
+                  <div className="h-3 w-44 rounded bg-[#E8E8E4]/70" />
+                </div>
               </div>
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#FFD84D] text-[#141412] shadow-2xs">
-                {kpis.totalClarifications > 0
-                  ? `${kpis.initialGenerates} Awal + ${kpis.totalClarifications} Revisi`
-                  : "Script AI"}
-              </span>
-            </div>
-            <p className="text-[11px] text-[#7A7A74] mt-2 pt-2 border-t border-[#F0F0EC]">
-              Total draf & klarifikasi AI yang diproses
-            </p>
-          </motion.div>
+            ))
+          ) : (
+            <>
+              {/* Card 1: Total AI Generates (Yellow Tint) */}
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.45, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
+                className="p-4 rounded-2xl border border-[#FDE68A] bg-gradient-to-br from-[#FFFBEB] via-[#FFFDF5] to-white shadow-2xs flex flex-col justify-between"
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-[#A15C00]">
+                    Total AI Generates
+                  </span>
+                  <MiniSparkline color="#D97706" data={sparkGenerates} />
+                </div>
+                <div className="flex items-baseline justify-between gap-2">
+                  <div className="text-2xl sm:text-[28px] font-display font-black text-[#141412] tracking-tight">
+                    <AnimatedCounter value={kpis.totalGenerates} />
+                  </div>
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#FFD84D] text-[#141412] shadow-2xs">
+                    {kpis.totalClarifications > 0
+                      ? `${kpis.initialGenerates} Awal + ${kpis.totalClarifications} Revisi`
+                      : "Script AI"}
+                  </span>
+                </div>
+                <p className="text-[11px] text-[#7A7A74] mt-2 pt-2 border-t border-[#F0F0EC]">
+                  Total draf & klarifikasi AI yang diproses
+                </p>
+              </motion.div>
 
-          {/* Card 2: Konselor Online (Emerald Tint) */}
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.45, delay: 0.13, ease: [0.16, 1, 0.3, 1] }}
-            whileHover={{ y: -3 }}
-            className="p-4 rounded-2xl border border-[#BBF7D0] bg-gradient-to-br from-[#F0FDF4] via-[#F7FDF9] to-white shadow-2xs card-interactive flex flex-col justify-between"
-          >
-            <div className="flex items-center justify-between mb-2">
-              <span className="inline-flex items-center gap-1.5 text-[11px] font-mono font-bold uppercase tracking-wider text-[#1F7A4D]">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#22C55E] opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-[#16A34A]"></span>
-                </span>
-                Konselor Online
-              </span>
-              <MiniSparkline color="#1F7A4D" data={sparkAgents} />
-            </div>
-            <div className="flex items-baseline justify-between gap-2">
-              <div className="text-2xl sm:text-[28px] font-display font-black text-[#141412] tracking-tight">
-                <AnimatedCounter value={kpis.acBmAgentsCount} />
-              </div>
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#DCFCE7] text-[#1F7A4D] border border-[#86EFAC]/60">
-                {kpis.acBmAgentsCount > 0
-                  ? `${kpis.acBmAgentsCount} AC/BM Online`
-                  : "Konselor Aktif"}
-              </span>
-            </div>
-            <p className="text-[11px] text-[#7A7A74] mt-2 pt-2 border-t border-[#F0F0EC]">
-              {kpis.acBmAgentsCount > 0
-                ? `${statsData?.onlinePresence?.acBmActiveCount ?? kpis.acBmAgentsCount} aktif · ${statsData?.onlinePresence?.acBmIdleCount ?? 0} idle (AC & BM) saat ini`
-                : "Tidak ada konselor AC/BM yang online saat ini"}
-            </p>
-          </motion.div>
+              {/* Card 2: Konselor Online (Emerald Tint) */}
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.45, delay: 0.13, ease: [0.16, 1, 0.3, 1] }}
+                className="p-4 rounded-2xl border border-[#BBF7D0] bg-gradient-to-br from-[#F0FDF4] via-[#F7FDF9] to-white shadow-2xs flex flex-col justify-between"
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <span className="inline-flex items-center gap-1.5 text-[11px] font-mono font-bold uppercase tracking-wider text-[#1F7A4D]">
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#22C55E] opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-[#16A34A]"></span>
+                    </span>
+                    Konselor Online
+                  </span>
+                  <MiniSparkline color="#1F7A4D" data={sparkAgents} />
+                </div>
+                <div className="flex items-baseline justify-between gap-2">
+                  <div className="text-2xl sm:text-[28px] font-display font-black text-[#141412] tracking-tight">
+                    <AnimatedCounter value={kpis.acBmAgentsCount} />
+                  </div>
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#DCFCE7] text-[#1F7A4D] border border-[#86EFAC]/60">
+                    {kpis.acBmAgentsCount > 0
+                      ? `${kpis.acBmAgentsCount} AC/BM Online`
+                      : "Konselor Aktif"}
+                  </span>
+                </div>
+                <p className="text-[11px] text-[#7A7A74] mt-2 pt-2 border-t border-[#F0F0EC]">
+                  {kpis.acBmAgentsCount > 0
+                    ? `${statsData?.onlinePresence?.acBmActiveCount ?? kpis.acBmAgentsCount} aktif · ${statsData?.onlinePresence?.acBmIdleCount ?? 0} idle (AC & BM) saat ini`
+                    : "Tidak ada konselor AC/BM yang online saat ini"}
+                </p>
+              </motion.div>
 
-          {/* Card 3: Copy Utility Rate (Violet Tint) */}
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.45, delay: 0.18, ease: [0.16, 1, 0.3, 1] }}
-            whileHover={{ y: -3 }}
-            className="p-4 rounded-2xl border border-[#E9D5FF] bg-gradient-to-br from-[#FAF5FF] via-[#FDFBFF] to-white shadow-2xs card-interactive flex flex-col justify-between"
-          >
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-[#7E22CE]">
-                Utility Rate
-              </span>
-              <MiniSparkline color="#9333EA" data={sparkUtility} />
-            </div>
-            <div className="flex items-baseline justify-between gap-2">
-              <div className="text-2xl sm:text-[28px] font-display font-black text-[#141412] tracking-tight">
-                <AnimatedCounter value={kpis.copyRate} />%
-              </div>
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#F3E8FF] text-[#7E22CE] border border-[#D8B4FE]/60">
-                Efektivitas
-              </span>
-            </div>
-            <p className="text-[11px] text-[#7A7A74] mt-2 pt-2 border-t border-[#F0F0EC]">
-              Penetrasi fitur ({kpis.utilityActiveUsers ?? 0} dari {kpis.utilityTotalUsers ?? 0} konselor memakai Pitch / Alumni / Comparison)
-            </p>
-          </motion.div>
+              {/* Card 3: Copy Utility Rate (Violet Tint) */}
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.45, delay: 0.18, ease: [0.16, 1, 0.3, 1] }}
+                className="p-4 rounded-2xl border border-[#E9D5FF] bg-gradient-to-br from-[#FAF5FF] via-[#FDFBFF] to-white shadow-2xs flex flex-col justify-between"
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-[#7E22CE]">
+                    Utility Rate
+                  </span>
+                  <MiniSparkline color="#9333EA" data={sparkUtility} />
+                </div>
+                <div className="flex items-baseline justify-between gap-2">
+                  <div className="text-2xl sm:text-[28px] font-display font-black text-[#141412] tracking-tight">
+                    <AnimatedCounter value={kpis.copyRate} />%
+                  </div>
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#F3E8FF] text-[#7E22CE] border border-[#D8B4FE]/60">
+                    Efektivitas
+                  </span>
+                </div>
+                <p className="text-[11px] text-[#7A7A74] mt-2 pt-2 border-t border-[#F0F0EC]">
+                  Penetrasi fitur ({kpis.utilityActiveUsers ?? 0} dari {kpis.utilityTotalUsers ?? 0} konselor memakai Pitch / Alumni / Comparison)
+                </p>
+              </motion.div>
+            </>
+          )}
         </section>
 
         {/* ========================================================= */}
@@ -757,6 +911,8 @@ export default function AnalyticsDashboardPage() {
           rawLeaderboard={rawLeaderboard}
           kpis={kpis}
           topTopics={topTopics}
+          roleFilter={roleFilter}
+          onRoleFilterChange={handleRoleFilterChange}
           chartMode={chartMode}
           onChartModeChange={setChartMode}
           selectedUser={selectedUser}
@@ -772,7 +928,7 @@ export default function AnalyticsDashboardPage() {
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.32, ease: [0.16, 1, 0.3, 1] }}
-            className="lg:col-span-7 p-5 rounded-2xl bg-white border border-[#E8E8E4] shadow-2xs space-y-4 card-interactive flex flex-col justify-between"
+            className="lg:col-span-7 p-5 rounded-2xl bg-white border border-[#E8E8E4] shadow-2xs space-y-4 flex flex-col justify-between"
           >
             <div className="space-y-3">
               <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-[#F0F0EC]">
@@ -787,11 +943,12 @@ export default function AnalyticsDashboardPage() {
                   <div className="relative inline-flex p-0.5 rounded-lg bg-[#F5F5F2] border border-[#E8E8E4] text-[10.5px] font-mono font-bold">
                     <button
                       type="button"
-                      onClick={() => setRoleFilter("all")}
-                      className={`relative px-2 py-0.5 rounded-md cursor-pointer transition-colors z-10 ${roleFilter === "all"
+                      onClick={() => handleRoleFilterChange("all")}
+                      className={`relative px-2 py-0.5 rounded-md cursor-pointer transition-colors z-10 ${
+                        roleFilter === "all"
                           ? "text-[#FFD84D]"
                           : "text-[#7A7A74] hover:text-[#141412]"
-                        }`}
+                      }`}
                     >
                       {roleFilter === "all" && (
                         <motion.span
@@ -804,11 +961,12 @@ export default function AnalyticsDashboardPage() {
                     </button>
                     <button
                       type="button"
-                      onClick={() => setRoleFilter("ac")}
-                      className={`relative px-2 py-0.5 rounded-md cursor-pointer transition-colors z-10 ${roleFilter === "ac"
+                      onClick={() => handleRoleFilterChange("ac")}
+                      className={`relative px-2 py-0.5 rounded-md cursor-pointer transition-colors z-10 ${
+                        roleFilter === "ac"
                           ? "text-[#FFD84D]"
                           : "text-[#7A7A74] hover:text-[#141412]"
-                        }`}
+                      }`}
                     >
                       {roleFilter === "ac" && (
                         <motion.span
@@ -821,11 +979,12 @@ export default function AnalyticsDashboardPage() {
                     </button>
                     <button
                       type="button"
-                      onClick={() => setRoleFilter("bm")}
-                      className={`relative px-2 py-0.5 rounded-md cursor-pointer transition-colors z-10 ${roleFilter === "bm"
+                      onClick={() => handleRoleFilterChange("bm")}
+                      className={`relative px-2 py-0.5 rounded-md cursor-pointer transition-colors z-10 ${
+                        roleFilter === "bm"
                           ? "text-[#FFD84D]"
                           : "text-[#7A7A74] hover:text-[#141412]"
-                        }`}
+                      }`}
                     >
                       {roleFilter === "bm" && (
                         <motion.span
@@ -848,13 +1007,16 @@ export default function AnalyticsDashboardPage() {
                   { id: "alumni", label: `Alumni Checker (${leaderboardActivityCounts.alumni})` },
                   { id: "comparison", label: `Table Comparison (${leaderboardActivityCounts.comparison})` },
                 ].map((seg) => {
-                  const isSelected = leaderboardActivityFilter === seg.id;
+                  const isSelected = chartMode === seg.id;
+                  const segToken = getModeColorToken(seg.id);
                   return (
                     <button
                       key={seg.id}
                       type="button"
-                      onClick={() => setLeaderboardActivityFilter(seg.id as any)}
-                      className={`relative px-2.5 py-1 rounded-lg transition-colors cursor-pointer z-10 whitespace-nowrap shrink-0 ${isSelected ? "text-white" : "text-[#7A7A74] hover:text-[#141412]"}`}
+                      onClick={() => setChartMode(seg.id as any)}
+                      className={`relative px-2.5 py-1 rounded-lg transition-colors cursor-pointer z-10 whitespace-nowrap shrink-0 inline-flex items-center gap-1.5 ${
+                        isSelected ? "text-white" : "text-[#7A7A74] hover:text-[#141412]"
+                      }`}
                     >
                       {isSelected && (
                         <motion.span
@@ -862,6 +1024,9 @@ export default function AnalyticsDashboardPage() {
                           className="absolute inset-0 bg-[#141412] rounded-lg -z-10 shadow-2xs"
                           transition={{ type: "spring", stiffness: 450, damping: 35 }}
                         />
+                      )}
+                      {seg.id !== "all" && (
+                        <span className={`w-1.5 h-1.5 rounded-full ${isSelected ? segToken.darkDotClass : segToken.dotClass}`} />
                       )}
                       {seg.label}
                     </button>
@@ -883,7 +1048,7 @@ export default function AnalyticsDashboardPage() {
                         <th className="pb-2 font-bold">Konselor</th>
                         <th className="pb-2 font-bold text-center">Role</th>
                         <th className="pb-2 font-bold text-right">
-                          {leaderboardActivityFilter === "comparison" ? "Komparasi" : "Generates"}
+                          {chartMode === "comparison" ? "Komparasi" : "Generates"}
                         </th>
                         <th className="pb-2 font-bold text-right">Copies</th>
                         <th className="pb-2 font-bold text-right">Total Aksi</th>
@@ -895,6 +1060,9 @@ export default function AnalyticsDashboardPage() {
                         const isTop1 = idx === 0;
                         const isTop2 = idx === 1;
                         const isTop3 = idx === 2;
+                        const isSelected = activeSelectedUser === agent.userName;
+                        const toggleSelectUser = () =>
+                          setSelectedUser((prev) => (prev === agent.userName ? "all" : agent.userName));
 
                         return (
                           <motion.tr
@@ -902,9 +1070,28 @@ export default function AnalyticsDashboardPage() {
                             initial={{ opacity: 0, x: -6 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ duration: 0.25, delay: idx * 0.04 }}
-                            className="hover:bg-[#FAFAF8] transition-colors"
+                            onClick={toggleSelectUser}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter" || e.key === " ") {
+                                e.preventDefault();
+                                toggleSelectUser();
+                              }
+                            }}
+                            tabIndex={0}
+                            aria-pressed={isSelected}
+                            title={
+                              isSelected
+                                ? `Klik untuk membatalkan fokus pada ${agent.userName}`
+                                : `Klik untuk fokus grafik & topik pada ${agent.userName}`
+                            }
+                            className={`cursor-pointer transition-colors focus:outline-none focus-visible:bg-[#FFF6D1]/60 ${isSelected
+                              ? "bg-[#FFF6D1]/70 hover:bg-[#FFF6D1]"
+                              : "hover:bg-[#FAFAF8]"
+                              }`}
                           >
-                            <td className="py-2.5 font-mono font-bold">
+                            <td
+                              className={`py-2.5 font-mono font-bold ${isSelected ? "pl-2 shadow-[inset_3px_0_0_#D97706]" : ""}`}
+                            >
                               {isTop1 ? (
                                 <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-[#FFD84D] text-[#141412] font-black text-[11px] shadow-2xs">
                                   🥇
@@ -926,6 +1113,11 @@ export default function AnalyticsDashboardPage() {
                             <td className="py-2.5 font-bold text-[#141412]">
                               <div className="flex items-center gap-1.5 flex-wrap">
                                 <span>{agent.userName}</span>
+                                {isSelected && (
+                                  <span className="inline-flex items-center gap-0.5 text-[9px] bg-[#141412] text-[#FFD84D] font-bold px-1.5 py-0.5 rounded-md">
+                                    Fokus ✕
+                                  </span>
+                                )}
                                 {agent.isOnline && (
                                   <span className="inline-flex items-center gap-1 text-[9px] bg-[#DCFCE7] border border-[#86EFAC] text-[#15803D] font-bold px-1.5 py-0.5 rounded-full">
                                     <span className="w-1.5 h-1.5 rounded-full bg-[#22C55E] animate-pulse" />
@@ -942,10 +1134,7 @@ export default function AnalyticsDashboardPage() {
                             </td>
                             <td className="py-2.5 text-center">
                               <span
-                                className={`inline-block font-mono text-[9px] font-black px-2 py-0.5 rounded-md ${agent.userRole === "BM"
-                                    ? "bg-[#F3E8FF] text-[#7E22CE] border border-[#E9D5FF]"
-                                    : "bg-[#EFF6FF] text-[#1D4ED8] border border-[#DBEAFE]"
-                                  }`}
+                                className={`inline-block font-mono text-[9px] font-black px-2 py-0.5 rounded-md ${getRoleColorToken(agent.userRole).badgeLightClass}`}
                               >
                                 {agent.userRole || "AC"}
                               </span>
@@ -973,13 +1162,13 @@ export default function AnalyticsDashboardPage() {
 
             <div className="p-2.5 rounded-xl text-[11px] bg-[#FAFAF8] border border-[#E8E8E4] text-[#7A7A74] flex items-center justify-between">
               <span>
-                {leaderboardActivityFilter === "comparison"
+                {chartMode === "comparison"
                   ? "Total Komparasi dari seluruh konselor di atas:"
                   : "Total Generates dari seluruh konselor di atas:"}
               </span>
               <span className="font-mono font-bold text-[#141412]">
                 {leaderboard.reduce((acc, a) => acc + (a.displayPrimaryMetric || 0), 0)}{" "}
-                {leaderboardActivityFilter === "comparison" ? "Komparasi" : "Generates"} ·{" "}
+                {chartMode === "comparison" ? "Komparasi" : "Generates"} ·{" "}
                 {leaderboard.reduce((acc, a) => acc + (a.displayCopies || 0), 0)} Copies
               </span>
             </div>
@@ -990,19 +1179,39 @@ export default function AnalyticsDashboardPage() {
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.36, ease: [0.16, 1, 0.3, 1] }}
-            className="lg:col-span-5 p-5 rounded-2xl bg-white border border-[#E8E8E4] shadow-2xs flex flex-col justify-between card-interactive"
+            className="lg:col-span-5 p-5 rounded-2xl bg-white border border-[#E8E8E4] shadow-2xs flex flex-col justify-between"
           >
             <div>
-              <div className="flex items-center justify-between pb-3 mb-3 border-b border-[#F0F0EC]">
+              <div className="flex flex-wrap items-center justify-between gap-2 pb-3 mb-3 border-b border-[#F0F0EC]">
                 <div className="flex items-center gap-2">
                   <Clock className="w-4 h-4 text-[#0E62FE]" />
                   <h3 className="text-sm font-display font-black uppercase tracking-wider text-[#141412]">
                     Jam Sibuk Konsultasi (WIB)
                   </h3>
                 </div>
-                <span className="text-[10.5px] font-mono font-bold text-[#141412] bg-[#F5F5F2] px-2 py-0.5 rounded-md border border-[#E8E8E4]">
-                  Total: {totalHourlyInteractions} Aksi
-                </span>
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  {isHourlyFilterable ? (
+                    <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-md ${getModeColorToken(chartMode).totalBadgeClass}`}>
+                      {selectedUserData
+                        ? `${selectedUserData.name} (${selectedUserData.role})`
+                        : roleFilter === "ac"
+                          ? "Tim AC"
+                          : roleFilter === "bm"
+                            ? "Tim BM"
+                            : "AC & BM"}
+                    </span>
+                  ) : (
+                    <span
+                      className="text-[10px] font-mono font-bold text-[#4B4B46] bg-[#F5F5F2] px-2 py-0.5 rounded-md border border-[#E8E8E4]"
+                      title="Distribusi per jam untuk rentang multi-hari dihitung secara global (seluruh konselor AC & BM)"
+                    >
+                      Global (AC & BM)
+                    </span>
+                  )}
+                  <span className="text-[10.5px] font-mono font-bold text-[#141412] bg-[#F5F5F2] px-2 py-0.5 rounded-md border border-[#E8E8E4]">
+                    Total: {totalHourlyInteractions} Aksi
+                  </span>
+                </div>
               </div>
 
               {/* Complete Bar Timeline (No Skipped Hours) */}
@@ -1011,24 +1220,40 @@ export default function AnalyticsDashboardPage() {
                   const val = hourlyHeatmap[hour] || 0;
                   const pct = Math.round((val / maxHourlyValue) * 100);
                   const isPeak = val > 0 && val === maxHourlyValue;
+                  const hourLabel = `${String(hour).padStart(2, "0")}:00`;
 
                   return (
-                    <div key={hour} className="flex items-center gap-2 text-xs font-mono">
-                      <span className="w-10 text-[10px] shrink-0 font-medium text-[#7A7A74]">
-                        {String(hour).padStart(2, "0")}:00
+                    <div
+                      key={hour}
+                      title={`${hourLabel} WIB: ${val} Aksi${isPeak ? " (Jam Tersibuk)" : ""}`}
+                      className="flex items-center gap-2 text-xs font-mono"
+                    >
+                      <span
+                        className={`w-11 text-[10px] shrink-0 tabular-numbers px-1 py-0.5 rounded text-center ${
+                          isPeak
+                            ? "font-black text-[#141412] bg-[#FFD84D]"
+                            : "font-medium text-[#7A7A74]"
+                        }`}
+                      >
+                        {hourLabel}
                       </span>
                       <div className="flex-1 h-2.5 rounded-full overflow-hidden relative bg-[#F5F5F2] border border-[#E8E8E4]/60">
                         <div
                           style={{ width: `${Math.max(pct, val > 0 ? 8 : 0)}%` }}
-                          className={`heatmap-bar h-full rounded-full transition-all duration-500 ${isPeak
-                              ? "peak-pulse bg-[#FFD84D]"
+                          className={`heatmap-bar h-full rounded-full transition-all duration-500 ${
+                            isPeak
+                              ? "peak-pulse bg-[#FFD84D] border border-[#D97706] shadow-[0_0_10px_rgba(255,216,77,0.55)]"
                               : val > 0
                                 ? "bg-[#141412]"
                                 : "bg-transparent"
-                            }`}
+                          }`}
                         />
                       </div>
-                      <span className="w-7 text-right text-[10px] font-bold text-[#141412] tabular-numbers">
+                      <span
+                        className={`w-7 text-right text-[10px] tabular-numbers ${
+                          isPeak ? "font-black text-[#A15C00]" : "font-bold text-[#141412]"
+                        }`}
+                      >
                         {val}
                       </span>
                     </div>
@@ -1039,7 +1264,11 @@ export default function AnalyticsDashboardPage() {
 
             <div className="p-2.5 rounded-xl text-[11px] mt-3 flex items-center gap-2 bg-[#FAFAF8] border border-[#E8E8E4] text-[#7A7A74]">
               <span className="w-2.5 h-2.5 rounded-full bg-[#FFD84D] border border-[#141412] shrink-0" />
-              <span>Menampilkan seluruh jam aktif konsultasi konselor AC & BM (termasuk jam 12:00, 18:00, dan 22:00 WIB).</span>
+              <span>
+                {isHourlyFilterable
+                  ? `Menampilkan jam aktif sesuai filter (${selectedUserData ? `${selectedUserData.name} (${selectedUserData.role})` : roleFilter === "ac" ? "Tim AC" : roleFilter === "bm" ? "Tim BM" : "AC & BM"}).`
+                  : "Kartu Global: menampilkan agregat jam aktif seluruh konselor AC & BM pada rentang multi-hari."}
+              </span>
             </div>
           </motion.section>
         </div>
@@ -1053,7 +1282,7 @@ export default function AnalyticsDashboardPage() {
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            className="lg:col-span-5 p-5 rounded-2xl bg-white border border-[#E8E8E4] shadow-2xs space-y-3.5 card-interactive flex flex-col justify-between"
+            className="lg:col-span-5 p-5 rounded-2xl bg-white border border-[#E8E8E4] shadow-2xs space-y-3.5 flex flex-col justify-between"
           >
             <div className="space-y-3">
               <div className="flex items-center justify-between pb-3 border-b border-[#F0F0EC]">
@@ -1076,7 +1305,7 @@ export default function AnalyticsDashboardPage() {
                   <p className="text-xl font-black text-[#141412] mt-1 tabular-numbers">
                     <AnimatedCounter value={modeDistribution.pitch || 0} />
                   </p>
-                  <p className="text-[10px] text-[#A15C00] font-bold mt-0.5 font-mono">
+                  <p className={`text-[10px] font-bold mt-0.5 font-mono ${getModeColorToken("pitch").lightTextClass}`}>
                     {pitchPct}%
                   </p>
                 </div>
@@ -1088,7 +1317,7 @@ export default function AnalyticsDashboardPage() {
                   <p className="text-xl font-black text-[#141412] mt-1 tabular-numbers">
                     <AnimatedCounter value={modeDistribution.alumni || 0} />
                   </p>
-                  <p className="text-[10px] text-[#1F7A4D] font-bold mt-0.5 font-mono">
+                  <p className={`text-[10px] font-bold mt-0.5 font-mono ${getModeColorToken("alumni").lightTextClass}`}>
                     {alumniPct}%
                   </p>
                 </div>
@@ -1100,7 +1329,7 @@ export default function AnalyticsDashboardPage() {
                   <p className="text-xl font-black text-[#141412] mt-1 tabular-numbers">
                     <AnimatedCounter value={modeDistribution.comparison || 0} />
                   </p>
-                  <p className="text-[10px] text-[#7E22CE] font-bold mt-0.5 font-mono">
+                  <p className={`text-[10px] font-bold mt-0.5 font-mono ${getModeColorToken("comparison").lightTextClass}`}>
                     {compPct}%
                   </p>
                 </div>
@@ -1112,17 +1341,17 @@ export default function AnalyticsDashboardPage() {
               <div className="w-full h-2 rounded-full bg-[#F5F5F2] overflow-hidden flex border border-[#E8E8E4]/70">
                 <div
                   style={{ width: `${pitchPct}%` }}
-                  className="bg-[#FFD84D] h-full transition-all duration-500"
+                  className={`${getModeColorToken("pitch").barBgClass} h-full transition-all duration-500`}
                   title={`Create Pitch: ${pitchPct}%`}
                 />
                 <div
                   style={{ width: `${alumniPct}%` }}
-                  className="bg-[#1F7A4D] h-full transition-all duration-500"
+                  className={`${getModeColorToken("alumni").barBgClass} h-full transition-all duration-500`}
                   title={`Alumni Story: ${alumniPct}%`}
                 />
                 <div
                   style={{ width: `${compPct}%` }}
-                  className="bg-[#9333EA] h-full transition-all duration-500"
+                  className={`${getModeColorToken("comparison").barBgClass} h-full transition-all duration-500`}
                   title={`Comparison: ${compPct}%`}
                 />
               </div>
@@ -1137,7 +1366,7 @@ export default function AnalyticsDashboardPage() {
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.44, ease: [0.16, 1, 0.3, 1] }}
-            className="lg:col-span-7 p-5 rounded-2xl bg-white border border-[#E8E8E4] shadow-2xs space-y-3.5 card-interactive flex flex-col justify-between"
+            className="lg:col-span-7 p-5 rounded-2xl bg-white border border-[#E8E8E4] shadow-2xs space-y-3.5 flex flex-col justify-between"
           >
             <div className="space-y-3">
               <div className="flex items-center justify-between pb-3 border-b border-[#F0F0EC]">
@@ -1192,21 +1421,27 @@ export default function AnalyticsDashboardPage() {
                         animate={{ opacity: 1, y: 0 }}
                         whileHover={{ y: -1.5 }}
                         transition={{ duration: 0.25, delay: i * 0.04 }}
-                        className="flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl border border-[#E8E8E4] bg-[#FAFAF8] hover:border-[#D9D9D4] hover:bg-white text-xs text-[#141412] transition-colors shadow-2xs text-left cursor-pointer"
+                        className="group relative overflow-hidden flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl border border-[#E8E8E4] bg-[#FAFAF8] hover:border-[#D9D9D4] hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFD84D] focus-visible:border-[#141412] text-xs text-[#141412] transition-colors shadow-2xs text-left cursor-pointer"
                       >
-                        <div className="flex items-center gap-2 min-w-0">
-                          <span className="font-mono text-[10px] font-bold text-[#7A7A74]">
+                        <div
+                          aria-hidden="true"
+                          style={{ width: `${pct}%` }}
+                          className="pointer-events-none absolute inset-y-0 left-0 bg-[#FFD84D]/20 group-hover:bg-[#FFD84D]/30 transition-all duration-500"
+                        />
+                        <div className="relative z-10 flex items-center gap-2 min-w-0">
+                          <span className="font-mono text-[10px] font-bold text-[#5C5C56]">
                             #{i + 1}
                           </span>
-                          <span className="font-bold truncate" title={topic.name}>
+                          <span className="font-bold text-[#141412] truncate" title={topic.name}>
                             {topic.name}
                           </span>
                         </div>
-                        <div className="flex items-center gap-1.5 shrink-0">
-                          <span className="font-mono text-[10px] text-[#7A7A74]">{pct}%</span>
+                        <div className="relative z-10 flex items-center gap-1.5 shrink-0">
+                          <span className="font-mono text-[10px] font-semibold text-[#5C5C56]">{pct}%</span>
                           <span className="font-mono text-[10.5px] bg-[#141412] text-[#FFD84D] px-1.5 py-0.5 rounded-md font-bold tabular-numbers">
                             {topic.count}
                           </span>
+                          <ChevronRight className="w-3.5 h-3.5 text-[#4B4B46] opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 group-focus-visible:opacity-100 group-focus-visible:translate-x-0 transition-all duration-200 shrink-0" />
                         </div>
                       </motion.button>
                     );
@@ -1234,19 +1469,31 @@ export default function AnalyticsDashboardPage() {
       {/* 7. TOAST NOTIFICATION WITH DISMISS                         */}
       {/* ========================================================= */}
       <AnimatePresence>
-        {toastMessage && (
+        {toast && (
           <motion.div
             initial={{ opacity: 0, y: 16, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 16, scale: 0.95 }}
             transition={{ type: "spring", stiffness: 450, damping: 32 }}
-            className="fixed left-1/2 bottom-6 -translate-x-1/2 z-50 flex items-center gap-3 px-4 py-2.5 rounded-full bg-[#141412] border border-[#2D2D2A] text-white shadow-xl"
+            className={`fixed left-1/2 bottom-6 -translate-x-1/2 z-50 flex items-center gap-3 px-4 py-2.5 rounded-full shadow-xl border ${
+              toast.type === "error"
+                ? "bg-[#B42318] border-[#F87171]/40 text-white"
+                : "bg-[#141412] border-[#2D2D2A] text-white"
+            }`}
           >
-            <CheckCircle2 className="w-4 h-4 text-[#FFD84D]" />
-            <span className="text-xs font-semibold">{toastMessage}</span>
+            {toast.type === "error" ? (
+              <AlertCircle className="w-4 h-4 text-white shrink-0" />
+            ) : (
+              <CheckCircle2 className="w-4 h-4 text-[#FFD84D] shrink-0" />
+            )}
+            <span className="text-xs font-semibold">{toast.message}</span>
             <button
-              onClick={() => setToastMessage(null)}
-              className="px-2 py-0.5 rounded-md bg-[#FFD84D] text-[#141412] text-[11px] font-black hover:bg-[#FFCC1A] cursor-pointer"
+              onClick={() => setToast(null)}
+              className={`px-2 py-0.5 rounded-md text-[11px] font-black cursor-pointer ${
+                toast.type === "error"
+                  ? "bg-white text-[#B42318] hover:bg-white/90"
+                  : "bg-[#FFD84D] text-[#141412] hover:bg-[#FFCC1A]"
+              }`}
             >
               Tutup
             </button>

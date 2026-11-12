@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSupabase } from "../../../../lib/supabaseClient";
 import { normalizeTopic } from "../../../../lib/topicNormalizer";
+import { requireOwner, requireSession } from "../../../../lib/authSession";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -8,17 +9,7 @@ export const revalidate = 0;
 const MAX_INPUT_CHARS = 5000;
 const MAX_RESULT_BYTES = 100_000;
 const MAX_THREAD_BYTES = 100_000;
-const ALLOWED_ROLES = ["Owner", "AC", "BM"];
 const ALLOWED_MODES = ["pitch", "alumni", "comparison"];
-
-function isOwner(req: Request): boolean {
-  const auth = req.headers.get("authorization") || "";
-  const token = auth.startsWith("Bearer ") ? auth.slice(7).trim() : "";
-  if (!token) return false;
-  const ownerPin = process.env.OWNER_SECRET_PIN || "revou-owner-2026";
-  const expected = `owner_auth_${Buffer.from(ownerPin + "_verified_session").toString("base64")}`;
-  return token === expected;
-}
 
 function jsonSize(value: unknown): number {
   try {
@@ -30,12 +21,13 @@ function jsonSize(value: unknown): number {
 
 // POST: simpan hasil generate penuh (dipanggil dari halaman utama, fire-and-forget)
 export async function POST(req: Request) {
+  const auth = await requireSession(req);
+  if (auth.errorResponse) return auth.errorResponse;
+
   try {
     const body = await req.json();
     const {
       clientSessionId,
-      userName,
-      userRole = "AC",
       mode = "pitch",
       modelUsed = null,
       topic = null,
@@ -44,9 +36,9 @@ export async function POST(req: Request) {
       durationMs = null,
     } = body || {};
 
-    if (!userName || !clientSessionId || !inputText) {
+    if (!clientSessionId || !inputText) {
       return NextResponse.json(
-        { success: false, message: "userName, clientSessionId dan inputText wajib diisi." },
+        { success: false, message: "clientSessionId dan inputText wajib diisi." },
         { status: 400 }
       );
     }
@@ -68,8 +60,8 @@ export async function POST(req: Request) {
       [
         {
           client_session_id: String(clientSessionId).slice(0, 100),
-          user_name: String(userName).slice(0, 100).trim(),
-          user_role: ALLOWED_ROLES.includes(userRole) ? userRole : "AC",
+          user_name: auth.session.name.slice(0, 100).trim(),
+          user_role: auth.session.role,
           mode: safeMode,
           model_used: modelUsed ? String(modelUsed).slice(0, 50) : null,
           topic: cleanTopic ? cleanTopic.slice(0, 100) : null,
@@ -94,11 +86,14 @@ export async function POST(req: Request) {
 
 // PATCH: perbarui thread klarifikasi untuk satu sesi generate
 export async function PATCH(req: Request) {
+  const auth = await requireSession(req);
+  if (auth.errorResponse) return auth.errorResponse;
+
   try {
-    const { userName, clientSessionId, chatThread } = (await req.json()) || {};
-    if (!userName || !clientSessionId || !Array.isArray(chatThread)) {
+    const { clientSessionId, chatThread } = (await req.json()) || {};
+    if (!clientSessionId || !Array.isArray(chatThread)) {
       return NextResponse.json(
-        { success: false, message: "userName, clientSessionId dan chatThread (array) wajib diisi." },
+        { success: false, message: "clientSessionId dan chatThread (array) wajib diisi." },
         { status: 400 }
       );
     }
@@ -111,7 +106,7 @@ export async function PATCH(req: Request) {
     const { error } = await supabase
       .from("admission_generate_history")
       .update({ chat_thread: chatThread })
-      .eq("user_name", String(userName).slice(0, 100).trim())
+      .eq("user_name", auth.session.name.slice(0, 100).trim())
       .eq("client_session_id", String(clientSessionId).slice(0, 100));
 
     if (error) {
@@ -126,9 +121,9 @@ export async function PATCH(req: Request) {
 
 // GET: khusus Owner. ?id=<uuid> untuk detail, atau daftar dengan filter topic/user/mode/from/to/limit/cursor
 export async function GET(req: Request) {
-  if (!isOwner(req)) {
-    return NextResponse.json({ success: false, message: "Akses ditolak. Hanya Owner." }, { status: 403 });
-  }
+  const auth = await requireOwner(req);
+  if (auth.errorResponse) return auth.errorResponse;
+
   try {
     const supabase = getSupabase();
     if (!supabase) {
@@ -187,4 +182,3 @@ export async function GET(req: Request) {
     return NextResponse.json({ success: false, message: err?.message || "Internal error" }, { status: 500 });
   }
 }
-

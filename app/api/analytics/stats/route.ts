@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getSupabase, getLastSupabaseServerDate } from "../../../../lib/supabaseClient";
 import { getOnlineUsers } from "../../../../lib/onlineTracker";
 import { redisGet, redisSet } from "../../../../lib/redisClient";
+import { requireOwner } from "../../../../lib/authSession";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -9,6 +10,9 @@ export const revalidate = 0;
 import { normalizeTopic } from "../../../../lib/topicNormalizer";
 
 export async function GET(req: Request) {
+  const auth = await requireOwner(req);
+  if (auth.errorResponse) return auth.errorResponse;
+
   try {
     const { searchParams } = new URL(req.url);
     const range = searchParams.get("range") || "30d"; // today, yesterday, 7d, 30d, all
@@ -503,8 +507,9 @@ export async function GET(req: Request) {
         }
       }
 
-      // Topic / Objection aggregation: count AI script generation & Table Comparison queries (not on login or copy)
-      if (isAiScriptGeneration || isComparisonView) {
+      // Topic / Objection aggregation: hanya hitung generate awal & Table Comparison
+      // agar konsisten 1:1 dengan riwayat di admission_generate_history (clarify tersimpan di chat_thread sesi awalnya)
+      if (isGenerate || isComparisonView) {
         const cleanTopic = normalizeTopic(log.topic, log.input_snippet, mode);
         if (cleanTopic) {
           topicCounts[cleanTopic] = (topicCounts[cleanTopic] || 0) + 1;

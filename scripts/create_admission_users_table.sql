@@ -1,5 +1,5 @@
 -- ==============================================================================
--- SCHEMA DEFINITION: admission_users TABLE FOR MANUAL USER MANAGEMENT
+-- SCHEMA DEFINITION: admission_users TABLE (HARDENED RLS)
 -- Run this script inside your Supabase Project -> SQL Editor
 -- ==============================================================================
 
@@ -17,31 +17,13 @@ CREATE TABLE IF NOT EXISTS public.admission_users (
 -- 2. Index on email for fast login lookup
 CREATE INDEX IF NOT EXISTS idx_admission_users_email ON public.admission_users(email);
 
--- 3. Row Level Security (RLS) Policies
+-- 3. Strict Row Level Security (RLS):
+-- Tidak ada policy publik untuk anon/authenticated.
+-- Akses tabel ini HANYA melalui API server Next.js memakai SUPABASE_SERVICE_ROLE_KEY.
 ALTER TABLE public.admission_users ENABLE ROW LEVEL SECURITY;
 
 DROP POLICY IF EXISTS "Allow read for authentication" ON public.admission_users;
-CREATE POLICY "Allow read for authentication" 
-ON public.admission_users 
-FOR SELECT 
-TO anon, authenticated 
-USING (true);
-
 DROP POLICY IF EXISTS "Allow modify users" ON public.admission_users;
-CREATE POLICY "Allow modify users" 
-ON public.admission_users 
-FOR ALL 
-TO anon, authenticated 
-USING (true)
-WITH CHECK (true);
 
--- 4. Sample Users (Anda bisa edit atau tambah langsung via Supabase Table Editor)
-INSERT INTO public.admission_users (email, password, name, role) 
-VALUES 
-    ('owner@revou.co', 'revou-owner-2026', 'Lead Admission', 'Owner'),
-    ('budi@revou.co', 'budi123', 'Budi Santoso', 'AC'),
-    ('anita@revou.co', 'anita123', 'Anita Wijaya', 'BM')
-ON CONFLICT (email) DO NOTHING;
-
--- 5. Force Supabase PostgREST to reload schema cache
+-- 4. Force Supabase PostgREST to reload schema cache
 NOTIFY pgrst, 'reload schema';

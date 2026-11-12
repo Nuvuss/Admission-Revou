@@ -1,10 +1,16 @@
 import { NextResponse } from "next/server";
 import { getSupabase } from "../../../../lib/supabaseClient";
+import { hashPassword, verifyPassword } from "../../../../lib/passwordHash";
+import {
+  createSessionToken,
+  setSessionCookie,
+  SessionRole,
+} from "../../../../lib/authSession";
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { email, password } = body;
+    const { email, password } = body || {};
 
     if (!email || !password) {
       return NextResponse.json(
@@ -18,21 +24,13 @@ export async function POST(req: Request) {
 
     const supabase = getSupabase();
     if (!supabase) {
-      // Fallback if Supabase not configured in env
-      if (normalizedPassword === (process.env.OWNER_SECRET_PIN || "revou-owner-2026")) {
-        return NextResponse.json({
-          success: true,
-          user: { name: "Lead Admission", role: "Owner", email: normalizedEmail },
-          token: "owner_session_fallback",
-        });
-      }
       return NextResponse.json(
         { success: false, message: "Koneksi Supabase belum terkonfigurasi di environment." },
         { status: 500 }
       );
     }
 
-    // Query admission_users table in Supabase
+    // Query admission_users table in Supabase (server-side using Service Role Key)
     const { data: user, error } = await supabase
       .from("admission_users")
       .select("id, email, password, name, role, is_active")
@@ -40,22 +38,8 @@ export async function POST(req: Request) {
       .single();
 
     if (error || !user) {
-      // Also check fallback for default Owner PIN if table is just created
-      const expectedOwnerPin = process.env.OWNER_SECRET_PIN || "revou-owner-2026";
-      if (normalizedPassword === expectedOwnerPin) {
-        return NextResponse.json({
-          success: true,
-          user: {
-            name: normalizedEmail.split("@")[0].replace(/[._-]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()),
-            role: "Owner",
-            email: normalizedEmail,
-          },
-          token: `owner_auth_${Buffer.from(expectedOwnerPin + "_verified_session").toString("base64")}`,
-        });
-      }
-
       return NextResponse.json(
-        { success: false, message: "Email tidak terdaftar di database Supabase." },
+        { success: false, message: "Email atau password salah." },
         { status: 401 }
       );
     }
@@ -67,30 +51,48 @@ export async function POST(req: Request) {
       );
     }
 
-    // Check password
-    if (user.password !== normalizedPassword) {
+    // Verify password (supports scrypt hash and seamless auto-upgrade from legacy plaintext)
+    const { valid, needsRehash } = verifyPassword(normalizedPassword, user.password);
+    if (!valid) {
       return NextResponse.json(
-        { success: false, message: "Password yang Anda masukkan salah." },
+        { success: false, message: "Email atau password salah." },
         { status: 401 }
       );
     }
 
-    // Generate token if role is Owner
-    let token: string | undefined = undefined;
-    if (user.role === "Owner") {
-      const ownerPin = process.env.OWNER_SECRET_PIN || "revou-owner-2026";
-      token = `owner_auth_${Buffer.from(ownerPin + "_verified_session").toString("base64")}`;
+    if (needsRehash) {
+      try {
+        const upgradedHash = hashPassword(normalizedPassword);
+        await supabase
+          .from("admission_users")
+          .update({ password: upgradedHash })
+          .eq("id", user.id);
+      } catch (rehashErr) {
+        console.warn("[Auth] Gagal auto-upgrade hash password:", rehashErr);
+      }
     }
 
-    return NextResponse.json({
+    const role: SessionRole =
+      user.role === "Owner" || user.role === "BM" ? user.role : "AC";
+
+    const jwtToken = await createSessionToken({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role,
+    });
+
+    const response = NextResponse.json({
       success: true,
       user: {
         name: user.name,
-        role: user.role,
+        role,
         email: user.email,
       },
-      token,
     });
+
+    setSessionCookie(response, jwtToken);
+    return response;
   } catch (err: any) {
     console.error("Login route error:", err);
     return NextResponse.json(
@@ -99,4 +101,3 @@ export async function POST(req: Request) {
     );
   }
 }
-

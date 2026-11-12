@@ -178,73 +178,102 @@ export default function DashboardPage() {
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState<boolean>(false);
   const [isAccountModalOpen, setIsAccountModalOpen] = useState<boolean>(false);
 
-  // Load history & API keys from localStorage and fetch server pool status
+  // Load verified server session, history & API keys from localStorage
   useEffect(() => {
-    // ── Enforce Login Gate: Check User Session ──
-    try {
-      const savedSession = localStorage.getItem("revou_admission_user_session_v1");
-      if (savedSession) {
-        const parsed = JSON.parse(savedSession);
-        if (parsed?.name && parsed?.role) {
-          setUserSession(parsed);
-          setIsAuthChecking(false);
+    let active = true;
+
+    const initSessionAndApp = async () => {
+      try {
+        const meRes = await fetch("/api/auth/me", { cache: "no-store" });
+        if (!meRes.ok) {
           try {
-            if (sessionStorage.getItem("revou_just_logged_in")) {
-              sessionStorage.removeItem("revou_just_logged_in");
-              setTimeout(() => {
-                showToast(`👋 Selamat datang, ${parsed.name} (${parsed.role})!`);
-              }, 300);
-            }
+            localStorage.removeItem("revou_admission_user_session_v1");
           } catch (e) { }
-        } else {
-          router.replace("/login");
+          if (active) router.replace("/login");
           return;
         }
-      } else {
-        router.replace("/login");
+
+        const meData = await meRes.json();
+        if (!meData?.authenticated || !meData?.user?.name || !meData?.user?.role) {
+          try {
+            localStorage.removeItem("revou_admission_user_session_v1");
+          } catch (e) { }
+          if (active) router.replace("/login");
+          return;
+        }
+
+        const verifiedSession: UserSession = {
+          name: meData.user.name,
+          role: meData.user.role,
+          email: meData.user.email,
+          savedAt: Date.now(),
+        };
+
+        try {
+          localStorage.setItem("revou_admission_user_session_v1", JSON.stringify(verifiedSession));
+        } catch (e) { }
+
+        if (!active) return;
+        setUserSession(verifiedSession);
+        setIsAuthChecking(false);
+
+        try {
+          if (sessionStorage.getItem("revou_just_logged_in")) {
+            sessionStorage.removeItem("revou_just_logged_in");
+            setTimeout(() => {
+              showToast(`👋 Selamat datang, ${verifiedSession.name} (${verifiedSession.role})!`);
+            }, 300);
+          }
+        } catch (e) { }
+
+        // Fetch initial API pool status (khusus Owner)
+        if (verifiedSession.role === "Owner") {
+          fetchApiPoolStatus();
+        }
+      } catch (e) {
+        if (active) router.replace("/login");
         return;
       }
-    } catch (e) {
-      router.replace("/login");
-      return;
-    }
 
-    try {
-      const savedHistory = localStorage.getItem("revou_admission_history_v1");
-      if (savedHistory) {
-        const parsed = JSON.parse(savedHistory);
-        if (Array.isArray(parsed)) {
-          setHistoryList(parsed);
-        }
-      }
-    } catch (e) {
-      console.error("Failed to load history from localStorage:", e);
-    }
-
-    try {
-      const savedKeys = localStorage.getItem("revou_admission_custom_api_keys_v2");
-      if (savedKeys) {
-        const parsedKeys = JSON.parse(savedKeys);
-        if (Array.isArray(parsedKeys)) {
-          // Jika key tersimpan di browser adalah key lama Google Gemini (AQ. / AIza), bersihkan otomatis
-          const hasLegacyKeys = parsedKeys.some(
-            (k: string) => typeof k === "string" && (k.startsWith("AQ.") || k.startsWith("AIza"))
-          );
-          if (hasLegacyKeys) {
-            localStorage.removeItem("revou_admission_custom_api_keys_v2");
-            setCustomApiKeys(["", "", "", "", ""]);
-          } else {
-            const normalized = [...parsedKeys, "", "", "", "", ""].slice(0, 5);
-            setCustomApiKeys(normalized);
+      try {
+        const savedHistory = localStorage.getItem("revou_admission_history_v1");
+        if (savedHistory && active) {
+          const parsed = JSON.parse(savedHistory);
+          if (Array.isArray(parsed)) {
+            setHistoryList(parsed);
           }
         }
+      } catch (e) {
+        console.error("Failed to load history from localStorage:", e);
       }
-    } catch (e) {
-      console.error("Failed to load custom keys from localStorage:", e);
-    }
 
-    // Fetch initial API pool status
-    fetchApiPoolStatus();
+      try {
+        const savedKeys = localStorage.getItem("revou_admission_custom_api_keys_v2");
+        if (savedKeys && active) {
+          const parsedKeys = JSON.parse(savedKeys);
+          if (Array.isArray(parsedKeys)) {
+            // Jika key tersimpan di browser adalah key lama Google Gemini (AQ. / AIza), bersihkan otomatis
+            const hasLegacyKeys = parsedKeys.some(
+              (k: string) => typeof k === "string" && (k.startsWith("AQ.") || k.startsWith("AIza"))
+            );
+            if (hasLegacyKeys) {
+              localStorage.removeItem("revou_admission_custom_api_keys_v2");
+              setCustomApiKeys(["", "", "", "", ""]);
+            } else {
+              const normalized = [...parsedKeys, "", "", "", "", ""].slice(0, 5);
+              setCustomApiKeys(normalized);
+            }
+          }
+        }
+      } catch (e) {
+        console.error("Failed to load custom keys from localStorage:", e);
+      }
+    };
+
+    initSessionAndApp();
+    return () => {
+      active = false;
+    };
   }, []);
 
   // Real-Time Online Presence: heartbeat per tab (status active/idle + mode fitur aktif)

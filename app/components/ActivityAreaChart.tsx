@@ -1,8 +1,9 @@
 "use client";
 
-import React, { memo, useState, useMemo } from "react";
+import React, { memo, useState, useMemo, useRef, useEffect } from "react";
 import { motion } from "motion/react";
-import { Users, Clock, Sparkles, GraduationCap, Scale } from "lucide-react";
+import { Users, Clock, Sparkles, GraduationCap, Scale, Search, ChevronDown, Check, X } from "lucide-react";
+import { getModeColorToken, getRoleColorToken } from "../utils/analyticsColors";
 
 export interface ActivityAreaChartProps {
   timeline: any[];
@@ -10,6 +11,8 @@ export interface ActivityAreaChartProps {
   rawLeaderboard: any[];
   kpis: any;
   topTopics: any[];
+  roleFilter?: "all" | "ac" | "bm";
+  onRoleFilterChange?: (role: "all" | "ac" | "bm") => void;
   chartMode?: "all" | "pitch" | "alumni" | "comparison";
   onChartModeChange?: (mode: "all" | "pitch" | "alumni" | "comparison") => void;
   selectedUser?: string;
@@ -22,27 +25,48 @@ function ActivityAreaChartInner({
   rawLeaderboard,
   kpis,
   topTopics,
-  chartMode: controlledChartMode,
+  roleFilter = "all",
+  onRoleFilterChange,
+  chartMode = "all",
   onChartModeChange,
-  selectedUser: controlledSelectedUser,
+  selectedUser = "all",
   onSelectUser,
 }: ActivityAreaChartProps) {
-  const [internalChartMode, setInternalChartMode] = useState<"all" | "pitch" | "alumni" | "comparison">("all");
-  const [chartRoleFilter, setChartRoleFilter] = useState<"all" | "ac" | "bm">("all");
-  const [internalSelectedUser, setInternalSelectedUser] = useState<string>("all");
   const [hoveredPointIdx, setHoveredPointIdx] = useState<number | null>(null);
+  const [isComboboxOpen, setIsComboboxOpen] = useState<boolean>(false);
+  const [userSearchQuery, setUserSearchQuery] = useState<string>("");
+  const comboboxRef = useRef<HTMLDivElement | null>(null);
 
-  const chartMode = controlledChartMode !== undefined ? controlledChartMode : internalChartMode;
   const setChartMode = (m: "all" | "pitch" | "alumni" | "comparison") => {
     if (onChartModeChange) onChartModeChange(m);
-    else setInternalChartMode(m);
   };
 
-  const selectedUser = controlledSelectedUser !== undefined ? controlledSelectedUser : internalSelectedUser;
+  const setRoleFilter = (r: "all" | "ac" | "bm") => {
+    if (onRoleFilterChange) onRoleFilterChange(r);
+  };
+
   const setSelectedUser = (u: string) => {
     if (onSelectUser) onSelectUser(u);
-    else setInternalSelectedUser(u);
   };
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (comboboxRef.current && !comboboxRef.current.contains(e.target as Node)) {
+        setIsComboboxOpen(false);
+      }
+    };
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setIsComboboxOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleEscape);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, []);
 
   // Available counselors (AC and BM only)
   const allAvailableUsers = useMemo(() => {
@@ -63,10 +87,18 @@ function ActivityAreaChartInner({
   }, [rawLeaderboard]);
 
   const availableUsers = useMemo(() => {
-    if (chartRoleFilter === "ac") return allAvailableUsers.filter((u) => u.role === "AC");
-    if (chartRoleFilter === "bm") return allAvailableUsers.filter((u) => u.role === "BM");
+    if (roleFilter === "ac") return allAvailableUsers.filter((u) => u.role === "AC");
+    if (roleFilter === "bm") return allAvailableUsers.filter((u) => u.role === "BM");
     return allAvailableUsers;
-  }, [allAvailableUsers, chartRoleFilter]);
+  }, [allAvailableUsers, roleFilter]);
+
+  const filteredComboboxUsers = useMemo(() => {
+    const q = userSearchQuery.trim().toLowerCase();
+    if (!q) return availableUsers;
+    return availableUsers.filter(
+      (u) => u.name.toLowerCase().includes(q) || String(u.role || "").toLowerCase().includes(q)
+    );
+  }, [availableUsers, userSearchQuery]);
 
   const totalAcBmEvents = useMemo(() => availableUsers.reduce((acc, u) => acc + (u.count || 0), 0), [availableUsers]);
   const totalAcBmPitch = useMemo(() => availableUsers.reduce((acc, u) => acc + (u.pitch || 0), 0), [availableUsers]);
@@ -89,12 +121,12 @@ function ActivityAreaChartInner({
       if (activeSelectedUser !== "all") {
         return Number(pt.byUser?.[activeSelectedUser]?.[key] || 0);
       }
-      if (chartRoleFilter === "ac" || chartRoleFilter === "bm") {
+      if (roleFilter === "ac" || roleFilter === "bm") {
         return availableUsers.reduce((sum, u) => sum + Number(pt.byUser?.[u.name]?.[key] || 0), 0);
       }
       return Number(pt[key] || 0);
     });
-  }, [timeline, chartMode, activeSelectedUser, chartRoleFilter, availableUsers]);
+  }, [timeline, chartMode, activeSelectedUser, roleFilter, availableUsers]);
 
   const maxChartVal = useMemo(() => Math.max(...currentModeValues, 1), [currentModeValues]);
   const hasChartData = useMemo(() => currentModeValues.some((v) => v > 0), [currentModeValues]);
@@ -231,21 +263,26 @@ function ActivityAreaChartInner({
     setHoveredPointIdx(nearestIdx);
   };
 
+  const activeModeToken = getModeColorToken(chartMode);
+  const pitchModeToken = getModeColorToken("pitch");
+  const alumniModeToken = getModeColorToken("alumni");
+  const comparisonModeToken = getModeColorToken("comparison");
+
   return (
     <motion.section
       initial={{ opacity: 0, y: 14 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.26, ease: [0.16, 1, 0.3, 1] }}
-      className="w-full p-4 sm:p-5 rounded-2xl bg-white border border-[#E8E8E4] shadow-2xs flex flex-col justify-between card-interactive"
+      className="w-full p-4 sm:p-5 rounded-2xl bg-white border border-[#E8E8E4] shadow-2xs flex flex-col justify-between"
     >
       {/* Chart Header & Metric Mode Controls */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2.5">
         <div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <h2 className="text-sm sm:text-base font-display font-black tracking-tight text-[#141412]">
               Trafik Konsultasi & Penggunaan Asisten
             </h2>
-            <span className="font-mono text-[10.5px] font-bold px-2 py-0.5 rounded-md bg-[#FFF6D1] text-[#A15C00] border border-[#FFD84D]/60">
+            <span className={`font-mono text-[10.5px] font-bold px-2 py-0.5 rounded-md ${activeModeToken.totalBadgeClass}`}>
               Total: {totalChartModeSum}{" "}
               {chartMode === "pitch"
                 ? "Pitch"
@@ -256,9 +293,9 @@ function ActivityAreaChartInner({
                     : "Aktivitas"}
               {selectedUserData
                 ? ` · ${selectedUserData.name} (${selectedUserData.role})`
-                : chartRoleFilter === "ac"
+                : roleFilter === "ac"
                   ? " · Tim AC"
-                  : chartRoleFilter === "bm"
+                  : roleFilter === "bm"
                     ? " · Tim BM"
                     : " · AC & BM"}
             </span>
@@ -267,15 +304,15 @@ function ActivityAreaChartInner({
             Tren {timeRange === "today" ? "per jam hari ini (WIB)" : timeRange === "yesterday" ? "per jam kemarin (WIB)" : timeRange === "7d" ? "7 hari terakhir" : timeRange === "30d" ? "30 hari terakhir" : "seluruh riwayat tanggal aktif"}
             {selectedUserData
               ? ` untuk konselor ${selectedUserData.name} (${selectedUserData.role})`
-              : chartRoleFilter === "ac"
+              : roleFilter === "ac"
                 ? " seluruh konselor AC"
-                : chartRoleFilter === "bm"
+                : roleFilter === "bm"
                   ? " seluruh konselor BM"
                   : " seluruh konselor (AC & BM)"}
           </p>
         </div>
 
-        {/* Segmented Toggle Control */}
+        {/* Segmented Activity Mode Toggle Control */}
         <div className="relative inline-flex p-1 rounded-xl bg-[#F5F5F2] border border-[#E8E8E4] text-xs font-bold self-start sm:self-auto overflow-x-auto max-w-full">
           {[
             { id: "all", label: `Semua Aktivitas (${selectedUserData ? selectedUserData.count : totalAcBmEvents})` },
@@ -284,11 +321,13 @@ function ActivityAreaChartInner({
             { id: "comparison", label: `Table Comparison (${selectedUserData ? (selectedUserData.comparison ?? 0) : totalAcBmComp})` },
           ].map((seg) => {
             const isSelected = chartMode === seg.id;
+            const segToken = getModeColorToken(seg.id);
             return (
               <button
                 key={seg.id}
+                type="button"
                 onClick={() => setChartMode(seg.id as any)}
-                className={`relative px-2.5 py-1 rounded-lg transition-colors cursor-pointer z-10 whitespace-nowrap shrink-0 ${isSelected ? "text-white" : "text-[#7A7A74] hover:text-[#141412]"}`}
+                className={`relative px-2.5 py-1 rounded-lg transition-colors cursor-pointer z-10 whitespace-nowrap shrink-0 inline-flex items-center gap-1.5 ${isSelected ? "text-white" : "text-[#7A7A74] hover:text-[#141412]"}`}
               >
                 {isSelected && (
                   <motion.span
@@ -297,6 +336,9 @@ function ActivityAreaChartInner({
                     transition={{ type: "spring", stiffness: 450, damping: 35 }}
                   />
                 )}
+                {seg.id !== "all" && (
+                  <span className={`w-1.5 h-1.5 rounded-full ${isSelected ? segToken.darkDotClass : segToken.dotClass}`} />
+                )}
                 {seg.label}
               </button>
             );
@@ -304,7 +346,7 @@ function ActivityAreaChartInner({
         </div>
       </div>
 
-      {/* User Filter Tabs Row */}
+      {/* Role Filter & Searchable Counselor Combobox Row */}
       <div className="flex flex-wrap items-center justify-between gap-2 pt-2.5 pb-2 mb-2 border-t border-[#F0F0EC]">
         <div className="flex items-center gap-2 flex-wrap">
           <div className="flex items-center gap-1.5 text-xs font-bold text-[#7A7A74]">
@@ -318,13 +360,10 @@ function ActivityAreaChartInner({
           <div className="relative inline-flex p-0.5 rounded-lg bg-[#F5F5F2] border border-[#E8E8E4] text-[10.5px] font-mono font-bold">
             <button
               type="button"
-              onClick={() => {
-                setChartRoleFilter("all");
-                setSelectedUser("all");
-              }}
-              className={`relative px-2 py-0.5 rounded-md cursor-pointer transition-colors z-10 ${chartRoleFilter === "all" ? "text-[#FFD84D]" : "text-[#7A7A74] hover:text-[#141412]"}`}
+              onClick={() => setRoleFilter("all")}
+              className={`relative px-2 py-0.5 rounded-md cursor-pointer transition-colors z-10 ${roleFilter === "all" ? "text-[#FFD84D]" : "text-[#7A7A74] hover:text-[#141412]"}`}
             >
-              {chartRoleFilter === "all" && (
+              {roleFilter === "all" && (
                 <motion.span
                   layoutId="chartRoleFilterActivePill"
                   className="absolute inset-0 bg-[#141412] rounded-md -z-10 shadow-2xs"
@@ -335,13 +374,10 @@ function ActivityAreaChartInner({
             </button>
             <button
               type="button"
-              onClick={() => {
-                setChartRoleFilter("ac");
-                setSelectedUser("all");
-              }}
-              className={`relative px-2 py-0.5 rounded-md cursor-pointer transition-colors z-10 ${chartRoleFilter === "ac" ? "text-[#FFD84D]" : "text-[#7A7A74] hover:text-[#141412]"}`}
+              onClick={() => setRoleFilter("ac")}
+              className={`relative px-2 py-0.5 rounded-md cursor-pointer transition-colors z-10 ${roleFilter === "ac" ? "text-[#FFD84D]" : "text-[#7A7A74] hover:text-[#141412]"}`}
             >
-              {chartRoleFilter === "ac" && (
+              {roleFilter === "ac" && (
                 <motion.span
                   layoutId="chartRoleFilterActivePill"
                   className="absolute inset-0 bg-[#141412] rounded-md -z-10 shadow-2xs"
@@ -352,13 +388,10 @@ function ActivityAreaChartInner({
             </button>
             <button
               type="button"
-              onClick={() => {
-                setChartRoleFilter("bm");
-                setSelectedUser("all");
-              }}
-              className={`relative px-2 py-0.5 rounded-md cursor-pointer transition-colors z-10 ${chartRoleFilter === "bm" ? "text-[#FFD84D]" : "text-[#7A7A74] hover:text-[#141412]"}`}
+              onClick={() => setRoleFilter("bm")}
+              className={`relative px-2 py-0.5 rounded-md cursor-pointer transition-colors z-10 ${roleFilter === "bm" ? "text-[#FFD84D]" : "text-[#7A7A74] hover:text-[#141412]"}`}
             >
-              {chartRoleFilter === "bm" && (
+              {roleFilter === "bm" && (
                 <motion.span
                   layoutId="chartRoleFilterActivePill"
                   className="absolute inset-0 bg-[#141412] rounded-md -z-10 shadow-2xs"
@@ -368,100 +401,193 @@ function ActivityAreaChartInner({
               BM ({allAvailableUsers.filter((u) => u.role === "BM").length})
             </button>
           </div>
-
-          {/* User Tab pills */}
-          <div className="relative inline-flex p-1 rounded-xl bg-[#F5F5F2] border border-[#E8E8E4] text-xs font-bold gap-1 overflow-x-auto max-w-full">
-            <button
-              type="button"
-              onClick={() => setSelectedUser("all")}
-              className={`relative px-2.5 py-1 rounded-lg transition-colors cursor-pointer z-10 flex items-center gap-1.5 shrink-0 ${activeSelectedUser === "all" ? "text-white" : "text-[#7A7A74] hover:text-[#141412]"}`}
-            >
-              {activeSelectedUser === "all" && (
-                <motion.span
-                  layoutId="chartUserActivePill"
-                  className="absolute inset-0 bg-[#141412] rounded-lg -z-10 shadow-2xs"
-                  transition={{ type: "spring", stiffness: 450, damping: 35 }}
-                />
-              )}
-              <span>Semua {chartRoleFilter === "ac" ? "AC" : chartRoleFilter === "bm" ? "BM" : "Konselor"}</span>
-              <span className="font-mono text-[10px] opacity-80">
-                ({chartMode === "all"
-                  ? totalAcBmEvents
-                  : chartMode === "pitch"
-                    ? totalAcBmPitch
-                    : chartMode === "alumni"
-                      ? totalAcBmAlumni
-                      : totalAcBmComp})
-              </span>
-            </button>
-
-            {availableUsers.map((u) => {
-              const isSelected = activeSelectedUser === u.name;
-              const metricVal =
-                chartMode === "all"
-                  ? u.count
-                  : chartMode === "pitch"
-                    ? u.pitch || 0
-                    : chartMode === "alumni"
-                      ? u.alumni || 0
-                      : u.comparison || 0;
-              return (
-                <button
-                  key={u.name}
-                  type="button"
-                  onClick={() => setSelectedUser(u.name)}
-                  className={`relative px-2.5 py-1 rounded-lg transition-colors cursor-pointer z-10 flex items-center gap-1.5 whitespace-nowrap shrink-0 ${isSelected ? "text-white" : "text-[#7A7A74] hover:text-[#141412]"}`}
-                >
-                  {isSelected && (
-                    <motion.span
-                      layoutId="chartUserActivePill"
-                      className="absolute inset-0 bg-[#141412] rounded-lg -z-10 shadow-2xs"
-                      transition={{ type: "spring", stiffness: 450, damping: 35 }}
-                    />
-                  )}
-                  <span
-                    className={`w-1.5 h-1.5 rounded-full ${isSelected
-                      ? "bg-[#FFD84D]"
-                      : u.role === "BM"
-                        ? "bg-[#9333EA]"
-                        : "bg-[#1F7A4D]"
-                      }`}
-                  />
-                  <span>{u.name}</span>
-                  <span
-                    className={`text-[9.5px] font-mono font-bold px-1.5 py-0.2 rounded ${u.role === "BM"
-                      ? isSelected
-                        ? "bg-purple-900/60 text-purple-200"
-                        : "bg-purple-100 text-purple-700"
-                      : isSelected
-                        ? "bg-emerald-900/60 text-emerald-200"
-                        : "bg-emerald-100 text-emerald-700"
-                      }`}
-                  >
-                    {u.role}
-                  </span>
-                  <span className="font-mono text-[10px] opacity-80">({metricVal})</span>
-                </button>
-              );
-            })}
-          </div>
         </div>
 
-        {activeSelectedUser !== "all" && (
-          <div className="flex items-center gap-2 text-[11px] font-mono text-[#A15C00] bg-[#FFF6D1] px-2.5 py-1 rounded-lg border border-[#FFD84D]/70 shadow-2xs">
-            <span>
-              Fokus: <strong>{activeSelectedUser}</strong> {selectedUserData?.role ? `(${selectedUserData.role})` : ""}
-            </span>
+        {/* Searchable Counselor Combobox / Dropdown */}
+        <div className="flex items-center gap-2 flex-wrap self-start sm:self-auto" ref={comboboxRef}>
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setIsComboboxOpen((prev) => !prev)}
+              aria-haspopup="listbox"
+              aria-expanded={isComboboxOpen}
+              className="inline-flex items-center justify-between gap-2.5 px-3 py-1.5 rounded-xl bg-[#F5F5F2] hover:bg-[#ECECE7] border border-[#E8E8E4] text-xs font-bold text-[#141412] transition-colors cursor-pointer min-w-[220px]"
+            >
+              <span className="flex items-center gap-1.5 min-w-0">
+                <Users className="w-3.5 h-3.5 text-[#0E62FE] shrink-0" />
+                {selectedUserData ? (
+                  <>
+                    <span className="truncate">{selectedUserData.name}</span>
+                    <span
+                      className={`text-[9.5px] font-mono font-bold px-1.5 py-0.2 rounded shrink-0 ${getRoleColorToken(selectedUserData.role).badgeLightClass}`}
+                    >
+                      {selectedUserData.role}
+                    </span>
+                    <span className="font-mono text-[10px] text-[#7A7A74] shrink-0">
+                      (
+                      {chartMode === "all"
+                        ? selectedUserData.count
+                        : chartMode === "pitch"
+                          ? selectedUserData.pitch || 0
+                          : chartMode === "alumni"
+                            ? selectedUserData.alumni || 0
+                            : selectedUserData.comparison || 0}
+                      )
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <span className="truncate">
+                      Semua {roleFilter === "ac" ? "Konselor AC" : roleFilter === "bm" ? "Konselor BM" : "Konselor"}
+                    </span>
+                    <span className="font-mono text-[10px] text-[#7A7A74] shrink-0">
+                      (
+                      {chartMode === "all"
+                        ? totalAcBmEvents
+                        : chartMode === "pitch"
+                          ? totalAcBmPitch
+                          : chartMode === "alumni"
+                            ? totalAcBmAlumni
+                            : totalAcBmComp}
+                      )
+                    </span>
+                  </>
+                )}
+              </span>
+              <ChevronDown
+                className={`w-3.5 h-3.5 text-[#7A7A74] shrink-0 transition-transform ${isComboboxOpen ? "rotate-180" : ""}`}
+              />
+            </button>
+
+            {isComboboxOpen && (
+              <div
+                role="listbox"
+                className="absolute right-0 mt-1.5 w-72 rounded-xl bg-white border border-[#E8E8E4] shadow-xl z-40 p-2 space-y-1.5"
+              >
+                <div className="relative">
+                  <Search className="w-3.5 h-3.5 text-[#7A7A74] absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  <input
+                    type="text"
+                    value={userSearchQuery}
+                    onChange={(e) => setUserSearchQuery(e.target.value)}
+                    placeholder="Cari nama konselor..."
+                    autoFocus
+                    className="w-full pl-8 pr-7 py-1.5 rounded-lg bg-[#F5F5F2] border border-[#E8E8E4] text-xs text-[#141412] placeholder:text-[#7A7A74] focus:outline-none focus:border-[#141412]"
+                  />
+                  {userSearchQuery && (
+                    <button
+                      type="button"
+                      onClick={() => setUserSearchQuery("")}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 text-[#7A7A74] hover:text-[#141412] cursor-pointer"
+                      aria-label="Hapus pencarian"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  )}
+                </div>
+
+                <div className="max-h-56 overflow-y-auto divide-y divide-[#F5F5F2]">
+                  <button
+                    type="button"
+                    role="option"
+                    aria-selected={activeSelectedUser === "all"}
+                    onClick={() => {
+                      setSelectedUser("all");
+                      setIsComboboxOpen(false);
+                      setUserSearchQuery("");
+                    }}
+                    className={`w-full px-2.5 py-2 rounded-lg text-left text-xs flex items-center justify-between gap-2 transition-colors cursor-pointer ${
+                      activeSelectedUser === "all"
+                        ? "bg-[#FFF6D1]/80 font-bold text-[#141412]"
+                        : "hover:bg-[#FAFAF8] text-[#141412]"
+                    }`}
+                  >
+                    <span className="flex items-center gap-2 min-w-0">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#141412] shrink-0" />
+                      <span className="truncate">
+                        Semua {roleFilter === "ac" ? "Konselor AC" : roleFilter === "bm" ? "Konselor BM" : "Konselor (AC & BM)"}
+                      </span>
+                    </span>
+                    <span className="flex items-center gap-1.5 shrink-0">
+                      <span className="font-mono text-[10px] text-[#7A7A74]">
+                        {chartMode === "all"
+                          ? totalAcBmEvents
+                          : chartMode === "pitch"
+                            ? totalAcBmPitch
+                            : chartMode === "alumni"
+                              ? totalAcBmAlumni
+                              : totalAcBmComp}
+                      </span>
+                      {activeSelectedUser === "all" && <Check className="w-3.5 h-3.5 text-[#A15C00]" />}
+                    </span>
+                  </button>
+
+                  {filteredComboboxUsers.length === 0 ? (
+                    <div className="py-4 text-center text-[11px] text-[#7A7A74]">
+                      Konselor tidak ditemukan.
+                    </div>
+                  ) : (
+                    filteredComboboxUsers.map((u) => {
+                      const isSelected = activeSelectedUser === u.name;
+                      const roleToken = getRoleColorToken(u.role);
+                      const metricVal =
+                        chartMode === "all"
+                          ? u.count
+                          : chartMode === "pitch"
+                            ? u.pitch || 0
+                            : chartMode === "alumni"
+                              ? u.alumni || 0
+                              : u.comparison || 0;
+                      return (
+                        <button
+                          key={u.name}
+                          type="button"
+                          role="option"
+                          aria-selected={isSelected}
+                          onClick={() => {
+                            setSelectedUser(u.name);
+                            setIsComboboxOpen(false);
+                            setUserSearchQuery("");
+                          }}
+                          className={`w-full px-2.5 py-2 rounded-lg text-left text-xs flex items-center justify-between gap-2 transition-colors cursor-pointer ${
+                            isSelected
+                              ? "bg-[#FFF6D1]/80 font-bold text-[#141412]"
+                              : "hover:bg-[#FAFAF8] text-[#141412]"
+                          }`}
+                        >
+                          <span className="flex items-center gap-1.5 min-w-0">
+                            <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${roleToken.dotClass}`} />
+                            <span className="truncate">{u.name}</span>
+                            <span
+                              className={`text-[9.5px] font-mono font-bold px-1.5 py-0.2 rounded shrink-0 ${roleToken.badgeLightClass}`}
+                            >
+                              {u.role}
+                            </span>
+                          </span>
+                          <span className="flex items-center gap-1.5 shrink-0">
+                            <span className="font-mono text-[10px] text-[#7A7A74]">{metricVal}</span>
+                            {isSelected && <Check className="w-3.5 h-3.5 text-[#A15C00]" />}
+                          </span>
+                        </button>
+                      );
+                    })
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {activeSelectedUser !== "all" && (
             <button
               type="button"
               onClick={() => setSelectedUser("all")}
-              className="text-[#141412] hover:bg-[#FFD84D] px-1.5 py-0.2 rounded transition-colors font-bold cursor-pointer"
-              title="Tampilkan Semua Konselor AC & BM"
+              className="inline-flex items-center gap-1 text-[11px] font-mono font-bold text-[#A15C00] bg-[#FFF6D1] hover:bg-[#FFD84D] px-2.5 py-1.5 rounded-xl border border-[#FFD84D]/70 transition-colors cursor-pointer"
+              title="Tampilkan Semua Konselor"
             >
-              ✕ Reset
+              <span>✕ Reset</span>
             </button>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
       {/* Plot Canvas Area with Pure Isolated Re-render */}
@@ -505,16 +631,16 @@ function ActivityAreaChartInner({
               preserveAspectRatio="none"
             >
               <defs>
-                <linearGradient id="whiteRevouChartGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor="#FFD84D" stopOpacity="0.42" />
-                  <stop offset="100%" stopColor="#FFD84D" stopOpacity="0.02" />
+                <linearGradient id={`whiteRevouChartGrad-${chartMode}`} x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stopColor={activeModeToken.gradient} stopOpacity="0.42" />
+                  <stop offset="100%" stopColor={activeModeToken.gradient} stopOpacity="0.02" />
                 </linearGradient>
               </defs>
 
               {chartAreaPath && (
                 <path
                   d={chartAreaPath}
-                  fill="url(#whiteRevouChartGrad)"
+                  fill={`url(#whiteRevouChartGrad-${chartMode})`}
                   className="chart-draw-area"
                 />
               )}
@@ -523,7 +649,7 @@ function ActivityAreaChartInner({
                 <path
                   d={chartStrokePath}
                   fill="none"
-                  stroke="#D97706"
+                  stroke={activeModeToken.stroke}
                   strokeWidth="2.2"
                   vectorEffect="non-scaling-stroke"
                   strokeLinecap="round"
@@ -537,12 +663,12 @@ function ActivityAreaChartInner({
             {activePoint && hasChartData && (
               <>
                 <div
-                  className="absolute top-0 bottom-0 w-px border-l border-dashed border-[#D97706]/70 pointer-events-none z-10"
+                  className={`absolute top-0 bottom-0 w-px border-l border-dashed pointer-events-none z-10 ${activeModeToken.guideLineClass}`}
                   style={{ left: `${activePoint.pctX}%` }}
                 />
 
                 <div
-                  className="absolute w-3 h-3 rounded-full bg-[#D97706] ring-4 ring-[#FFD84D]/70 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-20 shadow-md"
+                  className={`absolute w-3 h-3 rounded-full -translate-x-1/2 -translate-y-1/2 pointer-events-none z-20 shadow-md ${activeModeToken.activeDotClass}`}
                   style={{
                     left: `${activePoint.pctX}%`,
                     top: `${activePoint.pctY}%`,
@@ -597,33 +723,33 @@ function ActivityAreaChartInner({
                     {chartMode === "all" ? (
                       <div className="flex items-center gap-2 text-[10px] text-white/80 flex-wrap">
                         <span className="inline-flex items-center gap-1">
-                          <Sparkles className="w-2.5 h-2.5 text-[#FFD84D]" />
+                          <Sparkles className={`w-2.5 h-2.5 ${pitchModeToken.darkIconClass}`} />
                           {Number(activeSelectedUser !== "all" ? (activePoint.rawPt?.byUser?.[activeSelectedUser]?.pitch ?? 0) : (activePoint.rawPt?.pitch ?? 0))} Pitch
                         </span>
                         <span>•</span>
                         <span className="inline-flex items-center gap-1">
-                          <GraduationCap className="w-2.5 h-2.5 text-[#60A5FA]" />
+                          <GraduationCap className={`w-2.5 h-2.5 ${alumniModeToken.darkIconClass}`} />
                           {Number(activeSelectedUser !== "all" ? (activePoint.rawPt?.byUser?.[activeSelectedUser]?.alumni ?? 0) : (activePoint.rawPt?.alumni ?? 0))} Alumni
                         </span>
                         <span>•</span>
                         <span className="inline-flex items-center gap-1">
-                          <Scale className="w-2.5 h-2.5 text-[#34D399]" />
+                          <Scale className={`w-2.5 h-2.5 ${comparisonModeToken.darkIconClass}`} />
                           {Number(activeSelectedUser !== "all" ? (activePoint.rawPt?.byUser?.[activeSelectedUser]?.comparison ?? 0) : (activePoint.rawPt?.comparison ?? 0))} Komparasi
                         </span>
                       </div>
                     ) : chartMode === "pitch" ? (
-                      <div className="flex items-center gap-1.5 text-[10px] text-[#FFD84D] font-medium">
-                        <Sparkles className="w-3 h-3 text-[#FFD84D] shrink-0" />
+                      <div className={`flex items-center gap-1.5 text-[10px] font-medium ${pitchModeToken.darkTextClass}`}>
+                        <Sparkles className={`w-3 h-3 shrink-0 ${pitchModeToken.darkIconClass}`} />
                         <span>{activePoint.val} aktivitas Create Pitch</span>
                       </div>
                     ) : chartMode === "alumni" ? (
-                      <div className="flex items-center gap-1.5 text-[10px] text-[#93C5FD] font-medium">
-                        <GraduationCap className="w-3 h-3 text-[#60A5FA] shrink-0" />
+                      <div className={`flex items-center gap-1.5 text-[10px] font-medium ${alumniModeToken.darkTextClass}`}>
+                        <GraduationCap className={`w-3 h-3 shrink-0 ${alumniModeToken.darkIconClass}`} />
                         <span>{activePoint.val} aktivitas Alumni Checker</span>
                       </div>
                     ) : (
-                      <div className="flex items-center gap-1.5 text-[10px] text-[#6EE7B7] font-medium">
-                        <Scale className="w-3 h-3 text-[#34D399] shrink-0" />
+                      <div className={`flex items-center gap-1.5 text-[10px] font-medium ${comparisonModeToken.darkTextClass}`}>
+                        <Scale className={`w-3 h-3 shrink-0 ${comparisonModeToken.darkIconClass}`} />
                         <span>{activePoint.val} aktivitas Table Comparison</span>
                       </div>
                     )}
@@ -640,42 +766,33 @@ function ActivityAreaChartInner({
                       if (filteredActs.length > 0) {
                         return (
                           <div className="space-y-1 pt-1.5 border-t border-white/10 max-h-40 overflow-y-auto">
-                            {filteredActs.slice(0, 4).map((act: any, idx: number) => (
-                              <div
-                                key={idx}
-                                className="text-[10px] leading-tight bg-white/5 p-1.5 rounded-lg flex items-start gap-1.5"
-                              >
-                                <span
-                                  className={`w-1.5 h-1.5 rounded-full shrink-0 mt-1 ${act.mode === "comparison"
-                                      ? "bg-[#34D399]"
-                                      : act.mode === "alumni"
-                                        ? "bg-[#60A5FA]"
-                                        : "bg-[#FFD84D]"
-                                    }`}
-                                />
-                                <div className="truncate">
-                                  <div className="text-white">
-                                    <strong className="font-bold">{act.user}</strong>{" "}
-                                    <span className="text-white/60">({act.role})</span> •{" "}
-                                    <span
-                                      className={`font-medium ${act.mode === "comparison"
-                                          ? "text-[#34D399]"
-                                          : act.mode === "alumni"
-                                            ? "text-[#60A5FA]"
-                                            : "text-[#FFD84D]"
-                                        }`}
-                                    >
-                                      {act.actionLabel}
-                                    </span>
-                                  </div>
-                                  {act.topic && (
-                                    <div className="text-[9.5px] text-[#D4D4CE] truncate mt-0.5 font-mono">
-                                      {act.topic}
+                            {filteredActs.slice(0, 4).map((act: any, idx: number) => {
+                              const actModeToken = getModeColorToken(act.mode || "pitch");
+                              return (
+                                <div
+                                  key={idx}
+                                  className="text-[10px] leading-tight bg-white/5 p-1.5 rounded-lg flex items-start gap-1.5"
+                                >
+                                  <span
+                                    className={`w-1.5 h-1.5 rounded-full shrink-0 mt-1 ${actModeToken.darkDotClass}`}
+                                  />
+                                  <div className="truncate">
+                                    <div className="text-white">
+                                      <strong className="font-bold">{act.user}</strong>{" "}
+                                      <span className="text-white/60">({act.role})</span> •{" "}
+                                      <span className={`font-medium ${actModeToken.darkTextClass}`}>
+                                        {act.actionLabel}
+                                      </span>
                                     </div>
-                                  )}
+                                    {act.topic && (
+                                      <div className="text-[9.5px] text-[#D4D4CE] truncate mt-0.5 font-mono">
+                                        {act.topic}
+                                      </div>
+                                    )}
+                                  </div>
                                 </div>
-                              </div>
-                            ))}
+                              );
+                            })}
                           </div>
                         );
                       }
@@ -718,22 +835,36 @@ function ActivityAreaChartInner({
         </div>
 
         {/* X-Axis Labels */}
-        <div className="flex items-center justify-between pl-9 pt-1.5 text-[10px] font-mono text-[#7A7A74] select-none">
-          {xTicks.map((tick, idx) => {
-            const isPeakLabel = hasChartData && peakVal > 0 && tick.timelineIdx === peakIdx;
-            return (
-              <span
-                key={idx}
-                className={
-                  isPeakLabel
-                    ? "font-bold text-[#D97706] bg-[#FFFBEB] px-1.5 py-0.5 rounded border border-[#FDE68A]"
-                    : "font-medium"
-                }
-              >
-                {tick.label}
-              </span>
-            );
-          })}
+        <div className="pl-[38px] pt-1.5 text-[10px] font-mono text-[#7A7A74] select-none">
+          <div className="relative h-5 w-full">
+            {xTicks.map((tick, idx) => {
+              const isPeakLabel = hasChartData && peakVal > 0 && tick.timelineIdx === peakIdx;
+              const leftPct =
+                timeline && timeline.length > 1
+                  ? (tick.timelineIdx / (timeline.length - 1)) * 100
+                  : 50;
+              const isFirst = leftPct <= 2;
+              const isLast = leftPct >= 98;
+              return (
+                <span
+                  key={idx}
+                  style={{
+                    left: `${leftPct}%`,
+                    transform: isFirst
+                      ? "translateX(0%)"
+                      : isLast
+                        ? "translateX(-100%)"
+                        : "translateX(-50%)",
+                  }}
+                  className={`absolute top-0 whitespace-nowrap ${
+                    isPeakLabel ? activeModeToken.peakTickClass : "font-medium"
+                  }`}
+                >
+                  {tick.label}
+                </span>
+              );
+            })}
+          </div>
         </div>
       </div>
 
