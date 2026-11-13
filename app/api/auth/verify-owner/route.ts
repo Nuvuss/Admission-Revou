@@ -1,11 +1,24 @@
 import { NextResponse } from "next/server";
+import {
+  createSessionToken,
+  getOwnerSecretPin,
+  getSessionFromRequest,
+  setSessionCookie,
+} from "../../../../lib/authSession";
+import { safeCompareText } from "../../../../lib/passwordHash";
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { pin } = body;
+    const { pin } = body || {};
 
-    const expectedPin = process.env.OWNER_SECRET_PIN || "revou-owner-2026";
+    const expectedPin = getOwnerSecretPin();
+    if (!expectedPin) {
+      return NextResponse.json(
+        { success: false, message: "OWNER_SECRET_PIN belum dikonfigurasi di server." },
+        { status: 500 }
+      );
+    }
 
     if (!pin || typeof pin !== "string") {
       return NextResponse.json(
@@ -14,14 +27,21 @@ export async function POST(req: Request) {
       );
     }
 
-    if (pin.trim() === expectedPin.trim()) {
-      // Create a deterministic verification token
-      const token = `owner_auth_${Buffer.from(expectedPin + "_verified_session").toString("base64")}`;
-      return NextResponse.json({
+    if (safeCompareText(pin.trim(), expectedPin)) {
+      const existingSession = await getSessionFromRequest(req);
+      const jwtToken = await createSessionToken({
+        id: existingSession?.sub || "owner-pin",
+        name: existingSession?.name || "Lead Admission",
+        email: existingSession?.email || "",
+        role: "Owner",
+      });
+
+      const response = NextResponse.json({
         success: true,
-        token,
         message: "Autentikasi Owner berhasil!",
       });
+      setSessionCookie(response, jwtToken);
+      return response;
     }
 
     return NextResponse.json(
@@ -35,4 +55,3 @@ export async function POST(req: Request) {
     );
   }
 }
-

@@ -1,25 +1,26 @@
 import { NextResponse } from "next/server";
 import { getSupabase } from "../../../../lib/supabaseClient";
 import { normalizeTopic } from "../../../../lib/topicNormalizer";
+import { requireSession } from "../../../../lib/authSession";
 
 export async function POST(req: Request) {
+  const auth = await requireSession(req);
+  if (auth.errorResponse) return auth.errorResponse;
+
   try {
     const body = await req.json();
     const {
-      userName,
-      userRole = "AC",
-      userEmail = null,
       actionType,
       mode = "pitch",
       modelUsed = null,
       topic = null,
       inputSnippet = null,
       metadata = {},
-    } = body;
+    } = body || {};
 
-    if (!userName || !actionType) {
+    if (!actionType) {
       return NextResponse.json(
-        { success: false, message: "userName dan actionType wajib diisi." },
+        { success: false, message: "actionType wajib diisi." },
         { status: 400 }
       );
     }
@@ -43,11 +44,11 @@ export async function POST(req: Request) {
       normalizeTopic(topic, sanitizedSnippet, mode) ||
       (topic ? String(topic).slice(0, 100).trim() : null);
 
-    const { data, error } = await supabase.from("admission_activity_logs").insert([
+    const { error } = await supabase.from("admission_activity_logs").insert([
       {
-        user_name: String(userName).slice(0, 100).trim(),
-        user_role: ["Owner", "AC", "BM"].includes(userRole) ? userRole : "AC",
-        user_email: userEmail ? String(userEmail).slice(0, 150).trim() : null,
+        user_name: auth.session.name.slice(0, 100).trim(),
+        user_role: auth.session.role,
+        user_email: auth.session.email ? auth.session.email.slice(0, 150).trim() : null,
         action_type: String(actionType).slice(0, 50).trim(),
         mode: String(mode).slice(0, 50).trim(),
         model_used: modelUsed ? String(modelUsed).slice(0, 50).trim() : null,
@@ -74,4 +75,3 @@ export async function POST(req: Request) {
     );
   }
 }
-

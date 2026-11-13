@@ -1,12 +1,21 @@
 import { NextResponse } from "next/server";
 import { getSupabase } from "../../../../lib/supabaseClient";
+import { verifyPassword } from "../../../../lib/passwordHash";
+import {
+  createSessionToken,
+  requireSession,
+  setSessionCookie,
+} from "../../../../lib/authSession";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export async function POST(req: Request) {
+  const auth = await requireSession(req);
+  if (auth.errorResponse) return auth.errorResponse;
+
   try {
     const body = await req.json();
-    const { currentEmail, newEmail, password } = body;
+    const { currentEmail, newEmail, password } = body || {};
 
     if (!currentEmail || !newEmail || !password) {
       return NextResponse.json(
@@ -18,6 +27,13 @@ export async function POST(req: Request) {
     const normalizedCurrentEmail = String(currentEmail).trim().toLowerCase();
     const normalizedNewEmail = String(newEmail).trim().toLowerCase();
     const normalizedPassword = String(password).trim();
+
+    if (auth.session.email && auth.session.email !== normalizedCurrentEmail) {
+      return NextResponse.json(
+        { success: false, message: "Anda hanya dapat mengubah email milik akun yang sedang login." },
+        { status: 403 }
+      );
+    }
 
     if (!EMAIL_REGEX.test(normalizedNewEmail)) {
       return NextResponse.json(
@@ -63,7 +79,8 @@ export async function POST(req: Request) {
     }
 
     // Verify password before updating email
-    if (user.password !== normalizedPassword) {
+    const { valid } = verifyPassword(normalizedPassword, user.password);
+    if (!valid) {
       return NextResponse.json(
         { success: false, message: "Password saat ini tidak cocok." },
         { status: 401 }
@@ -98,11 +115,21 @@ export async function POST(req: Request) {
       );
     }
 
-    return NextResponse.json({
+    // Refresh JWT session cookie with the new email
+    const newJwt = await createSessionToken({
+      id: user.id,
+      name: user.name,
+      email: normalizedNewEmail,
+      role: auth.session.role,
+    });
+
+    const response = NextResponse.json({
       success: true,
       email: normalizedNewEmail,
       message: "Email akun berhasil diperbarui! Silakan gunakan email baru Anda saat login berikutnya.",
     });
+    setSessionCookie(response, newJwt);
+    return response;
   } catch (err: any) {
     console.error("Change email route error:", err);
     return NextResponse.json(
@@ -111,4 +138,3 @@ export async function POST(req: Request) {
     );
   }
 }
-

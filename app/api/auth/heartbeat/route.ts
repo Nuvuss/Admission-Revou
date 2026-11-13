@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { trackUserHeartbeat, getOnlineUsers } from "../../../../lib/onlineTracker";
+import { requireOwner, requireSession } from "../../../../lib/authSession";
 
 export const dynamic = "force-dynamic";
 
@@ -17,25 +18,30 @@ function presenceResponse(onlineData: Awaited<ReturnType<typeof getOnlineUsers>>
 }
 
 export async function POST(req: Request) {
+  const auth = await requireSession(req);
+  if (auth.errorResponse) return auth.errorResponse;
+
   try {
     const body = await req.json().catch(() => ({}));
-    const { userName, userRole, userEmail, sessionId, status, mode, page, lastActiveAt, silent } = body || {};
+    const { sessionId, status, mode, page, lastActiveAt, silent } = body || {};
 
-    if (userName && typeof userName === "string") {
-      await trackUserHeartbeat({
-        userName,
-        userRole: userRole || "AC",
-        userEmail: typeof userEmail === "string" ? userEmail : null,
-        sessionId: typeof sessionId === "string" ? sessionId : null,
-        status: typeof status === "string" ? status : null,
-        mode: typeof mode === "string" ? mode : null,
-        page: typeof page === "string" ? page : null,
-        lastActiveAt: typeof lastActiveAt === "number" ? lastActiveAt : null,
-      });
-    }
+    await trackUserHeartbeat({
+      userName: auth.session.name,
+      userRole: auth.session.role,
+      userEmail: auth.session.email || null,
+      sessionId: typeof sessionId === "string" ? sessionId : null,
+      status: typeof status === "string" ? status : null,
+      mode: typeof mode === "string" ? mode : null,
+      page: typeof page === "string" ? page : null,
+      lastActiveAt: typeof lastActiveAt === "number" ? lastActiveAt : null,
+    });
 
     // Client konselor tidak butuh daftar user lain: kirim respons minimal (hemat bandwidth & read Redis)
     if (silent) {
+      return NextResponse.json({ success: true });
+    }
+
+    if (auth.session.role !== "Owner") {
       return NextResponse.json({ success: true });
     }
 
@@ -45,7 +51,10 @@ export async function POST(req: Request) {
   }
 }
 
-export async function GET() {
+export async function GET(req: Request) {
+  const auth = await requireOwner(req);
+  if (auth.errorResponse) return auth.errorResponse;
+
   try {
     return presenceResponse(await getOnlineUsers());
   } catch (err: any) {

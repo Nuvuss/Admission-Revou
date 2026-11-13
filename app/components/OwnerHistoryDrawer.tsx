@@ -148,7 +148,7 @@ export default function OwnerHistoryDrawer({ open, onClose, token, topic, user }
   const [detailLoading, setDetailLoading] = useState(false);
 
   const authHeaders = useCallback(
-    (): HeadersInit => ({ Authorization: `Bearer ${token || ""}` }),
+    (): HeadersInit => (token ? { Authorization: `Bearer ${token}` } : {}),
     [token]
   );
 

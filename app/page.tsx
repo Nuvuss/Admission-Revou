@@ -71,6 +71,7 @@ import AccountModal from "./components/AccountModal";
 import { UserRole, UserSession } from "./types/auth";
 import { ModeKey, ClarificationItem, HistoryItem, ApiPoolStatus, ApiKeyTestResult } from "./types";
 import { renderFormattedTextWithLinks } from "./utils/formatText";
+import { EASE_OUT } from "../lib/motion";
 
 interface ModeConfig {
   title: string;
@@ -178,73 +179,102 @@ export default function DashboardPage() {
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState<boolean>(false);
   const [isAccountModalOpen, setIsAccountModalOpen] = useState<boolean>(false);
 
-  // Load history & API keys from localStorage and fetch server pool status
+  // Load verified server session, history & API keys from localStorage
   useEffect(() => {
-    // ── Enforce Login Gate: Check User Session ──
-    try {
-      const savedSession = localStorage.getItem("revou_admission_user_session_v1");
-      if (savedSession) {
-        const parsed = JSON.parse(savedSession);
-        if (parsed?.name && parsed?.role) {
-          setUserSession(parsed);
-          setIsAuthChecking(false);
+    let active = true;
+
+    const initSessionAndApp = async () => {
+      try {
+        const meRes = await fetch("/api/auth/me", { cache: "no-store" });
+        if (!meRes.ok) {
           try {
-            if (sessionStorage.getItem("revou_just_logged_in")) {
-              sessionStorage.removeItem("revou_just_logged_in");
-              setTimeout(() => {
-                showToast(`👋 Selamat datang, ${parsed.name} (${parsed.role})!`);
-              }, 300);
-            }
+            localStorage.removeItem("revou_admission_user_session_v1");
           } catch (e) { }
-        } else {
-          router.replace("/login");
+          if (active) router.replace("/login");
           return;
         }
-      } else {
-        router.replace("/login");
+
+        const meData = await meRes.json();
+        if (!meData?.authenticated || !meData?.user?.name || !meData?.user?.role) {
+          try {
+            localStorage.removeItem("revou_admission_user_session_v1");
+          } catch (e) { }
+          if (active) router.replace("/login");
+          return;
+        }
+
+        const verifiedSession: UserSession = {
+          name: meData.user.name,
+          role: meData.user.role,
+          email: meData.user.email,
+          savedAt: Date.now(),
+        };
+
+        try {
+          localStorage.setItem("revou_admission_user_session_v1", JSON.stringify(verifiedSession));
+        } catch (e) { }
+
+        if (!active) return;
+        setUserSession(verifiedSession);
+        setIsAuthChecking(false);
+
+        try {
+          if (sessionStorage.getItem("revou_just_logged_in")) {
+            sessionStorage.removeItem("revou_just_logged_in");
+            setTimeout(() => {
+              showToast(`👋 Selamat datang, ${verifiedSession.name} (${verifiedSession.role})!`);
+            }, 300);
+          }
+        } catch (e) { }
+
+        // Fetch initial API pool status (khusus Owner)
+        if (verifiedSession.role === "Owner") {
+          fetchApiPoolStatus();
+        }
+      } catch (e) {
+        if (active) router.replace("/login");
         return;
       }
-    } catch (e) {
-      router.replace("/login");
-      return;
-    }
 
-    try {
-      const savedHistory = localStorage.getItem("revou_admission_history_v1");
-      if (savedHistory) {
-        const parsed = JSON.parse(savedHistory);
-        if (Array.isArray(parsed)) {
-          setHistoryList(parsed);
-        }
-      }
-    } catch (e) {
-      console.error("Failed to load history from localStorage:", e);
-    }
-
-    try {
-      const savedKeys = localStorage.getItem("revou_admission_custom_api_keys_v2");
-      if (savedKeys) {
-        const parsedKeys = JSON.parse(savedKeys);
-        if (Array.isArray(parsedKeys)) {
-          // Jika key tersimpan di browser adalah key lama Google Gemini (AQ. / AIza), bersihkan otomatis
-          const hasLegacyKeys = parsedKeys.some(
-            (k: string) => typeof k === "string" && (k.startsWith("AQ.") || k.startsWith("AIza"))
-          );
-          if (hasLegacyKeys) {
-            localStorage.removeItem("revou_admission_custom_api_keys_v2");
-            setCustomApiKeys(["", "", "", "", ""]);
-          } else {
-            const normalized = [...parsedKeys, "", "", "", "", ""].slice(0, 5);
-            setCustomApiKeys(normalized);
+      try {
+        const savedHistory = localStorage.getItem("revou_admission_history_v1");
+        if (savedHistory && active) {
+          const parsed = JSON.parse(savedHistory);
+          if (Array.isArray(parsed)) {
+            setHistoryList(parsed);
           }
         }
+      } catch (e) {
+        console.error("Failed to load history from localStorage:", e);
       }
-    } catch (e) {
-      console.error("Failed to load custom keys from localStorage:", e);
-    }
 
-    // Fetch initial API pool status
-    fetchApiPoolStatus();
+      try {
+        const savedKeys = localStorage.getItem("revou_admission_custom_api_keys_v2");
+        if (savedKeys && active) {
+          const parsedKeys = JSON.parse(savedKeys);
+          if (Array.isArray(parsedKeys)) {
+            // Jika key tersimpan di browser adalah key lama Google Gemini (AQ. / AIza), bersihkan otomatis
+            const hasLegacyKeys = parsedKeys.some(
+              (k: string) => typeof k === "string" && (k.startsWith("AQ.") || k.startsWith("AIza"))
+            );
+            if (hasLegacyKeys) {
+              localStorage.removeItem("revou_admission_custom_api_keys_v2");
+              setCustomApiKeys(["", "", "", "", ""]);
+            } else {
+              const normalized = [...parsedKeys, "", "", "", "", ""].slice(0, 5);
+              setCustomApiKeys(normalized);
+            }
+          }
+        }
+      } catch (e) {
+        console.error("Failed to load custom keys from localStorage:", e);
+      }
+    };
+
+    initSessionAndApp();
+    return () => {
+      active = false;
+    };
   }, []);
 
   // Real-Time Online Presence: heartbeat per tab (status active/idle + mode fitur aktif)
@@ -1151,9 +1181,9 @@ INSTRUKSI PENTING:
         {/* 1. TOPBAR & EDITORIAL MASTHEAD                            */}
         {/* ========================================================= */}
         <motion.header
-          initial={{ opacity: 0, y: -12 }}
+          initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
           className="mb-6"
         >
           {/* Masthead Utility Navigation Bar */}
@@ -1248,9 +1278,9 @@ INSTRUKSI PENTING:
 
           {/* Editorial Headline */}
           <motion.h1
-            initial={{ opacity: 0, y: 12 }}
+            initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.24, delay: 0.03, ease: [0.16, 1, 0.3, 1] }}
             className="font-display font-extrabold text-2xl sm:text-3xl md:text-[34px] tracking-tight leading-[1.18] text-[#141412] mb-2"
           >
             Turn prospect context into a{" "}
@@ -1260,9 +1290,9 @@ INSTRUKSI PENTING:
             .
           </motion.h1>
           <motion.p
-            initial={{ opacity: 0, y: 8 }}
+            initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.45, delay: 0.14, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.24, delay: 0.06, ease: [0.16, 1, 0.3, 1] }}
             className="text-[#4B4B46] text-sm sm:text-[15px] leading-relaxed max-w-[68ch]"
           >
             Asisten penjualan cerdas Admission RevoU: rancang pitch WhatsApp personal (<strong className="text-[#141412] font-semibold">Create a Pitch</strong>), temukan bukti nyata kisah alumni (<strong className="text-[#141412] font-semibold">Checking Alumni</strong>), dan bedah komparasi kurikulum head-to-head vs kompetitor (<strong className="text-[#141412] font-semibold">Comparison Table</strong>) secara faktual.
@@ -1298,9 +1328,9 @@ INSTRUKSI PENTING:
         {/* 2. MAIN CARD WORKSPACE (.card.work)                       */}
         {/* ========================================================= */}
         <motion.section
-          initial={{ opacity: 0, y: 16 }}
+          initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.22, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.24, delay: 0.09, ease: [0.16, 1, 0.3, 1] }}
           className="bg-white border border-[#E8E8E4] rounded-2xl p-5 sm:p-6 shadow-xs space-y-6"
         >
           {/* Segmented Control Pill Navigation Bar + Favorit & Riwayat Button */}
@@ -1366,10 +1396,10 @@ INSTRUKSI PENTING:
           <AnimatePresence mode="wait">
             <motion.div
               key={mode}
-              initial={{ opacity: 0, y: 10 }}
+              initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -6 }}
-              transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+              exit={{ opacity: 0, y: -4 }}
+              transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
               className="space-y-6"
             >
               {/* Dedicated Comparison Table Explorer (Battlecards, General Table, Bootcamp Table) */}
@@ -1516,9 +1546,9 @@ INSTRUKSI PENTING:
                             className={`w-1.5 h-1.5 rounded-full ${apiPoolStatus?.quotaHealth === "optimal"
                               ? "bg-[#1F7A4D]"
                               : apiPoolStatus?.quotaHealth === "partial_warning"
-                                ? "bg-[#D97706] animate-pulse"
+                                ? "bg-[#D97706] motion-safe:animate-pulse"
                                 : apiPoolStatus?.quotaHealth === "all_exhausted"
-                                  ? "bg-[#DA1E28] animate-pulse"
+                                  ? "bg-[#DA1E28] motion-safe:animate-pulse"
                                   : "bg-[#1F7A4D]"
                               }`}
                           />
@@ -1550,7 +1580,7 @@ INSTRUKSI PENTING:
                       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#FFD84D]/40 pb-2.5">
                         <div className="flex items-center gap-2">
                           <span className="relative flex h-2.5 w-2.5 items-center justify-center">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#E5B500] opacity-75" />
+                            <span className="motion-safe:animate-ping absolute inline-flex h-full w-full rounded-full bg-[#E5B500] opacity-75" />
                             <span className="relative inline-flex rounded-full h-2 w-2 bg-[#FFCC1A]" />
                           </span>
                           <span className="font-display font-bold text-xs uppercase tracking-wider text-[#A15C00]">
@@ -1571,7 +1601,7 @@ INSTRUKSI PENTING:
                           </div>
                           <div className="bg-white border border-[#E8E8E4] rounded-xl p-3.5 max-h-48 overflow-y-auto font-mono text-xs text-[#2B2B28] leading-relaxed whitespace-pre-wrap shadow-inner">
                             {streamDeltaText}
-                            <span className="inline-block w-1.5 h-3.5 bg-[#FFCC1A] ml-1 animate-pulse align-middle" />
+                            <span className="inline-block w-1.5 h-3.5 bg-[#FFCC1A] ml-1 motion-safe:animate-pulse align-middle" />
                           </div>
                         </div>
                       ) : (
@@ -1588,9 +1618,9 @@ INSTRUKSI PENTING:
                   {/* ========================================================= */}
                   {responseResult && (
                     <motion.div
-                      initial={{ opacity: 0, y: 16 }}
+                      initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+                      transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
                       className="border-t border-[#E8E8E4] pt-5 mt-6 space-y-6"
                     >
                       {/* Output Header */}
@@ -1843,7 +1873,7 @@ INSTRUKSI PENTING:
 
                         {/* Loading indicator while waiting for clarification response */}
                         {isChatLoading && (
-                          <div className="p-4 bg-[#FFF6D1]/50 border border-[#FFD84D]/60 rounded-xl flex items-center gap-3 animate-pulse">
+                          <div className="p-4 bg-[#FFF6D1]/50 border border-[#FFD84D]/60 rounded-xl flex items-center gap-3 motion-safe:animate-pulse">
                             <div className="w-4 h-4 border-2 border-[#141412] border-t-transparent rounded-full animate-spin shrink-0" />
                             <span className="text-sm font-medium text-[#141412]">
                               AI sedang memproses klarifikasi dan menyesuaikan draf script...
@@ -1864,7 +1894,13 @@ INSTRUKSI PENTING:
                             {chatThread.map((msg, i) => {
                               if (msg.role === "user") {
                                 return (
-                                  <div key={msg.id || i} className="flex justify-end pt-1">
+                                  <motion.div
+                                    key={msg.id || i}
+                                    initial={{ opacity: 0, y: 6 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ duration: 0.18, ease: EASE_OUT }}
+                                    className="flex justify-end pt-1"
+                                  >
                                     <div className="max-w-[85%] bg-[#141412] text-white px-4 py-2.5 rounded-[14px_14px_4px_14px] text-sm shadow-2xs">
                                       <div className="flex items-center justify-between gap-3 font-mono text-[10.5px] text-[#D9D9D4] mb-1">
                                         <span>💬 Klarifikasi Kamu</span>
@@ -1872,7 +1908,7 @@ INSTRUKSI PENTING:
                                       </div>
                                       <p className="leading-relaxed font-normal">{msg.text}</p>
                                     </div>
-                                  </div>
+                                  </motion.div>
                                 );
                               }
 
@@ -1881,8 +1917,11 @@ INSTRUKSI PENTING:
                               const scripts = msg.data?.scripts || [];
 
                               return (
-                                <div
+                                <motion.div
                                   key={msg.id || i}
+                                  initial={{ opacity: 0, y: 6 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  transition={{ duration: 0.18, ease: EASE_OUT }}
                                   className="bg-[#FFFFFF] border-2 border-[#FFD84D]/80 rounded-[14px] p-4 sm:p-5 shadow-[0_2px_8px_rgba(255,216,77,0.15)] space-y-4"
                                 >
                                   {/* Header */}
@@ -2027,7 +2066,7 @@ INSTRUKSI PENTING:
                                       )}
                                     </div>
                                   )}
-                                </div>
+                                </motion.div>
                               );
                             })}
                           </div>
@@ -2163,12 +2202,22 @@ INSTRUKSI PENTING:
       </AnimatePresence>
 
       {/* FLOATING TOAST NOTIFICATION */}
-      {historyToast && (
-        <div className="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-50 bg-[#141412] text-white px-4 py-2.5 rounded-xl shadow-xl border border-[#2B2B28] flex items-center gap-2.5 text-xs sm:text-sm font-medium animate-in fade-in slide-in-from-bottom-3 duration-200">
-          <span className="w-2 h-2 rounded-full bg-[#FFD84D]" />
-          <span>{historyToast}</span>
-        </div>
-      )}
+      <AnimatePresence>
+        {historyToast && (
+          <motion.div
+            key="history-toast"
+            role="status"
+            aria-live="polite"
+            initial={{ opacity: 0, y: 12, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1, transition: { duration: 0.22, ease: [0.16, 1, 0.3, 1] } }}
+            exit={{ opacity: 0, y: 8, scale: 0.96, transition: { duration: 0.16, ease: [0.16, 1, 0.3, 1] } }}
+            className="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-50 bg-[#141412] text-white px-4 py-2.5 rounded-xl shadow-xl border border-[#2B2B28] flex items-center gap-2.5 text-xs sm:text-sm font-medium"
+          >
+            <span className="w-2 h-2 rounded-full bg-[#FFD84D]" />
+            <span>{historyToast}</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

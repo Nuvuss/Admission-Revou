@@ -1,7 +1,9 @@
 "use client";
 
 import React from "react";
+import { motion } from "motion/react";
 import { Layers, Copy, Check } from "lucide-react";
+import { EASE_OUT } from "../../lib/motion";
 import { renderFormattedTextWithLinks } from "../utils/formatText";
 
 interface PitchScriptItem {
@@ -65,7 +67,13 @@ export default function PitchScripts({
 
       {/* Active Script Blockquote Card */}
       {currentScript && (
-        <div className="relative rounded-[12px] bg-[#F5F5F2] border border-[#E8E8E4] p-4 sm:p-5 text-[15px] leading-relaxed card-interactive">
+        <motion.div
+          key={activeTab}
+          initial={{ opacity: 0, y: 4 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.16, ease: EASE_OUT }}
+          className="relative rounded-[12px] bg-[#F5F5F2] border border-[#E8E8E4] p-4 sm:p-5 text-[15px] leading-relaxed card-interactive"
+        >
           <div className="font-mono text-[11px] uppercase tracking-wider text-[#8A8A84] mb-2 font-semibold flex items-center justify-between">
             <span>{currentScript.badge}</span>
             {currentScript.text && (
@@ -97,7 +105,7 @@ export default function PitchScripts({
               </>
             )}
           </button>
-        </div>
+        </motion.div>
       )}
     </div>
   );

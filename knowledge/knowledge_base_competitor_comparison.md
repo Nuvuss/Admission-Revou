@@ -110,6 +110,111 @@ Setiap kali calon siswa (*leads*) menyebut atau membandingkan RevoU dengan lemba
 
 ---
 
+### BATTLECARD 5: REWORK ACADEMY
+
+| Kategori | Rework Academy (Data Resmi Website Nov 2026) | RevoU |
+| :--- | :--- | :--- |
+| **Price & Cicilan** | • Biaya Normal: Rp 10.000.000.<br>• Promo Earlybird / Final Seat: Rp 1.999.900 – Rp 2.499.900 (Hemat 75%–80%).<br>• Cicilan 0% hingga 4x (mulai Rp 500rb – Rp 625rb/bulan).<br>• *Catatan:* Paket Career Accelerator (mentoring karir 1:1 & magang) dijual terpisah tanpa nominal harga di web. | • Rp 16.000.000 – Rp 25.000.000-an (All-in, transparan, tanpa paket tersembunyi).<br>• Cicilan 0% s.d. 12-18 bulan via kartu kredit/Danacita.<br>• Sudah termasuk 12 minggu Virtual Internship portofolio nyata & pendampingan karir penuh Career+. |
+| **Duration & Schedule** | • 12 minggu (3 bulan), 20+ sesi live Zoom (2x seminggu malam, 19:30–22:00 WIB, ~5 jam/minggu). | • 6 – 9 bulan komprehensif (4–5 sesi live/minggu, 210+ jam live) + 12 Minggu Virtual Internship.<br>• Jadwal malam konsisten 19:00–21:00 WIB ramah pekerja. |
+| **Format Pembelajaran** | 100% Online via Zoom (after-work class) + rekaman lifetime. | **100% Live Online Interaktif Dua Arah** (+ Akses rekaman selamanya & 24/7 AI Learning Assistant). |
+| **Sesi Tanya Jawab & Diskusi** | 20+ sesi live bersama mentor (2x seminggu) + konsultasi di luar kelas dengan tutor. | 4-5x per minggu live interaktif dua arah bersama praktisi industri aktif. |
+| **Kurikulum & Case Study** | 20 modul teknis terfokus (AI Engineering RAG/LangGraph/Docker, Cyber Red Team/Burp Suite, Data Analytics) + 2-3 minggu project simulasi. | Kurikulum AI-Native teruji industri SEA + HackerRank + 12 Minggu Virtual Internship mitra nyata (Telkom OCA, Zurich). |
+| **Support System Belajar** | Mentor praktisi + tutor pendamping + handbook PDF. | Pengajar Praktisi + Section Manager + Team Lead + Mentor + 1-on-1 Career Coach. |
+| **Kelas Karir & Review CV** | **TIDAK ADA di paket Professional.** Mentoring karir 1-on-1 dan magang 1-3 bulan dipisah ke paket Career Accelerator berbayar lainnya. | **Career+ All-In:** 1:1 Personal Career Coach selama 7–8 bulan penuh + AI Career Engine + Mock Interview hiring manager. |
+| **Sertifikasi & Kampus** | Official Certificate Rework Academy (PT. Tempat Bertumbuh Indonesia), Rapor & Cyber Security Badge (tanpa kemitraan perguruan tinggi). | RevoU Certificate bertaraf internasional + **Sertifikasi Resmi Universitas Top (ITB, BINUS x AWS, UI)** dengan transfer SKS. |
+| **Komunitas & Network** | Komunitas alumni & event networking baru berkembang. | 15.000+ Alumni Aktif di 1.000+ top company (Gojek, Tokopedia, Traveloka, Shopee, Big 4) & 550.000+ member. |
+| **Seleksi Masuk** | Terbuka umum tanpa tes teknis ketat. | Aptitude test & interview komitmen (tingkat penerimaan <10%) untuk jamin circle terbaik. |
+| **What They Genuinely Do Better** | Menawarkan kursus malam berbiaya masuk rendah (Rp 2jt-an promo) untuk topik teknis spesifik seperti Cyber Security Red Team, RAG, dan LangChain bagi yang ingin eksplorasi mandiri tanpa butuh fasilitas karir. |
+| **Where RevoU Wins** | 1. **All-In Career Guarantee:** Bimbingan karir 1-on-1 Career+ dan magang sudah all-in tanpa di-unbundle ke paket mahal lain.<br>2. **12 Minggu Virtual Internship:** Bekerja nyata dengan data/klien enterprise (Telkom OCA, Zurich), bukan sekadar dataset simulasi 2 minggu.<br>3. **Kredensial Universitas Nomor 1:** Diakui resmi oleh ITB, BINUS x AWS, dan UI dengan bobot kredibilitas jauh lebih tinggi.<br>4. **Jam Terbang Live 4x Lipat:** >210 jam live interaktif intensif harian vs 20 sesi ringkas. |
+| **One Proof Point** | Rework tidak menampilkan data outcome penempatan kerja resmi di web. RevoU transparan mempublikasikan 93% completion rate dan 15.000+ alumni di top companies. |
+| **AC Script Template** | "Rework Academy itu opsi yang menarik kak kalau kakak mencari kelas malam 2x seminggu dengan budget 2 jutaan untuk belajar tools teknis mandiri. Tapi penting dicatat, di paket 2 jutaan tersebut belum termasuk bimbingan karir 1-on-1 maupun magang (mereka jual terpisah di paket Career Accelerator). Kalau di RevoU, programnya sudah All-In: 7-8 bulan intensif dengan 12 minggu Virtual Internship menangani problem bisnis riil korporasi, sertifikasi resmi kampus top (ITB/BINUS/UI), dan didampingi Career Coach 1-on-1 sampai kakak dapat kerja. Kakak orientasinya untuk sekadar coba tools dasar dulu atau persiapan switch career sampai tembus kerja kak? :)" |
+
+---
+
+### BATTLECARD 6: TEMPATBELAJAR
+
+| Kategori | TempatBelajar (Data Resmi Website Nov 2026) | RevoU |
+| :--- | :--- | :--- |
+| **Price & Cicilan** | • **Tier Career Accelerator (DM & HR)**: Normal Rp 30.000.000 \| Earlybird Rp 6.999.900 (hemat 76%) \| Reguler Rp 8.999.900 – Rp 9.999.900.<br>• **Tier Professional (DM & HR)**: Normal Rp 20.000.000 \| Earlybird Rp 3.499.900 – Rp 3.999.900 \| 2nd Wave Rp 4.999.900 – Rp 5.999.900.<br>• Cicilan 0% 2–4x via WA Admisi (081382423135).<br>• Project budget DM: s.d. Rp 700rb (Professional) atau Rp 1.000.000 (Career Accelerator). | • **FSDM:** Rp 14.900.000 – Rp 17.900.000 All-In (sudah termasuk Career+ 1:1 dan 12 minggu Virtual Internship).<br>• **Strategic HR with AI:** 4 Bulan intensif membedah level HRBP/C-level dengan AI workflows harian.<br>• Cicilan 0% s.d. 12-18 bulan via kartu kredit/Danacita.<br>• Tanpa biaya tersembunyi atau pemisahan paket karir. |
+| **Duration & Schedule** | • **Career Accelerator**: 4 bulan (16 minggu: 8 mgg intensive learning + 8 mgg 2 project).<br>• **Professional**: 3 bulan (12 minggu: 8 mgg learning + 4 mgg 1 project).<br>• Sesi live 2x seminggu malam (19:30–21:30 WIB: Sen & Kam untuk DM Batch 30, Sel & Jum untuk HR Batch 23) + video modul mandiri pre-recorded. | • **FSDM:** 6 – 9 bulan komprehensif (5x per minggu sesi live interaktif harian) + 12 Minggu Virtual Internship.<br>• **Strategic HR:** 4 bulan (3 sesi live malam/minggu, 10–12 jam/minggu, Foundation + 6 Modul + 3-Week Capstone). |
+| **Format Pembelajaran** | Full Online (kombinasi Zoom live 2x/minggu dan video pre-recorded). | **100% Live Online Interaktif Dua Arah** intensif bersama praktisi industri aktif. |
+| **Sesi Tanya Jawab & Diskusi** | Sesi live Zoom 2x seminggu + konsultasi tutor assistant di luar kelas. | 4-5x per minggu live interaktif dua arah bersama praktisi industri aktif. |
+| **Kurikulum & Case Study** | • **DM**: 18 lesson (Meta, TikTok, Google Ads, SEO, AI Digital Marketing) + 2 project (Strategi 2 mgg + Handle UMKM 6 mgg).<br>• **HR**: 14 lesson (Talent, Performance, Legal, HRIS Gajihub/Gaji.id, AI HR) + 2 project (HRM Strategy 4 mgg + Recruitment Simulation 4 mgg). | • **FSDM**: 12 modul end-to-end terdepan mencakup Full-Funnel Performance Marketing, AI Marketing, CRM, GEO, & real enterprise brand campaign.<br>• **Strategic HR with AI**: 6 domain HR strategis (Stakeholder, Org Design, Talent, Performance, Comp & Ben, Operations) + 7 portofolio nyata level C-level + AI workflows harian. |
+| **Support System Belajar** | 12 mentor (DM) / 24 mentor (HR) praktisi + student advisor. | Pengajar Praktisi Senior (Head/Director 10+ thn) + Section Manager + Team Lead + Mentor + 1-on-1 Career Coach. |
+| **Kelas Karir & Review CV** | • **Career Accelerator**: 6 minggu intensive career support private 1-on-1 pasca graduation + penyaluran magang remote (WFH) 1-3 bulan.<br>• **Professional**: **TIDAK ADA** bimbingan karir 1-on-1 maupun penyaluran magang. | **Career+ All-In:** 16 sesi LIVE Career Coach + 1:1 Personalized Coaching selama 7–8 bulan penuh + AI Career Engine + mock interview hiring manager. |
+| **Sertifikasi & Kampus** | Sertifikat PT. Tempat Berkarya Indonesia & rapor penilaian (tanpa kemitraan kampus). | RevoU Certificate bertaraf internasional + **Sertifikasi Resmi Universitas Top (ITB, BINUS, UI)**. |
+| **Komunitas & Network** | 2.327+ alumni (Career Accelerator) / 2.679+ alumni (Professional) & 201+ hiring partner. | 15.000+ Alumni Aktif & 550.000+ member digital learner di 1.000+ top company. |
+| **Seleksi Masuk** | Terbuka untuk umum tanpa syarat pengalaman atau tes masuk. | Aptitude test & wawancara komitmen (tingkat penerimaan <10%). |
+| **What They Genuinely Do Better** | Menyediakan jalur Career Accelerator dengan 2 project nyata (termasuk budget ads UMKM Rp 1jt di DM dan demo HRIS Gajihub di HR) serta magang remote 1-3 bulan seharga Rp 7jt-an promo. |
+| **Where RevoU Wins** | 1. **Skala Bisnis Portofolio (Enterprise vs UMKM):** RevoU Virtual Internship menangani campaign brand korporat besar dengan budget jutaan rupiah (FSDM) atau 7 portofolio strategis C-level (Strategic HR), bukan sekadar UMKM mikro budget 1jt.<br>2. **Jam Terbang 100% Live:** RevoU 5x seminggu live interaktif harian (FSDM) vs TempatBelajar yang hanya 2x seminggu (Sen & Kam) dominan rekaman video mandiri.<br>3. **Durasi Pendampingan Karir:** Career+ RevoU mendampingi 7-8 bulan penuh bersama Personal Career Coach 1-on-1 & AI Career Engine sampai dapat kerja (vs 6 minggu di TempatBelajar).<br>4. **Senioritas & Strategi HR:** RevoU Strategic HR with AI mencetak level HRBP/Head of HR dengan AI workflows terintegrasi, bukan sekadar staf HR operasional/entry-level.<br>5. **Kredensial Universitas Nomor 1:** Diakui kemitraan resmi universitas top (BINUS x AWS, ITB, UI). |
+| **One Proof Point** | 2.327+ alumni TempatBelajar. RevoU memiliki 15.000+ alumni terbukti berkarir di 1.000+ top companies (Gojek, Tokopedia, Shopee, Traveloka, Big 4) dengan rata-rata kenaikan gaji hingga 120% dan 93% completion rate resmi. |
+| **AC Script Template** | "TempatBelajar punya 2 tier kak: versi Professional 3 bulan (Rp 3,5jt–4jt) tapi belum ada bimbingan karir 1-on-1 maupun magang, dan versi Career Accelerator 4 bulan (Rp 7jt–10jt) yang ada magang remote dan budget iklan UMKM 1 juta. Nah, kalau di RevoU FSDM, program kita sudah all-in 7 bulan: 12 minggu Virtual Internship memegang brand enterprise besar dengan real budget jutaan rupiah, 100% live class setiap hari (bukan 2x seminggu), dan pendampingan 1:1 Career Coach selama 7-8 bulan sampai dapat kerja. Begitu juga kalau kakak tertarik di bidang HR, RevoU Strategic HR with AI melatih kakak di level strategis HRBP & People Strategy C-level dengan AI workflows harian, bukan sekadar administrasi staf dasar. Kakak lebih memprioritaskan portofolio UMKM kecil atau pengalaman menangani bisnis skala besar kak? :)" |
+
+---
+
+### BATTLECARD 7: DICODING
+
+| Kategori | Dicoding (Data Resmi Website Nov 2026) | RevoU |
+| :--- | :--- | :--- |
+| **Price & Cicilan** | • Biaya Normal: Rp 14.000.000.<br>• Promo 11.11 Bayar Penuh: Rp 5.040.000 (diskon 60% + 10%).<br>• Cicil 3x: Rp 5.320.000; Cicil 5x: Rp 5.600.000.<br>• Opsi cicilan fleksibel tanpa bunga. | • Rp 16.000.000 – Rp 25.000.000-an.<br>• Cicilan ringan bunga 0% s.d. 12-18 bulan via kartu kredit/Danacita.<br>• Format 100% Live Instruction setiap hari (bukan modul mandiri). |
+| **Duration & Schedule** | • 20 minggu (±5 bulan), self-paced learning 5–6 jam/hari.<br>• Hanya 10+ sesi tatap muka online bersama praktisi selama 5 bulan (1 sesi per 2 minggu). | • 6 – 9 bulan komprehensif, Senin–Jumat 19:00–21:00 WIB (4–5 sesi live per minggu, >210 jam live interaktif). |
+| **Format Pembelajaran** | Dominan Self-paced (membaca modul web Dicoding) + 10+ sesi live Zoom. | **100% Live Online Interaktif Dua Arah** setiap hari bersama praktisi industri aktif. |
+| **Sesi Tanya Jawab & Diskusi** | 10+ sesi live Zoom, review kode oleh expert/AI, monitoring mingguan fasilitator. | 4-5x per minggu live coding & simulasi dua arah langsung dengan praktisi. |
+| **Kurikulum & Case Study** | Kurikulum terstruktur Google Authorized Partner (React + Django atau Data Science & ML) + Capstone 90 jam. | Kurikulum AI-Native teruji industri lokal & regional + 12 Minggu Virtual Internship menangani data & software korporasi riil. |
+| **Support System Belajar** | Fasilitator mingguan + AI & expert code reviewer. | Pengajar Praktisi + Section Manager + Team Lead + Mentor + 1-on-1 Career Coach. |
+| **Kelas Karir & Review CV** | Sesi persiapan karir 2 jam di akhir program; screening awal hiring partners hanya untuk lulusan terbaik. | **Career+ Intensif:** 1:1 Personal Career Coach selama 7–8 bulan penuh untuk semua siswa eligible, AI Career Engine, dan Mock Interview hiring manager. |
+| **Sertifikasi & Kampus** | Sertifikat Kelulusan Dicoding Akademi (Google Authorized Training Partner). | RevoU Certificate bertaraf internasional + **Sertifikasi Resmi Universitas Top (ITB, BINUS x AWS, UI)**. |
+| **Komunitas & Network** | 2.800+ alumni berkarier dari bootcamp Dicoding. | 15.000+ Alumni Aktif di 1.000+ top company & 550.000+ member. |
+| **Seleksi Masuk** | Terbuka untuk umum tanpa tes pemrograman awal (hanya komitmen waktu). | Aptitude test & wawancara (tingkat penerimaan <10%). |
+| **What They Genuinely Do Better** | Modul teks belajar mandiri dan platform review kode otomatis yang sangat rapi bagi pembelajar otodidak yang punya kedisiplinan membaca tinggi. |
+| **Where RevoU Wins** | 1. **100% Live Interactive Learning:** 210+ jam live coding interaktif harian vs Dicoding yang hanya 10+ sesi live selama 5 bulan (mencegah rasa jenuh & stuck belajar sendiri).<br>2. **12 Minggu Virtual Internship:** Portofolio proyek nyata dengan partner bisnis enterprise (Telkom OCA, Zurich), bukan capstone mandiri.<br>3. **Dukungan Karir untuk Semua (Inklusif):** Career+ 1-on-1 intensif mendampingi seluruh siswa yang eligible, bukan hanya lulusan terbaik.<br>4. **Kemitraan Universitas Unggulan:** Kredensial resmi ITB, BINUS, dan UI yang diakui luas oleh HR & industri. |
+| **One Proof Point** | 2.800+ alumni Dicoding vs 15.000+ alumni RevoU. RevoU transparan dengan 93% completion rate berkat support system harian yang mencegah siswa drop out. |
+| **AC Script Template** | "Dicoding itu platform yang luar biasa bagus kalau kakak tipe pembelajar mandiri yang disiplin membaca modul teks 5-6 jam setiap hari, karena sesi live interaktifnya hanya sekitar 10 sesi dalam 5 bulan. Nah, kendala terbesar banyak orang saat belajar koding/data otodidak adalah rasa jenuh dan bingung saat stuck. Di RevoU, format kita 100% live interaktif setiap hari (210+ jam live), ada Section Manager & Mentor yang mendampingi harian, 12 minggu Virtual Internship dengan korporasi nyata, dan Career Coach 1-on-1 sampai dapat kerja. Kakak lebih cocok tipe belajar mandiri membaca modul atau interaktif live setiap hari kak? :)" |
+
+---
+
+### BATTLECARD 8: MYSKILL
+
+| Kategori | MySkill (Data Resmi Website Nov 2026) | RevoU |
+| :--- | :--- | :--- |
+| **Price & Cicilan** | • Biaya Tampil: Rp 230.000 – Rp 650.000 (Late Sale Rp 1.000.000 – Rp 1.100.000).<br>• Cicilan BCA di footer web.<br>• *Catatan:* **Final project tim opsional dengan biaya tambahan terpisah.** | • Rp 14.900.000 – Rp 25.000.000-an (All-in komprehensif, tanpa biaya final project tersembunyi).<br>• Cicilan 0% s.d. 12-18 bulan via kartu kredit/Danacita.<br>• Termasuk 12 minggu Virtual Internship & Career+ sampai hired. |
+| **Duration & Schedule** | • 5 – 7 minggu (8 – 18 sesi live class, 2-3x seminggu malam 19:30–21:30 WIB). | • 6 – 9 bulan komprehensif (4–5 sesi live/minggu, >210 jam live instruction) + 12 Minggu Virtual Internship. |
+| **Format Pembelajaran** | Live Class Zoom + rekaman kelas + ratusan video eLearning bersertifikat. | **100% Live Online Interaktif Dua Arah** intensif harian. |
+| **Sesi Tanya Jawab & Diskusi** | 2–3x seminggu sesi live class Zoom. | 4-5x per minggu live interaktif dua arah bersama praktisi industri aktif. |
+| **Kurikulum & Case Study** | Pengenalan dasar modular (SQL basic, Python dasar Pandas, Looker Studio / Meta, Google Ads / Lovable AI). | Kurikulum mendalam end-to-end teruji industri lokal & regional + 12 Minggu Virtual Internship dataset riil perusahaan. |
+| **Support System Belajar** | Tutor praktisi + grup Telegram komunitas. | Pengajar Praktisi + Section Manager + Team Lead + Mentor + 1-on-1 Career Coach. |
+| **Kelas Karir & Review CV** | 1 sesi Career Class (review HR CV & interview) + template CV/surat lamaran ID/EN. Tanpa pendampingan 1-on-1 intensif. | **Career+ 7–8 Bulan:** 1:1 Personal Career Coach, AI Career Engine, dan simulasi interview hiring manager hingga ditempatkan. |
+| **Sertifikasi & Kampus** | e-Certificate MySkill (PT. Linimuda Inspirasi Negeri). | RevoU Certificate bertaraf internasional + **Sertifikasi Resmi Universitas Top (ITB, BINUS x AWS, UI)**. |
+| **Komunitas & Network** | Komunitas massal ribuan peserta kursus kilat via Telegram. | 15.000+ Alumni Aktif di 1.000+ top company & 550.000+ member. |
+| **Seleksi Masuk** | Terbuka untuk umum tanpa seleksi masuk. | Aptitude test & wawancara komitmen (tingkat penerimaan <10%). |
+| **What They Genuinely Do Better** | Harga tiket masuk sangat terjangkau (ratusan ribu rupiah) untuk mahasiswa atau pemula yang hanya ingin kursus kilat eksplorasi dasar dalam beberapa minggu. |
+| **Where RevoU Wins** | 1. **Job-Ready Career Transformation:** RevoU melatih dari nol hingga level profesional siap kerja selama 7 bulan, bukan kursus kilat permukaan 5-7 minggu.<br>2. **Transparansi Tanpa Biaya Tersembunyi:** Final project & Virtual Internship sudah all-in (MySkill memungut biaya tambahan jika ingin ikut final project).<br>3. **1:1 Career Coach Intensif:** Didampingi personal coach selama 7 bulan vs 1 sesi webinar sharing class.<br>4. **Kredensial Kampus Bergengsi:** Sertifikat resmi ITB, BINUS, dan UI yang diakui recruiter unicorn. |
+| **One Proof Point** | 15.000+ alumni RevoU tembus di Gojek, Shopee, Traveloka, Tokopedia, Big 4, BUMN. MySkill fokus ke volume peserta kursus massal. RevoU fokus pada kualitas lulusan dengan 93% completion rate. |
+| **AC Script Template** | "MySkill itu pilihan yang bagus banget kak kalau kakak baru mau coba-coba pengenalan dasar selama 1-2 bulan dengan budget ratusan ribu. Namun untuk bisa tembus kerja profesional di top company, perusahaan butuh kandidat dengan jam terbang tinggi dan portfolio bisnis nyata. Di program kilat, materinya baru level surface-level dan untuk final project bahkan ada biaya tambahan. Di RevoU, kakak belajar 7 bulan intensif, memegang proyek nyata 12 minggu Virtual Internship tanpa biaya tersembunyi, dan didampingi Career Coach 1-on-1 sampai dapat kerja. Kakak saat ini butuh pengenalan dasar atau persiapan karir serius sampai kerja kak? :)" |
+
+---
+
+### BATTLECARD 9: FULL STACK BANGALORE (FSB)
+
+| Kategori | Full Stack Bangalore (Data Resmi Website Nov 2026) | RevoU |
+| :--- | :--- | :--- |
+| **Price & Cicilan** | • Biaya Promo: Rp 149.000 (Harga Normal Rp 599.000).<br>• Pendaftaran via Lynk.id, tanpa skema cicilan resmi. | • Rp 16.000.000 – Rp 25.000.000-an.<br>• Cicilan ringan bunga 0% s.d. 12-18 bulan via kartu kredit/Danacita.<br>• Program intensif komprehensif 7 bulan dengan bimbingan karir penuh Career+. |
+| **Duration & Schedule** | • 3 – 4 minggu (5 – 10 sesi live Zoom, weekday malam + weekend). | • 6 – 9 bulan komprehensif (4–5 sesi live/minggu, >210 jam live instruction) + 12 Minggu Virtual Internship. |
+| **Format Pembelajaran** | Live Zoom + rekaman kelas (80% praktek, 20% teori). | **100% Live Online Interaktif Dua Arah** intensif harian. |
+| **Sesi Tanya Jawab & Diskusi** | Sesi tanya jawab di kelas Zoom (10 sesi total). | 4-5x per minggu live interaktif dua arah bersama praktisi industri aktif. |
+| **Kurikulum & Case Study** | Pengenalan tools cepat (PowerBI, n8n, Streamlit, SQL dasar, Meta Ads) + 1 mini project. | Kurikulum komprehensif end-to-end + 12 Minggu Virtual Internship mengerjakan data & campaign korporasi riil. |
+| **Support System Belajar** | Mentor dari tech startup (nama mentor tidak dicantumkan di web) + komunitas alumni. | Pengajar Praktisi Terverifikasi + Section Manager + Team Lead + Mentor + 1-on-1 Career Coach. |
+| **Kelas Karir & Review CV** | Free webinar persiapan karir (tanpa 1-on-1 coaching atau review CV personal). | **Career+ 7–8 Bulan:** 1:1 Personal Career Coach, AI Career Engine, dan simulasi interview hiring manager hingga ditempatkan. |
+| **Sertifikasi & Kampus** | Sertifikat kelulusan Full Stack Bangalore (tanpa akreditasi kampus atau BNSP). | RevoU Certificate bertaraf internasional + **Sertifikasi Resmi Universitas Top (ITB, BINUS x AWS, UI)**. |
+| **Komunitas & Network** | Komunitas pembelajar via grup chat. | 15.000+ Alumni Aktif di 1.000+ top company & 550.000+ member pelajar. |
+| **Seleksi Masuk** | Terbuka untuk umum tanpa tes seleksi. | Aptitude test & wawancara komitmen (tingkat penerimaan <10%). |
+| **What They Genuinely Do Better** | Harga sangat terjangkau (Rp 149rb) untuk melihat live demo pengenalan tools populer (n8n, Streamlit, PowerBI) dalam 4 minggu. |
+| **Where RevoU Wins** | 1. **Instruktur Terverifikasi & Transparan:** Di RevoU semua pengajar adalah lead/head terverifikasi dari tech unicorns (FSB tidak menyebutkan nama mentor di web).<br>2. **Transformasi Karir Nyata:** 7 bulan intensif dari nol hingga siap kerja vs 10 sesi demo tools ringkas.<br>3. **12 Minggu Virtual Internship:** Mengolah data bisnis riil perusahaan mitra (Telkom OCA, Zurich) vs mini project sederhana.<br>4. **Kredibilitas Akademik Resmi:** Didukung resmi oleh ITB, BINUS x AWS, dan UI. |
+| **One Proof Point** | 15.000+ alumni RevoU terbukti berkarir di Gojek, Tokopedia, Traveloka, Shopee, Big 4, BUMN. RevoU transparan mempublikasikan 93% completion rate. |
+| **AC Script Template** | "Full Stack Bangalore itu opsi yang terjangkau banget kak kalau kakak sekadar ingin lihat demo pengenalan tools seperti PowerBI atau n8n seharga 149 ribu. Namun kelas 4 minggu dengan 10 sesi itu adalah workshop pengenalan singkat. Untuk switch career ke tech company, recruiter mencari pemahaman bisnis menyeluruh, data storytelling, dan portfolio nyata. Di RevoU, kakak belajar 7 bulan intensif dari nol, diajar langsung praktisi top company yang terverifikasi, ada 12 minggu Virtual Internship, dan bimbingan karir 1-on-1 sampai dapat kerja. Kakak saat ini butuh lihat demo tools kilat atau persiapan switch career sampai tembus kerja kak? :)" |
+
+---
+
 ## 📋 3. TABEL KOMPARASI GENERAL (GENERAL COMPARISON TABLE)
 *(Data diverifikasi per Oktober 2026 berdasarkan website resmi masing-masing penyelenggara)*
 
@@ -456,3 +561,217 @@ Setiap kali calon siswa (*leads*) menyebut atau membandingkan RevoU dengan lemba
    - BNSP Data Analyst (Excel / Looker Studio): Rp 2.600.000 – Rp 2.900.000
    - BNSP BI Analyst (Power BI / Excel / Looker): Rp 2.600.000 – Rp 3.000.000
    - BNSP Data Scientist: Rp 3.500.000 (ML & AI + Ujian BNSP)
+
+---
+
+### E. REWORK ACADEMY (Audit Scrape 13 November 2026)
+1. **AI Engineering Bootcamp** (12 Minggu / 20+ Sesi)
+   - URL: `https://reworkacademy.com/ai-engineering-bootcamp/`
+   - Harga: Normal Rp 10jt, Final Seat Rp 2.499.900 (hemat 75%). Cicilan mulai Rp 625rb/bulan.
+   - Jadwal: Selasa & Jumat 19:30–22:00 WIB (after-work).
+   - Tools: Python, PyTorch, Hugging Face, Gemini API, LangChain, LangGraph, LangSmith, FAISS/Pinecone, FastAPI, Docker, GCP Cloud Run.
+   - Project: 3 minggu kelompok memecahkan real-company case mitra.
+   - **Kelemahan Fatal:** Career Support & magang TIDAK ADA di paket ini (dijual di paket terpisah "Career Accelerator Bootcamp").
+
+2. **Cyber Security Bootcamp** (12 Minggu / 20+ Sesi)
+   - URL: `https://reworkacademy.com/cyber-security-bootcamp/`
+   - Harga: Normal Rp 10jt, Earlybird Rp 1.999.900 (hemat 80%). Cicilan mulai Rp 500rb/bulan.
+   - Jadwal: Senin & Kamis 19:30–22:00 WIB.
+   - Tools: Burp Suite, Nmap, Wireshark, Wazuh, SQLMap, DVWA, Linux Ubuntu.
+   - Project: 2 minggu kelompok Web Security Assessment (Red Team).
+   - **Kelemahan Fatal:** Career support 1:1 & magang dipisah ke Career Accelerator.
+
+3. **Data Analyst Bootcamp** (12 Minggu / 20+ Sesi)
+   - URL: `https://reworkacademy.com/data-analyst-bootcamp/`
+   - Harga: Normal Rp 10jt, Earlybird Rp 1.999.900. Cicilan mulai Rp 500rb/bulan.
+   - Jadwal: Senin & Kamis 19:30–22:00 WIB.
+   - Tools: Excel, PostgreSQL, pgAdmin, Looker Studio, Tableau, Python, Pandas.
+   - Project: 2 minggu simulasi dataset (bukan data perusahaan nyata).
+   - **Kelemahan Fatal:** Tanpa bimbingan karir 1:1, dataset simulasi.
+
+---
+
+### F. TEMPATBELAJAR (Audit Scrape 13 November 2026)
+
+TempatBelajar memiliki struktur 2-Tier: **Professional Bootcamp** (3 bulan upskilling + 1 project, tanpa bimbingan 1:1 karir, tanpa penyaluran magang) dan **Career Accelerator Bootcamp** (4 bulan upskilling + 2 project + mentoring 1:1 HR 6 minggu + penyaluran magang remote 1-3 bulan).
+
+1. **Digital Marketing (FSDM Match)**
+   - **Career Accelerator Digital Marketing Bootcamp (4 Bulan / 16 Minggu)**:
+     - URL: `https://tempatbelajar.id/career-accelerator-digital-marketing-bootcamp/`
+     - Harga: Normal Rp 30jt, Earlybird Rp 6.999.900 (hemat 76%), Reguler Rp 9.999.900. Cicilan 2-4x bunga 0%.
+     - Format: 8 minggu belajar intensif + 8 minggu 2 project (60+ sesi live Zoom Sen & Kam 19:30–21:30 WIB + video modul mandiri).
+     - Project 1 (2 minggu): End-to-end strategy UMKM.
+     - Project 2 (6 minggu): Handle digital marketing UMKM organik & paid dengan ad budget s.d. Rp 1.000.000 (disediakan TempatBelajar).
+     - Career Support: 6 minggu private 1-on-1 mentoring dengan praktisi/HR setelah graduation + penyaluran magang remote WFH 1-3 bulan.
+     - Tools: Meta Ads, TikTok Ads, Google Ads, GA4, GTM, WordPress, Elementor, Mailchimp, ManyChat, NotebookLM, Gemini.
+      - **Kurikulum Lengkap (18 Lesson + 2 Real Project UMKM)**:
+        1. Digital Marketing Fundamental & Industry Landscape
+        2. Market Research & Consumer Behavior (2 sesi)
+        3. Automation Tools / ManyChat (2 sesi)
+        4. Search Engine Optimization / SEO (5 sesi)
+        5. Landing Page WordPress & Elementor (3 sesi)
+        6. Marketplace Marketing Shopee, Tokopedia, TikTok Shop (4 sesi)
+        7. Digital Marketing Campaign & Strategy (2 sesi)
+        8. CRM Marketing Email & Push Notification (3 sesi)
+        9. Digital Marketing Analysis & GA4 Reporting (3 sesi)
+        10. Social Media Marketing (4 sesi)
+        11. Copywriting for Conversion (3 sesi)
+        12. Instagram & Facebook Ads / Meta (3 sesi)
+        13. TikTok Ads & GMV Max (4 sesi)
+        14. Google Ads Search & Display (3 sesi)
+        15. Collaborative Ads / CPAS (2 sesi)
+        16. KOL & Influencer Marketing (1 sesi)
+        17. AI-Powered Digital Marketing (5 sesi)
+        18. Freelancing for Digital Marketer (2 sesi)
+        - Project 1: End-to-End DM Strategy UMKM (2 minggu)
+        - Project 2: Handle Digital Marketing UMKM Paid & Organik (6 minggu, ad budget s.d. Rp 1.000.000)
+   - **Versi Professional Digital Marketing Bootcamp (3 Bulan / 12 Minggu)**:
+     - URL: `https://tempatbelajar.id/digital-marketing-bootcamp/`
+     - Harga: Normal Rp 20jt, Earlybird Rp 3.999.900, 2nd Wave Rp 4.999.900 – Rp 5.999.900.
+     - Hanya 1 project (4 minggu, budget ads s.d. Rp 700rb).
+     - **Kelemahan Fatal:** Mentoring karir 1-on-1 dan penyaluran magang TIDAK ADA di program ini.
+
+2. **Human Resource (RevoU Strategic HR Match)**
+   - **Career Accelerator Human Resource Bootcamp (4 Bulan / 16 Minggu)**:
+     - URL: `https://tempatbelajar.id/career-accelerator-human-resource-bootcamp/`
+     - Harga: Normal Rp 30jt, Earlybird Rp 6.999.900 (hemat 76%), Reguler Rp 8.999.900. Cicilan 2-4x bunga 0%.
+     - Format: 8 minggu belajar intensif + 2 bulan 2 project (37+ sesi live Zoom Sel & Jum 19:30–21:30 WIB + video modul mandiri).
+     - Project 1 (4 minggu): End-to-end HRM Strategy for Corporate Partner.
+     - Project 2 (4 minggu): Recruitment Simulation (screening, interview s.d. hiring).
+     - Career Support: 6 minggu private 1-on-1 mentoring dengan praktisi HR + penyaluran magang remote WFH 1-3 bulan.
+     - Tools: Akses demo HRIS (Gajihub, Gaji.id), BPJS, Coretax, Ortax, Google Workspace, ChatGPT, Gemini, NotebookLM.
+     - Fokus: Dominan level staf HR operasional (administrasi, payroll, BPJS, screening CV dasar).
+      - **Kurikulum Lengkap (17 Lesson + 2 Project)**:
+        1. HR Fundamental & Business Context
+        2. Job Analysis, Job Description & Job Specification
+        3. Sourcing & Screening Candidates (ATS & Job Boards)
+        4. Interviewing Methods & BEI (Behavioral Event Interview)
+        5. UU Ketenagakerjaan & Regulasi Ketenagakerjaan RI (Omnibus Law)
+        6. Hubungan Industrial & Bipartit / Tripartit
+        7. Payroll Management & PPh 21
+        8. BPJS Ketenagakerjaan & BPJS Kesehatan
+        9. Performance Management System (KPI & OKR)
+        10. Training & People Development
+        11. Talent Management & Succession Planning (9-Box Matrix dasar)
+        12. Employee Engagement & Retention Strategy
+        13. Organization Development (OD) Dasar
+        14. Demo HRIS Modern (Gajihub, Gaji.id)
+        15. Pengenalan AI for HR Operations (1 sesi)
+        16. HR Analytics & Reporting Dasar
+        17. Career Preparation & HR Portfolio
+        - Project 1: End-to-End HRM Strategy (4 minggu)
+        - Project 2: Recruitment Simulation (4 minggu)
+   - **Versi Professional Human Resource Bootcamp (3 Bulan / 12 Minggu)**:
+     - URL: `https://tempatbelajar.id/human-resource-bootcamp/`
+     - Harga: Normal Rp 20jt, Earlybird Rp 3.499.900, 2nd Wave Rp 4.999.900 – Rp 5.999.900.
+     - Hanya 1 project HRM Strategy 4 minggu.
+     - **Kelemahan Fatal:** Mentoring karir 1-on-1 dan penyaluran magang TIDAK ADA di program ini.
+
+3. **Perbandingan Kunci vs RevoU:**
+   - **vs RevoU FSDM:** Portofolio RevoU adalah 12 Minggu Virtual Internship menangani korporasi besar/enterprise dengan budget jutaan rupiah (bukan UMKM mikro budget 700rb-1jt), 5x live class/minggu intensif (bukan 2x/minggu), dan Career+ 1:1 didampingi 7-8 bulan penuh sampai hired.
+   - **vs RevoU Strategic HR with AI:** RevoU melatih profesional berpengalaman untuk level strategis (HRBP, Organization Design, People Analytics, Head of HR) dengan 7 portofolio strategis nyata level C-level dan AI workflows harian, bukan sekadar staf HR operasional administrasi.
+
+---
+
+### G. DICODING BOOTCAMP (Audit Scrape 13 November 2026)
+1. **Bangun Aplikasi Web Lengkap dengan React + Django** (20 Minggu / 5 Bulan)
+   - URL: `https://bootcamp.dicoding.com/paket-pelatihan/13`
+   - Harga: Normal Rp 14jt, Promo 11.11 bayar penuh Rp 5.040.000 (cicil 3x Rp 5.320.000 / cicil 5x Rp 5.600.000).
+   - Format: Self-paced (membaca teks & modul platform) + hanya 10+ sesi live online tatap muka dalam 5 bulan.
+   - Tools: React, Python, Django, JavaScript, GCP, Postman, PostgreSQL.
+   - **Kelemahan Fatal:** Sangat minim sesi live (<1 sesi per minggu), risiko demotivasi tinggi bagi pemula.
+
+2. **Kuasai Data Science dari Analisis hingga Machine Learning** (20 Minggu / 5 Bulan)
+   - URL: `https://bootcamp.dicoding.com/paket-pelatihan/14`
+   - Harga: Sama dengan paket web (Rp 5.040.000 bayar penuh).
+   - Format: Self-paced 317 jam materi teks + 10+ sesi tatap muka + Capstone 90 jam.
+   - Tools: Python, Pandas, Matplotlib, Scikit-learn, Jupyter, Colab.
+   - **Kelemahan Fatal:** Dominan membaca modul mandiri, screening hiring partner hanya untuk lulusan terbaik.
+
+---
+
+### H. MYSKILL (Audit Scrape 13 November 2026)
+1. **Data Analysis: Fullstack Intensive** (±7 Minggu / 16 Sesi Live)
+   - URL: `https://myskill.id/bootcamp/data-analysis`
+   - Harga: Rp 650.000 (Late Sale Rp 1.100.000).
+   - Jadwal: Sen, Rab, Jum 19:30–21:30 WIB.
+    - **Kurikulum (16 Sesi Live)**: Kickstart DA, Intro to Data Analysis, Basic Statistics, Problem Solving, Data Cleansing, SQL Basic 1–3 (Clause, Analyzing Business Data), SQL for DA 1–2, SQL Tech Interview Case Studies, Python for DA 1–3 (Numpy & Pandas), Data Visualization 1–2 (Google Data Studio), HR CV Review & Interview Class. Tools: PostgreSQL, Python, Google Data Studio.
+   - **Kelemahan Fatal:** Final project tim opsional dengan BIAYA TAMBAHAN terpisah. Tanpa 1-on-1 career coach.
+
+2. **Digital Marketing: Fullstack Intensive** (±6 Minggu / 18 Sesi Live)
+   - URL: `https://myskill.id/bootcamp/digital-marketing`
+   - Harga: Rp 650.000 (Late Sale Rp 1.100.000).
+   - Jadwal: Sen, Rab, Jum 19:30–21:30 WIB.
+   - **Kelemahan Fatal:** Final project tim bayar terpisah, materi padat kilat 6 minggu.
+
+3. **Website Development with Lovable AI** (±5 Minggu / 8 Sesi Live)
+   - URL: `https://myskill.id/bootcamp/website-development-lovable`
+   - Harga: Rp 230.000 (Late Sale Rp 1.000.000).
+   - Jadwal: Sel & Kam 19:30–21:30 WIB.
+   - Tools: Lovable AI, HTML, CSS.
+   - **Kelemahan Fatal:** Hanya 8 pertemuan, fokus prompt web builder no-code, tanpa karir support.
+
+---
+
+### I. FULL STACK BANGALORE (Audit Scrape 13 November 2026)
+1. **Program-program Singkat (4 Minggu / 10 Sesi Live seharga Rp 149.000)**:
+   - **Data Analyst & Visualization**: SQL Queries, Python for Data, Power BI Dashboarding, 1 mini project, free career prep.
+   - **Data Engineer**: Python scripting, PostgreSQL, Metabase, Apache Airflow ETL pipeline end-to-end, free career prep.
+   - **AI Engineer**: Streamlit UI, scikit-learn, Hugging Face pretrained models, MLflow, deployment 1 AI app, free career prep.
+   - **Data Scientist & ML**: Pandas, data preprocessing, machine learning algorithms, Streamlit web app, free career prep.
+   - **Digital Marketing**: Meta Ads Manager, Google Ads Search, audience targeting, mini campaign project, free career prep.
+   - **n8n Automation & AI Workflow (3 Minggu / 5 Sesi)**: Pengenalan n8n self-hosted & cloud, webhook integration, bot WhatsApp/Telegram, mini automation workflow.
+   - N8N Automation (3 minggu, 5 sesi, n8n, webhook, ChatGPT API)
+   - **Kelemahan Fatal:** Mentor anonim tanpa nama, format workshop pengenalan singkat 10 sesi, tanpa 1-on-1 mentoring atau garansi karir.
+
+---
+
+## 🛠️ 6. MATRIKS TOOLS & TEKNOLOGI YANG DIPELAJARI (TECH STACK COMPARISON)
+
+Tabel berikut merangkum tools & teknologi yang diajarkan pada program RevoU dibandingkan program kompetitor terkait (data audit scrape 13 November 2026):
+
+### A. Digital Marketing
+| Penyelenggara / Program | Tools & Software yang Dipelajari | Status Hands-on Budget |
+| :--- | :--- | :--- |
+| **RevoU FSDM (All-In)** | Meta Ads Manager, Google Ads, TikTok Ads, Google Analytics 4 (GA4), Looker Studio, Google Tag Manager (GTM), Ahrefs, Semrush, HubSpot CRM, Mailchimp, WordPress, ChatGPT Plus, Claude 3.5, Midjourney | **Real ad spend jutaan rupiah** disediakan RevoU untuk live campaign siswa |
+| **TempatBelajar DM (Career Accelerator)** | Meta Ads, TikTok Ads (GMV Max), Google Ads, GA4, GTM, WordPress, Elementor, Mailchimp, ManyChat, NotebookLM, Gemini | Real budget UMKM s.d. Rp 1.000.000 (disediakan TempatBelajar) |
+| **TempatBelajar DM (Professional)** | Meta Ads, TikTok Ads, Google Ads, WordPress, Elementor, GA4, ManyChat, Mailchimp | Budget ads terbatas s.d. Rp 700.000 |
+| **MySkill DM Intensive** | Meta Ads overview, Google Ads basic, Basic SEO tools, Copywriting, Canva, Social Media reporting | **Rp 0** (Hanya simulasi tugas teori tanpa hands-on live ads budget) |
+| **Full Stack Bangalore DM** | Meta Ads Manager, Google Ads Search, Canva, Audience targeting | Simulasi campaign mini |
+| **Purwadhika DM** | Ahrefs, Canva, Meta Ads, Google Ads, GA4, Mailchimp, Semrush, Ubersuggest, ChatGPT | Hands-on project kelompok 7-8 orang |
+
+### B. Data Analytics & Data Science
+| Penyelenggara / Program | Tools & Software yang Dipelajari | Skala Data & ETL Pipeline |
+| :--- | :--- | :--- |
+| **RevoU FSDA (All-In)** | SQL (Google BigQuery & PostgreSQL), Python (Pandas, NumPy, Scikit-learn), Tableau, Looker Studio, Apache Airflow (Automated ETL), Advanced Excel/Spreadsheet, Git/GitHub, Claude Code | **Production-scale Data Warehouse** + 12 Minggu Virtual Internship data riil korporasi |
+| **RevoU x ITB Applied Data Science** | Python, Scikit-Learn, Streamlit, Claude Code AI Coding, SQL BigQuery, Pandas, Jupyter, Statistical Rigor FTI ITB | Working data product (Streamlit) diuji panel industri |
+| **TempatBelajar** | *(Tidak menyediakan program Data)* | - |
+| **Full Stack Bangalore DA** | SQL, Python dasar, Microsoft Power BI, Microsoft Excel | Dataset demo lokal 4 minggu |
+| **Full Stack Bangalore DE** | Python, PostgreSQL, Metabase, Apache Airflow (demo), dbt, Apache Kafka | Pipeline end-to-end dasar 10 sesi |
+| **Full Stack Bangalore DS & ML** | Python, Pandas, Scikit-learn, TensorFlow, Streamlit, Jupyter Notebook | 1 model app Streamlit |
+| **MySkill Data Analysis** | PostgreSQL, Python (NumPy, Pandas), Google Data Studio (Looker Studio), Microsoft Excel | Latihan per sesi; final project berbayar terpisah |
+| **Dicoding Data Science** | Python, Pandas, Matplotlib, Seaborn, Scikit-learn, Jupyter Notebook, Google Colab | Capstone 90 jam berbasis platform Dicoding |
+| **Rework Academy DA** | PostgreSQL, pgAdmin, Python, Pandas, Tableau, Looker Studio, Microsoft Excel | Dataset simulasi 2 minggu |
+
+### C. Software Engineering & AI Coding
+| Penyelenggara / Program | Tech Stack & Framework yang Dipelajari | AI Coding Workflow |
+| :--- | :--- | :--- |
+| **RevoU FSSE (AI-Native)** | Python, Flask, Next.js 15 (App Router), TypeScript, React.js, PostgreSQL, Tailwind CSS, AWS Cloud (EC2, S3, RDS), Docker, Git/GitHub | **Kiro AI (Spec-driven architecture)** & Claude Code workflow |
+| **Dicoding React + Django** | React.js, Python, Django, JavaScript (ES6+), PostgreSQL, GCP, Postman, Web Components | Belajar mandiri teks modul Dicoding |
+| **MySkill Lovable AI** | Lovable AI, HTML, CSS dasar, Prompt web generation | Prompt coding no-code builder |
+| **Hacktiv8 AI-Enhanced FSD** | JavaScript, Node.js, Express, PostgreSQL, React, Next.js, TypeScript, Docker, Cursor, OpenAI | Cursor AI & OpenAI integration |
+| **Purwadhika FSD** | React.js, Tailwind CSS, Node.js, Express.js, PostgreSQL, PrismaJS, Jest, Docker, ChatGPT | ChatGPT AI Coding |
+
+### D. Strategic Human Resource & People Operations
+| Penyelenggara / Program | Tools & Framework yang Dipelajari | Level Kompetensi |
+| :--- | :--- | :--- |
+| **RevoU Strategic HR with AI** | AI Hiring Workflows (ChatGPT/Claude prompt engineering), People Analytics (Python/Sheets), 9-Box Talent Matrix, Succession Planning Architecture, HRIS Enterprise Systems, ATS Optimization, Org Design Framework | **Strategic HRBP, OD Specialist, People Analytics, Head of HR (C-Level ready)** |
+| **TempatBelajar HR Accelerator** | Demo HRIS (Gajihub, Gaji.id), UU Ketenagakerjaan RI & Omnibus Law, Payroll PPh 21, BPJS Ketenagakerjaan/Kesehatan, Coretax/Ortax, Google Workspace, ChatGPT (1 sesi AI) | Staf HR operasional, recruiter junior, payroll officer |
+| **TempatBelajar HR Professional** | Demo HRIS (Gajihub), UU Ketenagakerjaan dasar, Payroll PPh 21, BPJS, Google Workspace | Staf administrasi HR dasar (tanpa magang/karir) |
+
+### E. Cybersecurity & Cloud Protection
+| Penyelenggara / Program | Tools & Environment yang Dipelajari | Lingkungan Lab |
+| :--- | :--- | :--- |
+| **RevoU x BINUS Applied Cybersecurity** | AWS Cloud Protection Infrastructure, SIEM (Splunk), Wazuh, Linux CLI, Python for Security, Wireshark, Threat Detection AI | **Live AWS Cloud Infrastructure** bersertifikat resmi BINUS & AWS |
+| **Rework Academy Cyber Security** | Linux Ubuntu, Burp Suite, Nmap, Wireshark, Wazuh SIEM, SQLMap, DVWA, Metasploit | Lab virtual lokal (Red Team assessment) |
+| **Purwadhika Cybersecurity** | Aircrack-ng, Burp Suite, VirtualBox, Wazuh/Splunk Free, Metasploit, Wireshark | Livestream demo tools |

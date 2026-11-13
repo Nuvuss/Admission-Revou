@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { removeUserOnline, getOnlineUsers } from "../../../../lib/onlineTracker";
+import { removeUserOnline } from "../../../../lib/onlineTracker";
+import { clearSessionCookie, getSessionFromRequest } from "../../../../lib/authSession";
 
 export const dynamic = "force-dynamic";
 
@@ -14,24 +15,32 @@ export async function POST(req: Request) {
       body = {};
     }
     const { userName, userEmail, sessionId, allSessions } = body || {};
+    const verifiedSession = await getSessionFromRequest(req);
 
-    if ((userName && typeof userName === "string") || (sessionId && typeof sessionId === "string")) {
+    const targetName = verifiedSession?.name || (typeof userName === "string" ? userName : null);
+    const targetEmail = verifiedSession?.email || (typeof userEmail === "string" ? userEmail : null);
+    const isTabOnlyClose = Boolean(sessionId && typeof sessionId === "string" && !allSessions);
+
+    if (targetName || (sessionId && typeof sessionId === "string")) {
       await removeUserOnline({
-        userName: typeof userName === "string" ? userName : null,
-        userEmail: typeof userEmail === "string" ? userEmail : null,
+        userName: targetName,
+        userEmail: targetEmail,
         sessionId: typeof sessionId === "string" ? sessionId : null,
-        // Tanpa sessionId (client lama / logout eksplisit) => hapus semua sesi user
         allSessions: Boolean(allSessions) || !sessionId,
       });
     }
 
-    const onlineData = await getOnlineUsers();
-    return NextResponse.json({
+    const response = NextResponse.json({
       success: true,
-      message: "Sesi berhasil diakhiri.",
-      onlineCount: onlineData.count,
-      acBmCount: onlineData.acBmCount,
+      message: isTabOnlyClose ? "Sesi tab dihapus." : "Sesi berhasil diakhiri.",
     });
+
+    // Hanya hapus cookie auth pada explicit logout, BUKAN saat menutup satu tab / refresh (pagehide)
+    if (!isTabOnlyClose) {
+      clearSessionCookie(response);
+    }
+
+    return response;
   } catch (err: any) {
     return NextResponse.json({ error: err?.message || "Logout error" }, { status: 500 });
   }

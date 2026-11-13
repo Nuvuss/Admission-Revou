@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { motion, AnimatePresence } from "motion/react";
 import { Key, X, Eye, EyeOff, RefreshCw } from "lucide-react";
 import { ApiPoolStatus, ApiKeyTestResult } from "../types";
 
@@ -37,13 +38,24 @@ export default function ApiKeyModal({
     false,
   ]);
 
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-xs flex items-center justify-center p-3 sm:p-5 animate-in fade-in duration-200">
-      <div className="fixed inset-0 cursor-pointer" onClick={onClose} />
+    <AnimatePresence>
+      {isOpen && (
+        <div className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-3 sm:p-5">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1, transition: { duration: 0.2, ease: [0.16, 1, 0.3, 1] } }}
+            exit={{ opacity: 0, transition: { duration: 0.16, ease: [0.16, 1, 0.3, 1] } }}
+            className="fixed inset-0 bg-black/50 backdrop-blur-xs cursor-pointer"
+            onClick={onClose}
+          />
 
-      <div className="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl border border-[#E8E8E4] overflow-hidden my-6 z-10 flex flex-col max-h-[90vh]">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.96, y: 8 }}
+            animate={{ opacity: 1, scale: 1, y: 0, transition: { duration: 0.22, ease: [0.16, 1, 0.3, 1] } }}
+            exit={{ opacity: 0, scale: 0.96, y: 8, transition: { duration: 0.16, ease: [0.16, 1, 0.3, 1] } }}
+            className="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl border border-[#E8E8E4] overflow-hidden my-6 z-10 flex flex-col max-h-[90vh]"
+          >
         {/* Modal Header */}
         <div className="p-4 sm:p-5 border-b border-[#E8E8E4] flex items-center justify-between bg-[#FAFAF8] shrink-0">
           <div className="flex items-center gap-3">
@@ -58,7 +70,7 @@ export default function ApiKeyModal({
                 </span>
                 {apiPoolStatus?.isRedisEnabled ? (
                   <span className="font-mono text-[10.5px] px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold flex items-center gap-1 shadow-2xs">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 motion-safe:animate-pulse" />
                     <span>Redis Cloud Active</span>
                   </span>
                 ) : (
@@ -68,7 +80,7 @@ export default function ApiKeyModal({
                 )}
                 {apiPoolStatus?.isSupabaseVectorEnabled ? (
                   <span className="font-mono text-[10.5px] px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200 font-semibold flex items-center gap-1 shadow-2xs">
-                    <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-blue-500 motion-safe:animate-pulse" />
                     <span>pgvector Semantic Active</span>
                   </span>
                 ) : (
@@ -319,7 +331,9 @@ export default function ApiKeyModal({
             </button>
           </div>
         </div>
-      </div>
-    </div>
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
   );
 }

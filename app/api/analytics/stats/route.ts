@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getSupabase, getLastSupabaseServerDate } from "../../../../lib/supabaseClient";
 import { getOnlineUsers } from "../../../../lib/onlineTracker";
 import { redisGet, redisSet } from "../../../../lib/redisClient";
+import { requireOwner } from "../../../../lib/authSession";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -9,16 +10,20 @@ export const revalidate = 0;
 import { normalizeTopic } from "../../../../lib/topicNormalizer";
 
 export async function GET(req: Request) {
+  const auth = await requireOwner(req);
+  if (auth.errorResponse) return auth.errorResponse;
+
   try {
     const { searchParams } = new URL(req.url);
     const range = searchParams.get("range") || "30d"; // today, yesterday, 7d, 30d, all
+    const compare = searchParams.get("compare") || "none"; // none, yesterday, 7d, 30d
     // Presence Owner dicatat lewat /api/auth/heartbeat (bukan dari query stats) agar tidak double-write.
     // Real-time presence dibaca sekali per request (Redis / fallback memori).
     const onlinePresence = await getOnlineUsers();
     const onlineNameSet = new Set(onlinePresence.users.map((u) => u.userName.trim().toLowerCase()));
 
     // Cache lookup: jika ada di Redis, kembalikan dengan onlinePresence yang selalu real-time
-    const cacheKey = `cache:stats:v3:${range}`;
+    const cacheKey = `cache:stats:v4:${range}:${compare}`;
     const cachedStats: any = await redisGet(cacheKey);
     if (cachedStats && typeof cachedStats === "object" && cachedStats.isConfigured) {
       const liveLeaderboard = (cachedStats.leaderboard || []).map((agent: any) => ({
@@ -76,7 +81,7 @@ export async function GET(req: Request) {
       .from("admission_activity_logs")
       .select("id, created_at, user_name, user_role, action_type, mode, topic, input_snippet, metadata")
       .order("created_at", { ascending: false })
-      .limit(2000);
+      .limit(5000);
 
     if (error) {
       console.warn("Supabase query activity logs warning:", error.message);
@@ -256,6 +261,13 @@ export async function GET(req: Request) {
       agents?: number;
       byUser?: Record<string, { traffic: number; scripts: number; copies: number; pitch?: number; alumni?: number; comparison?: number }>;
       actions?: { user: string; role: string; actionLabel: string; topic: string; mode?: string; timestamp?: string }[];
+      compareTraffic?: number;
+      compareScripts?: number;
+      compareCopies?: number;
+      comparePitch?: number;
+      compareAlumni?: number;
+      compareComparison?: number;
+      compareByUser?: Record<string, { traffic: number; scripts: number; copies: number; pitch?: number; alumni?: number; comparison?: number }>;
     }[] = [];
 
     if (range === "today" || range === "yesterday") {
@@ -271,6 +283,13 @@ export async function GET(req: Request) {
           pitch: 0,
           alumni: 0,
           comparison: 0,
+          compareTraffic: 0,
+          compareScripts: 0,
+          compareCopies: 0,
+          comparePitch: 0,
+          compareAlumni: 0,
+          compareComparison: 0,
+          compareByUser: {},
           activeAgentsSet: new Set<string>(),
         });
       }
@@ -292,6 +311,13 @@ export async function GET(req: Request) {
           pitch: 0,
           alumni: 0,
           comparison: 0,
+          compareTraffic: 0,
+          compareScripts: 0,
+          compareCopies: 0,
+          comparePitch: 0,
+          compareAlumni: 0,
+          compareComparison: 0,
+          compareByUser: {},
           activeAgentsSet: new Set<string>(),
         });
       }
@@ -310,6 +336,13 @@ export async function GET(req: Request) {
           pitch: 0,
           alumni: 0,
           comparison: 0,
+          compareTraffic: 0,
+          compareScripts: 0,
+          compareCopies: 0,
+          comparePitch: 0,
+          compareAlumni: 0,
+          compareComparison: 0,
+          compareByUser: {},
           activeAgentsSet: new Set<string>(),
         });
       }
@@ -330,6 +363,13 @@ export async function GET(req: Request) {
           pitch: 0,
           alumni: 0,
           comparison: 0,
+          compareTraffic: 0,
+          compareScripts: 0,
+          compareCopies: 0,
+          comparePitch: 0,
+          compareAlumni: 0,
+          compareComparison: 0,
+          compareByUser: {},
           activeAgentsSet: new Set<string>(),
         });
       } else {
@@ -343,6 +383,13 @@ export async function GET(req: Request) {
             traffic: 0,
             scripts: 0,
             copies: 0,
+            compareTraffic: 0,
+            compareScripts: 0,
+            compareCopies: 0,
+            comparePitch: 0,
+            compareAlumni: 0,
+            compareComparison: 0,
+            compareByUser: {},
             activeAgentsSet: new Set<string>(),
           });
         }
@@ -503,8 +550,9 @@ export async function GET(req: Request) {
         }
       }
 
-      // Topic / Objection aggregation: count AI script generation & Table Comparison queries (not on login or copy)
-      if (isAiScriptGeneration || isComparisonView) {
+      // Topic / Objection aggregation: hanya hitung generate awal & Table Comparison
+      // agar konsisten 1:1 dengan riwayat di admission_generate_history (clarify tersimpan di chat_thread sesi awalnya)
+      if (isGenerate || isComparisonView) {
         const cleanTopic = normalizeTopic(log.topic, log.input_snippet, mode);
         if (cleanTopic) {
           topicCounts[cleanTopic] = (topicCounts[cleanTopic] || 0) + 1;
@@ -542,6 +590,100 @@ export async function GET(req: Request) {
       if (!isLogin) {
         agentMap[user].totalActions++;
         modeBucket.totalActions++;
+      }
+    }
+
+    // 3b. Process Comparison Period Logs (if compare !== "none")
+    if (compare !== "none") {
+      const compareShiftDays = compare === "yesterday" ? 1 : compare === "7d" ? 7 : 30;
+      const isHourly = range === "today" || range === "yesterday";
+
+      let targetCompareDayKey = "";
+      const dailyCompareMap: Record<string, number> = {};
+
+      if (isHourly) {
+        const baseDayOffset = range === "yesterday" ? 1 : 0;
+        const totalOffsetDays = baseDayOffset + compareShiftDays;
+        const compDateWib = new Date(nowWib.getTime() - totalOffsetDays * 24 * 60 * 60 * 1000);
+        targetCompareDayKey = `${compDateWib.getUTCFullYear()}-${String(compDateWib.getUTCMonth() + 1).padStart(2, "0")}-${String(compDateWib.getUTCDate()).padStart(2, "0")}`;
+      } else {
+        timeline.forEach((pt, idx) => {
+          if (pt.key && pt.key.includes("-")) {
+            const [y, m, d] = pt.key.split("-").map(Number);
+            const ptDate = new Date(Date.UTC(y, m - 1, d));
+            const compDate = new Date(ptDate.getTime() - compareShiftDays * 24 * 60 * 60 * 1000);
+            const compKey = `${compDate.getUTCFullYear()}-${String(compDate.getUTCMonth() + 1).padStart(2, "0")}-${String(compDate.getUTCDate()).padStart(2, "0")}`;
+            dailyCompareMap[compKey] = idx;
+          }
+        });
+      }
+
+      for (const log of fetchedLogs) {
+        if (log.user_role === "Owner") continue;
+        const role = log.user_role || "AC";
+        const isAcOrBm = role === "AC" || role === "BM";
+        const isLogin = log.action_type === "login";
+        if (isLogin || !isAcOrBm) continue;
+
+        const action = log.action_type;
+        const user = (log.user_name || "Unknown").trim();
+        const mode = log.mode || "pitch";
+        const meta = log.metadata && typeof log.metadata === "object" ? log.metadata : {};
+        if (
+          action === "view_comparison" &&
+          (meta.source === "tab_switch" ||
+            log.input_snippet === "Membuka menu Comparison Table" ||
+            (!meta.programId && !meta.competitor))
+        ) {
+          continue;
+        }
+
+        const isGenerate = action === "generate";
+        const isClarify = action === "clarify";
+        const isAiScriptGeneration = isGenerate || isClarify;
+        const isCopy = action === "copy_script";
+        const isComparisonView = action === "view_comparison" && Boolean(meta.programId || meta.competitor);
+
+        try {
+          const logDateWib = new Date(new Date(log.created_at).getTime() + WIB_OFFSET);
+          const logDayKey = `${logDateWib.getUTCFullYear()}-${String(logDateWib.getUTCMonth() + 1).padStart(2, "0")}-${String(logDateWib.getUTCDate()).padStart(2, "0")}`;
+          const hour = logDateWib.getUTCHours();
+
+          let targetComparePt: any = null;
+          if (isHourly) {
+            if (logDayKey === targetCompareDayKey) {
+              targetComparePt = timeline[hour];
+            }
+          } else {
+            const matchedIdx = dailyCompareMap[logDayKey];
+            if (matchedIdx !== undefined && timeline[matchedIdx]) {
+              targetComparePt = timeline[matchedIdx];
+            }
+          }
+
+          if (targetComparePt) {
+            targetComparePt.compareTraffic = (targetComparePt.compareTraffic || 0) + 1;
+            if (isAiScriptGeneration) targetComparePt.compareScripts = (targetComparePt.compareScripts || 0) + 1;
+            if (isCopy) targetComparePt.compareCopies = (targetComparePt.compareCopies || 0) + 1;
+
+            if (mode === "pitch") targetComparePt.comparePitch = (targetComparePt.comparePitch || 0) + 1;
+            else if (mode === "alumni" || action === "view_alumni") targetComparePt.compareAlumni = (targetComparePt.compareAlumni || 0) + 1;
+            else if (mode === "comparison" || isComparisonView) targetComparePt.compareComparison = (targetComparePt.compareComparison || 0) + 1;
+
+            if (!targetComparePt.compareByUser) targetComparePt.compareByUser = {};
+            if (!targetComparePt.compareByUser[user]) {
+              targetComparePt.compareByUser[user] = { traffic: 0, scripts: 0, copies: 0, pitch: 0, alumni: 0, comparison: 0 };
+            }
+            targetComparePt.compareByUser[user].traffic++;
+            if (isAiScriptGeneration) targetComparePt.compareByUser[user].scripts++;
+            if (isCopy) targetComparePt.compareByUser[user].copies++;
+            if (mode === "pitch") targetComparePt.compareByUser[user].pitch = (targetComparePt.compareByUser[user].pitch || 0) + 1;
+            else if (mode === "alumni" || action === "view_alumni") targetComparePt.compareByUser[user].alumni = (targetComparePt.compareByUser[user].alumni || 0) + 1;
+            else if (mode === "comparison" || isComparisonView) targetComparePt.compareByUser[user].comparison = (targetComparePt.compareByUser[user].comparison || 0) + 1;
+          }
+        } catch (e) {
+          // ignore date parse issues
+        }
       }
     }
 
@@ -693,6 +835,20 @@ export async function GET(req: Request) {
       hourlyHeatmap,
       modeDistribution,
       topTopics,
+      comparison: {
+        enabled: compare !== "none",
+        type: compare,
+        label:
+          compare === "yesterday"
+            ? "Kemarin"
+            : compare === "7d"
+              ? "7 Hari Lalu"
+              : compare === "30d"
+                ? "30 Hari Lalu"
+                : "",
+        totalTraffic: cleanTimeline.reduce((acc, pt) => acc + (pt.compareTraffic || 0), 0),
+        totalScripts: cleanTimeline.reduce((acc, pt) => acc + (pt.compareScripts || 0), 0),
+      },
     };
 
     // Simpan ke Redis selama 12 detik agar polling 6 detik tidak membebani kuota Supabase

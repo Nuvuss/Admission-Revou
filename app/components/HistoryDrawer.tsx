@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { motion, AnimatePresence } from "motion/react";
 import {
   Bookmark,
   X,
@@ -45,8 +46,6 @@ export default function HistoryDrawer({
 }: HistoryDrawerProps) {
   const [searchHistoryQuery, setSearchHistoryQuery] = useState("");
 
-  if (!isOpen) return null;
-
   const favoritesCount = historyList.filter((i) => i.isFavorite).length;
 
   const filteredHistory = historyList.filter((item) => {
@@ -68,16 +67,26 @@ export default function HistoryDrawer({
   });
 
   return (
-    <div className="fixed inset-0 z-50 overflow-hidden">
-      {/* Backdrop */}
-      <div
-        className="fixed inset-0 bg-black/40 backdrop-blur-xs transition-opacity animate-in fade-in duration-200 cursor-pointer"
-        onClick={onClose}
-      />
+    <AnimatePresence>
+      {isOpen && (
+        <div className="fixed inset-0 z-50 overflow-hidden">
+          {/* Backdrop */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1, transition: { duration: 0.2, ease: [0.16, 1, 0.3, 1] } }}
+            exit={{ opacity: 0, transition: { duration: 0.16, ease: [0.16, 1, 0.3, 1] } }}
+            className="fixed inset-0 bg-black/40 backdrop-blur-xs cursor-pointer"
+            onClick={onClose}
+          />
 
-      {/* Slide-over panel */}
-      <div className="fixed inset-y-0 right-0 max-w-full flex pl-6 sm:pl-10">
-        <div className="w-screen max-w-md sm:max-w-lg bg-white shadow-2xl flex flex-col border-l border-[#E8E8E4] animate-in slide-in-from-right duration-300">
+          {/* Slide-over panel */}
+          <div className="fixed inset-y-0 right-0 max-w-full flex pl-6 sm:pl-10">
+            <motion.div
+              initial={{ x: "100%" }}
+              animate={{ x: 0, transition: { duration: 0.24, ease: [0.16, 1, 0.3, 1] } }}
+              exit={{ x: "100%", transition: { duration: 0.18, ease: [0.16, 1, 0.3, 1] } }}
+              className="w-screen max-w-md sm:max-w-lg bg-white shadow-2xl flex flex-col border-l border-[#E8E8E4]"
+            >
           {/* Drawer Header */}
           <div className="p-4 sm:p-5 border-b border-[#E8E8E4] flex items-center justify-between bg-[#FAFAF8]">
             <div className="flex items-center gap-2.5">
@@ -390,8 +399,10 @@ export default function HistoryDrawer({
               </button>
             </div>
           )}
+            </motion.div>
+          </div>
         </div>
-      </div>
-    </div>
+      )}
+    </AnimatePresence>
   );
 }

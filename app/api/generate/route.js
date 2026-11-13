@@ -10,6 +10,7 @@ import {
 } from "../../../lib/apiKeyManager";
 import { findMatchingPitchTemplate } from "../../../lib/pitchTemplateMatcher";
 import { logMetricsToJsonl, extractUsageMetadata } from "../../../lib/metricsLogger";
+import { requireSession } from "../../../lib/authSession";
 
 export const maxDuration = 120;
 export const dynamic = "force-dynamic";
@@ -919,6 +920,9 @@ function buildGeneralFallbackResult(model, tab, availableKeys, lastError) {
 // POST handler (Supports SSE Streaming & Synchronous JSON)
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export async function POST(req) {
+  const auth = await requireSession(req);
+  if (auth.errorResponse) return auth.errorResponse;
+
   const reqStart = performance.now();
   const requestId = crypto.randomUUID();
   try {

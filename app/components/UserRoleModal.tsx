@@ -27,8 +27,6 @@ export default function UserRoleModal({
   const [isVerifying, setIsVerifying] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  if (!isOpen) return null;
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage(null);
@@ -85,13 +83,21 @@ export default function UserRoleModal({
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95, y: 10 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.95, y: 10 }}
-          className="relative w-full max-w-md bg-white border border-[#E8E8E4] rounded-2xl shadow-2xl p-6 sm:p-7 overflow-hidden text-[#141412]"
-        >
+      {isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1, transition: { duration: 0.2, ease: [0.16, 1, 0.3, 1] } }}
+            exit={{ opacity: 0, transition: { duration: 0.16, ease: [0.16, 1, 0.3, 1] } }}
+            onClick={allowClose && onClose ? onClose : undefined}
+            className="absolute inset-0 bg-black/60 backdrop-blur-xs"
+          />
+          <motion.div
+            initial={{ opacity: 0, scale: 0.96, y: 8 }}
+            animate={{ opacity: 1, scale: 1, y: 0, transition: { duration: 0.22, ease: [0.16, 1, 0.3, 1] } }}
+            exit={{ opacity: 0, scale: 0.96, y: 8, transition: { duration: 0.16, ease: [0.16, 1, 0.3, 1] } }}
+            className="relative z-10 w-full max-w-md bg-white border border-[#E8E8E4] rounded-2xl shadow-2xl p-6 sm:p-7 overflow-hidden text-[#141412]"
+          >
           {/* Close button if allowed */}
           {allowClose && onClose && (
             <button
@@ -295,7 +301,8 @@ export default function UserRoleModal({
             </div>
           </form>
         </motion.div>
-      </div>
+        </div>
+      )}
     </AnimatePresence>
   );
 }
