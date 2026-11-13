@@ -2,11 +2,12 @@
 
 import React, { memo, useState, useMemo, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Users, Clock, Sparkles, GraduationCap, Scale, Search, ChevronDown, Check, X, GitCompare } from "lucide-react";
+import { Users, Clock, Sparkles, GraduationCap, Scale, Search, ChevronDown, Check, X, GitCompare, RefreshCw } from "lucide-react";
 import { getModeColorToken, getRoleColorToken } from "../utils/analyticsColors";
 import { cn } from "../../lib/cn";
 import {
   EASE_OUT,
+  EASE_IN_OUT,
   SPRING_PILL,
   TRANSITION_STAGGER,
   TRANSITION_POPOVER,
@@ -28,6 +29,50 @@ export interface ActivityAreaChartProps {
   onSelectUser?: (user: string) => void;
   compareDate?: CompareDateOption;
   onCompareDateChange?: (compare: CompareDateOption) => void;
+  isLoading?: boolean;
+}
+
+// Snappy Animated Number Counter with Tabular Numerals (Emil Kowalski Philosophy)
+function AnimatedCounter({ value, duration = 200 }: { value: number; duration?: number }) {
+  const [displayValue, setDisplayValue] = useState(value || 0);
+  const prevValueRef = useRef(value || 0);
+
+  useEffect(() => {
+    const targetVal = Number.isFinite(value) ? value : 0;
+    const startVal = prevValueRef.current;
+
+    const prefersReduced =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (startVal === targetVal || prefersReduced) {
+      setDisplayValue(targetVal);
+      prevValueRef.current = targetVal;
+      return;
+    }
+
+    let startTime: number | null = null;
+    let frameId: number;
+
+    const step = (now: number) => {
+      if (!startTime) startTime = now;
+      const elapsed = Math.min((now - startTime) / duration, 1);
+      const progress = 1 - Math.pow(1 - elapsed, 3);
+      const current = Math.round(startVal + (targetVal - startVal) * progress);
+      setDisplayValue(current);
+
+      if (elapsed < 1) {
+        frameId = requestAnimationFrame(step);
+      } else {
+        prevValueRef.current = targetVal;
+      }
+    };
+
+    frameId = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(frameId);
+  }, [value, duration]);
+
+  return <span className="tabular-numbers">{displayValue.toLocaleString("id-ID")}</span>;
 }
 
 function ActivityAreaChartInner({
@@ -44,6 +89,7 @@ function ActivityAreaChartInner({
   onSelectUser,
   compareDate = "none",
   onCompareDateChange,
+  isLoading = false,
 }: ActivityAreaChartProps) {
   const [hoveredPointIdx, setHoveredPointIdx] = useState<number | null>(null);
   const [isComboboxOpen, setIsComboboxOpen] = useState<boolean>(false);
@@ -80,6 +126,11 @@ function ActivityAreaChartInner({
       document.removeEventListener("keydown", handleEscape);
     };
   }, []);
+
+  // Reset hovered point index when timeRange changes to avoid out-of-bounds guideline
+  useEffect(() => {
+    setHoveredPointIdx(null);
+  }, [timeRange]);
 
   // Available counselors (AC and BM only)
   const allAvailableUsers = useMemo(() => {
@@ -390,8 +441,14 @@ function ActivityAreaChartInner({
             <h2 className="text-sm sm:text-base font-display font-black tracking-tight text-[#141412]">
               Trafik Konsultasi & Penggunaan Asisten
             </h2>
+            {isLoading && (
+              <span className="inline-flex items-center gap-1 font-mono text-[10px] font-semibold text-[#8A8A84] px-1.5 py-0.5 rounded-md bg-[#F5F5F2] border border-[#E8E8E4]/70">
+                <RefreshCw className="size-2.5 animate-spin text-[#A15C00]" />
+                <span>Sinkron...</span>
+              </span>
+            )}
             <span className={`font-mono text-[10.5px] font-bold px-2 py-0.5 rounded-md ${activeModeToken.totalBadgeClass}`}>
-              Total: {totalChartModeSum}{" "}
+              Total: <AnimatedCounter value={totalChartModeSum} duration={200} />{" "}
               {chartMode === "pitch"
                 ? "Pitch"
                 : chartMode === "alumni"
@@ -401,7 +458,7 @@ function ActivityAreaChartInner({
                     : "Aktivitas"}
               {compareDate !== "none" && (
                 <>
-                  {" "}vs {totalCompareSum} ({compareLabel})
+                  {" "}vs <AnimatedCounter value={totalCompareSum} duration={200} /> ({compareLabel})
                 </>
               )}
               {selectedUserData
@@ -440,7 +497,7 @@ function ActivityAreaChartInner({
                 key={seg.id}
                 type="button"
                 onClick={() => setChartMode(seg.id as any)}
-                className={`relative px-2.5 py-1 rounded-lg transition-colors duration-150 cursor-pointer z-10 whitespace-nowrap shrink-0 inline-flex items-center gap-1.5 ${isSelected ? "text-white" : "text-[#7A7A74] hover:text-[#141412]"}`}
+                className={`relative px-2.5 py-1 rounded-lg transition-all active:scale-95 duration-150 cursor-pointer z-10 whitespace-nowrap shrink-0 inline-flex items-center gap-1.5 ${isSelected ? "text-white" : "text-[#7A7A74] hover:text-[#141412]"}`}
               >
                 {isSelected && (
                   <motion.span
@@ -474,7 +531,7 @@ function ActivityAreaChartInner({
             <button
               type="button"
               onClick={() => setRoleFilter("all")}
-              className={`relative px-2 py-0.5 rounded-md cursor-pointer transition-colors duration-150 z-10 ${roleFilter === "all" ? "text-[#FFD84D]" : "text-[#7A7A74] hover:text-[#141412]"}`}
+              className={`relative px-2 py-0.5 rounded-md cursor-pointer transition-all active:scale-95 duration-150 z-10 ${roleFilter === "all" ? "text-[#FFD84D]" : "text-[#7A7A74] hover:text-[#141412]"}`}
             >
               {roleFilter === "all" && (
                 <motion.span
@@ -488,7 +545,7 @@ function ActivityAreaChartInner({
             <button
               type="button"
               onClick={() => setRoleFilter("ac")}
-              className={`relative px-2 py-0.5 rounded-md cursor-pointer transition-colors duration-150 z-10 ${roleFilter === "ac" ? "text-[#FFD84D]" : "text-[#7A7A74] hover:text-[#141412]"}`}
+              className={`relative px-2 py-0.5 rounded-md cursor-pointer transition-all active:scale-95 duration-150 z-10 ${roleFilter === "ac" ? "text-[#FFD84D]" : "text-[#7A7A74] hover:text-[#141412]"}`}
             >
               {roleFilter === "ac" && (
                 <motion.span
@@ -502,7 +559,7 @@ function ActivityAreaChartInner({
             <button
               type="button"
               onClick={() => setRoleFilter("bm")}
-              className={`relative px-2 py-0.5 rounded-md cursor-pointer transition-colors duration-150 z-10 ${roleFilter === "bm" ? "text-[#FFD84D]" : "text-[#7A7A74] hover:text-[#141412]"}`}
+              className={`relative px-2 py-0.5 rounded-md cursor-pointer transition-all active:scale-95 duration-150 z-10 ${roleFilter === "bm" ? "text-[#FFD84D]" : "text-[#7A7A74] hover:text-[#141412]"}`}
             >
               {roleFilter === "bm" && (
                 <motion.span
@@ -542,7 +599,7 @@ function ActivityAreaChartInner({
                     aria-pressed={isActive}
                     onClick={() => onCompareDateChange?.(opt.id as any)}
                     className={cn(
-                      "relative px-2 py-0.5 rounded-md cursor-pointer transition-colors duration-150 z-10",
+                      "relative px-2 py-0.5 rounded-md cursor-pointer transition-all active:scale-95 duration-150 z-10",
                       isActive ? "text-[#141412] font-black" : "text-[#7A7A74] hover:text-[#141412]"
                     )}
                   >
@@ -787,110 +844,135 @@ function ActivityAreaChartInner({
               <div />
             </div>
 
-            {/* Proportional SVG Curve (No Key Remount to Prevent Jitter on Polling) */}
-            <svg
-              className="w-full h-full"
-              viewBox={`0 0 ${svgW} ${svgH}`}
-              preserveAspectRatio="none"
+            {/* Proportional SVG Curve with Hardware-Accelerated Left-to-Right Reveal */}
+            <motion.div
+              key={`chart-layer-${timeRange}-${chartMode}-${roleFilter}-${selectedUser}-${timeline.length}`}
+              initial={{ clipPath: "inset(0 100% 0 0)" }}
+              animate={{ clipPath: "inset(0 0% 0 0)" }}
+              transition={{
+                duration: 0.55,
+                ease: [0.16, 1, 0.3, 1],
+              }}
+              className={cn(
+                "w-full h-full absolute inset-0 pointer-events-none transition-opacity duration-200",
+                isLoading && "opacity-40"
+              )}
             >
-              <defs>
-                <linearGradient id={`whiteRevouChartGrad-${chartMode}`} x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor={activeModeToken.gradient} stopOpacity="0.42" />
-                  <stop offset="100%" stopColor={activeModeToken.gradient} stopOpacity="0.02" />
-                </linearGradient>
-              </defs>
+              <svg
+                className="w-full h-full"
+                viewBox={`0 0 ${svgW} ${svgH}`}
+                preserveAspectRatio="none"
+              >
+                <defs>
+                  <linearGradient id={`whiteRevouChartGrad-${chartMode}`} x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stopColor={activeModeToken.gradient} stopOpacity="0.42" />
+                    <stop offset="100%" stopColor={activeModeToken.gradient} stopOpacity="0.02" />
+                  </linearGradient>
+                </defs>
 
-              {chartAreaPath && (
-                <path
-                  d={chartAreaPath}
-                  fill={`url(#whiteRevouChartGrad-${chartMode})`}
-                  className="chart-draw-area"
-                />
-              )}
-
-              {/* Comparison Baseline Curve (Dashed, High Contrast Neutral) */}
-              {compareDate !== "none" && compareStrokePath && (
-                <path
-                  d={compareStrokePath}
-                  fill="none"
-                  stroke="#8A8A84"
-                  strokeWidth="1.8"
-                  strokeDasharray="4 4"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  vectorEffect="non-scaling-stroke"
-                  className="chart-draw-line opacity-80"
-                />
-              )}
-
-              {/* Primary Active Curve (Solid) */}
-              {chartStrokePath && (
-                <path
-                  d={chartStrokePath}
-                  fill="none"
-                  stroke={activeModeToken.stroke}
-                  strokeWidth="2.2"
-                  vectorEffect="non-scaling-stroke"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="chart-draw-line"
-                />
-              )}
-            </svg>
-
-            {/* Interactive Tooltip & Point Guideline */}
-            {activePoint && (hasChartData || hasCompareData) && (
-              <>
-                <div
-                  className={`absolute top-0 bottom-0 w-px border-l border-dashed pointer-events-none z-10 ${activeModeToken.guideLineClass}`}
-                  style={{ left: `${activePoint.pctX}%` }}
-                />
-
-                {/* Primary Curve Active Dot */}
-                <div
-                  className={`absolute w-3 h-3 rounded-full -translate-x-1/2 -translate-y-1/2 pointer-events-none z-20 shadow-md ${activeModeToken.activeDotClass}`}
-                  style={{
-                    left: `${activePoint.pctX}%`,
-                    top: `${activePoint.pctY}%`,
-                  }}
-                />
-
-                {/* Comparison Curve Active Dot */}
-                {compareDate !== "none" && activeComparePoint && (
-                  <div
-                    className="absolute w-2.5 h-2.5 rounded-full -translate-x-1/2 -translate-y-1/2 pointer-events-none z-20 bg-white border-2 border-[#8A8A84] shadow-xs"
-                    style={{
-                      left: `${activeComparePoint.pctX}%`,
-                      top: `${activeComparePoint.pctY}%`,
-                    }}
+                {chartAreaPath && (
+                  <path
+                    d={chartAreaPath}
+                    fill={`url(#whiteRevouChartGrad-${chartMode})`}
+                    className="chart-draw-area"
                   />
                 )}
 
-                <div
-                  className="absolute z-30 pointer-events-none"
-                  style={{
-                    left: `${Math.max(8, Math.min(92, activePoint.pctX))}%`,
-                    top: `${activePoint.pctY}%`,
-                    transform:
-                      activePoint.pctY < 42
-                        ? activePoint.pctX > 60
-                          ? "translate(-100%, 14px)"
-                          : activePoint.pctX < 40
-                            ? "translate(0%, 14px)"
-                            : "translate(-50%, 14px)"
-                        : activePoint.pctX > 60
-                          ? "translate(-100%, -108%)"
-                          : activePoint.pctX < 40
-                            ? "translate(0%, -108%)"
-                            : "translate(-50%, -108%)",
-                  }}
+                {/* Comparison Baseline Curve (Dashed, High Contrast Neutral) */}
+                {compareDate !== "none" && compareStrokePath && (
+                  <path
+                    d={compareStrokePath}
+                    fill="none"
+                    stroke="#8A8A84"
+                    strokeWidth="1.8"
+                    strokeDasharray="4 4"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    vectorEffect="non-scaling-stroke"
+                    className="chart-draw-line opacity-80"
+                  />
+                )}
+
+                {/* Primary Active Curve (Solid) */}
+                {chartStrokePath && (
+                  <path
+                    d={chartStrokePath}
+                    fill="none"
+                    stroke={activeModeToken.stroke}
+                    strokeWidth="2.2"
+                    vectorEffect="non-scaling-stroke"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="chart-draw-line"
+                  />
+                )}
+              </svg>
+            </motion.div>
+
+            {/* Interactive Tooltip & Point Guideline */}
+            <AnimatePresence>
+              {activePoint && (hasChartData || hasCompareData) && (
+                <motion.div
+                  key="chart-hover-overlay"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0, transition: { duration: 0.12, ease: EASE_OUT } }}
+                  className="pointer-events-none"
                 >
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.96 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={TRANSITION_POPOVER}
-                    className="p-2.5 rounded-xl bg-[#141412] text-white shadow-xl border border-white/10 min-w-[190px] sm:min-w-[210px] max-w-[calc(100vw-2.5rem)] sm:max-w-[290px]"
+                  <div
+                    className={`absolute top-0 bottom-0 w-px border-l border-dashed pointer-events-none z-10 ${activeModeToken.guideLineClass}`}
+                    style={{ left: `${activePoint.pctX}%` }}
+                  />
+
+                  {/* Primary Curve Active Dot */}
+                  <div
+                    className={`absolute w-3 h-3 rounded-full -translate-x-1/2 -translate-y-1/2 pointer-events-none z-20 shadow-md ${activeModeToken.activeDotClass}`}
+                    style={{
+                      left: `${activePoint.pctX}%`,
+                      top: `${activePoint.pctY}%`,
+                    }}
+                  />
+
+                  {/* Comparison Curve Active Dot */}
+                  {compareDate !== "none" && activeComparePoint && (
+                    <div
+                      className="absolute w-2.5 h-2.5 rounded-full -translate-x-1/2 -translate-y-1/2 pointer-events-none z-20 bg-white border-2 border-[#8A8A84] shadow-xs"
+                      style={{
+                        left: `${activeComparePoint.pctX}%`,
+                        top: `${activeComparePoint.pctY}%`,
+                      }}
+                    />
+                  )}
+
+                  <div
+                    className="absolute z-30 pointer-events-none"
+                    style={{
+                      left: `${Math.max(8, Math.min(92, activePoint.pctX))}%`,
+                      top: `${activePoint.pctY}%`,
+                      transform:
+                        activePoint.pctY < 42
+                          ? activePoint.pctX > 60
+                            ? "translate(-100%, 14px)"
+                            : activePoint.pctX < 40
+                              ? "translate(0%, 14px)"
+                              : "translate(-50%, 14px)"
+                          : activePoint.pctX > 60
+                            ? "translate(-100%, -108%)"
+                            : activePoint.pctX < 40
+                              ? "translate(0%, -108%)"
+                              : "translate(-50%, -108%)",
+                    }}
                   >
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      style={{
+                        transformOrigin: activePoint.pctY < 42 ? "top center" : "bottom center",
+                      }}
+                      transition={TRANSITION_POPOVER}
+                      className="p-2.5 rounded-xl bg-[#141412] text-white shadow-xl border border-white/10 min-w-[190px] sm:min-w-[210px] max-w-[calc(100vw-2.5rem)] sm:max-w-[290px]"
+                    >
                   <div className="flex items-center justify-between gap-2 pb-1.5 mb-1.5 border-b border-white/10">
                     <div className="flex items-center gap-1.5 font-mono text-[11px] font-bold text-[#FFD84D]">
                       <Clock className="w-3 h-3 text-[#FFD84D] shrink-0" />
@@ -1043,8 +1125,9 @@ function ActivityAreaChartInner({
                   </div>
                   </motion.div>
                 </div>
-              </>
+              </motion.div>
             )}
+          </AnimatePresence>
 
             {!hasChartData && !hasCompareData && (
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none">

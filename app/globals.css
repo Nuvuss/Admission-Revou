@@ -458,11 +458,11 @@
 
 /* Chart SVG Path Transitions (Smooth, Jitter-Free Updates) */
 .chart-draw-line {
-  transition: d 0.3s var(--ease-out), stroke 0.2s ease;
+  transition: stroke 0.2s ease, opacity 0.2s ease;
 }
 
 .chart-draw-area {
-  transition: d 0.3s var(--ease-out), fill 0.2s ease;
+  transition: fill 0.2s ease, opacity 0.2s ease;
 }
 
 /* Status Pills */

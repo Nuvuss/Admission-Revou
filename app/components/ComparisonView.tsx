@@ -4695,7 +4695,7 @@ export default function ComparisonView({ onTrackActivity }: ComparisonViewProps 
           aria-selected={activeTab === "bootcamp"}
           aria-controls="tabpanel-bootcamp"
           onClick={() => setActiveTab("bootcamp")}
-          className={cn("group flex items-center justify-center gap-1.5 sm:gap-2 px-2 sm:px-3 md:px-4 py-2.5 sm:py-3 text-[11.5px] sm:text-xs md:text-sm font-bold rounded-t-xl transition-all border-b-[3px] cursor-pointer select-none min-w-0", activeTab === "bootcamp"
+          className={cn("group flex items-center justify-center gap-1.5 sm:gap-2 px-2 sm:px-3 md:px-4 py-2.5 sm:py-3 text-[11.5px] sm:text-xs md:text-sm font-bold rounded-t-xl transition-all active:scale-97 border-b-[3px] cursor-pointer select-none min-w-0", activeTab === "bootcamp"
             ? "bg-[#F5F5F0] text-[#141412] border-[#FFD84D]"
             : "bg-transparent text-[#60605B] border-transparent hover:text-[#141412] hover:bg-[#F5F5F0]/60"
             )}
@@ -4712,7 +4712,7 @@ export default function ComparisonView({ onTrackActivity }: ComparisonViewProps 
             aria-selected={activeTab === "general"}
             aria-controls="tabpanel-general"
             onClick={() => setActiveTab("general")}
-            className={cn("group flex items-center justify-center gap-1.5 sm:gap-2 px-2 sm:px-3 md:px-4 py-2.5 sm:py-3 text-[11.5px] sm:text-xs md:text-sm font-bold rounded-t-xl transition-all border-b-[3px] cursor-pointer select-none min-w-0", activeTab === "general"
+            className={cn("group flex items-center justify-center gap-1.5 sm:gap-2 px-2 sm:px-3 md:px-4 py-2.5 sm:py-3 text-[11.5px] sm:text-xs md:text-sm font-bold rounded-t-xl transition-all active:scale-97 border-b-[3px] cursor-pointer select-none min-w-0", activeTab === "general"
               ? "bg-[#F5F5F0] text-[#141412] border-[#1F7A4D]"
               : "bg-transparent text-[#60605B] border-transparent hover:text-[#141412] hover:bg-[#F5F5F0]/60"
               )}
@@ -4729,7 +4729,7 @@ export default function ComparisonView({ onTrackActivity }: ComparisonViewProps 
           aria-selected={activeTab === "battlecards"}
           aria-controls="tabpanel-battlecards"
           onClick={() => setActiveTab("battlecards")}
-          className={cn("group flex items-center justify-center gap-1.5 sm:gap-2 px-2 sm:px-3 md:px-4 py-2.5 sm:py-3 text-[11.5px] sm:text-xs md:text-sm font-bold rounded-t-xl transition-all border-b-[3px] cursor-pointer select-none min-w-0", activeTab === "battlecards"
+          className={cn("group flex items-center justify-center gap-1.5 sm:gap-2 px-2 sm:px-3 md:px-4 py-2.5 sm:py-3 text-[11.5px] sm:text-xs md:text-sm font-bold rounded-t-xl transition-all active:scale-97 border-b-[3px] cursor-pointer select-none min-w-0", activeTab === "battlecards"
             ? "bg-[#F5F5F0] text-[#141412] border-[#B76E00]"
             : "bg-transparent text-[#60605B] border-transparent hover:text-[#141412] hover:bg-[#F5F5F0]/60"
             )}

@@ -767,7 +767,7 @@ export default function AnalyticsDashboardPage() {
                       aria-pressed={isActive}
                       onClick={() => handleRangeChange(tab.id)}
                       className={cn(
-                        "relative px-2.5 py-1 text-xs font-bold transition-colors duration-150 cursor-pointer z-10 rounded-lg whitespace-nowrap shrink-0",
+                        "relative px-2.5 py-1 text-xs font-bold transition-all active:scale-95 duration-150 cursor-pointer z-10 rounded-lg whitespace-nowrap shrink-0",
                         isActive ? "text-white" : "text-[#5C5C56] hover:text-[#141412]"
                       )}
                     >
@@ -803,7 +803,7 @@ export default function AnalyticsDashboardPage() {
                       aria-pressed={isActive}
                       onClick={() => handleRoleFilterChange(r.id as "all" | "ac" | "bm")}
                       className={cn(
-                        "relative px-2.5 py-1 rounded-lg cursor-pointer transition-colors duration-150 z-10 whitespace-nowrap shrink-0",
+                        "relative px-2.5 py-1 rounded-lg cursor-pointer transition-all active:scale-95 duration-150 z-10 whitespace-nowrap shrink-0",
                         isActive ? "text-[#FFD84D]" : "text-[#5C5C56] hover:text-[#141412]"
                       )}
                     >
@@ -842,7 +842,7 @@ export default function AnalyticsDashboardPage() {
                     aria-pressed={isSelected}
                     onClick={() => setChartMode(seg.id as any)}
                     className={cn(
-                      "relative px-2.5 py-1 rounded-lg transition-colors duration-150 cursor-pointer z-10 whitespace-nowrap shrink-0 inline-flex items-center gap-1.5",
+                      "relative px-2.5 py-1 rounded-lg transition-all active:scale-95 duration-150 cursor-pointer z-10 whitespace-nowrap shrink-0 inline-flex items-center gap-1.5",
                       isSelected ? "text-white" : "text-[#5C5C56] hover:text-[#141412]"
                     )}
                   >
@@ -995,6 +995,7 @@ export default function AnalyticsDashboardPage() {
           onSelectUser={setSelectedUser}
           compareDate={compareDate}
           onCompareDateChange={handleCompareDateChange}
+          isLoading={isLoading || isManualRefreshing}
         />
 
         {/* ========================================================= */}

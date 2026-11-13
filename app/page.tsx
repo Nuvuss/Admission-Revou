@@ -1348,7 +1348,7 @@ INSTRUKSI PENTING:
                     key={tab.key}
                     type="button"
                     onClick={() => handleModeChange(tab.key as ModeKey)}
-                    className={`relative px-3.5 py-2 text-xs sm:text-[13px] font-bold rounded-lg transition-colors cursor-pointer select-none flex items-center gap-1.5 shrink-0 ${isActive ? "text-[#141412]" : "text-[#7A7A74] hover:text-[#141412]"
+                    className={`relative px-3.5 py-2 text-xs sm:text-[13px] font-bold rounded-lg transition-all active:scale-95 duration-150 cursor-pointer select-none flex items-center gap-1.5 shrink-0 ${isActive ? "text-[#141412]" : "text-[#7A7A74] hover:text-[#141412]"
                       }`}
                   >
                     {isActive && (
