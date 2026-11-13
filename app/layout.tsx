@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Analytics } from '@vercel/analytics/next';
+import MotionProvider from './components/MotionProvider';
 import './globals.css';
 
 export const dynamic = 'force-dynamic';
@@ -35,7 +36,7 @@ export default function RootLayout({
         />
       </head>
       <body className="antialiased min-h-screen">
-        {children}
+        <MotionProvider>{children}</MotionProvider>
         <Analytics />
       </body>
     </html>

@@ -84,8 +84,6 @@ export default function AccountModal({
     }
   }, [isOpen, userSession]);
 
-  if (!isOpen) return null;
-
   const handleTabChange = (tab: "email" | "password") => {
     setActiveTab(tab);
     setErrorMessage(null);
@@ -287,24 +285,24 @@ export default function AccountModal({
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-        {/* Backdrop */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          onClick={onClose}
-          className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-        />
+      {isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          {/* Backdrop */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1, transition: { duration: 0.2, ease: [0.16, 1, 0.3, 1] } }}
+            exit={{ opacity: 0, transition: { duration: 0.16, ease: [0.16, 1, 0.3, 1] } }}
+            onClick={onClose}
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+          />
 
-        {/* Modal Window */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95, y: 12 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.95, y: 12 }}
-          transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-          className="relative w-full max-w-md bg-white rounded-[28px] border border-[#EAEAE6] shadow-2xl overflow-hidden z-10 flex flex-col max-h-[90vh]"
-        >
+          {/* Modal Window */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.96, y: 8 }}
+            animate={{ opacity: 1, scale: 1, y: 0, transition: { duration: 0.22, ease: [0.16, 1, 0.3, 1] } }}
+            exit={{ opacity: 0, scale: 0.96, y: 8, transition: { duration: 0.16, ease: [0.16, 1, 0.3, 1] } }}
+            className="relative w-full max-w-md bg-white rounded-[28px] border border-[#EAEAE6] shadow-2xl overflow-hidden z-10 flex flex-col max-h-[90vh]"
+          >
           {/* Header */}
           <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-[#F0F0EC]">
             <div className="flex items-center gap-2.5">
@@ -644,7 +642,7 @@ export default function AccountModal({
                         {/* 4-Segment Interactive Strength Meter Bar */}
                         <div className="grid grid-cols-4 gap-1.5 h-1.5 w-full">
                           <div
-                            className={`rounded-full transition-all duration-300 ${
+                            className={`rounded-full transition-colors duration-200 ${
                               strengthScore >= 1
                                 ? strengthScore === 1
                                   ? "bg-[#EF4444]"
@@ -655,7 +653,7 @@ export default function AccountModal({
                             }`}
                           />
                           <div
-                            className={`rounded-full transition-all duration-300 ${
+                            className={`rounded-full transition-colors duration-200 ${
                               strengthScore >= 2
                                 ? strengthScore === 2
                                   ? "bg-[#F59E0B]"
@@ -664,12 +662,12 @@ export default function AccountModal({
                             }`}
                           />
                           <div
-                            className={`rounded-full transition-all duration-300 ${
+                            className={`rounded-full transition-colors duration-200 ${
                               strengthScore >= 3 ? "bg-[#10B981]" : "bg-[#EAEAE6]"
                             }`}
                           />
                           <div
-                            className={`rounded-full transition-all duration-300 ${
+                            className={`rounded-full transition-colors duration-200 ${
                               strengthScore === 4 ? "bg-[#059669]" : "bg-[#EAEAE6]"
                             }`}
                           />
@@ -892,7 +890,8 @@ export default function AccountModal({
             )}
           </div>
         </motion.div>
-      </div>
+        </div>
+      )}
     </AnimatePresence>
   );
 }
