@@ -143,9 +143,13 @@ export default function DashboardPage() {
   const router = useRouter();
   const [isAuthChecking, setIsAuthChecking] = useState<boolean>(true);
   const [mode, setMode] = useState<ModeKey>("pitch");
-  const [selectedModel, setSelectedModel] = useState(
-    process.env.NEXT_PUBLIC_DEFAULT_MODEL || "anthropic/claude-sonnet-4.5"
-  );
+  const [selectedModel, setSelectedModel] = useState<string>(() => {
+    const defaultEnv = process.env.NEXT_PUBLIC_DEFAULT_MODEL;
+    if (defaultEnv && availableModels.some((m) => m.id === defaultEnv)) {
+      return defaultEnv;
+    }
+    return "anthropic/claude-sonnet-4.5";
+  });
   const [inputText, setInputText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [responseResult, setResponseResult] = useState<any | null>(null);
@@ -373,6 +377,7 @@ export default function DashboardPage() {
     topic?: string;
     resultJson: any;
     durationMs?: number;
+    modelUsed?: string;
   }) => {
     try {
       const session = getActiveSession();
@@ -385,7 +390,7 @@ export default function DashboardPage() {
           ...payload,
           userName: session.name,
           userRole: session.role || "AC",
-          modelUsed: selectedModel,
+          modelUsed: payload.modelUsed || selectedModel,
         }),
       }).catch(() => { });
     } catch (e) { }
@@ -763,9 +768,10 @@ export default function DashboardPage() {
         // Log generate activity to Analytics with clean topic & real response latency
         const durationMs = Date.now() - generateStartMs;
         const topicExtracted = extractCleanTopic(inputText, finalResultData, mode);
+        const actualModelUsed = finalResultData.modelUsed || selectedModel;
 
         trackActivity("generate", mode, inputText, topicExtracted, {
-          model: selectedModel,
+          model: actualModelUsed,
           durationMs,
           scriptsCount: Array.isArray(finalResultData.scripts) ? finalResultData.scripts.length : 0,
           alumniCount: Array.isArray(finalResultData.alumni_matches) ? finalResultData.alumni_matches.length : 0,
@@ -782,6 +788,7 @@ export default function DashboardPage() {
           topic: topicExtracted,
           resultJson: finalResultData,
           durationMs,
+          modelUsed: actualModelUsed,
         });
         const newItem: HistoryItem = {
           id: newSessionId,
@@ -789,7 +796,7 @@ export default function DashboardPage() {
           dateFormatted: formatDate(new Date()),
           mode,
           inputText,
-          model: selectedModel,
+          model: actualModelUsed,
           responseResult: finalResultData,
           chatThread: [],
           isFavorite: false,
@@ -1105,7 +1112,10 @@ INSTRUKSI PENTING:
   const handleLoadSession = (item: HistoryItem) => {
     setMode(item.mode);
     setInputText(item.inputText);
-    setSelectedModel(item.model || "anthropic/claude-sonnet-4.5");
+    const restoredModel = availableModels.some((m) => m.id === item.model)
+      ? item.model
+      : (item.model?.toLowerCase().includes("gemini") ? "google/gemini-3.8-flash" : "anthropic/claude-sonnet-4.5");
+    setSelectedModel(restoredModel);
     setResponseResult(item.responseResult);
     setChatThread(item.chatThread || []);
     setActiveScriptTab(0);

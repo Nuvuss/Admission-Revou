@@ -75,6 +75,52 @@ function AnimatedCounter({ value, duration = 200 }: { value: number; duration?: 
   return <span className="tabular-numbers">{displayValue.toLocaleString("id-ID")}</span>;
 }
 
+const DAY_NAMES_ID = ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"];
+const MONTH_NAMES_ID = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
+
+// Instant client-side date label generator (0ms response time on timeRange filter click)
+function getInstantDateLabels(range: string) {
+  // Use Asia/Jakarta (WIB = UTC+7) time for deterministic consistency with server
+  const nowUtc = Date.now();
+  const nowWib = new Date(nowUtc + 7 * 60 * 60 * 1000);
+
+  if (range === "7d") {
+    const list: { timelineIdx: number; label: string; leftPct: number; key: string }[] = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(nowWib.getTime() - i * 24 * 60 * 60 * 1000);
+      const day = DAY_NAMES_ID[d.getUTCDay()];
+      const dateNum = d.getUTCDate();
+      const month = MONTH_NAMES_ID[d.getUTCMonth()];
+      const idx = 6 - i;
+      list.push({
+        timelineIdx: idx,
+        label: `${day} (${dateNum} ${month})`,
+        leftPct: (idx / 6) * 100,
+        key: `7d-inst-${idx}`,
+      });
+    }
+    return list;
+  }
+
+  if (range === "30d") {
+    const indices = [0, 6, 12, 18, 24, 29];
+    return indices.map((idx, k) => {
+      const daysAgo = 29 - idx;
+      const d = new Date(nowWib.getTime() - daysAgo * 24 * 60 * 60 * 1000);
+      const dateNum = d.getUTCDate();
+      const month = MONTH_NAMES_ID[d.getUTCMonth()];
+      return {
+        timelineIdx: idx,
+        label: `${dateNum} ${month}`,
+        leftPct: (k / (indices.length - 1)) * 100,
+        key: `30d-inst-${idx}`,
+      };
+    });
+  }
+
+  return null;
+}
+
 function ActivityAreaChartInner({
   timeline,
   timeRange,
@@ -370,44 +416,64 @@ function ActivityAreaChartInner({
     return [String(maxChartVal), String(Math.round(maxChartVal * 0.5)), "0"];
   }, [maxChartVal]);
 
-  // Sumbu X ticks
+  // Sumbu X ticks (Deterministic 0ms response time on timeRange filter click)
   const xTicks = useMemo(() => {
-    if (!timeline || !timeline.length) return [];
     if (timeRange === "today" || timeRange === "yesterday") {
       const targetHours = [0, 4, 8, 12, 16, 20, 23];
       return targetHours.map((h) => ({
         timelineIdx: h,
         label: `${String(h).padStart(2, "0")}:00`,
+        leftPct: (h / 23) * 100,
+        key: `h-${h}`,
       }));
     }
+
     if (timeRange === "7d") {
-      return timeline.map((pt, i) => ({
-        timelineIdx: i,
-        label: pt.sublabel ? `${pt.label} (${pt.sublabel})` : pt.label,
-      }));
-    }
-    if (timeRange === "30d") {
-      const indices = [0, 6, 12, 18, 24, timeline.length - 1];
-      return indices.map((idx) => {
-        const i = Math.min(idx, timeline.length - 1);
-        return {
+      if (timeline && timeline.length === 7) {
+        return timeline.map((pt, i) => ({
           timelineIdx: i,
-          label: timeline[i]?.label || "",
-        };
-      });
+          label: pt.sublabel ? `${pt.label} (${pt.sublabel})` : pt.label,
+          leftPct: (i / 6) * 100,
+          key: `7d-srv-${pt.key || i}`,
+        }));
+      }
+      return getInstantDateLabels("7d") || [];
     }
+
+    if (timeRange === "30d") {
+      if (timeline && timeline.length >= 28) {
+        const lastIdx = timeline.length - 1;
+        const indices = [0, 6, 12, 18, 24, lastIdx];
+        return indices.map((idx, k) => {
+          const i = Math.min(idx, lastIdx);
+          return {
+            timelineIdx: i,
+            label: timeline[i]?.label || "",
+            leftPct: (k / (indices.length - 1)) * 100,
+            key: `30d-srv-${timeline[i]?.key || i}`,
+          };
+        });
+      }
+      return getInstantDateLabels("30d") || [];
+    }
+
     // "all"
+    if (!timeline || !timeline.length) return [];
     if (timeline.length <= 7) {
       return timeline.map((pt, i) => ({
         timelineIdx: i,
         label: pt.label,
+        leftPct: timeline.length > 1 ? (i / (timeline.length - 1)) * 100 : 50,
+        key: `all-${i}`,
       }));
     }
     const step = Math.floor((timeline.length - 1) / 5);
     const indices = [0, step, step * 2, step * 3, step * 4, timeline.length - 1];
-    return indices.map((i) => ({
+    return indices.map((i, k) => ({
       timelineIdx: i,
       label: timeline[i]?.label || "",
+      leftPct: (k / (indices.length - 1)) * 100,
+      key: `all-${i}`,
     }));
   }, [timeline, timeRange]);
 
@@ -1155,35 +1221,41 @@ function ActivityAreaChartInner({
 
         {/* X-Axis Labels */}
         <div className="pl-[38px] pt-1.5 text-[10px] font-mono text-[#7A7A74] select-none">
-          <div className="relative h-5 w-full">
-            {xTicks.map((tick, idx) => {
-              const isPeakLabel = hasChartData && peakVal > 0 && tick.timelineIdx === peakIdx;
-              const leftPct =
-                timeline && timeline.length > 1
-                  ? (tick.timelineIdx / (timeline.length - 1)) * 100
-                  : 50;
-              const isFirst = leftPct <= 2;
-              const isLast = leftPct >= 98;
-              return (
-                <span
-                  key={idx}
-                  style={{
-                    left: `${leftPct}%`,
-                    transform: isFirst
-                      ? "translateX(0%)"
-                      : isLast
-                        ? "translateX(-100%)"
-                        : "translateX(-50%)",
-                  }}
-                  className={`absolute top-0 whitespace-nowrap ${
-                    isPeakLabel ? activeModeToken.peakTickClass : "font-medium"
-                  }`}
-                >
-                  {tick.label}
-                </span>
-              );
-            })}
-          </div>
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              key={timeRange}
+              initial={{ opacity: 0, y: 2 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -2 }}
+              transition={{ duration: 0.14, ease: EASE_OUT }}
+              className="relative h-5 w-full"
+            >
+              {xTicks.map((tick, idx) => {
+                const isPeakLabel = hasChartData && peakVal > 0 && tick.timelineIdx === peakIdx;
+                const leftPct = tick.leftPct;
+                const isFirst = leftPct <= 2;
+                const isLast = leftPct >= 98;
+                return (
+                  <span
+                    key={tick.key || idx}
+                    style={{
+                      left: `${leftPct}%`,
+                      transform: isFirst
+                        ? "translateX(0%)"
+                        : isLast
+                          ? "translateX(-100%)"
+                          : "translateX(-50%)",
+                    }}
+                    className={`absolute top-0 whitespace-nowrap transition-colors duration-150 ${
+                      isPeakLabel ? activeModeToken.peakTickClass : "font-medium"
+                    }`}
+                  >
+                    {tick.label}
+                  </span>
+                );
+              })}
+            </motion.div>
+          </AnimatePresence>
         </div>
       </div>
 

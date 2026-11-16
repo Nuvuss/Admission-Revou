@@ -1040,7 +1040,7 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
             let rateLimit429Count = 0;
             let capturedUsageMetadata = null;
             let ttftMs = 0;
-            let lastAttemptedModel = model || "gemini-3.5-flash";
+            let lastAttemptedModel = effectiveModel || "google/gemini-3.8-flash";
 
             for (let keyAttempt = 0; keyAttempt < keyQueue.length; keyAttempt++) {
               if (executedSuccessfully) break;
