@@ -103,3 +103,14 @@ Setiap lulusan membawa **7 Projek Portfolio** standar industri:
   * **Penerapan Keahlian RevoU:** Mengaplikasikan Python, SQL, analisis statistik pertandingan, dan visualisasi data untuk menghasilkan data metrik olahraga yang akurat dan tepat waktu.
   * **Pitching Angle Sales:** Contoh kuat bagi calon siswa yang ingin menyalurkan minat olahraga (sepak bola) atau mencari peluang kerja fleksibel/freelance remote di bidang analisis statistik olahraga (*sports analytics*).
   * **Link Direktori Alumni:** [https://www.revou.co/alumni](https://www.revou.co/alumni)
+
+---
+
+## 7. FAQ ADMISSION & REFERENSI JAWABAN VERBATIM (TOOLS DA)
+
+**Q: Belajar tools apa aja di DA?**
+> "Di Full Stack Data Analytics RevoU, kita pelajari ekosistem tools end-to-end secara hands-on lho 🚀
+> - *Utk SQL,* kakak belajar dari konsep database, ERD, Google BigQuery, data manipulation, JOINS, UNION, sampai query advance spt Subqueries, CTEs, dan Window Functions.
+> - Lalu di *Python,* pembahasannya masuk ke NumPy, Pandas, Data Cleaning, Customer Segmentation, hingga Machine Learning dasar spt Linear Regression
+> - Ditambah lagi visualisasi data pakai *Tableau / Power BI* dan otomatisasi workflow dgn Apache Airflow.
+> - *AI* di sini diposisikan sebagai force multiplier: kita integrasikan AI for SQL dan PandasAI biar coding repetitif dibantu AI dan kakak fokus ke problem solving bisnis ✨"

@@ -51,9 +51,11 @@ Peserta membangun "Tim AI" fungsional yang dapat terus digunakan di tempat kerja
 
 ### Syarat Prasyarat (Prerequisites):
 * **Pengalaman Kerja:** Minimal 2 tahun atau lebih di bidang keuangan (*finance*), akuntansi (*accounting*), pajak, atau audit.
-* **Kemampuan Teknis:** **TIDAK MEMBUTUHKAN KODING (NO CODING REQUIRED).** 
+* **Kemampuan Teknis:** **TIDAK MEMBUTUHKAN KODING (NO CODING REQUIRED).** Untuk ikut program ini tidak perlu bisa coding, SQL, atau BI tools.
 * **Latar Belakang Hukum/Pajak:** Tidak wajib memiliki latar belakang hukum atau perpajakan mendalam sebelumnya.
-* **Perangkat Lunak / Tools:** Menggunakan tools AI gratis di Minggu 1–4, dan lisensi Claude Pro disediakan mulai Minggu 5.
+* **Perangkat Lunak / Tools:**
+  * **Tools AI:** Minggu 1–4 memakai Claude dan GPT/Gemini versi gratis untuk tugas ringan. Mulai minggu 5 sampai akhir, Claude Pro sudah termasuk di biaya program (karena sesinya makin panjang & banyak file) dengan skema *shared access* bertiga dengan student lain di kelas (1:3).
+  * **Tools Lain:** Excel untuk *modelling* dan *analysis*, serta penggunaan AI (LLM) untuk *financial modelling*.
 
 ### Profil Target Peserta (Target Audience):
 1. **The Specialist (Spesialis Keuangan & Akuntansi):** Praktisi di fungsi tunggal (AP, AR, Treasury, Tax Compliance, Audit) yang ingin memperluas wawasan holistik agar siap naik ke level manajerial.
@@ -109,9 +111,10 @@ Program berjalan selama 13 minggu dengan kurikulum terpadu yang memadukan kuliah
 * **On-Campus Immersion di Kampus UI (Minggu ke-13):**
   * Menghadiri wisuda, presentasi capstone showcase, dan serah terima sertifikat di Kampus Universitas Indonesia.
   * Peserta dari luar kota atau berhalangan dapat mengikuti secara daring via streaming interaktif.
-* **Penyediaan AI Tools:**
-  * Minggu 1–4: Memaksimalkan free-tier tools dengan prompt frameworks khusus.
-  * Minggu 5 ke atas: Diberikan akses lisensi Claude Pro untuk pemodelan data tingkat lanjut.
+* **Penyediaan AI Tools & Financial Modelling Tools:**
+  * Minggu 1–4: Memakai Claude dan GPT/Gemini versi gratis untuk tugas ringan (memaksimalkan *free-tier tools* dengan *prompt frameworks* khusus).
+  * Mulai minggu 5 sampai akhir: Claude Pro sudah termasuk di biaya program (karena sesinya makin panjang & banyak file), menggunakan skema *shared access* bertiga dengan student lain di kelas (1:3) untuk pemodelan data tingkat lanjut.
+  * Tools lain yang dipelajari: Excel untuk *modelling* dan *analysis*, serta cara memakai AI (LLM) untuk *financial modelling* (tidak perlu bisa coding, SQL, atau BI tools).
 
 ---
 
@@ -156,7 +159,7 @@ Program berjalan selama 13 minggu dengan kurikulum terpadu yang memadukan kuliah
 * Pendampingan mentor industri dan 2x sesi *coaching clinic* Capstone.
 * Sidang panel evaluasi Capstone dan seremoni wisuda di Kampus UI.
 * *Joint Certificate* resmi diterbitkan bersama oleh Universitas Indonesia dan RevoU.
-* Akses lisensi Claude Pro untuk pengerjaan pemodelan keuangan AI.
+* Akses Claude Pro (mulai minggu 5 sampai akhir, *shared access* bertiga / 1:3 dengan student lain di kelas) yang sudah termasuk di biaya program untuk pengerjaan pemodelan keuangan AI.
 
 ---
 
@@ -183,10 +186,18 @@ Program berjalan selama 13 minggu dengan kurikulum terpadu yang memadukan kuliah
 **Q7: Bisakah biaya program dibayarkan oleh perusahaan (Corporate Sponsorship)?**
 > **A:** Sangat bisa. RevoU menyediakan alur pembayaran B2B melalui *Company Sponsorship*, lengkap dengan dokumen penawaran resmi, surat keterangan penerimaan, dan invoice B2B untuk klaim anggaran pelatihan karyawan perusahaan.
 
+**Q8: Tools apa saja yang digunakan dan dipelajari di program Finance?**
+> **A (Referensi internal, jangan dikutip persis ke calon peserta):**
+> "Soal tools AI:
+> 🤖 Minggu 1–4 pakai *Claude dan GPT/Gemini versi gratis* buat tugas ringan
+> ⭐ Mulai minggu 5 sampai akhir, *Claude Pro udah termasuk* di biaya program, karena sesinya makin panjang & banyak file. Nanti ClaudePro akan shared access bertiga dgn student lain di kelas (1:3)
+> 
+> Tools lain yg akan dipelajari jg: Excel utk modelling dan analysis. Tapi nanti akan diajarin cara pakai AI (LLM) jg utk financial modellignnyaa. Utk ikut program ini tdk perlu bisa coding, SQL atau BI tools."
+
 ---
 
 ## 9. CATATAN PENTING & INTEGRITAS DATA (DATA NOTES)
 
-1. **Status Dokumen Sumber (Staging):** Informasi kurikulum dan penawaran ini bersumber dari dokumen staging uji coba (`https://staging.revou.co/ui-finance`). Tim sales disarankan melakukan konfirmasi final terkait ketersediaan kursi cohort perdana (Januari 2027) dan jadwal rilis resmi bersama tim kemitraan universitas.
-2. **Durasi Lisensi Claude Pro:** Terdapat catatan internal penyebutan: satu bagian menyebutkan akses Claude Pro disertakan mulai Minggu ke-5, bagian lain menyebutkan untuk 2 bulan terakhir. Keduanya mengacu pada fase pemodelan intensif (Modul 5 hingga Capstone).
+1. **Durasi & Skema Lisensi Claude Pro:** Akses Claude Pro mulai minggu 5 sampai akhir program (shared access bertiga, 1:3). Untuk pertanyaan seputar 'dua bulan terakhir' atau akun personal: perlu konfirmasi tim admission.
+2. **Kuota & Jadwal Cohort Perdana:** Ketersediaan kursi cohort perdana (Januari 2027) dan jadwal rilis resmi: perlu konfirmasi tim admission / tim kemitraan universitas.
 3. **Standar Komunikasi Sales:** Selalu awali komunikasi dengan memvalidasi latar belakang peran prospek (apakah akuntan, FP&A, tax, atau finance officer), gali tantangan mereka dalam menyajikan rekomendasi ke level manajerial, lalu tawarkan program ini sebagai akselerator kepemimpinan keuangan strategis.

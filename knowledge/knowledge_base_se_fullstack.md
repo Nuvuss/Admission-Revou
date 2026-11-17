@@ -103,3 +103,16 @@ Tenaga pengajar berpengalaman 7-18+ tahun dari perusahaan teknologi terkemuka:
 - **Thoriq Nur Faizal:** Technical Trainer Shopee.
 - **Erlanda Zakaria:** Full-Stack Engineer DBS Bank (ex-Majoo, Adactive Asia).
 - **Muhammad Idil Haq Amir:** Software Engineer Tokopedia.
+
+---
+
+## 8. FAQ ADMISSION & REFERENSI JAWABAN VERBATIM (FOKUS WEB-APPS & BAHASA)
+
+**Q: Ini fokus belajar web-apps aja kah?**
+> "selama di kelas fokusnya memang untuk pembuatan web apps, terutama untuk frontend memang menggunakan framework untuk pengembangan web apps. tapi untuk backend, penggunaannya cukup universal, jadi backendnya bisa dipake untuk pengembangan aplikasi lain.
+> language yg akan paling dalam dipelajari:
+> - python
+> - flask
+> - sql
+> - typescript
+> - react - next js"

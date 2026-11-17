@@ -32,7 +32,12 @@ Sumber Resmi: Brosur Resmi Program ITB Applied Data Science with AI.
 ---
 
 ## 3. 4 PEMBEDA UTAMA ("SERIOUS DATA SCIENCE, BUILT THE MODERN WAY")
-1. **AI throughout the workflow:** Penerapan AI dilakukan dalam 3 fase bertahap: AI sebagai *thinking partner* → *coding agent* di dalam lingkungan aman **AI Coding Safety Gate** → dijalankan mandiri di repositori GitHub pribadi (*"Guardrails first, freedom second"*).
+1. **AI throughout the workflow:**
+   * **Versi Brosur Resmi:** Penerapan AI dilakukan dalam 3 fase bertahap: AI sebagai *thinking partner* → *coding agent* di dalam lingkungan aman **AI Coding Safety Gate** → dijalankan mandiri di repositori GitHub pribadi (*"Guardrails first, freedom second"*).
+   * **Versi Panduan FAQ Internal (Tools & Mode Kerja AI):** Tool program banyak berbasis *cloud*: **Colab, BigQuery Sandbox, Cloud Shell, GitHub, Streamlit Community Cloud, dan Claude Code** (untuk materi dan dataset program serta mempermudah proses pembelajaran). Peserta juga bisa mengerjakan analisis dan *modelling* di **Jupyter/VS Code kantor** lalu memakai AI hanya untuk konsultasi kode (program tidak mewajibkan data masuk ke tool AI):
+     - **Mode konsultasi (chat):** Peserta menempel kode atau skema, AI menjawab. AI hanya melihat apa yang ditempel. Ini cocok untuk **Gemini di Minggu 1–3**.
+     - **Mode agent (Claude Code):** AI bekerja di folder *project*, bisa membaca file, menjalankan kode, dan mengubah file (artinya AI bisa melihat file data yang ada di folder itu).
+     - *(Catatan: Sinkronisasi teknis antara mekanisme "AI Coding Safety Gate" di brosur dan penggunaan lokal Mode Agent Claude Code: **Perlu konfirmasi tim admission**).*
 2. **ITB-grade statistical rigor:** Materi validasi, pengujian hipotesis, sampling, variasi proses (SQC), dan kalkulasi *error cost* bersumber langsung dari akademisi Fakultas Teknologi Industri (FTI) ITB.
 3. **You leave with a working data product:** Peserta membangun *live data product* (model tervalidasi dengan *interface* aktif Streamlit) yang menyelesaikan masalah bisnis nyata dan diuji langsung di hadapan *industry panel defense*.
 4. **Taught by ITB faculty and practitioners:** Sesi fondasi akademik dibimbing oleh Dosen FTI ITB; sesi terapan (*applied*) dipimpin oleh praktisi *Data Science Lead* aktif di korporasi terkemuka Indonesia.
@@ -80,7 +85,12 @@ Program ini mentransformasi kompetensi peserta dari level reporting menjadi *end
 ---
 
 ## 6. CAPSTONE OPERATIONAL DATA PRODUCT & PENILAIAN
-Peserta wajib membawa kasus nyata dari pekerjaannya (atau menggunakan *anchor case* terkurasi jika data kantor memiliki klausul kerahasiaan ketat).
+Peserta boleh memakai *case* dari tempat kerja sendiri, atau jika tidak ingin memakai *case* dari tempat kerja sendiri, bisa memakai *case anchor* yang sudah disiapkan dari program.
+* **Batasan memakai case dari tempat kerja sendiri:**
+  - Data harus di-anonimkan dan boleh dibagikan.
+  - Data mentah atau rahasia tidak boleh masuk ke repository GitHub.
+  - Peserta yang memakai data kantor menambahkan *disclaimer* bahwa data sudah dianonimkan dan diizinkan untuk dibagikan.
+* **3 Case Study Sepanjang Program (Dataset Sintetis):** Sudah ada 3 *case study* di sepanjang program (**Kirim Cepat, BayarKu, EduTech Cerdas**) memakai dataset sintetis yang sudah disiapkan dari program, jadi tidak ada data kantor yang dibutuhkan di sini.
 
 ### 4 Contoh Data Product yang Dibangun:
 1. **Churn Decision App:** Aplikasi penentu retensi pelanggan berbasis model klasifikasi yang terhubung antarmuka Streamlit, menyajikan *ranked list* mingguan bagi tim komersial.
@@ -120,3 +130,25 @@ Peserta wajib membawa kasus nyata dari pekerjaannya (atau menggunakan *anchor ca
 ## 9. PRASYARAT & JALUR ON-RAMP (PREREQUISITES)
 * **Prasyarat Wajib:** Calon peserta sudah memiliki kemampuan dasar dalam **SQL** atau **Python**.
 * **Jalur On-Ramp (Jika Belum Siap):** Apabila calon pendaftar belum memahami dasar SQL/Python, arahkan mereka untuk mengambil program fondasi terlebih dahulu: **RevoU Data Analytics with AI** (`revou.co/data-analytics`).
+
+---
+
+## 10. FAQ OPERASIONAL & KEAMANAN DATA (REFERENSI JAWABAN VERBATIM)
+
+**Q1: Batasan pakai case dari kantor seperti apa untuk capstone project?**
+> "Kakak boleh memakai case dari tempat kerja sendiri. Alternatifnya kalau gamau pake case dr tempat kerja sendiri, bisa pake case anchor yg udh disiapin dari program. Untuk case dari tempat kerja sendiri batasannya adalah berikut:
+> - Data harus di-anonimkan dan boleh dibagikan.
+> - Data mentah atau rahasia tidak boleh masuk ke repository GitHub.
+> - Peserta yang memakai data kantor menambahkan disclaimer bahwa data sudah dianonimkan dan diizinkan untuk dibagikan.
+> Sebagai contoh, sudah ada 3 case study di sepanjang program (Kirim Cepat, BayarKu, EduTech Cerdas) memakai dataset sintetis yg udh disiapkan dari program, jadi tidak ada data kantor yang dibutuhkan di sini."
+
+**Q2: Database kami disimpan secara on-premise (di server lokal kantor), bukan di cloud. Sudah ketentuan regulasi. Kalau course ini sepertinya lebih banyak cloud-based ya?**
+> - "Kakak benar, tool program memang banyak cloud-based: Colab, BigQuery Sandbox, Cloud Shell, GitHub, Streamlit Community Cloud, dan Claude Code. Tapi itu tool untuk materi dan dataset program dan mempermudah proses pembelajaraan.
+> - Untuk capstone, data asli Kakak tidak perlu dipindahkan ke cloud. Bisa mencoba pendekatan: bangun capstone di atas extract yang sudah dianonimkan atau data sintetis dengan skema yang sama dengan data loan Kakak. Dengan begitu repo bisa dijalankan ulang oleh mentor tanpa menyentuh data asli. Setelah program selesai, pipeline yang sama bisa dijalankan ulang di environment on-premise kantor dengan data asli. Capstone memang dirancang jadi sesuatu yang bisa dipakai bisnis di hari Senin setelah program selesai."
+
+**Q3: Apakah bisa full pakai platform kantor, dengan AI hanya untuk konsultasi coding?**
+> - "Kakak bisa mengerjakan analisis dan modelling di Jupyter/VS Code kantor, lalu memakai AI hanya untuk konsultasi kode. Program tidak mewajibkan data masuk ke tool AI.
+> - Mode konsultasi (chat): Kakak menempel kode atau skema, AI menjawab. AI hanya melihat apa yang Kakak tempel. Ini cocok untuk Gemini di Minggu 1–3.
+> - Mode agent (Claude Code): AI bekerja di folder project, bisa membaca file, menjalankan kode, dan mengubah file. Secara umum ini berarti AI bisa melihat file data yang ada di folder itu.
+> Jadi kalau Kakak ingin “AI tidak terlibat ke datanya”, pastikan folder project yang dipakai Claude Code hanya berisi kode dan data sintetis atau teranonimkan. Data asli tetap di environment on-premise, di luar folder itu. Ini saran saya berdasarkan cara kerja tool tersebut, bukan aturan tertulis program. Cara praktis menjaga data tetap aman (saran saya). 
+> Buat salinan skema dengan data sintetis atau hasil anonimisasi yang disetujui kantor.Kembangkan dan debug kode dengan AI di atas data itu. Jalankan kode final di Jupyter on-premise dengan data asli, tanpa AI. Hanya hasil agregat (metrik model, grafik) yang dibawa ke capstone. Dengan alur ini yang dibagikan ke program adalah kode dan data yang boleh dibagikan, sesuai aturan capstone (anonim, ada disclaimer, tanpa data mentah di GitHub)."

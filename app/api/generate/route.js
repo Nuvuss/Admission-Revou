@@ -11,6 +11,7 @@ import {
 import { findMatchingPitchTemplate } from "../../../lib/pitchTemplateMatcher";
 import { logMetricsToJsonl, extractUsageMetadata } from "../../../lib/metricsLogger";
 import { requireSession } from "../../../lib/authSession";
+import { routeAlumniStories } from "../../../lib/alumniStoryRouter";
 
 export const maxDuration = 120;
 export const dynamic = "force-dynamic";
@@ -62,10 +63,11 @@ function getCachedFileContent(filePath) {
 function detectRelevantKnowledgeFiles(situation = "", tab = "pitch") {
   const text = (situation || "").toLowerCase();
 
-  // Khusus tab alumni: fokus ke kisah alumni
+  // Khusus tab alumni: router selektif (program / industri / background) dengan cap top 5
   if (tab === "alumni") {
+    const alumniResult = routeAlumniStories(situation);
     return [
-      "knowledge_base_alumni_success_stories.md",
+      ...alumniResult.filesToLoad,
       "joint_program_product_knowledge.md",
     ];
   }
@@ -190,6 +192,29 @@ function detectRelevantKnowledgeFiles(situation = "", tab = "pitch") {
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function loadKnowledgeBase(tab = "pitch", situation = "", explicitFiles = null) {
   checkCacheValidity();
+
+  // Khusus tab alumni: muat hasil seleksi top 5 cerita terpilih (stop memuat seluruh 144KB file alumni)
+  if (tab === "alumni") {
+    const alumniResult = routeAlumniStories(situation);
+    const storyIds = alumniResult.stories && alumniResult.stories.length > 0 ? alumniResult.stories.map((s) => s.id).join(",") : "showcase";
+    const cacheKey = `alumni:${alumniResult.matchType}:${storyIds}`;
+
+    if (tabKnowledgeCache.has(cacheKey)) {
+      return tabKnowledgeCache.get(cacheKey);
+    }
+
+    const knowledgeDir = path.join(process.cwd(), "knowledge");
+    let knowledgeContent = alumniResult.assembledKnowledgeText;
+
+    const jointFile = path.join(knowledgeDir, "joint_program_product_knowledge.md");
+    if (fs.existsSync(jointFile)) {
+      const jointContent = getCachedFileContent(jointFile);
+      knowledgeContent += `\n\n=== DOKUMEN: joint_program_product_knowledge.md ===\n${jointContent}\n`;
+    }
+
+    tabKnowledgeCache.set(cacheKey, knowledgeContent);
+    return knowledgeContent;
+  }
 
   const filesToLoad = explicitFiles || detectRelevantKnowledgeFiles(situation, tab);
   const cacheKey = `${tab}:${filesToLoad.sort().join(",")}`;
@@ -986,6 +1011,7 @@ ${situation.trim()}
 Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge base, dan hasilkan JSON valid sesuai format.`;
 
     // â”€â”€ Round Robin API Key Management â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    const keySelectionStart = performance.now();
     const availableKeys = resolveApiKeys(customKeys);
     const keyQueue = [];
 
@@ -1025,6 +1051,16 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
               sendSse("result", fallback);
               sendSse("done", { completed: true });
               controller.close();
+              const keySelectAndRetriesMs = Math.max(0, Math.round(performance.now() - keySelectionStart));
+              console.log(
+                `[Timing] Request: ${requestId} | Tab: ${tab} | Model: ${model} | Knowledge Loading & Routing: ${retrievalMs}ms | Key Selection & Retries: ${keySelectAndRetriesMs}ms | TTFT: 0ms | First Token to Completion: 0ms | Model Calls: 0`
+              );
+              try {
+                fs.appendFileSync(
+                  path.join(process.cwd(), "logs", "timing.log"),
+                  `[Timing] Request: ${requestId} | Tab: ${tab} | Model: ${model} | Knowledge Loading & Routing: ${retrievalMs}ms | Key Selection & Retries: ${keySelectAndRetriesMs}ms | TTFT: 0ms | First Token to Completion: 0ms | Model Calls: 0\n`
+                );
+              } catch (e) {}
               return;
             }
 
@@ -1040,6 +1076,7 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
             let rateLimit429Count = 0;
             let capturedUsageMetadata = null;
             let ttftMs = 0;
+            let modelCallsCount = 0;
             let lastAttemptedModel = effectiveModel || "google/gemini-3.8-flash";
 
             for (let keyAttempt = 0; keyAttempt < keyQueue.length; keyAttempt++) {
@@ -1079,6 +1116,7 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
 
                 try {
                   lastAttemptedModel = modelId;
+                  modelCallsCount++;
                   const llmCallStart = performance.now();
                   const trimmedKey = (currentCandidate.key || "").trim();
                   const isOpenRouter =
@@ -1110,6 +1148,7 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
                       response_format: { type: "json_object" },
                       temperature: 0.25,
                       stream: true,
+                      stream_options: { include_usage: true },
                     });
                   } else {
                     streamUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelId}:streamGenerateContent?alt=sse&key=${trimmedKey}`;
@@ -1142,6 +1181,7 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
                     let accumulatedText = "";
                     let streamBuffer = "";
                     let firstTokenLogged = false;
+                    let firstTokenTime = 0;
 
                     const friendlyName = getFriendlyModelName(modelId);
                     const isFailover = modelId !== primaryModel;
@@ -1174,7 +1214,8 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
                               parsedChunk?.candidates?.[0]?.content?.parts?.[0]?.text;
                             if (delta) {
                               if (!firstTokenLogged) {
-                                ttftMs = Math.round(performance.now() - llmCallStart);
+                                firstTokenTime = performance.now();
+                                ttftMs = Math.round(firstTokenTime - llmCallStart);
                                 firstTokenLogged = true;
                               }
                               accumulatedText += delta;
@@ -1206,7 +1247,8 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
                           parsedChunk?.candidates?.[0]?.content?.parts?.[0]?.text;
                         if (delta) {
                           if (!firstTokenLogged) {
-                            ttftMs = Math.round(performance.now() - llmCallStart);
+                            firstTokenTime = performance.now();
+                            ttftMs = Math.round(firstTokenTime - llmCallStart);
                             firstTokenLogged = true;
                           }
                           accumulatedText += delta;
@@ -1251,17 +1293,38 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
                         sendSse("done", { success: true });
                         executedSuccessfully = true;
 
+                        const completionTime = performance.now();
+                        const firstTokenToCompletionMs = firstTokenLogged
+                          ? Math.max(0, Math.round(completionTime - firstTokenTime))
+                          : 0;
+                        const keySelectAndRetriesMs = Math.max(0, Math.round(llmCallStart - keySelectionStart));
+
+                        console.log(
+                          `[Timing] Request: ${requestId} | Tab: ${tab} | Model: ${modelId} | Knowledge Loading & Routing: ${retrievalMs}ms | Key Selection & Retries: ${keySelectAndRetriesMs}ms | TTFT: ${ttftMs}ms | First Token to Completion: ${firstTokenToCompletionMs}ms | Model Calls: ${modelCallsCount}`
+                        );
+                        try {
+                          fs.appendFileSync(
+                            path.join(process.cwd(), "logs", "timing.log"),
+                            `[Timing] Request: ${requestId} | Tab: ${tab} | Model: ${modelId} | Knowledge Loading & Routing: ${retrievalMs}ms | Key Selection & Retries: ${keySelectAndRetriesMs}ms | TTFT: ${ttftMs}ms | First Token to Completion: ${firstTokenToCompletionMs}ms | Model Calls: ${modelCallsCount}\n`
+                          );
+                        } catch (e) {}
+
                         const totalDurationMs = Math.round(performance.now() - reqStart);
+                        const usageMeta = extractUsageMetadata(capturedUsageMetadata);
+                        const logTs = new Date().toISOString();
+                        console.log(
+                          `[Token Usage] Request ${requestId} | Tab: ${tab} | Model: ${modelId} | Prompt: ${usageMeta.promptTokenCount} | Output: ${usageMeta.candidatesTokenCount} | Total: ${usageMeta.totalTokenCount} | Timestamp: ${logTs}`
+                        );
                         void logMetricsToJsonl({
                           requestId,
-                          timestamp: new Date().toISOString(),
+                          timestamp: logTs,
                           tab,
                           model: modelId,
                           isStream: true,
                           retrievalMs,
                           ttftMs,
                           totalDurationMs,
-                          ...extractUsageMetadata(capturedUsageMetadata),
+                          ...usageMeta,
                           rateLimit429Count,
                           retryCount,
                           status: "completed",
@@ -1336,7 +1399,33 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
             }
 
             if (!executedSuccessfully) {
-              const totalDurationMs = Math.round(performance.now() - reqStart);
+              const completionTime = performance.now();
+              const keySelectAndRetriesMs = Math.max(0, Math.round(completionTime - keySelectionStart));
+              console.log(
+                `[Timing] Request: ${requestId} | Tab: ${tab} | Model: ${lastAttemptedModel} | Knowledge Loading & Routing: ${retrievalMs}ms | Key Selection & Retries: ${keySelectAndRetriesMs}ms | TTFT: ${ttftMs}ms | First Token to Completion: 0ms | Model Calls: ${modelCallsCount}`
+              );
+              try {
+                fs.appendFileSync(
+                  path.join(process.cwd(), "logs", "timing.log"),
+                  `[Timing] Request: ${requestId} | Tab: ${tab} | Model: ${lastAttemptedModel} | Knowledge Loading & Routing: ${retrievalMs}ms | Key Selection & Retries: ${keySelectAndRetriesMs}ms | TTFT: ${ttftMs}ms | First Token to Completion: 0ms | Model Calls: ${modelCallsCount}\n`
+                );
+              } catch (e) {}
+
+              if (!executedSuccessfully) {
+        const completionTime = performance.now();
+        const keySelectAndRetriesMs = Math.max(0, Math.round(completionTime - keySelectionStart));
+        console.log(
+          `[Timing] Request: ${requestId} | Tab: ${tab} | Model: ${lastAttemptedModel} | Knowledge Loading & Routing: ${retrievalMs}ms | Key Selection & Retries: ${keySelectAndRetriesMs}ms | TTFT: 0ms | First Token to Completion: 0ms | Model Calls: ${modelCallsCount}`
+        );
+        try {
+          fs.appendFileSync(
+            path.join(process.cwd(), "logs", "timing.log"),
+            `[Timing] Request: ${requestId} | Tab: ${tab} | Model: ${lastAttemptedModel} | Knowledge Loading & Routing: ${retrievalMs}ms | Key Selection & Retries: ${keySelectAndRetriesMs}ms | TTFT: 0ms | First Token to Completion: 0ms | Model Calls: ${modelCallsCount}\n`
+          );
+        } catch (e) {}
+      }
+
+      const totalDurationMs = Math.round(performance.now() - reqStart);
               void logMetricsToJsonl({
                 requestId,
                 timestamp: new Date().toISOString(),
@@ -1364,7 +1453,21 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
             }
           } catch (streamErr) {
             console.error("Stream execution error:", streamErr);
-            const totalDurationMs = Math.round(performance.now() - reqStart);
+            if (!executedSuccessfully) {
+        const completionTime = performance.now();
+        const keySelectAndRetriesMs = Math.max(0, Math.round(completionTime - keySelectionStart));
+        console.log(
+          `[Timing] Request: ${requestId} | Tab: ${tab} | Model: ${lastAttemptedModel} | Knowledge Loading & Routing: ${retrievalMs}ms | Key Selection & Retries: ${keySelectAndRetriesMs}ms | TTFT: 0ms | First Token to Completion: 0ms | Model Calls: ${modelCallsCount}`
+        );
+        try {
+          fs.appendFileSync(
+            path.join(process.cwd(), "logs", "timing.log"),
+            `[Timing] Request: ${requestId} | Tab: ${tab} | Model: ${lastAttemptedModel} | Knowledge Loading & Routing: ${retrievalMs}ms | Key Selection & Retries: ${keySelectAndRetriesMs}ms | TTFT: 0ms | First Token to Completion: 0ms | Model Calls: ${modelCallsCount}\n`
+          );
+        } catch (e) {}
+      }
+
+      const totalDurationMs = Math.round(performance.now() - reqStart);
             void logMetricsToJsonl({
               requestId,
               timestamp: new Date().toISOString(),
@@ -1405,6 +1508,8 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
       let lastError = null;
       let retryCount = 0;
       let rateLimit429Count = 0;
+      let modelCallsCount = 0;
+      let executedSuccessfully = false;
       let lastAttemptedModel = model || "google/gemini-3.8-flash";
 
       for (let keyAttempt = 0; keyAttempt < keyQueue.length; keyAttempt++) {
@@ -1429,6 +1534,7 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
           lastAttemptedModel = modelId;
 
           try {
+            modelCallsCount++;
             const llmCallStart = performance.now();
             const trimmedKey = (currentCandidate.key || "").trim();
             const isOpenRouter =
@@ -1502,18 +1608,39 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
 
                   await recordKeyExecution(currentCandidate.key, currentCandidate.keyIndex, "success", 200);
 
-                  const ttftMs = Math.round(performance.now() - llmCallStart);
+                  const responseTime = performance.now();
+                  const ttftMs = Math.round(responseTime - llmCallStart);
+                  const completionTime = performance.now();
+                  const firstTokenToCompletionMs = Math.max(0, Math.round(completionTime - responseTime));
+                  const keySelectAndRetriesMs = Math.max(0, Math.round(llmCallStart - keySelectionStart));
+                  executedSuccessfully = true;
+
+                  console.log(
+                    `[Timing] Request: ${requestId} | Tab: ${tab} | Model: ${modelId} | Knowledge Loading & Routing: ${retrievalMs}ms | Key Selection & Retries: ${keySelectAndRetriesMs}ms | TTFT: ${ttftMs}ms | First Token to Completion: ${firstTokenToCompletionMs}ms | Model Calls: ${modelCallsCount}`
+                  );
+                  try {
+                    fs.appendFileSync(
+                      path.join(process.cwd(), "logs", "timing.log"),
+                      `[Timing] Request: ${requestId} | Tab: ${tab} | Model: ${modelId} | Knowledge Loading & Routing: ${retrievalMs}ms | Key Selection & Retries: ${keySelectAndRetriesMs}ms | TTFT: ${ttftMs}ms | First Token to Completion: ${firstTokenToCompletionMs}ms | Model Calls: ${modelCallsCount}\n`
+                    );
+                  } catch (e) {}
+
                   const totalDurationMs = Math.round(performance.now() - reqStart);
+                  const usageMeta = extractUsageMetadata(data?.usage || data?.usageMetadata);
+                  const logTs = new Date().toISOString();
+                  console.log(
+                    `[Token Usage] Request ${requestId} | Tab: ${tab} | Model: ${modelId} | Prompt: ${usageMeta.promptTokenCount} | Output: ${usageMeta.candidatesTokenCount} | Total: ${usageMeta.totalTokenCount} | Timestamp: ${logTs}`
+                  );
                   void logMetricsToJsonl({
                     requestId,
-                    timestamp: new Date().toISOString(),
+                    timestamp: logTs,
                     tab,
                     model: modelId,
                     isStream: false,
                     retrievalMs,
                     ttftMs,
                     totalDurationMs,
-                    ...extractUsageMetadata(data?.usage || data?.usageMetadata),
+                    ...usageMeta,
                     rateLimit429Count,
                     retryCount,
                     status: "completed",
@@ -1585,6 +1712,20 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
             continue;
           }
         }
+      }
+
+      if (!executedSuccessfully) {
+        const completionTime = performance.now();
+        const keySelectAndRetriesMs = Math.max(0, Math.round(completionTime - keySelectionStart));
+        console.log(
+          `[Timing] Request: ${requestId} | Tab: ${tab} | Model: ${lastAttemptedModel} | Knowledge Loading & Routing: ${retrievalMs}ms | Key Selection & Retries: ${keySelectAndRetriesMs}ms | TTFT: 0ms | First Token to Completion: 0ms | Model Calls: ${modelCallsCount}`
+        );
+        try {
+          fs.appendFileSync(
+            path.join(process.cwd(), "logs", "timing.log"),
+            `[Timing] Request: ${requestId} | Tab: ${tab} | Model: ${lastAttemptedModel} | Knowledge Loading & Routing: ${retrievalMs}ms | Key Selection & Retries: ${keySelectAndRetriesMs}ms | TTFT: 0ms | First Token to Completion: 0ms | Model Calls: ${modelCallsCount}\n`
+          );
+        } catch (e) {}
       }
 
       const totalDurationMs = Math.round(performance.now() - reqStart);

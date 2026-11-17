@@ -126,7 +126,9 @@ Peserta membawa masalah nyata dari organisasinya. Contoh hasil proyek Capstone C
 - ITB Certificate of Completion dan akses seumur hidup RevoU AI community
 
 ### 4. 4 Pembeda Utama ("Serious Data Science, Built the Modern Way")
-1. **AI throughout the workflow:** Bertahap dari AI sebagai thinking partner → coding agent dalam Safety Gate → dijalankan mandiri di repo sendiri (*"Guardrails first, freedom second"*).
+1. **AI throughout the workflow:**
+   - **Versi Brosur Resmi:** Bertahap dari AI sebagai thinking partner → coding agent dalam Safety Gate → dijalankan mandiri di repo sendiri (*"Guardrails first, freedom second"*).
+   - **Versi Panduan FAQ Internal:** Tool program berbasis cloud (**Colab, BigQuery Sandbox, Cloud Shell, GitHub, Streamlit Community Cloud, dan Claude Code**), namun peserta juga bisa mengerjakan analisis dan *modelling* di **Jupyter/VS Code kantor** (on-premise) dan memakai AI hanya untuk konsultasi kode (**Mode konsultasi/chat** yang cocok untuk **Gemini di Minggu 1–3**, serta **Mode agent Claude Code** di folder project). *(Sinkronisasi teknis antara "AI Coding Safety Gate" dan Mode Agent lokal: **Perlu konfirmasi tim admission**).*
 2. **ITB-grade statistical rigor:** Fondasi statistik resmi dari FTI ITB: validasi, eksperimen, dan kalkulasi error cost di setiap modul.
 3. **You leave with a working data product:** Model tervalidasi di balik live interface (Streamlit), menyelesaikan masalah nyata, dipertahankan di depan panel industri.
 4. **Taught by ITB faculty and practitioners:** Sesi akademik oleh FTI ITB; sesi applied oleh praktisi data science aktif perusahaan besar Indonesia.
@@ -159,11 +161,15 @@ Peserta membawa masalah nyata dari organisasinya. Contoh hasil proyek Capstone C
   - Week 12: Individual capstone defense ke industry panel (tanpa AI di ruangan).
   - Week 13: Graduation Day di Kampus ITB Ganesha (Presentasi, sertifikat, 90-day roadmap).
 
-### 7. Contoh Capstone Data Product
+### 7. Contoh Capstone Data Product & Ketentuan Data Kantor
 - **Churn Decision App:** Klasifikasi risiko churn pelanggan dengan ranked list mingguan untuk tim retensi.
 - **Demand Forecast Planner:** Model peramalan demand bulanan otomatis dengan uncertainty interval dan backtesting.
 - **Feedback Intelligence:** LLM + statistik untuk memfilter ribuan review/tiket mentah menjadi ranked issues.
 - **Automated Prediction Pipeline:** Model terjadwal reproducible, dimonitor drift, ter-govern, dengan output decision memo.
+- **Ketentuan Case Kantor & 3 Case Study Sintetis:**
+  - Peserta boleh memakai *case* dari tempat kerja sendiri atau memakai *case anchor* yang sudah disiapkan dari program. Sepanjang program juga sudah ada 3 *case study* (**Kirim Cepat, BayarKu, EduTech Cerdas**) memakai dataset sintetis yang disiapkan dari program.
+  - Batasan *case* dari tempat kerja sendiri: (1) Data harus di-anonimkan dan boleh dibagikan, (2) Data mentah atau rahasia tidak boleh masuk ke repository GitHub, (3) Peserta wajib menambahkan *disclaimer* bahwa data sudah dianonimkan dan diizinkan untuk dibagikan.
+  - Untuk database *on-premise*, data asli tidak perlu dipindahkan ke cloud dan tidak wajib masuk ke tool AI (capstone dapat dibangun di atas *extract* teranonimkan atau data sintetis berskema sama, lalu kode final dijalankan di Jupyter on-premise kantor tanpa AI dan hanya hasil agregat seperti metrik model & grafik yang dibawa ke capstone).
 
 ### 8. Target Peserta & Prasyarat
 - **Prasyarat:** Sudah bisa dasar SQL ATAU Python. (Jika belum bisa, diarahkan ke RevoU Data Analytics with AI terlebih dahulu: `revou.co/data-analytics`).
@@ -347,10 +353,13 @@ Peserta membawa masalah nyata dari organisasinya. Contoh hasil proyek Capstone C
 
 ### 2. Fokus Kurikulum & Selling Points
 - **Fokus:** Transformasi profesional akuntansi & keuangan menjadi strategic finance leader yang menguasai permodalan, analisis multi-entitas, transfer pricing perpajakan DJP, dan 3-statement financial modelling berbasis AI tanpa koding.
-- **Tools:** Claude Pro, ChatGPT, Custom AI Assistants (Capital Structure Analyst, Tax Regulation Assistant, Deal Check Assistant).
+- **Tools:**
+  - **Minggu 1–4:** Claude dan GPT/Gemini versi gratis untuk tugas ringan.
+  - **Mulai Minggu 5 sampai akhir:** Claude Pro sudah termasuk di biaya program (karena sesinya makin panjang & banyak file), menggunakan skema *shared access* bertiga dengan student lain di kelas (1:3).
+  - **Tools Lain:** Excel untuk *modelling* dan *analysis*, cara pakai AI (LLM) untuk *financial modelling*, serta Custom AI Assistants (Capital Structure Analyst, Tax Regulation Assistant, Deal Check Assistant).
 - **Pengajar:** Guru Besar & Dosen FEB UI & FIA UI + Praktisi eks GoTo, Deloitte, PwC, McKinsey.
 - **Investasi:** Rp 15.000.000 (Reguler), Rp 12.500.000 (Khusus Alumni RevoU atau UI), opsi cicilan 0% dan company invoice.
-- **Target:** Akuntan, Auditor, FP&A, Treasury, Tax Specialist dengan pengalaman kerja minimal 2 tahun.
+- **Target & Prasyarat Teknis:** Akuntan, Auditor, FP&A, Treasury, Tax Specialist dengan pengalaman kerja minimal 2 tahun. Untuk ikut program ini tidak perlu bisa coding, SQL, atau BI tools.
 
 ---
 
