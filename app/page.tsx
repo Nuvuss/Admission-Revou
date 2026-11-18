@@ -1708,7 +1708,7 @@ INSTRUKSI PENTING:
 
                         {/* 2. Recommended approach */}
                         {mode === "pitch" && responseResult.recommended_approach && (
-                          <div className="bg-[#FFF6D1]/60 p-4 sm:p-5 rounded-xl border border-[#FFD84D]/60 space-y-1.5 card-interactive">
+                          <div className="bg-[#FFF6D1]/60 p-4 sm:p-5 rounded-xl border border-[#FFD84D]/60 space-y-1.5">
                             <div className="flex items-center gap-2 font-display font-bold text-xs uppercase tracking-wider text-[#A15C00]">
                               <Lightbulb className="w-3.5 h-3.5 text-[#A15C00]" />
                               <span>Recommended approach for Sales</span>

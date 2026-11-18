@@ -52,7 +52,7 @@ export default function AlumniCardList({
         {matches.map((alumni, i) => (
           <div
             key={i}
-            className="bg-[#FFFFFF] p-4 sm:p-5 rounded-xl border border-[#E8E8E4] space-y-3.5 shadow-2xs card-interactive flex flex-col justify-between"
+            className="bg-[#FFFFFF] p-4 sm:p-5 rounded-xl border border-[#E8E8E4] space-y-3.5 shadow-2xs flex flex-col justify-between"
           >
             <div className="space-y-3">
               <div className="flex flex-wrap items-start justify-between gap-2 border-b border-[#E8E8E4] pb-2.5">

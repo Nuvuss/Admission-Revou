@@ -37,33 +37,32 @@ import {
   SPRING_TOAST,
   TRANSITION_ENTER,
   TRANSITION_STAGGER,
-  TRANSITION_ROW,
 } from "../../lib/motion";
 
 // ========================================================
 // 1. HELPER COMPONENTS
 // ========================================================
 
-// Smooth Count-Up Ticker with Tabular Numerals (Snappy 250ms + Prefers-Reduced-Motion)
-function AnimatedCounter({ value, duration = 250 }: { value: number; duration?: number }) {
+// Smooth Count-Up Ticker with Tabular Numerals (Initial mount only + Prefers-Reduced-Motion)
+function AnimatedCounter({ value, duration = 200 }: { value: number; duration?: number }) {
   const [displayValue, setDisplayValue] = useState(value || 0);
-  const prevValueRef = useRef(value || 0);
+  const hasAnimatedRef = useRef(false);
 
   useEffect(() => {
     const targetVal = Number.isFinite(value) ? value : 0;
-    const startVal = prevValueRef.current;
 
-    // Respect OS reduced motion preference or instant match
+    // Respect OS reduced motion preference or render directly after initial mount
     const prefersReduced =
       typeof window !== "undefined" &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    if (startVal === targetVal || prefersReduced) {
+    if (hasAnimatedRef.current || prefersReduced || targetVal === 0) {
       setDisplayValue(targetVal);
-      prevValueRef.current = targetVal;
+      if (targetVal > 0) hasAnimatedRef.current = true;
       return;
     }
 
+    hasAnimatedRef.current = true;
     let startTime: number | null = null;
     let frameId: number;
 
@@ -71,13 +70,11 @@ function AnimatedCounter({ value, duration = 250 }: { value: number; duration?: 
       if (!startTime) startTime = now;
       const elapsed = Math.min((now - startTime) / duration, 1);
       const progress = 1 - Math.pow(1 - elapsed, 3);
-      const current = Math.round(startVal + (targetVal - startVal) * progress);
+      const current = Math.round(targetVal * progress);
       setDisplayValue(current);
 
       if (elapsed < 1) {
         frameId = requestAnimationFrame(step);
-      } else {
-        prevValueRef.current = targetVal;
       }
     };
 
@@ -85,7 +82,7 @@ function AnimatedCounter({ value, duration = 250 }: { value: number; duration?: 
     return () => cancelAnimationFrame(frameId);
   }, [value, duration]);
 
-  return <span className="tabular-numbers">{displayValue.toLocaleString("id-ID")}</span>;
+  return <span className="tabular-numbers tabular-nums">{displayValue.toLocaleString("id-ID")}</span>;
 }
 
 // Data-Driven Subtle Mini Sparkline in KPI Card Corner
@@ -1160,11 +1157,8 @@ export default function AnalyticsDashboardPage() {
                           setSelectedUser((prev) => (prev === agent.userName ? "all" : agent.userName));
 
                         return (
-                          <motion.tr
+                          <tr
                             key={agent.userName}
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={TRANSITION_ROW}
                             onClick={toggleSelectUser}
                             title={
                               isSelected
@@ -1250,7 +1244,7 @@ export default function AnalyticsDashboardPage() {
                             <td className="py-2.5 text-right font-mono font-bold text-[#1F7A4D] tabular-numbers">
                               {agent.copyRate}%
                             </td>
-                          </motion.tr>
+                          </tr>
                         );
                       })}
                     </tbody>
@@ -1516,14 +1510,11 @@ export default function AnalyticsDashboardPage() {
                         ? Math.round((topic.count / totalTopicMentions) * 100)
                         : 0;
                     return (
-                      <motion.button
+                      <button
                         type="button"
                         key={topic.name}
                         onClick={() => setHistoryTopic(topic.name)}
                         title="Klik untuk melihat riwayat generate topik ini"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={TRANSITION_ROW}
                         className="group relative overflow-hidden flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl border border-[#E8E8E4] bg-[#FAFAF8] hover:border-[#D9D9D4] hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFD84D] focus-visible:border-[#141412] text-xs text-[#141412] transition-colors duration-150 shadow-sm text-left cursor-pointer"
                       >
                         <div
@@ -1545,7 +1536,7 @@ export default function AnalyticsDashboardPage() {
                           </span>
                           <ChevronRight className="size-3.5 text-[#7A7A74] opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 group-focus-visible:opacity-100 group-focus-visible:translate-x-0 transition-all duration-150 shrink-0" />
                         </div>
-                      </motion.button>
+                      </button>
                     );
                   })}
                 </div>

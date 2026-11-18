@@ -4579,7 +4579,7 @@ export default function ComparisonView({ onTrackActivity }: ComparisonViewProps 
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
-        className="bg-white border-2 border-[#141412] rounded-xl p-4 sm:p-5 shadow-sm space-y-4 card-interactive"
+        className="bg-white border-2 border-[#141412] rounded-xl p-4 sm:p-5 shadow-sm space-y-4"
       >
 
         {/* ── BARIS 1: LEMBAGA KAMI vs PILIH KOMPETITOR ── */}
@@ -4609,7 +4609,7 @@ export default function ComparisonView({ onTrackActivity }: ComparisonViewProps 
           <div className="min-w-0">
             <label id="label-select-competitor" className="block text-xs sm:text-sm font-bold text-[#141412] mb-1.5 flex items-center justify-between">
               <span>Pilih Kompetitor</span>
-              <span className="font-mono text-[11px] uppercase font-bold text-[#A15C00] bg-[#FFF6D1] px-2 py-0.5 rounded-full border border-[#FFD84D]/60 motion-safe:animate-pulse">
+              <span className="font-mono text-[11px] uppercase font-bold text-[#A15C00] bg-[#FFF6D1] px-2 py-0.5 rounded-full border border-[#FFD84D]/60">
                 Pilih
               </span>
             </label>
@@ -4638,7 +4638,7 @@ export default function ComparisonView({ onTrackActivity }: ComparisonViewProps 
             <div className="min-w-0">
               <label id="label-select-revou-program" className="block text-xs sm:text-sm font-bold text-[#141412] mb-1.5 flex items-center justify-between">
                 <span>Program kami</span>
-                <span className={cn("font-mono text-[11px] uppercase font-bold px-2 py-0.5 rounded-full border", activeProgramDetail ? "text-[#1F7A4D] bg-[#EBF7EE] border-[#D4EDDA]" : "text-[#A15C00] bg-[#FFF6D1] border-[#FFD84D]/60 motion-safe:animate-pulse")}>
+                <span className={cn("font-mono text-[11px] uppercase font-bold px-2 py-0.5 rounded-full border", activeProgramDetail ? "text-[#1F7A4D] bg-[#EBF7EE] border-[#D4EDDA]" : "text-[#A15C00] bg-[#FFF6D1] border-[#FFD84D]/60")}>
                   {activeProgramDetail ? "Terpilih" : "Wajib Pilih"}
                 </span>
               </label>
@@ -4663,7 +4663,7 @@ export default function ComparisonView({ onTrackActivity }: ComparisonViewProps 
             <div className="min-w-0">
               <label id="label-select-comp-program" className="block text-xs sm:text-sm font-bold text-[#141412] mb-1.5 flex items-center justify-between">
                 <span>Program {competitorDisplayNames[selectedCompetitorKey]}</span>
-                <span className={cn("font-mono text-[11px] uppercase font-bold px-2 py-0.5 rounded-full border", activeProgramDetail ? "text-[#1F7A4D] bg-[#EBF7EE] border-[#D4EDDA]" : "text-[#A15C00] bg-[#FFF6D1] border-[#FFD84D]/60 motion-safe:animate-pulse")}>
+                <span className={cn("font-mono text-[11px] uppercase font-bold px-2 py-0.5 rounded-full border", activeProgramDetail ? "text-[#1F7A4D] bg-[#EBF7EE] border-[#D4EDDA]" : "text-[#A15C00] bg-[#FFF6D1] border-[#FFD84D]/60")}>
                   {activeProgramDetail ? "Terpilih" : "Wajib Pilih"}
                 </span>
               </label>
@@ -4767,38 +4767,21 @@ export default function ComparisonView({ onTrackActivity }: ComparisonViewProps 
                   {activeProgramDetail.badge}
                 </span>
               </div>
-              {/* ── BLOOMBERG / FT SCORECARD DUEL BANNER (EXECUTIVE STAGGER MOTION) ── */}
-              <motion.div
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
-                className="mt-3 rounded-xl border border-[#D9D9D4] bg-[#FAFAF8] p-3 sm:p-4 shadow-sm overflow-hidden"
-              >
+              {/* ── BLOOMBERG / FT SCORECARD DUEL BANNER ── */}
+              <div className="mt-3 rounded-xl border border-[#D9D9D4] bg-[#FAFAF8] p-3 sm:p-4 shadow-sm overflow-hidden">
                 {/* Top Overline Bar */}
-                <motion.div
-                  initial={{ opacity: 0, y: -4 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: 0.05 }}
-                  className="flex flex-wrap items-center justify-between gap-2 pb-2.5 mb-2.5 border-b border-[#E8E8E4]"
-                >
+                <div className="flex flex-wrap items-center justify-between gap-2 pb-2.5 mb-2.5 border-b border-[#E8E8E4]">
                   <div className="flex items-center gap-2">
                     <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-[#141412] bg-[#E8E8E4] px-2 py-0.5 rounded">
                       MATCHING PROGRAM
                     </span>
                   </div>
-                </motion.div>
+                </div>
 
                 {/* Duel Scorecard Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-[1fr,auto,1fr] items-center gap-2">
-                  {/* Left Contender: RevoU (Slide in from Left + Micro-lift on hover) */}
-                  <motion.div
-                    key={`revou-${activeProgramDetail.id}`}
-                    initial={{ opacity: 0, x: -8 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1], delay: 0.05 }}
-
-                    className="bg-white rounded-lg border-l-4 border-l-[#1F7A4D] border border-[#E8E8E4] p-3 shadow-sm hover:shadow-sm hover:border-[#D0D0CB] transition-colors cursor-default"
-                  >
+                  {/* Left Contender: RevoU */}
+                  <div className="bg-white rounded-lg border-l-4 border-l-[#1F7A4D] border border-[#E8E8E4] p-3 shadow-sm hover:shadow-sm hover:border-[#D0D0CB] transition-colors cursor-default">
                     <div className="flex items-center justify-between mb-1">
                       <span className="font-mono text-[11px] uppercase tracking-wider font-bold text-[#1F7A4D]">
                         [01] PROGRAM RevoU
@@ -4810,35 +4793,24 @@ export default function ComparisonView({ onTrackActivity }: ComparisonViewProps 
                     <h4 className="font-display font-bold text-xs sm:text-[13.5px] text-[#141412] leading-snug text-balance">
                       RevoU {activeProgramDetail.revouMatchProgram}
                     </h4>
-                  </motion.div>
+                  </div>
 
-                  {/* Center VS Connector (Crisp Spring Pop-in + Micro-tilt on hover) */}
+                  {/* Center VS Connector */}
                   <div className="flex items-center justify-center my-0.5 md:my-0">
                     <div className="flex md:flex-col items-center justify-center gap-1">
                       <div className="hidden md:block w-px h-2 bg-[#D9D9D4]"></div>
-                      <motion.div
-                        initial={{ opacity: 0, scale: 0.92 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.2, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
-
+                      <div
                         className="size-7 rounded-full bg-[#141412] text-[#FFD84D] font-mono text-[10px] font-black flex items-center justify-center border-2 border-white shadow-sm shrink-0 select-none"
                         title="Head-to-head matchup"
                       >
                         VS
-                      </motion.div>
+                      </div>
                       <div className="hidden md:block w-px h-2 bg-[#D9D9D4]"></div>
                     </div>
                   </div>
 
-                  {/* Right Contender: Competitor (Slide in from Right + Micro-lift on hover) */}
-                  <motion.div
-                    key={`comp-${activeProgramDetail.id}`}
-                    initial={{ opacity: 0, x: 8 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1], delay: 0.08 }}
-
-                    className="bg-white rounded-lg border-l-4 border-l-[#B76E00] border border-[#E8E8E4] p-3 shadow-sm hover:shadow-sm hover:border-[#D0D0CB] transition-colors cursor-default"
-                  >
+                  {/* Right Contender: Competitor */}
+                  <div className="bg-white rounded-lg border-l-4 border-l-[#B76E00] border border-[#E8E8E4] p-3 shadow-sm hover:shadow-sm hover:border-[#D0D0CB] transition-colors cursor-default">
                     <div className="flex items-center justify-between mb-1">
                       <span className="font-mono text-[11px] uppercase tracking-wider font-bold text-[#60605B]">
                         [02] PROGRAM KOMPETITOR YANG SESUAI
@@ -4850,20 +4822,15 @@ export default function ComparisonView({ onTrackActivity }: ComparisonViewProps 
                     <div className="font-display font-bold text-xs sm:text-[13.5px] text-[#141412] leading-snug">
                       {activeProgramDetail.competitorName} – {activeProgramDetail.programTitle}
                     </div>
-                  </motion.div>
+                  </div>
                 </div>
 
                 {/* Bottom Analytical Pitch Insight */}
-                <motion.div
-                  initial={{ opacity: 0, y: 4 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: 0.22 }}
-                  className="mt-2.5 pt-2 border-t border-[#E8E8E4] flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[11px] text-[#4B4B46]"
-                >
+                <div className="mt-2.5 pt-2 border-t border-[#E8E8E4] flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[11px] text-[#4B4B46]">
                   <div className="flex items-center gap-1.5">
                   </div>
-                </motion.div>
-              </motion.div>
+                </div>
+              </div>
             </div>
 
             {/* ── TABEL UTAMA (FORMAT PERSIS SEPERTI TABEL GENERAL TAPI ISINYA SPESIFIK) ── */}

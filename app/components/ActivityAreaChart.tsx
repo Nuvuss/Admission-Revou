@@ -32,25 +32,25 @@ export interface ActivityAreaChartProps {
   isLoading?: boolean;
 }
 
-// Snappy Animated Number Counter with Tabular Numerals (Emil Kowalski Philosophy)
+// Snappy Animated Number Counter with Tabular Numerals (Initial mount only)
 function AnimatedCounter({ value, duration = 200 }: { value: number; duration?: number }) {
   const [displayValue, setDisplayValue] = useState(value || 0);
-  const prevValueRef = useRef(value || 0);
+  const hasAnimatedRef = useRef(false);
 
   useEffect(() => {
     const targetVal = Number.isFinite(value) ? value : 0;
-    const startVal = prevValueRef.current;
 
     const prefersReduced =
       typeof window !== "undefined" &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    if (startVal === targetVal || prefersReduced) {
+    if (hasAnimatedRef.current || prefersReduced || targetVal === 0) {
       setDisplayValue(targetVal);
-      prevValueRef.current = targetVal;
+      if (targetVal > 0) hasAnimatedRef.current = true;
       return;
     }
 
+    hasAnimatedRef.current = true;
     let startTime: number | null = null;
     let frameId: number;
 
@@ -58,13 +58,11 @@ function AnimatedCounter({ value, duration = 200 }: { value: number; duration?: 
       if (!startTime) startTime = now;
       const elapsed = Math.min((now - startTime) / duration, 1);
       const progress = 1 - Math.pow(1 - elapsed, 3);
-      const current = Math.round(startVal + (targetVal - startVal) * progress);
+      const current = Math.round(targetVal * progress);
       setDisplayValue(current);
 
       if (elapsed < 1) {
         frameId = requestAnimationFrame(step);
-      } else {
-        prevValueRef.current = targetVal;
       }
     };
 
@@ -72,7 +70,7 @@ function AnimatedCounter({ value, duration = 200 }: { value: number; duration?: 
     return () => cancelAnimationFrame(frameId);
   }, [value, duration]);
 
-  return <span className="tabular-numbers">{displayValue.toLocaleString("id-ID")}</span>;
+  return <span className="tabular-numbers tabular-nums">{displayValue.toLocaleString("id-ID")}</span>;
 }
 
 const DAY_NAMES_ID = ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"];
@@ -910,14 +908,13 @@ function ActivityAreaChartInner({
               <div />
             </div>
 
-            {/* Proportional SVG Curve with Hardware-Accelerated Left-to-Right Reveal */}
+            {/* Proportional SVG Curve (200ms opacity fade on first load only, stays mounted) */}
             <motion.div
-              key={`chart-layer-${timeRange}-${chartMode}-${roleFilter}-${selectedUser}-${timeline.length}`}
-              initial={{ clipPath: "inset(0 100% 0 0)" }}
-              animate={{ clipPath: "inset(0 0% 0 0)" }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
               transition={{
-                duration: 0.55,
-                ease: [0.16, 1, 0.3, 1],
+                duration: 0.2,
+                ease: EASE_OUT,
               }}
               className={cn(
                 "w-full h-full absolute inset-0 pointer-events-none transition-opacity duration-200",
@@ -1221,41 +1218,32 @@ function ActivityAreaChartInner({
 
         {/* X-Axis Labels */}
         <div className="pl-[38px] pt-1.5 text-[10px] font-mono text-[#7A7A74] select-none">
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.div
-              key={timeRange}
-              initial={{ opacity: 0, y: 2 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -2 }}
-              transition={{ duration: 0.14, ease: EASE_OUT }}
-              className="relative h-5 w-full"
-            >
-              {xTicks.map((tick, idx) => {
-                const isPeakLabel = hasChartData && peakVal > 0 && tick.timelineIdx === peakIdx;
-                const leftPct = tick.leftPct;
-                const isFirst = leftPct <= 2;
-                const isLast = leftPct >= 98;
-                return (
-                  <span
-                    key={tick.key || idx}
-                    style={{
-                      left: `${leftPct}%`,
-                      transform: isFirst
-                        ? "translateX(0%)"
-                        : isLast
-                          ? "translateX(-100%)"
-                          : "translateX(-50%)",
-                    }}
-                    className={`absolute top-0 whitespace-nowrap transition-colors duration-150 ${
-                      isPeakLabel ? activeModeToken.peakTickClass : "font-medium"
-                    }`}
-                  >
-                    {tick.label}
-                  </span>
-                );
-              })}
-            </motion.div>
-          </AnimatePresence>
+          <div className="relative h-5 w-full">
+            {xTicks.map((tick, idx) => {
+              const isPeakLabel = hasChartData && peakVal > 0 && tick.timelineIdx === peakIdx;
+              const leftPct = tick.leftPct;
+              const isFirst = leftPct <= 2;
+              const isLast = leftPct >= 98;
+              return (
+                <span
+                  key={tick.key || idx}
+                  style={{
+                    left: `${leftPct}%`,
+                    transform: isFirst
+                      ? "translateX(0%)"
+                      : isLast
+                        ? "translateX(-100%)"
+                        : "translateX(-50%)",
+                  }}
+                  className={`absolute top-0 whitespace-nowrap transition-colors duration-150 ${
+                    isPeakLabel ? activeModeToken.peakTickClass : "font-medium"
+                  }`}
+                >
+                  {tick.label}
+                </span>
+              );
+            })}
+          </div>
         </div>
       </div>
 
