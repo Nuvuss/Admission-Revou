@@ -1,4 +1,36 @@
-export type ModeKey = "pitch" | "alumni" | "comparison";
+export type ModeKey = "pitch" | "alumni" | "comparison" | "faq";
+
+export interface FaqBubble {
+  label: string | null;
+  text: string;
+}
+
+export interface FaqItemResult {
+  id: string;
+  program: string;
+  program_label: string;
+  category: string;
+  source_file: string;
+  question: string;
+  bubbles: FaqBubble[];
+  answer_verbatim: string;
+  same_as?: string | null;
+  status: string;
+  unconfirmed: boolean;
+  stale_date?: boolean;
+  ac_note?: string | null;
+  placeholders?: string[];
+}
+
+export interface FaqResponsePayload {
+  found: boolean;
+  items: FaqItemResult[];
+  missing_programs: string[];
+  matched_programs?: string[];
+  fallback_message: string | null;
+  comparison_draft?: string | null;
+  matchType?: string;
+}
 
 export interface ClarificationItem {
   id: string;

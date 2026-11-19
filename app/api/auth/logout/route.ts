@@ -14,19 +14,22 @@ export async function POST(req: Request) {
     } catch {
       body = {};
     }
-    const { userName, userEmail, sessionId, allSessions } = body || {};
+    const { sessionId, allSessions } = body || {};
     const verifiedSession = await getSessionFromRequest(req);
 
-    const targetName = verifiedSession?.name || (typeof userName === "string" ? userName : null);
-    const targetEmail = verifiedSession?.email || (typeof userEmail === "string" ? userEmail : null);
-    const isTabOnlyClose = Boolean(sessionId && typeof sessionId === "string" && !allSessions);
+    // Security binding: Untrusted body fields (userName/userEmail) are NEVER trusted to evict users.
+    // Presence removal is strictly tied to verifiedSession, or to an explicit unguessable tab sessionId.
+    const targetName = verifiedSession?.name || null;
+    const targetEmail = verifiedSession?.email || null;
+    const rawSessionId = typeof sessionId === "string" && sessionId.trim() ? sessionId.trim() : null;
+    const isTabOnlyClose = Boolean(rawSessionId && !allSessions);
 
-    if (targetName || (sessionId && typeof sessionId === "string")) {
+    if (verifiedSession || rawSessionId) {
       await removeUserOnline({
         userName: targetName,
         userEmail: targetEmail,
-        sessionId: typeof sessionId === "string" ? sessionId : null,
-        allSessions: Boolean(allSessions) || !sessionId,
+        sessionId: rawSessionId,
+        allSessions: Boolean(verifiedSession && (allSessions || !rawSessionId)),
       });
     }
 

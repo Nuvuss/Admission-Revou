@@ -12,6 +12,14 @@ import { findMatchingPitchTemplate } from "../../../lib/pitchTemplateMatcher";
 import { logMetricsToJsonl, extractUsageMetadata } from "../../../lib/metricsLogger";
 import { requireSession } from "../../../lib/authSession";
 import { routeAlumniStories } from "../../../lib/alumniStoryRouter";
+import {
+  routeFaqQuery,
+  buildFaqSelectorPrompt,
+  buildFaqComparisonSynthesisPrompt,
+  resolveFaqMatches,
+  isComparisonIntent,
+  clearFaqCache,
+} from "../../../lib/faqRouter";
 
 export const maxDuration = 120;
 export const dynamic = "force-dynamic";
@@ -44,6 +52,7 @@ function checkCacheValidity() {
       tabKnowledgeCache.clear();
       systemPromptCache.clear();
       cachedSkillDefinition = null;
+      clearFaqCache();
     }
   }
 }
@@ -850,6 +859,100 @@ function sanitizeAlumniMatches(matches) {
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Result Builders
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+async function synthesizeFaqComparisonDraft(userQuestion, resolvedFaq, modelId, apiKey, matchType = "") {
+  if (!apiKey || !resolvedFaq?.found || !Array.isArray(resolvedFaq.items)) return null;
+  if (!isComparisonIntent(userQuestion, matchType)) return null;
+  const distinctPrograms = new Set(resolvedFaq.items.map((i) => i.program)).size;
+  const isCrossProgramComparison =
+    distinctPrograms >= 2 ||
+    (resolvedFaq.items.length >= 1 &&
+      Array.isArray(resolvedFaq.missing_programs) &&
+      resolvedFaq.missing_programs.length >= 1);
+
+  if (!isCrossProgramComparison) return null;
+
+  try {
+    const prompts = buildFaqComparisonSynthesisPrompt(
+      userQuestion,
+      resolvedFaq.items,
+      resolvedFaq.missing_programs
+    );
+    const trimmedKey = String(apiKey || "").trim();
+    const isOpenRouter =
+      trimmedKey.startsWith("sk-or-") ||
+      String(modelId || "").includes("/") ||
+      Boolean(process.env.OPENROUTER_API_KEY);
+
+    let url;
+    let headers;
+    let body;
+
+    if (isOpenRouter) {
+      url = "https://openrouter.ai/api/v1/chat/completions";
+      headers = {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${trimmedKey}`,
+        "HTTP-Referer": "https://revou-admission-assistant.local",
+        "X-Title": "RevoU Admission Assistant",
+      };
+      body = JSON.stringify({
+        model: modelId,
+        messages: [
+          { role: "system", content: prompts.system },
+          { role: "user", content: prompts.user },
+        ],
+        response_format: { type: "json_object" },
+        temperature: 0.2,
+        max_tokens: 450,
+      });
+    } else {
+      url = `https://generativelanguage.googleapis.com/v1beta/models/${modelId}:generateContent?key=${trimmedKey}`;
+      headers = { "Content-Type": "application/json" };
+      body = JSON.stringify({
+        contents: [
+          {
+            role: "user",
+            parts: [{ text: `${prompts.system}\n\n${prompts.user}` }],
+          },
+        ],
+        generationConfig: {
+          responseMimeType: "application/json",
+          temperature: 0.2,
+          maxOutputTokens: 450,
+        },
+      });
+    }
+
+    const res = await fetch(url, {
+      method: "POST",
+      headers,
+      signal: AbortSignal.timeout(25000),
+      body,
+    });
+    if (!res.ok) return null;
+
+    const data = await res.json();
+    const raw =
+      data?.choices?.[0]?.message?.content ||
+      data?.candidates?.[0]?.content?.parts?.[0]?.text ||
+      "";
+    if (!raw.trim()) return null;
+
+    const cleaned = raw
+      .replace(/^```json\s*/i, "")
+      .replace(/^```\s*/i, "")
+      .replace(/\s*```$/i, "")
+      .trim();
+    const parsed = JSON.parse(cleaned);
+    return typeof parsed?.comparison_draft === "string" && parsed.comparison_draft.trim()
+      ? parsed.comparison_draft.trim()
+      : null;
+  } catch (err) {
+    console.warn("[FAQ Synthesis] Fallback to verbatim-only cards:", err?.message);
+    return null;
+  }
+}
+
 async function buildFinalResult(
   parsed,
   modelId,
@@ -857,9 +960,57 @@ async function buildFinalResult(
   currentCandidate,
   availableKeys,
   quotaNotifications,
-  customKeys
+  customKeys,
+  faqContext = null
 ) {
   const poolStatus = await getApiKeysStatus(customKeys);
+
+  if (tab === "faq") {
+    const resolvedFaq = resolveFaqMatches(
+      parsed?.matched_ids || [],
+      parsed?.missing_programs || [],
+      null,
+      faqContext?.matchedProgramLabels || []
+    );
+
+    const comparisonDraft =
+      faqContext?.userQuestion && currentCandidate?.key
+        ? await synthesizeFaqComparisonDraft(
+            faqContext.userQuestion,
+            resolvedFaq,
+            modelId,
+            currentCandidate.key,
+            faqContext?.matchType || ""
+          )
+        : null;
+
+    return {
+      success: true,
+      modelUsed: modelId,
+      apiKeyInfo: currentCandidate
+        ? {
+            activeKeyIndex: currentCandidate.keyIndex,
+            totalKeys: availableKeys.length,
+            wasRotatedDueToQuota: !currentCandidate.isInitialTurn,
+            quotaNotifications: quotaNotifications,
+            poolStatus,
+          }
+        : undefined,
+      menu: "faq",
+      persona: "FAQ Lookup",
+      program_match: resolvedFaq.items.map((i) => i.program_label).filter((v, idx, arr) => arr.indexOf(v) === idx).join(" & ") || (faqContext?.matchedProgramLabels || []).join(" & "),
+      whats_happening: "",
+      recommended_approach: "",
+      scripts: [],
+      faq_result: {
+        ...resolvedFaq,
+        comparison_draft: comparisonDraft,
+        matchType: faqContext?.matchType || "semantic",
+      },
+      knowledge_details: null,
+    };
+  }
+
   return {
     success: true,
     modelUsed: modelId,
@@ -956,6 +1107,7 @@ export async function POST(req) {
       situation,
       model = "anthropic/claude-sonnet-4.5",
       tab = "pitch",
+      faqProgram = "auto",
       excluded_alumni = [],
       customKeys = null,
       stream = false,
@@ -984,7 +1136,84 @@ export async function POST(req) {
     }
 
     const retrievalStart = performance.now();
-    const systemPrompt = await getCachedSystemPrompt(tab, situation, customKeys);
+    const isFaqMode = tab === "faq";
+    let faqRoute = null;
+    let systemPrompt = "";
+
+    if (isFaqMode) {
+      checkCacheValidity();
+      faqRoute = {
+        ...routeFaqQuery(situation, faqProgram),
+        userQuestion: situation.trim(),
+      };
+
+      // Deterministic short-circuit: 0 LLM tokens for exact match or zero-candidate queries
+      if (!faqRoute.hasCandidates || faqRoute.exactMatch) {
+        const retrievalMsFast = Math.round(performance.now() - retrievalStart);
+        const fastParsed = faqRoute.exactMatch
+          ? { matched_ids: [faqRoute.exactMatch.id], missing_programs: [] }
+          : { matched_ids: [], missing_programs: faqRoute.matchedProgramLabels || [] };
+        const fastResult = await buildFinalResult(
+          fastParsed,
+          "faq-direct-lookup",
+          "faq",
+          null,
+          [],
+          [],
+          customKeys,
+          faqRoute
+        );
+
+        void logMetricsToJsonl({
+          requestId,
+          timestamp: new Date().toISOString(),
+          tab: "faq",
+          model: "faq-direct-lookup",
+          isStream: Boolean(wantsStream),
+          retrievalMs: retrievalMsFast,
+          ttftMs: 0,
+          totalDurationMs: Math.round(performance.now() - reqStart),
+          ...extractUsageMetadata(null),
+          rateLimit429Count: 0,
+          retryCount: 0,
+          status: "completed",
+          errorMessage: null,
+        });
+
+        if (wantsStream) {
+          const encoder = new TextEncoder();
+          const fastStream = new ReadableStream({
+            start(controller) {
+              controller.enqueue(
+                encoder.encode(
+                  `event: status\ndata: ${JSON.stringify({ message: "Mencocokkan langsung dengan indeks FAQ..." })}\n\n`
+                )
+              );
+              controller.enqueue(
+                encoder.encode(`event: result\ndata: ${JSON.stringify(fastResult)}\n\n`)
+              );
+              controller.enqueue(
+                encoder.encode(`event: done\ndata: ${JSON.stringify({ success: true })}\n\n`)
+              );
+              controller.close();
+            },
+          });
+          return new Response(fastStream, {
+            headers: {
+              "Content-Type": "text/event-stream; charset=utf-8",
+              "Cache-Control": "no-cache, no-transform",
+              "Connection": "keep-alive",
+              "X-Accel-Buffering": "no",
+            },
+          });
+        }
+        return NextResponse.json(fastResult);
+      }
+
+      systemPrompt = buildFaqSelectorPrompt(faqRoute.candidates, faqRoute.matchedProgramLabels);
+    } else {
+      systemPrompt = await getCachedSystemPrompt(tab, situation, customKeys);
+    }
     const retrievalMs = Math.round(performance.now() - retrievalStart);
 
     let exclusionDirective = "";
@@ -999,16 +1228,13 @@ Kamu WAJIB memilih profil alumni BARU dan BERBEDA dari database knowledge base!
 ===========================================`;
     }
 
-    const fullPrompt = `${systemPrompt}
+    const userPromptContent = isFaqMode
+      ? `<USER_QUESTION>\n${situation.trim()}\n</USER_QUESTION>\n\nInstruksi: Pilih ID FAQ yang paling tepat dari <FAQ_INDEX> (atau [] jika tidak ada). Kembalikan HANYA JSON valid.`
+      : `SITUASI DARI TIM SALES (Menu Aktif: ${tab}):\n"""\n${situation.trim()}\n"""\n${exclusionDirective}\n\nInstruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge base, dan hasilkan output HANYA berupa JSON valid sesuai format.`;
 
-===========================================
-SITUASI DARI TIM SALES (Menu Aktif: ${tab}):
-"""
-${situation.trim()}
-"""
-===========================================${exclusionDirective}
-
-Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge base, dan hasilkan JSON valid sesuai format.`;
+    const fullPrompt = `${systemPrompt}\n\n${userPromptContent}`;
+    const llmTemperature = isFaqMode ? 0.0 : 0.25;
+    const llmMaxTokens = isFaqMode ? 250 : 4096;
 
     // â”€â”€ Round Robin API Key Management â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     const keySelectionStart = performance.now();
@@ -1142,11 +1368,12 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
                         { role: "system", content: systemPrompt },
                         {
                           role: "user",
-                          content: `SITUASI DARI TIM SALES (Menu Aktif: ${tab}):\n"""\n${situation.trim()}\n"""\n${exclusionDirective}\n\nInstruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge base, dan hasilkan output HANYA berupa JSON valid sesuai format.`,
+                          content: userPromptContent,
                         },
                       ],
                       response_format: { type: "json_object" },
-                      temperature: 0.25,
+                      temperature: llmTemperature,
+                      ...(isFaqMode ? { max_tokens: llmMaxTokens } : {}),
                       stream: true,
                       stream_options: { include_usage: true },
                     });
@@ -1162,8 +1389,8 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
                       ],
                       generationConfig: {
                         responseMimeType: "application/json",
-                        temperature: 0.25,
-                        maxOutputTokens: 4096,
+                        temperature: llmTemperature,
+                        maxOutputTokens: llmMaxTokens,
                       },
                     });
                   }
@@ -1286,7 +1513,8 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
                           currentCandidate,
                           availableKeys,
                           quotaNotifications,
-                          customKeys
+                          customKeys,
+                          faqRoute
                         );
 
                         sendSse("result", finalResult);
@@ -1560,11 +1788,12 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
                   { role: "system", content: systemPrompt },
                   {
                     role: "user",
-                    content: `SITUASI DARI TIM SALES (Menu Aktif: ${tab}):\n"""\n${situation.trim()}\n"""\n${exclusionDirective}\n\nInstruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge base, dan hasilkan output HANYA berupa JSON valid sesuai format.`,
+                    content: userPromptContent,
                   },
                 ],
                 response_format: { type: "json_object" },
-                temperature: 0.25,
+                temperature: llmTemperature,
+                ...(isFaqMode ? { max_tokens: llmMaxTokens } : {}),
               });
             } else {
               syncUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelId}:generateContent?key=${trimmedKey}`;
@@ -1578,8 +1807,8 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
                 ],
                 generationConfig: {
                   responseMimeType: "application/json",
-                  temperature: 0.25,
-                  maxOutputTokens: 4096,
+                  temperature: llmTemperature,
+                  maxOutputTokens: llmMaxTokens,
                 },
               });
             }
@@ -1655,7 +1884,8 @@ Instruksi: Analisis situasi di atas, cocokkan program dan data dari knowledge ba
                       currentCandidate,
                       availableKeys,
                       quotaNotifications,
-                      customKeys
+                      customKeys,
+                      faqRoute
                     )
                   );
                 } catch (parseErr) {

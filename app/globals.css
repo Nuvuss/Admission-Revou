@@ -26,7 +26,7 @@
   body {
     background-color: var(--bg);
     color: var(--ink);
-    font-family: "Red Hat Text", system-ui, -apple-system, sans-serif;
+    font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
     font-size: 15px;
     line-height: 1.55;
     -webkit-font-smoothing: antialiased;
@@ -36,7 +36,7 @@
   h2,
   h3,
   h4 {
-    font-family: "Red Hat Display", system-ui, -apple-system, sans-serif;
+    font-family: var(--font-display), system-ui, -apple-system, sans-serif;
   }
 }
 
@@ -173,11 +173,11 @@
 @keyframes beacon3dPulse {
   0%, 100% {
     transform: scale(1);
-    filter: drop-shadow(0 0 4px rgba(34, 197, 94, 0.7));
+    opacity: 0.9;
   }
   50% {
-    transform: scale(1.22);
-    filter: drop-shadow(0 0 10px rgba(34, 197, 94, 1));
+    transform: scale(1.18);
+    opacity: 1;
   }
 }
 
@@ -228,231 +228,18 @@
 
 
 /* ======================================================== */
-/* RevoU Analytics Dashboard Motion & Glassmorphism        */
+/* RevoU Analytics Dashboard Helpers                        */
 /* ======================================================== */
-.glass-revou {
-  background: #FFFFFF;
-  border: 1px solid #E8E8E4;
-  border-radius: 16px;
-  box-shadow: 0 1px 3px rgba(20, 20, 18, 0.04), 0 6px 20px rgba(20, 20, 18, 0.03);
-  backdrop-filter: blur(14px) saturate(120%);
-  transition: transform 0.2s var(--ease-out),
-              box-shadow 0.2s var(--ease-out),
-              border-color 0.15s ease;
-}
-
-.enter-stagger {
-  opacity: 0;
-  animation: riseRevou 0.5s var(--ease-out) forwards;
-  animation-delay: calc(var(--i, 0) * 50ms);
-}
-
-@keyframes riseRevou {
-  from {
-    opacity: 0;
-    transform: translateY(8px) scale(0.99);
-    filter: blur(4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-    filter: blur(0px);
-  }
-}
-
-/* Hourly Heatmap & Peak Pulse */
-@keyframes barExpand {
-  from {
-    transform: scaleX(0);
-    opacity: 0.2;
-  }
-  to {
-    transform: scaleX(1);
-    opacity: 1;
-  }
-}
-
 .heatmap-bar {
   transform-origin: left center;
   transition: transform 0.25s var(--ease-out),
               background-color 0.15s ease;
 }
 
-@keyframes peakGlow {
-  0%, 100% {
-    box-shadow: 0 0 4px rgba(255, 216, 77, 0.4);
-  }
-  50% {
-    box-shadow: 0 0 16px rgba(255, 216, 77, 0.85);
-  }
-}
-
-.peak-pulse {
-  background-color: #FFD84D !important;
-  border-right: 2px solid #141412;
-  box-shadow: 0 0 10px rgba(255, 216, 77, 0.4);
-  animation: peakGlow 2.5s ease-in-out infinite;
-}
-
 .tabular-numbers {
-  font-family: 'Red Hat Mono', monospace;
+  font-family: var(--font-mono), ui-monospace, Menlo, monospace;
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.02em;
-}
-
-
-/* ======================================================== */
-/* MOORLY x REVOU DARK GLASSMORPHISM & MOTION ENGINE       */
-/* ======================================================== */
-
-/* Atmospheric Drifting Ambient Waves */
-.waves-container {
-  position: fixed;
-  inset: auto 0 0 0;
-  height: 48vh;
-  z-index: 0;
-  overflow: hidden;
-  pointer-events: none;
-  opacity: 0.18;
-}
-
-.drift-wave {
-  width: 200%;
-  animation: driftWave 24s linear infinite;
-}
-
-.drift-wave:nth-child(2) {
-  animation-duration: 36s;
-  opacity: 0.65;
-}
-
-.drift-wave:nth-child(3) {
-  animation-duration: 48s;
-  opacity: 0.35;
-}
-
-@keyframes driftWave {
-  to {
-    transform: translateX(-50%);
-  }
-}
-
-/* Moorly Glass Panels */
-.glass-panel-dark {
-  background: rgba(17, 21, 28, 0.72);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 18px;
-  backdrop-filter: blur(20px) saturate(140%);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07), 0 14px 40px rgba(0, 0, 0, 0.35);
-  transition: transform 0.2s var(--ease-out),
-              box-shadow 0.2s var(--ease-out),
-              border-color 0.2s ease;
-}
-
-.glass-panel-dark:hover {
-  border-color: rgba(255, 255, 255, 0.16);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 18px 48px rgba(0, 0, 0, 0.45);
-}
-
-.floating-glass-bar {
-  background: rgba(14, 18, 24, 0.82);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 9999px;
-  backdrop-filter: blur(24px) saturate(150%);
-  box-shadow: 0 12px 42px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.12);
-}
-
-/* KPI Card Tint Gradients (RevoU Palette) */
-.kpi-card-moorly {
-  padding: 18px 20px;
-  border-radius: 18px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(16px);
-  position: relative;
-  overflow: hidden;
-  transition: transform 0.22s var(--ease-out),
-              box-shadow 0.22s var(--ease-out),
-              border-color 0.2s ease;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .kpi-card-moorly:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.35);
-  }
-}
-
-.kpi-tint-yellow {
-  background: linear-gradient(135deg, rgba(255, 216, 77, 0.15) 0%, rgba(18, 22, 28, 0.6) 75%);
-  border-color: rgba(255, 216, 77, 0.24);
-}
-.kpi-tint-yellow:hover {
-  border-color: rgba(255, 216, 77, 0.45);
-  box-shadow: 0 0 24px rgba(255, 216, 77, 0.18);
-}
-
-.kpi-tint-emerald {
-  background: linear-gradient(135deg, rgba(31, 122, 77, 0.18) 0%, rgba(18, 22, 28, 0.6) 75%);
-  border-color: rgba(74, 222, 128, 0.22);
-}
-.kpi-tint-emerald:hover {
-  border-color: rgba(74, 222, 128, 0.45);
-  box-shadow: 0 0 24px rgba(34, 197, 94, 0.16);
-}
-
-.kpi-tint-amber {
-  background: linear-gradient(135deg, rgba(217, 119, 6, 0.16) 0%, rgba(18, 22, 28, 0.6) 75%);
-  border-color: rgba(245, 158, 11, 0.22);
-}
-.kpi-tint-amber:hover {
-  border-color: rgba(245, 158, 11, 0.45);
-  box-shadow: 0 0 24px rgba(245, 158, 11, 0.16);
-}
-
-.kpi-tint-violet {
-  background: linear-gradient(135deg, rgba(147, 51, 234, 0.16) 0%, rgba(18, 22, 28, 0.6) 75%);
-  border-color: rgba(168, 85, 247, 0.22);
-}
-.kpi-tint-violet:hover {
-  border-color: rgba(168, 85, 247, 0.45);
-  box-shadow: 0 0 24px rgba(168, 85, 247, 0.16);
-}
-
-/* Staggered Blur-in Entrance */
-@keyframes riseMoorlyBlur {
-  from {
-    opacity: 0;
-    transform: translateY(14px) scale(0.98);
-    filter: blur(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-    filter: blur(0px);
-  }
-}
-
-.enter-blur-stagger {
-  opacity: 0;
-  animation: riseMoorlyBlur 0.65s var(--ease-out) forwards;
-  animation-delay: calc(var(--i, 0) * 60ms);
-}
-
-/* RevoU Glowing Button */
-.btn-glowing-revou {
-  background: #FFD84D;
-  color: #141412;
-  box-shadow: 0 0 24px rgba(255, 216, 77, 0.35);
-  transition: transform 0.18s var(--ease-out), box-shadow 0.2s ease;
-}
-@media (hover: hover) and (pointer: fine) {
-  .btn-glowing-revou:hover {
-    box-shadow: 0 0 36px rgba(255, 216, 77, 0.65);
-    transform: translateY(-1.5px);
-  }
-}
-.btn-glowing-revou:active {
-  transform: scale(0.96);
 }
 
 /* Chart SVG Path Transitions (Smooth, Jitter-Free Updates) */
@@ -464,36 +251,134 @@
   transition: fill 0.2s ease, opacity 0.2s ease;
 }
 
-/* Status Pills */
-.pill-moorly {
-  font-size: 11px;
-  font-weight: 700;
-  padding: 3px 9px;
-  border-radius: 9999px;
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
+/* ======================================================== */
+/* Maintenance Page Entrance, Workshop Rig & Tactile Motion */
+/* ======================================================== */
+.maintenance-reveal {
+  animation: contentFadeIn var(--dur-slow) var(--ease-out) both;
 }
-.pill-moorly-ok {
-  color: #4ADE80;
-  background: rgba(34, 197, 94, 0.12);
-  border: 1px solid rgba(74, 222, 128, 0.25);
+
+.maintenance-reveal-delayed {
+  animation: contentFadeIn var(--dur-slow) var(--ease-out) 70ms both;
 }
-.pill-moorly-warn {
-  color: #FBBF24;
-  background: rgba(245, 158, 11, 0.12);
-  border: 1px solid rgba(251, 191, 36, 0.25);
+
+.maintenance-btn {
+  transition: transform var(--dur-fast) var(--ease-out),
+              opacity var(--dur-fast) var(--ease-out),
+              background-color var(--dur-fast) var(--ease-out),
+              color var(--dur-fast) var(--ease-out),
+              border-color var(--dur-fast) var(--ease-out);
 }
-.pill-moorly-danger {
-  color: #F87171;
-  background: rgba(239, 68, 68, 0.12);
-  border: 1px solid rgba(248, 113, 113, 0.25);
+
+@media (hover: hover) and (pointer: fine) {
+  .maintenance-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+  }
 }
-.pill-moorly-revou {
-  color: #141412;
-  background: #FFD84D;
-  border: 1px solid #FFCC1A;
-  box-shadow: 0 0 12px rgba(255, 216, 77, 0.35);
+
+.maintenance-btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.maintenance-dot-grid {
+  background-image: radial-gradient(#DFDFD8 1px, transparent 1px);
+  background-size: 18px 18px;
+}
+
+@keyframes maintGearSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes maintGearCounter {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes maintWrenchTurn {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  28% {
+    transform: rotate(-22deg);
+  }
+  44% {
+    transform: rotate(-22deg);
+  }
+  64% {
+    transform: rotate(6deg);
+  }
+  80% {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes maintHubRecoil {
+  0%, 54%, 100% {
+    transform: rotate(0deg) scale(1);
+  }
+  64% {
+    transform: rotate(-2.5deg) scale(0.985);
+  }
+  76% {
+    transform: rotate(0.6deg) scale(1);
+  }
+}
+
+@keyframes maintSparkPop {
+  0%, 56%, 84%, 100% {
+    opacity: 0;
+    transform: scale(0.6) translate(0, 0);
+  }
+  66% {
+    opacity: 1;
+    transform: scale(1) translate(2px, -2px);
+  }
+  78% {
+    opacity: 0;
+    transform: scale(1.1) translate(5px, -5px);
+  }
+}
+
+.maint-gear-spin {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: maintGearSpin 22s linear infinite;
+}
+
+.maint-gear-counter {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: maintGearCounter 14s linear infinite;
+}
+
+.maint-wrench-turn {
+  transform-box: fill-box;
+  transform-origin: 24% 76%;
+  animation: maintWrenchTurn 2.6s var(--ease-in-out) infinite;
+}
+
+.maint-hub-recoil {
+  transform-origin: center;
+  animation: maintHubRecoil 2.6s var(--ease-out) infinite;
+}
+
+.maint-spark {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: maintSparkPop 2.6s var(--ease-out) infinite;
+}
+
+.maint-spark-delay {
+  animation-delay: 80ms;
 }
 
 /* ======================================================== */
@@ -509,12 +394,30 @@
   }
 
   .animate-tab-content,
-  .enter-stagger,
-  .enter-blur-stagger {
+  .maintenance-reveal,
+  .maintenance-reveal-delayed {
     animation: none !important;
     opacity: 1 !important;
     transform: none !important;
     filter: none !important;
+  }
+
+  .maintenance-btn:hover:not(:disabled),
+  .maintenance-btn:active:not(:disabled) {
+    transform: none !important;
+  }
+
+  .maint-gear-spin,
+  .maint-gear-counter,
+  .maint-wrench-turn,
+  .maint-hub-recoil,
+  .maint-spark {
+    animation: none !important;
+    transform: none !important;
+  }
+
+  .maint-spark {
+    opacity: 0.75 !important;
   }
 
   /* No transform override here: the tooltip relies on -translate-x-1/2 for centering */
@@ -526,9 +429,7 @@
   .card-interactive,
   .dropdown-wrapper,
   .dropdown-interactive,
-  .dropdown-chevron-animated,
-  .kpi-card-moorly,
-  .btn-glowing-revou {
+  .dropdown-chevron-animated {
     transition: border-color 0.15s ease,
                 background-color 0.15s ease,
                 color 0.15s ease,
@@ -537,16 +438,12 @@
   }
 
   .card-interactive:hover,
-  .dropdown-wrapper:hover,
-  .kpi-card-moorly:hover,
-  .btn-glowing-revou:hover {
+  .dropdown-wrapper:hover {
     transform: none !important;
   }
 
   .beacon-3d-dot,
   .beacon-3d-ripple,
-  .peak-pulse,
-  .drift-wave,
   .chart-draw-line,
   .chart-draw-area {
     animation: none !important;

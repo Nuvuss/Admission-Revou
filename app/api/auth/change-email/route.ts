@@ -3,9 +3,15 @@ import { getSupabase } from "../../../../lib/supabaseClient";
 import { verifyPassword } from "../../../../lib/passwordHash";
 import {
   createSessionToken,
+  getClientIp,
   requireSession,
   setSessionCookie,
 } from "../../../../lib/authSession";
+import {
+  checkLockout,
+  recordFailedAttempt,
+  resetFailedAttempts,
+} from "../../../../lib/authRateLimit";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -28,9 +34,22 @@ export async function POST(req: Request) {
     const normalizedNewEmail = String(newEmail).trim().toLowerCase();
     const normalizedPassword = String(password).trim();
 
-    if (auth.session.email && auth.session.email !== normalizedCurrentEmail) {
+    // ── Session Binding Authorization ──
+    const isPinOwner = !auth.session.email && auth.session.role === "Owner";
+
+    if (auth.session.email) {
+      // Standard session: caller can only update their own email account
+      if (auth.session.email !== normalizedCurrentEmail) {
+        return NextResponse.json(
+          { success: false, message: "Anda hanya dapat mengubah email milik akun yang sedang login." },
+          { status: 403 }
+        );
+      }
+    } else if (isPinOwner) {
+      // PIN-authenticated Owner: permitted to manage accounts, but only accounts with role Owner (checked below)
+    } else {
       return NextResponse.json(
-        { success: false, message: "Anda hanya dapat mengubah email milik akun yang sedang login." },
+        { success: false, message: "Sesi tidak valid untuk mengubah email." },
         { status: 403 }
       );
     }
@@ -46,6 +65,31 @@ export async function POST(req: Request) {
       return NextResponse.json(
         { success: false, message: "Email baru tidak boleh sama dengan email saat ini." },
         { status: 400 }
+      );
+    }
+
+    // ── Distributed Rate Limiting (per-IP and per-session/user) ──
+    const ip = getClientIp(req);
+    const sanitizedIp = ip.trim().replace(/[^a-zA-Z0-9_.:-]/g, "_");
+    const sessionUserId = auth.session.sub || auth.session.email || "pin-owner";
+    const sanitizedUserId = sessionUserId.trim().replace(/[^a-zA-Z0-9_.:-]/g, "_");
+
+    const ipLimitKey = `ratelimit:email:ip:${sanitizedIp}`;
+    const userLimitKey = `ratelimit:email:user:${sanitizedUserId}`;
+    const rateLimitKeys = [ipLimitKey, userLimitKey];
+
+    const lockout = await checkLockout(rateLimitKeys);
+    if (lockout.isLocked) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: `Terlalu banyak percobaan password salah. Akses dikunci sementara. Silakan coba lagi dalam ${lockout.retryAfterSec} detik.`,
+          retryAfter: lockout.retryAfterSec,
+        },
+        {
+          status: 429,
+          headers: { "Retry-After": String(lockout.retryAfterSec) },
+        }
       );
     }
 
@@ -78,14 +122,42 @@ export async function POST(req: Request) {
       );
     }
 
-    // Verify password before updating email
+    // PIN-authenticated Owner can only change email of accounts with role Owner
+    if (isPinOwner && user.role !== "Owner") {
+      return NextResponse.json(
+        { success: false, message: "Akses ditolak. Sesi PIN Owner hanya dapat mengelola akun dengan role Owner." },
+        { status: 403 }
+      );
+    }
+
+    // ── Mandatory Current-Password Verification (for both email-bound and PIN-owner paths) ──
     const { valid } = verifyPassword(normalizedPassword, user.password);
     if (!valid) {
+      const failResult = await recordFailedAttempt(rateLimitKeys);
+      if (failResult.isLocked) {
+        return NextResponse.json(
+          {
+            success: false,
+            message: `Password saat ini salah 5 kali berturut-turut. Akses dikunci sementara selama ${Math.ceil(failResult.retryAfterSec / 60)} menit.`,
+            retryAfter: failResult.retryAfterSec,
+          },
+          {
+            status: 429,
+            headers: { "Retry-After": String(failResult.retryAfterSec) },
+          }
+        );
+      }
       return NextResponse.json(
-        { success: false, message: "Password saat ini tidak cocok." },
+        {
+          success: false,
+          message: `Password saat ini tidak cocok. Sisa percobaan: ${failResult.remainingAttempts}.`,
+        },
         { status: 401 }
       );
     }
+
+    // Reset rate-limit counters on success
+    await resetFailedAttempts(rateLimitKeys);
 
     // Ensure new email is not already taken by another account
     const { data: existingUser } = await supabase
@@ -115,7 +187,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // Refresh JWT session cookie with the new email
+    // Refresh JWT session cookie with the new email and identical cookie attributes
     const newJwt = await createSessionToken({
       id: user.id,
       name: user.name,

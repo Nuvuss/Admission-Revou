@@ -1,4 +1,4 @@
-export type AnalyticsModeKey = "all" | "pitch" | "alumni" | "comparison";
+export type AnalyticsModeKey = "all" | "pitch" | "alumni" | "comparison" | "faq";
 export type CounselorRoleKey = "AC" | "BM";
 
 export interface ModeColorToken {
@@ -79,6 +79,20 @@ export const MODE_COLOR_TOKENS: Record<AnalyticsModeKey, ModeColorToken> = {
     activeDotClass: "bg-[#9333EA] ring-4 ring-[#D8B4FE]/70",
     peakTickClass: "font-bold text-[#7E22CE] bg-[#FAF5FF] px-1.5 py-0.5 rounded border border-[#E9D5FF]",
   },
+  faq: {
+    stroke: "#0F766E",
+    gradient: "#2DD4BF",
+    totalBadgeClass: "bg-[#F0FDFA] text-[#0F766E] border border-[#99F6E4]",
+    dotClass: "bg-[#0F766E]",
+    darkDotClass: "bg-[#2DD4BF]",
+    lightTextClass: "text-[#0F766E]",
+    barBgClass: "bg-[#14B8A6]",
+    darkTextClass: "text-[#5EEAD4]",
+    darkIconClass: "text-[#2DD4BF]",
+    guideLineClass: "border-[#0F766E]/70",
+    activeDotClass: "bg-[#0F766E] ring-4 ring-[#99F6E4]/70",
+    peakTickClass: "font-bold text-[#0F766E] bg-[#F0FDFA] px-1.5 py-0.5 rounded border border-[#99F6E4]",
+  },
 };
 
 export const ROLE_COLOR_TOKENS: Record<CounselorRoleKey, RoleColorToken> = {
@@ -95,7 +109,7 @@ export const ROLE_COLOR_TOKENS: Record<CounselorRoleKey, RoleColorToken> = {
 };
 
 export function getModeColorToken(mode?: string): ModeColorToken {
-  if (mode === "pitch" || mode === "alumni" || mode === "comparison" || mode === "all") {
+  if (mode === "pitch" || mode === "alumni" || mode === "comparison" || mode === "faq" || mode === "all") {
     return MODE_COLOR_TOKENS[mode];
   }
   return MODE_COLOR_TOKENS.all;

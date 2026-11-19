@@ -211,7 +211,7 @@ export default function HistoryDrawer({
                 return (
                   <div
                     key={item.id}
-                    className={`p-3.5 sm:p-4 rounded-xl border transition-all space-y-2.5 bg-white hover:border-[#D9D9D4] hover:shadow-2xs ${
+                    className={`p-3.5 sm:p-4 rounded-xl border transition-[border-color,box-shadow] space-y-2.5 bg-white hover:border-[#D9D9D4] hover:shadow-2xs ${
                       isSelectedCurrent
                         ? "border-[#FFD84D] bg-[#FFF6D1]/20 ring-1 ring-[#FFD84D]"
                         : "border-[#E8E8E4]"
@@ -326,6 +326,20 @@ export default function HistoryDrawer({
                             </span>
                           </div>
                         )}
+                      {item.mode === "faq" &&
+                        item.responseResult?.faq_result && (
+                          <div className="line-clamp-1">
+                            <span className="text-[#8A8A84] font-medium">
+                              FAQ:{" "}
+                            </span>
+                            <span className="font-semibold text-[#0F766E]">
+                              {item.responseResult.faq_result.found &&
+                              item.responseResult.faq_result.items?.length > 0
+                                ? `${item.responseResult.faq_result.items.length} jawaban verbatim`
+                                : "Belum ada di FAQ"}
+                            </span>
+                          </div>
+                        )}
                       <div className="text-[11px] text-[#8A8A84] font-mono flex items-center gap-2">
                         {scriptCount > 0 && (
                           <span>{scriptCount} variasi script</span>
@@ -347,7 +361,7 @@ export default function HistoryDrawer({
                       <button
                         type="button"
                         onClick={() => onLoadSession(item)}
-                        className={`flex-1 text-xs font-bold py-2 px-3 rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer select-none ${
+                        className={`flex-1 text-xs font-bold py-2 px-3 rounded-lg flex items-center justify-center gap-1.5 transition-[background-color,transform] cursor-pointer select-none ${
                           isSelectedCurrent
                             ? "bg-[#141412] text-white"
                             : "bg-[#FFD84D] hover:bg-[#FFCC1A] text-[#141412] active:scale-97 shadow-2xs"
@@ -362,7 +376,7 @@ export default function HistoryDrawer({
                       <button
                         type="button"
                         onClick={(e) => onQuickCopy(item, e)}
-                        className="text-xs font-semibold py-2 px-3 rounded-lg border border-[#D9D9D4] bg-white hover:bg-[#F5F5F2] text-[#141412] flex items-center gap-1.5 transition-all cursor-pointer active:scale-97"
+                        className="text-xs font-semibold py-2 px-3 rounded-lg border border-[#D9D9D4] bg-white hover:bg-[#F5F5F2] text-[#141412] flex items-center gap-1.5 transition-[background-color,transform] cursor-pointer active:scale-97"
                         title="Salin isi script langsung ke clipboard"
                       >
                         {copiedHistoryId === item.id ? (

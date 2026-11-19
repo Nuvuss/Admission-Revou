@@ -9,7 +9,7 @@ export const revalidate = 0;
 const MAX_INPUT_CHARS = 5000;
 const MAX_RESULT_BYTES = 100_000;
 const MAX_THREAD_BYTES = 100_000;
-const ALLOWED_MODES = ["pitch", "alumni", "comparison"];
+const ALLOWED_MODES = ["pitch", "alumni", "comparison", "faq"];
 
 function jsonSize(value: unknown): number {
   try {

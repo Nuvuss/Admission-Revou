@@ -6,6 +6,10 @@ import {
   setSessionCookie,
   SessionRole,
 } from "../../../../lib/authSession";
+import {
+  isMaintenanceMode,
+  isOwnerBypassEnabled,
+} from "../../../../lib/maintenance";
 
 export async function POST(req: Request) {
   try {
@@ -74,6 +78,18 @@ export async function POST(req: Request) {
 
     const role: SessionRole =
       user.role === "Owner" || user.role === "BM" ? user.role : "AC";
+
+    // Saat mode maintenance aktif, hanya role Owner (jika bypass aktif) yang boleh menyelesaikan login
+    if (isMaintenanceMode() && !(role === "Owner" && isOwnerBypassEnabled())) {
+      return NextResponse.json(
+        {
+          success: false,
+          maintenance: true,
+          message: "Sistem sedang dalam pemeliharaan. Silakan coba lagi nanti.",
+        },
+        { status: 503 }
+      );
+    }
 
     const jwtToken = await createSessionToken({
       id: user.id,

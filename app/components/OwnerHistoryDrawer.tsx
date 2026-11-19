@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { X, ArrowLeft, Loader2, Clock, User, MessageSquare, ChevronRight } from "lucide-react";
 import PitchScripts from "./PitchScripts";
 import AlumniCardList from "./AlumniCardList";
+import FaqResultCard from "./FaqResultCard";
 
 interface OwnerHistoryDrawerProps {
   open: boolean;
@@ -35,12 +36,14 @@ const MODE_LABEL: Record<string, string> = {
   pitch: "Create a Pitch",
   alumni: "Checking Alumni",
   comparison: "Comparison Table",
+  faq: "FAQ",
 };
 
 const MODE_COLOR: Record<string, string> = {
   pitch: "bg-[#FFD84D] text-[#141412]",
   alumni: "bg-[#60A5FA] text-[#141412]",
-  comparison: "bg-[#34D399] text-[#141412]",
+  comparison: "bg-[#C084FC] text-[#141412]",
+  faq: "bg-[#2DD4BF] text-[#141412]",
 };
 
 function formatDateTime(iso: string): string {
@@ -78,6 +81,11 @@ function ResultBody({ result }: { result: any }) {
   const scripts = Array.isArray(result.scripts) ? result.scripts : [];
   const alumni = Array.isArray(result.alumni_matches) ? result.alumni_matches : [];
   const comparison = Array.isArray(result.comparison_points) ? result.comparison_points : [];
+  const comparisonSummary =
+    result.comparison_summary && typeof result.comparison_summary === "object"
+      ? result.comparison_summary
+      : null;
+  const faqResult = result.faq_result || null;
   const textFields: { key: string; label: string }[] = [
     { key: "persona", label: "Persona" },
     { key: "program_match", label: "Program Match" },
@@ -86,11 +94,40 @@ function ResultBody({ result }: { result: any }) {
     { key: "featured_alumni_summary", label: "Featured Alumni" },
   ];
   const visibleText = textFields.filter((f) => result[f.key]);
-  const hasAnything = scripts.length || alumni.length || comparison.length || visibleText.length;
+  const hasAnything =
+    scripts.length || alumni.length || comparison.length || comparisonSummary || faqResult || visibleText.length;
 
   return (
     <div className="space-y-4">
-      {visibleText.map((f) => (
+      {comparisonSummary && (
+        <div className="rounded-xl border border-[#E8E8E4] bg-[#FAFAF8] p-3.5 space-y-2.5">
+          <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#7A7A74]">
+            Detail Komparasi
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
+            <div className="rounded-lg bg-white border border-[#E8E8E4] p-2.5">
+              <div className="text-[10px] font-mono text-[#7A7A74]">Lembaga Kompetitor</div>
+              <div className="font-bold text-[#141412] mt-0.5">
+                {asText(comparisonSummary.competitor) || "-"}
+              </div>
+            </div>
+            <div className="rounded-lg bg-white border border-[#E8E8E4] p-2.5">
+              <div className="text-[10px] font-mono text-[#7A7A74]">Program Kompetitor</div>
+              <div className="font-bold text-[#141412] mt-0.5">
+                {asText(comparisonSummary.competitor_program) || "-"}
+              </div>
+            </div>
+            <div className="sm:col-span-2 rounded-lg bg-[#FFF6D1]/60 border border-[#FFD84D]/70 p-2.5">
+              <div className="text-[10px] font-mono text-[#8F5000]">Program RevoU yang Dibandingkan</div>
+              <div className="font-bold text-[#141412] mt-0.5">
+                {asText(comparisonSummary.revou_program) || "-"}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {faqResult && <FaqResultCard faqResult={faqResult} />}
+      {!faqResult && visibleText.map((f) => (
         <div key={f.key} className="space-y-1">
           <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#7A7A74]">{f.label}</div>
           <div className="text-xs text-[#141412] whitespace-pre-wrap leading-relaxed">{asText(result[f.key])}</div>
@@ -113,7 +150,7 @@ function ResultBody({ result }: { result: any }) {
 
       {alumni.length > 0 && <AlumniCardList matches={alumni} />}
 
-      {comparison.length > 0 && (
+      {!comparisonSummary && comparison.length > 0 && (
         <div className="space-y-1.5">
           <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#7A7A74]">
             Poin Perbandingan ({comparison.length})

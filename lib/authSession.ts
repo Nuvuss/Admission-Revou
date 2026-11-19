@@ -190,6 +190,29 @@ export async function getSessionFromRequest(req: Request): Promise<SessionPayloa
   return null;
 }
 
+/**
+ * Safely extracts client IP address, prioritizing trusted Vercel and edge proxy headers
+ * to prevent IP spoofing attacks via arbitrary client-supplied X-Forwarded-For headers.
+ */
+export function getClientIp(req: Request): string {
+  const vercelIp = req.headers.get("x-vercel-forwarded-for");
+  if (vercelIp && vercelIp.trim()) {
+    return vercelIp.split(",")[0].trim();
+  }
+
+  const realIp = req.headers.get("x-real-ip");
+  if (realIp && realIp.trim()) {
+    return realIp.trim();
+  }
+
+  const forwarded = req.headers.get("x-forwarded-for");
+  if (forwarded && forwarded.trim()) {
+    return forwarded.split(",")[0].trim();
+  }
+
+  return "unknown-ip";
+}
+
 export function setSessionCookie(response: NextResponse, token: string): void {
   response.cookies.set({
     name: SESSION_COOKIE_NAME,

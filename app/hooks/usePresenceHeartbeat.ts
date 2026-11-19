@@ -100,7 +100,14 @@ export function usePresenceHeartbeat({
       if (statusRef.current === "idle" && document.visibilityState === "visible") send();
     };
 
-    const activityEvents: (keyof WindowEventMap)[] = ["pointerdown", "pointermove", "keydown", "scroll", "touchstart", "wheel"];
+    const activityEvents: (keyof WindowEventMap)[] = [
+      "pointerdown",
+      "pointermove",
+      "keydown",
+      "touchstart",
+      "scroll",
+      "wheel",
+    ];
     activityEvents.forEach((ev) => window.addEventListener(ev, markActive, { passive: true }));
 
     const handleVisibility = () => {

@@ -211,9 +211,10 @@ export default function UserRoleModal({
             {/* Owner PIN input (only shown if Owner) */}
             {selectedRole === "Owner" && (
               <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
+                initial={{ opacity: 0, y: -6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -6 }}
+                transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
                 className="space-y-1.5"
               >
                 <div className="flex items-center justify-between">

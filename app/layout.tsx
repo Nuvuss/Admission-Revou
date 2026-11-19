@@ -1,7 +1,27 @@
 import type { Metadata } from 'next';
+import { Red_Hat_Display, Red_Hat_Text, Red_Hat_Mono } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/next';
 import MotionProvider from './components/MotionProvider';
 import './globals.css';
+
+const redHatDisplay = Red_Hat_Display({
+  subsets: ['latin'],
+  variable: '--font-display',
+  display: 'swap',
+});
+
+const redHatText = Red_Hat_Text({
+  subsets: ['latin'],
+  style: ['normal', 'italic'],
+  variable: '--font-sans',
+  display: 'swap',
+});
+
+const redHatMono = Red_Hat_Mono({
+  subsets: ['latin'],
+  variable: '--font-mono',
+  display: 'swap',
+});
 
 export const dynamic = 'force-dynamic';
 
@@ -24,16 +44,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="id">
+    <html
+      lang="id"
+      className={`${redHatDisplay.variable} ${redHatText.variable} ${redHatMono.variable}`}
+    >
       <head>
         <link rel="icon" href="/revou-logo.png" type="image/png" />
         <link rel="apple-touch-icon" href="/revou-logo.png" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@500;700;800;900&family=Red+Hat+Mono:wght@400;500;600&family=Red+Hat+Text:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap"
-          rel="stylesheet"
-        />
       </head>
       <body className="antialiased min-h-screen">
         <MotionProvider>{children}</MotionProvider>

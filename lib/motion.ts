@@ -21,13 +21,13 @@ export const SPRING_TOAST = {
 };
 
 export const TRANSITION_ENTER = {
-  duration: 0.32,
+  duration: 0.24,
   ease: EASE_OUT,
 };
 
 export const TRANSITION_STAGGER = (index: number) => ({
-  duration: 0.32,
-  delay: 0.03 * index,
+  duration: 0.24,
+  delay: Math.min(0.025 * index, 0.15),
   ease: EASE_OUT,
 });
 

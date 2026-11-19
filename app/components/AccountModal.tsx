@@ -600,11 +600,10 @@ export default function AccountModal({
               <AnimatePresence>
                 {isPasswordTriggered && (
                   <motion.div
-                    initial={{ opacity: 0, height: 0, y: -6 }}
-                    animate={{ opacity: 1, height: "auto", y: 0 }}
-                    exit={{ opacity: 0, height: 0, y: -6 }}
-                    transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-                    className="overflow-hidden"
+                    initial={{ opacity: 0, y: -6, scale: 0.98 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -6, scale: 0.98 }}
+                    transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
                   >
                     <div className="p-3.5 rounded-2xl bg-[#FAFAF8] border border-[#EAEAE6] space-y-3 shadow-xs">
                       {/* Strength Header & Meter Bar */}

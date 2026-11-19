@@ -17,14 +17,18 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const range = searchParams.get("range") || "30d"; // today, yesterday, 7d, 30d, all
     const compare = searchParams.get("compare") || "none"; // none, yesterday, 7d, 30d
+    const forceBust =
+      searchParams.get("force") === "1" ||
+      searchParams.has("_t") ||
+      (req.headers.get("cache-control") || "").toLowerCase().includes("no-cache");
     // Presence Owner dicatat lewat /api/auth/heartbeat (bukan dari query stats) agar tidak double-write.
     // Real-time presence dibaca sekali per request (Redis / fallback memori).
     const onlinePresence = await getOnlineUsers();
     const onlineNameSet = new Set(onlinePresence.users.map((u) => u.userName.trim().toLowerCase()));
 
-    // Cache lookup: jika ada di Redis, kembalikan dengan onlinePresence yang selalu real-time
-    const cacheKey = `cache:stats:v4:${range}:${compare}`;
-    const cachedStats: any = await redisGet(cacheKey);
+    // Cache lookup: jika ada di Redis (dan bukan manual refresh/forceBust), kembalikan dengan onlinePresence yang selalu real-time
+    const cacheKey = `cache:stats:v8:${range}:${compare}`;
+    const cachedStats: any = forceBust ? null : await redisGet(cacheKey);
     if (cachedStats && typeof cachedStats === "object" && cachedStats.isConfigured) {
       const liveLeaderboard = (cachedStats.leaderboard || []).map((agent: any) => ({
         ...agent,
@@ -70,18 +74,82 @@ export async function GET(req: Request) {
         },
         leaderboard: [],
         hourlyHeatmap: Array(24).fill(0),
-        modeDistribution: { pitch: 0, alumni: 0, comparison: 0 },
+        modeDistribution: { pitch: 0, alumni: 0, comparison: 0, faq: 0 },
         topTopics: [],
         timeline: [],
       });
     }
 
-    // Fetch recent logs without premature local-clock filtering to prevent OS clock skew issues
-    const { data: rawLogs, error } = await supabase
+    // WIB is UTC+7
+    const WIB_OFFSET = 7 * 60 * 60 * 1000;
+
+    // Anchor reference "Now" to Supabase's own server clock (via HTTP Date header)
+    // so local OS clock skew (e.g. Windows set to Nov 2026) never breaks Today/7d/30d filters
+    let supabaseServerNow = getLastSupabaseServerDate();
+    if (!supabaseServerNow) {
+      try {
+        const { data: probe } = await supabase
+          .from("admission_activity_logs")
+          .select("created_at")
+          .order("created_at", { ascending: false })
+          .limit(1);
+        supabaseServerNow = getLastSupabaseServerDate();
+        if (!supabaseServerNow && probe?.[0]?.created_at) {
+          supabaseServerNow = new Date(probe[0].created_at);
+        }
+      } catch (e) {}
+    }
+    const systemNow = new Date();
+    const nowUtc = supabaseServerNow || systemNow;
+    const nowWib = new Date(nowUtc.getTime() + WIB_OFFSET);
+
+    // Determine timestamp bounds in UTC for primary period
+    let timeThresholdMs: number | null = null;
+    let timeUpperBoundMs: number | null = null;
+    if (range === "today") {
+      const startOfDayWib = new Date(
+        Date.UTC(nowWib.getUTCFullYear(), nowWib.getUTCMonth(), nowWib.getUTCDate(), 0, 0, 0, 0)
+      );
+      timeThresholdMs = startOfDayWib.getTime() - WIB_OFFSET;
+    } else if (range === "yesterday") {
+      const startOfYesterdayWib = new Date(
+        Date.UTC(nowWib.getUTCFullYear(), nowWib.getUTCMonth(), nowWib.getUTCDate() - 1, 0, 0, 0, 0)
+      );
+      const startOfTodayWib = new Date(
+        Date.UTC(nowWib.getUTCFullYear(), nowWib.getUTCMonth(), nowWib.getUTCDate(), 0, 0, 0, 0)
+      );
+      timeThresholdMs = startOfYesterdayWib.getTime() - WIB_OFFSET;
+      timeUpperBoundMs = startOfTodayWib.getTime() - WIB_OFFSET;
+    } else if (range === "7d") {
+      const startOf7dWib = new Date(
+        Date.UTC(nowWib.getUTCFullYear(), nowWib.getUTCMonth(), nowWib.getUTCDate() - 6, 0, 0, 0, 0)
+      );
+      timeThresholdMs = startOf7dWib.getTime() - WIB_OFFSET;
+    } else if (range === "30d") {
+      const startOf30dWib = new Date(
+        Date.UTC(nowWib.getUTCFullYear(), nowWib.getUTCMonth(), nowWib.getUTCDate() - 29, 0, 0, 0, 0)
+      );
+      timeThresholdMs = startOf30dWib.getTime() - WIB_OFFSET;
+    }
+
+    // Determine query start time including comparison period buffer if active
+    let queryStartMs: number | null = timeThresholdMs;
+    if (queryStartMs !== null && compare !== "none") {
+      const compareShiftDays = compare === "yesterday" ? 1 : compare === "7d" ? 7 : 30;
+      queryStartMs -= (compareShiftDays + 1) * 24 * 60 * 60 * 1000;
+    }
+
+    // Lightweight query: select essential aggregation columns + metadata (for AI response latency) and filter by date range directly in SQL
+    let logsQuery = supabase
       .from("admission_activity_logs")
-      .select("id, created_at, user_name, user_role, action_type, mode, topic, input_snippet, metadata")
-      .order("created_at", { ascending: false })
-      .limit(5000);
+      .select("created_at, user_name, user_role, action_type, mode, topic, metadata")
+      .order("created_at", { ascending: false });
+
+    if (queryStartMs !== null) {
+      logsQuery = logsQuery.gte("created_at", new Date(queryStartMs).toISOString());
+    }
+
+    const { data: rawLogs, error } = await logsQuery.limit(5000);
 
     if (error) {
       console.warn("Supabase query activity logs warning:", error.message);
@@ -111,7 +179,7 @@ export async function GET(req: Request) {
           },
           leaderboard: [],
           hourlyHeatmap: Array(24).fill(0),
-          modeDistribution: { pitch: 0, alumni: 0, comparison: 0 },
+          modeDistribution: { pitch: 0, alumni: 0, comparison: 0, faq: 0 },
           topTopics: [],
           timeline: [],
         });
@@ -142,7 +210,7 @@ export async function GET(req: Request) {
           },
           leaderboard: [],
           hourlyHeatmap: Array(24).fill(0),
-          modeDistribution: { pitch: 0, alumni: 0, comparison: 0 },
+          modeDistribution: { pitch: 0, alumni: 0, comparison: 0, faq: 0 },
           topTopics: [],
           timeline: [],
         });
@@ -152,51 +220,6 @@ export async function GET(req: Request) {
     }
 
     const fetchedLogs = rawLogs || [];
-
-    // WIB is UTC+7
-    const WIB_OFFSET = 7 * 60 * 60 * 1000;
-
-    // Anchor reference "Now" to Supabase's own server clock (via HTTP Date header)
-    // so local OS clock skew (e.g. Windows set to Nov 2026) never breaks Today/7d/30d filters
-    const supabaseServerNow = getLastSupabaseServerDate();
-    const systemNow = new Date();
-    let nowUtc = supabaseServerNow || systemNow;
-    if (!supabaseServerNow && fetchedLogs.length > 0) {
-      const latestLogDate = new Date(fetchedLogs[0].created_at);
-      if (Math.abs(systemNow.getTime() - latestLogDate.getTime()) > 24 * 60 * 60 * 1000) {
-        nowUtc = latestLogDate;
-      }
-    }
-    const nowWib = new Date(nowUtc.getTime() + WIB_OFFSET);
-
-    // Determine timestamp bounds in UTC
-    let timeThresholdMs: number | null = null;
-    let timeUpperBoundMs: number | null = null;
-    if (range === "today") {
-      const startOfDayWib = new Date(
-        Date.UTC(nowWib.getUTCFullYear(), nowWib.getUTCMonth(), nowWib.getUTCDate(), 0, 0, 0, 0)
-      );
-      timeThresholdMs = startOfDayWib.getTime() - WIB_OFFSET;
-    } else if (range === "yesterday") {
-      const startOfYesterdayWib = new Date(
-        Date.UTC(nowWib.getUTCFullYear(), nowWib.getUTCMonth(), nowWib.getUTCDate() - 1, 0, 0, 0, 0)
-      );
-      const startOfTodayWib = new Date(
-        Date.UTC(nowWib.getUTCFullYear(), nowWib.getUTCMonth(), nowWib.getUTCDate(), 0, 0, 0, 0)
-      );
-      timeThresholdMs = startOfYesterdayWib.getTime() - WIB_OFFSET;
-      timeUpperBoundMs = startOfTodayWib.getTime() - WIB_OFFSET;
-    } else if (range === "7d") {
-      const startOf7dWib = new Date(
-        Date.UTC(nowWib.getUTCFullYear(), nowWib.getUTCMonth(), nowWib.getUTCDate() - 6, 0, 0, 0, 0)
-      );
-      timeThresholdMs = startOf7dWib.getTime() - WIB_OFFSET;
-    } else if (range === "30d") {
-      const startOf30dWib = new Date(
-        Date.UTC(nowWib.getUTCFullYear(), nowWib.getUTCMonth(), nowWib.getUTCDate() - 29, 0, 0, 0, 0)
-      );
-      timeThresholdMs = startOf30dWib.getTime() - WIB_OFFSET;
-    }
 
     // Owner tugasnya hanya memantau, bukan konselor admisi.
     // Seluruh data analitik (KPI, leaderboard, grafik, heatmap, dsb.) khusus memantau tim konselor (AC & BM).
@@ -230,10 +253,12 @@ export async function GET(req: Request) {
         pitch?: number;
         alumni?: number;
         comparison?: number;
+        faq?: number;
         byMode: {
           pitch: { generates: number; copies: number; comparisons: number; totalActions: number };
           alumni: { generates: number; copies: number; comparisons: number; totalActions: number };
           comparison: { generates: number; copies: number; comparisons: number; totalActions: number };
+          faq: { generates: number; copies: number; comparisons: number; totalActions: number };
         };
         totalActions: number;
         lastActive: string;
@@ -243,7 +268,7 @@ export async function GET(req: Request) {
     > = {};
 
     const hourlyHeatmap = Array(24).fill(0);
-    const modeDistribution: Record<string, number> = { pitch: 0, alumni: 0, comparison: 0 };
+    const modeDistribution: Record<string, number> = { pitch: 0, alumni: 0, comparison: 0, faq: 0 };
     const topicCounts: Record<string, number> = {};
 
     // 2. Build Timeline Buckets
@@ -257,9 +282,10 @@ export async function GET(req: Request) {
       pitch?: number;
       alumni?: number;
       comparison?: number;
+      faq?: number;
       activeAgentsSet?: Set<string>;
       agents?: number;
-      byUser?: Record<string, { traffic: number; scripts: number; copies: number; pitch?: number; alumni?: number; comparison?: number }>;
+      byUser?: Record<string, { traffic: number; scripts: number; copies: number; pitch?: number; alumni?: number; comparison?: number; faq?: number }>;
       actions?: { user: string; role: string; actionLabel: string; topic: string; mode?: string; timestamp?: string }[];
       compareTraffic?: number;
       compareScripts?: number;
@@ -267,7 +293,8 @@ export async function GET(req: Request) {
       comparePitch?: number;
       compareAlumni?: number;
       compareComparison?: number;
-      compareByUser?: Record<string, { traffic: number; scripts: number; copies: number; pitch?: number; alumni?: number; comparison?: number }>;
+      compareFaq?: number;
+      compareByUser?: Record<string, { traffic: number; scripts: number; copies: number; pitch?: number; alumni?: number; comparison?: number; faq?: number }>;
     }[] = [];
 
     if (range === "today" || range === "yesterday") {
@@ -283,12 +310,14 @@ export async function GET(req: Request) {
           pitch: 0,
           alumni: 0,
           comparison: 0,
+          faq: 0,
           compareTraffic: 0,
           compareScripts: 0,
           compareCopies: 0,
           comparePitch: 0,
           compareAlumni: 0,
           compareComparison: 0,
+          compareFaq: 0,
           compareByUser: {},
           activeAgentsSet: new Set<string>(),
         });
@@ -311,12 +340,14 @@ export async function GET(req: Request) {
           pitch: 0,
           alumni: 0,
           comparison: 0,
+          faq: 0,
           compareTraffic: 0,
           compareScripts: 0,
           compareCopies: 0,
           comparePitch: 0,
           compareAlumni: 0,
           compareComparison: 0,
+          compareFaq: 0,
           compareByUser: {},
           activeAgentsSet: new Set<string>(),
         });
@@ -336,12 +367,14 @@ export async function GET(req: Request) {
           pitch: 0,
           alumni: 0,
           comparison: 0,
+          faq: 0,
           compareTraffic: 0,
           compareScripts: 0,
           compareCopies: 0,
           comparePitch: 0,
           compareAlumni: 0,
           compareComparison: 0,
+          compareFaq: 0,
           compareByUser: {},
           activeAgentsSet: new Set<string>(),
         });
@@ -363,12 +396,14 @@ export async function GET(req: Request) {
           pitch: 0,
           alumni: 0,
           comparison: 0,
+          faq: 0,
           compareTraffic: 0,
           compareScripts: 0,
           compareCopies: 0,
           comparePitch: 0,
           compareAlumni: 0,
           compareComparison: 0,
+          compareFaq: 0,
           compareByUser: {},
           activeAgentsSet: new Set<string>(),
         });
@@ -383,12 +418,17 @@ export async function GET(req: Request) {
             traffic: 0,
             scripts: 0,
             copies: 0,
+            pitch: 0,
+            alumni: 0,
+            comparison: 0,
+            faq: 0,
             compareTraffic: 0,
             compareScripts: 0,
             compareCopies: 0,
             comparePitch: 0,
             compareAlumni: 0,
             compareComparison: 0,
+            compareFaq: 0,
             compareByUser: {},
             activeAgentsSet: new Set<string>(),
           });
@@ -403,15 +443,12 @@ export async function GET(req: Request) {
       const role = log.user_role || "AC";
       const user = (log.user_name || "Unknown").trim();
       const mode = log.mode || "pitch";
-      const meta = log.metadata && typeof log.metadata === "object" ? log.metadata : {};
       const isAcOrBm = role === "AC" || role === "BM";
 
-      // Ignore any accidental tab_switch or un-clicked comparison logs
+      // Ignore any accidental tab_switch or empty comparison logs
       if (
         action === "view_comparison" &&
-        (meta.source === "tab_switch" ||
-          log.input_snippet === "Membuka menu Comparison Table" ||
-          (!meta.programId && !meta.competitor))
+        (!log.topic || log.topic === "Membuka menu Comparison Table")
       ) {
         hasBogusTabSwitchLogs = true;
         continue;
@@ -421,8 +458,7 @@ export async function GET(req: Request) {
       const isClarify = action === "clarify";
       const isAiScriptGeneration = isGenerate || isClarify;
       const isCopy = action === "copy_script";
-      const isComparisonView =
-        action === "view_comparison" && Boolean(meta.programId || meta.competitor);
+      const isComparisonView = action === "view_comparison";
       const isLogin = action === "login";
 
       if (isGenerate) initialGenerates++;
@@ -444,23 +480,18 @@ export async function GET(req: Request) {
           pitch: 0,
           alumni: 0,
           comparison: 0,
+          faq: 0,
           byMode: {
             pitch: { generates: 0, copies: 0, comparisons: 0, totalActions: 0 },
             alumni: { generates: 0, copies: 0, comparisons: 0, totalActions: 0 },
             comparison: { generates: 0, copies: 0, comparisons: 0, totalActions: 0 },
+            faq: { generates: 0, copies: 0, comparisons: 0, totalActions: 0 },
           },
           totalActions: 0,
           lastActive: log.created_at,
           responseDurationsMs: [],
           topicCounts: {},
         };
-      }
-
-      // Collect real AI response latency if recorded (exclude Owner from counselor latency averages)
-      const dur = Number(meta.durationMs || meta.latency_ms || 0);
-      if (isAiScriptGeneration && dur > 100 && dur < 120000) {
-        if (isAcOrBm) responseDurationsMs.push(dur);
-        agentMap[user].responseDurationsMs.push(dur);
       }
 
       // Feature / Mode breakdown: ONLY count feature usage (generate, clarify, view_comparison, view_alumni)
@@ -475,6 +506,9 @@ export async function GET(req: Request) {
         } else if (mode === "comparison" || isComparisonView) {
           modeDistribution.comparison++;
           agentMap[user].comparison = (agentMap[user].comparison || 0) + 1;
+        } else if (mode === "faq") {
+          modeDistribution.faq++;
+          agentMap[user].faq = (agentMap[user].faq || 0) + 1;
         }
       }
 
@@ -500,11 +534,12 @@ export async function GET(req: Request) {
             if (mode === "pitch") targetPt.pitch = (targetPt.pitch || 0) + 1;
             else if (mode === "alumni" || action === "view_alumni") targetPt.alumni = (targetPt.alumni || 0) + 1;
             else if (mode === "comparison" || isComparisonView) targetPt.comparison = (targetPt.comparison || 0) + 1;
+            else if (mode === "faq") targetPt.faq = (targetPt.faq || 0) + 1;
 
             targetPt.activeAgentsSet?.add(user);
 
             if (!targetPt.byUser) targetPt.byUser = {};
-            if (!targetPt.byUser[user]) targetPt.byUser[user] = { traffic: 0, scripts: 0, copies: 0, pitch: 0, alumni: 0, comparison: 0 };
+            if (!targetPt.byUser[user]) targetPt.byUser[user] = { traffic: 0, scripts: 0, copies: 0, pitch: 0, alumni: 0, comparison: 0, faq: 0 };
             targetPt.byUser[user].traffic++;
             if (isAiScriptGeneration) targetPt.byUser[user].scripts++;
             if (isCopy) targetPt.byUser[user].copies++;
@@ -512,20 +547,25 @@ export async function GET(req: Request) {
             if (mode === "pitch") targetPt.byUser[user].pitch = (targetPt.byUser[user].pitch || 0) + 1;
             else if (mode === "alumni" || action === "view_alumni") targetPt.byUser[user].alumni = (targetPt.byUser[user].alumni || 0) + 1;
             else if (mode === "comparison" || isComparisonView) targetPt.byUser[user].comparison = (targetPt.byUser[user].comparison || 0) + 1;
+            else if (mode === "faq") targetPt.byUser[user].faq = (targetPt.byUser[user].faq || 0) + 1;
 
             if (!targetPt.actions) targetPt.actions = [];
             if (targetPt.actions.length < 15) {
-              const cleanTopic = normalizeTopic(log.topic, log.input_snippet, mode);
+              const cleanTopic = normalizeTopic(log.topic, null, mode);
               const actionFeatureMode =
                 mode === "comparison" || isComparisonView
                   ? "comparison"
                   : mode === "alumni" || action === "view_alumni"
                   ? "alumni"
+                  : mode === "faq"
+                  ? "faq"
                   : "pitch";
 
               const actionLabel = isGenerate
                 ? actionFeatureMode === "alumni"
                   ? "Cari Data Alumni"
+                  : actionFeatureMode === "faq"
+                  ? "Cari Jawaban FAQ"
                   : "Generate Script AI"
                 : isClarify
                 ? "Revisi Script AI"
@@ -539,7 +579,7 @@ export async function GET(req: Request) {
                 user,
                 role,
                 actionLabel,
-                topic: cleanTopic || log.topic || (actionFeatureMode === "comparison" ? "Komparasi Kompetitor" : actionFeatureMode === "alumni" ? "Cari Data Alumni" : "Konsultasi Admisi"),
+                topic: cleanTopic || log.topic || (actionFeatureMode === "comparison" ? "Komparasi Kompetitor" : actionFeatureMode === "alumni" ? "Cari Data Alumni" : actionFeatureMode === "faq" ? "FAQ Admission" : "Konsultasi Admisi"),
                 mode: actionFeatureMode,
                 timestamp: log.created_at,
               });
@@ -553,7 +593,7 @@ export async function GET(req: Request) {
       // Topic / Objection aggregation: hanya hitung generate awal & Table Comparison
       // agar konsisten 1:1 dengan riwayat di admission_generate_history (clarify tersimpan di chat_thread sesi awalnya)
       if (isGenerate || isComparisonView) {
-        const cleanTopic = normalizeTopic(log.topic, log.input_snippet, mode);
+        const cleanTopic = normalizeTopic(log.topic, null, mode);
         if (cleanTopic) {
           topicCounts[cleanTopic] = (topicCounts[cleanTopic] || 0) + 1;
           agentMap[user].topicCounts[cleanTopic] =
@@ -561,12 +601,14 @@ export async function GET(req: Request) {
         }
       }
 
-      const resolvedMode: "pitch" | "alumni" | "comparison" =
+      const resolvedMode: "pitch" | "alumni" | "comparison" | "faq" =
         mode === "comparison" || isComparisonView
           ? "comparison"
           : mode === "alumni" || action === "view_alumni"
             ? "alumni"
-            : "pitch";
+            : mode === "faq"
+              ? "faq"
+              : "pitch";
       const modeBucket = agentMap[user].byMode[resolvedMode];
 
       if (isGenerate) {
@@ -578,6 +620,14 @@ export async function GET(req: Request) {
         agentMap[user].clarifications++;
         agentMap[user].generates++;
         modeBucket.generates++;
+      }
+      if (isAiScriptGeneration && isAcOrBm) {
+        const meta = log.metadata as Record<string, any> | null | undefined;
+        const rawDur = Number(meta?.durationMs ?? meta?.latency_ms);
+        if (Number.isFinite(rawDur) && rawDur > 0 && rawDur < 120_000) {
+          responseDurationsMs.push(rawDur);
+          agentMap[user].responseDurationsMs.push(rawDur);
+        }
       }
       if (isCopy) {
         agentMap[user].copies++;
@@ -628,12 +678,9 @@ export async function GET(req: Request) {
         const action = log.action_type;
         const user = (log.user_name || "Unknown").trim();
         const mode = log.mode || "pitch";
-        const meta = log.metadata && typeof log.metadata === "object" ? log.metadata : {};
         if (
           action === "view_comparison" &&
-          (meta.source === "tab_switch" ||
-            log.input_snippet === "Membuka menu Comparison Table" ||
-            (!meta.programId && !meta.competitor))
+          (!log.topic || log.topic === "Membuka menu Comparison Table")
         ) {
           continue;
         }
@@ -642,7 +689,7 @@ export async function GET(req: Request) {
         const isClarify = action === "clarify";
         const isAiScriptGeneration = isGenerate || isClarify;
         const isCopy = action === "copy_script";
-        const isComparisonView = action === "view_comparison" && Boolean(meta.programId || meta.competitor);
+        const isComparisonView = action === "view_comparison";
 
         try {
           const logDateWib = new Date(new Date(log.created_at).getTime() + WIB_OFFSET);
@@ -669,10 +716,11 @@ export async function GET(req: Request) {
             if (mode === "pitch") targetComparePt.comparePitch = (targetComparePt.comparePitch || 0) + 1;
             else if (mode === "alumni" || action === "view_alumni") targetComparePt.compareAlumni = (targetComparePt.compareAlumni || 0) + 1;
             else if (mode === "comparison" || isComparisonView) targetComparePt.compareComparison = (targetComparePt.compareComparison || 0) + 1;
+            else if (mode === "faq") targetComparePt.compareFaq = (targetComparePt.compareFaq || 0) + 1;
 
             if (!targetComparePt.compareByUser) targetComparePt.compareByUser = {};
             if (!targetComparePt.compareByUser[user]) {
-              targetComparePt.compareByUser[user] = { traffic: 0, scripts: 0, copies: 0, pitch: 0, alumni: 0, comparison: 0 };
+              targetComparePt.compareByUser[user] = { traffic: 0, scripts: 0, copies: 0, pitch: 0, alumni: 0, comparison: 0, faq: 0 };
             }
             targetComparePt.compareByUser[user].traffic++;
             if (isAiScriptGeneration) targetComparePt.compareByUser[user].scripts++;
@@ -680,6 +728,7 @@ export async function GET(req: Request) {
             if (mode === "pitch") targetComparePt.compareByUser[user].pitch = (targetComparePt.compareByUser[user].pitch || 0) + 1;
             else if (mode === "alumni" || action === "view_alumni") targetComparePt.compareByUser[user].alumni = (targetComparePt.compareByUser[user].alumni || 0) + 1;
             else if (mode === "comparison" || isComparisonView) targetComparePt.compareByUser[user].comparison = (targetComparePt.compareByUser[user].comparison || 0) + 1;
+            else if (mode === "faq") targetComparePt.compareByUser[user].faq = (targetComparePt.compareByUser[user].faq || 0) + 1;
           }
         } catch (e) {
           // ignore date parse issues
@@ -700,15 +749,17 @@ export async function GET(req: Request) {
     });
 
     // Leaderboard with bounded Utility Rate (0% - 100%) and per-user top stats
+    // Hanya tampilkan konselor yang benar-benar memiliki aktivitas (totalActions > 0)
     const leaderboard = Object.values(agentMap)
-      .filter((agent) => agent.totalActions > 0 || Object.keys(agentMap).length <= 5)
+      .filter((agent) => agent.totalActions > 0)
       .map((agent) => {
-        // Utility per user = cakupan 3 fitur (Create a Pitch, Checking Alumni, Comparison), tanpa salin
+        // Utility per user = cakupan 4 fitur (Create a Pitch, Checking Alumni, Comparison, FAQ), tanpa salin
         const featuresUsed =
           ((agent.pitch || 0) > 0 ? 1 : 0) +
           ((agent.alumni || 0) > 0 ? 1 : 0) +
-          ((agent.comparison || 0) > 0 ? 1 : 0);
-        const rate = Math.round((featuresUsed / 3) * 100);
+          ((agent.comparison || 0) > 0 ? 1 : 0) +
+          ((agent.faq || 0) > 0 ? 1 : 0);
+        const rate = Math.round((featuresUsed / 4) * 100);
 
         const userDurations = agent.responseDurationsMs || [];
         const avgUserResp =
@@ -751,10 +802,10 @@ export async function GET(req: Request) {
     const onlineAcBmCount = onlinePresence.acBmCount;
 
     // Global Utility Rate (0% - 100%) = penetrasi fitur, tanpa salin:
-    // user yang memakai >=1 dari 3 fitur (pitch / alumni / comparison) ÷ semua user yang tercatat di periode ini
+    // user yang memakai >=1 dari 4 fitur (pitch / alumni / comparison / faq) ÷ semua user yang tercatat di periode ini
     const utilityTotalUsers = Object.keys(agentMap).length;
     const utilityActiveUsers = Object.values(agentMap).filter(
-      (a: any) => (a.pitch || 0) + (a.alumni || 0) + (a.comparison || 0) > 0
+      (a: any) => (a.pitch || 0) + (a.alumni || 0) + (a.comparison || 0) + (a.faq || 0) > 0
     ).length;
     const globalCopyRate =
       utilityTotalUsers > 0 ? Math.round((utilityActiveUsers / utilityTotalUsers) * 100) : 0;
@@ -851,8 +902,9 @@ export async function GET(req: Request) {
       },
     };
 
-    // Simpan ke Redis selama 12 detik agar polling 6 detik tidak membebani kuota Supabase
-    redisSet(cacheKey, finalResponse, 12).catch(() => {});
+    // Simpan ke Redis selama 60 detik (120 detik untuk rentang historis) agar polling 6 detik tidak membebani kuota Supabase
+    const ttlSeconds = range === "today" ? 60 : 120;
+    redisSet(cacheKey, finalResponse, ttlSeconds).catch(() => {});
 
     return NextResponse.json(finalResponse);
   } catch (err: any) {

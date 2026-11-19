@@ -9,7 +9,7 @@ import { MotionConfig } from "motion/react";
  */
 function useExtensionErrorGuard() {
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (process.env.NODE_ENV !== "development" || typeof window === "undefined") return;
 
     const isExtensionError = (msg?: string, stack?: string, filename?: string) => {
       const combined = `${msg || ""} ${stack || ""} ${filename || ""}`.toLowerCase();

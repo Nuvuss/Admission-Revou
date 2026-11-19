@@ -162,7 +162,7 @@ export default function ApiKeyModal({
               return (
                 <div
                   key={idx}
-                  className={`border rounded-xl p-3 sm:p-3.5 transition-all ${
+                  className={`border rounded-xl p-3 sm:p-3.5 transition-colors ${
                     isCurrentActive
                       ? "border-[#FFD84D] bg-[#FFF6D1]/20 shadow-2xs"
                       : "border-[#E8E8E4] bg-[#FAFAF8]"
@@ -294,7 +294,7 @@ export default function ApiKeyModal({
               type="button"
               onClick={onTestKeys}
               disabled={isTestingKeys}
-              className="font-sans text-xs font-semibold px-3 py-2 rounded-xl border border-[#D9D9D4] bg-white hover:bg-[#F5F5F2] text-[#141412] transition-all cursor-pointer flex items-center gap-1.5 active:scale-95 disabled:opacity-50"
+              className="font-sans text-xs font-semibold px-3 py-2 rounded-xl border border-[#D9D9D4] bg-white hover:bg-[#F5F5F2] text-[#141412] transition-[background-color,transform] cursor-pointer flex items-center gap-1.5 active:scale-95 disabled:opacity-50"
               title="Periksa validitas, saldo & kuota API Key di OpenRouter"
             >
               <RefreshCw
@@ -325,7 +325,7 @@ export default function ApiKeyModal({
             <button
               type="button"
               onClick={onSaveCustomKeys}
-              className="font-sans text-xs font-bold px-4 py-2 rounded-xl bg-[#FFD84D] hover:bg-[#FFCC1A] text-[#141412] shadow-2xs transition-all cursor-pointer active:scale-95"
+              className="font-sans text-xs font-bold px-4 py-2 rounded-xl bg-[#FFD84D] hover:bg-[#FFCC1A] text-[#141412] shadow-2xs transition-[background-color,transform] cursor-pointer active:scale-95"
             >
               Simpan Konfigurasi
             </button>

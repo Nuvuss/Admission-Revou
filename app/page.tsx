@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import {
   Sparkles,
@@ -45,17 +45,66 @@ import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 
 // Dynamic import (lazy loading) to split the ~248 KB ComparisonView into a separate chunk
+let hasPrefetchedComparison = false;
+const prefetchComparisonView = () => {
+  if (!hasPrefetchedComparison && typeof window !== "undefined") {
+    hasPrefetchedComparison = true;
+    import("./components/ComparisonView").catch(() => {
+      hasPrefetchedComparison = false;
+    });
+  }
+};
+
 const ComparisonView = dynamic(() => import("./components/ComparisonView"), {
   loading: () => (
-    <div className="p-8 my-4 rounded-2xl border border-[#E8E8E4] bg-white flex flex-col items-center justify-center gap-3 text-center shadow-2xs">
-      <div className="w-7 h-7 border-2 border-[#FFD84D] border-t-[#141412] rounded-full animate-spin" />
-      <div className="space-y-1">
-        <p className="text-sm font-bold text-[#141412]">
-          Memuat Battlecard & Tabel Komparasi Kompetitor...
-        </p>
-        <p className="text-xs text-[#8A8A84]">
-          Komponen dimuat secara terpisah (lazy-loaded dynamic import) untuk efisiensi bundle.
-        </p>
+    <div className="space-y-6 min-h-[614px]" aria-busy="true" aria-label="Memuat tabel komparasi">
+      {/* Top 2-Row Selector Skeleton matching ComparisonView control box */}
+      <div className="bg-white border-2 border-[#E8E8E4] rounded-xl p-4 sm:p-5 shadow-2xs space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-[minmax(0,1fr),auto,minmax(0,1fr)] gap-3 sm:gap-4 items-center">
+          <div className="space-y-1.5">
+            <div className="h-4 w-28 rounded bg-[#F5F5F2] motion-safe:animate-pulse" />
+            <div className="h-[44px] w-full rounded-xl bg-[#F5F5F2] border border-[#E8E8E4] motion-safe:animate-pulse" />
+          </div>
+          <div className="hidden md:flex items-center justify-center pt-5">
+            <div className="h-6 w-8 rounded-md bg-[#F5F5F2]" />
+          </div>
+          <div className="space-y-1.5">
+            <div className="h-4 w-32 rounded bg-[#F5F5F2] motion-safe:animate-pulse" />
+            <div className="h-[44px] w-full rounded-xl bg-[#EAEAE6]/70 border border-[#E8E8E4] motion-safe:animate-pulse" />
+          </div>
+        </div>
+        <div className="pt-3.5 border-t border-[#E8E8E4] grid grid-cols-1 md:grid-cols-[minmax(0,1fr),auto,minmax(0,1fr)] gap-3 sm:gap-4 items-center">
+          <div className="space-y-1.5">
+            <div className="h-4 w-28 rounded bg-[#F5F5F2] motion-safe:animate-pulse" />
+            <div className="h-[42px] w-full rounded-xl bg-[#F5F5F2] border border-[#E8E8E4] motion-safe:animate-pulse" />
+          </div>
+          <div className="hidden md:flex items-center justify-center pt-4">
+            <div className="h-6 w-8 rounded-md bg-[#F5F5F2]" />
+          </div>
+          <div className="space-y-1.5">
+            <div className="h-4 w-36 rounded bg-[#F5F5F2] motion-safe:animate-pulse" />
+            <div className="h-[42px] w-full rounded-xl bg-[#F5F5F2] border border-[#E8E8E4] motion-safe:animate-pulse" />
+          </div>
+        </div>
+      </div>
+
+      {/* Sub-navigation Tabs Bar Skeleton */}
+      <div className="grid grid-cols-2 gap-1 sm:gap-2 border-b-2 border-[#E8E8E4]">
+        <div className="h-[44px] rounded-t-xl bg-[#F5F5F0] border-b-[3px] border-[#FFD84D]" />
+        <div className="h-[44px] rounded-t-xl bg-[#FAFAF8]" />
+      </div>
+
+      {/* Initial Empty-State Card Skeleton */}
+      <div className="bg-white border-2 border-dashed border-[#D9D9D4] rounded-2xl p-8 sm:p-12 text-center flex flex-col items-center justify-center gap-3 min-h-[304px] shadow-2xs">
+        <div className="w-7 h-7 border-2 border-[#FFD84D] border-t-[#141412] rounded-full animate-spin" />
+        <div className="space-y-1">
+          <p className="text-sm font-bold text-[#141412]">
+            Memuat Battlecard &amp; Tabel Komparasi Kompetitor...
+          </p>
+          <p className="text-xs text-[#8A8A84]">
+            Menyiapkan matriks perbandingan program RevoU vs kompetitor.
+          </p>
+        </div>
       </div>
     </div>
   ),
@@ -66,6 +115,7 @@ import ApiKeyModal from "./components/ApiKeyModal";
 import HistoryDrawer from "./components/HistoryDrawer";
 import AlumniCardList from "./components/AlumniCardList";
 import PitchScripts from "./components/PitchScripts";
+import FaqResultCard from "./components/FaqResultCard";
 import UserRoleModal from "./components/UserRoleModal";
 import AccountModal from "./components/AccountModal";
 import { UserRole, UserSession } from "./types/auth";
@@ -122,6 +172,20 @@ const MODES: Record<ModeKey, ModeConfig> = {
       "Lead membandingkan kurikulum Data Analytics RevoU dengan bootcamp lain yang lebih singkat (3 bulan)."
     ],
   },
+  faq: {
+    title: "FAQ",
+    lead: "Cari jawaban WhatsApp siap kirim secara persis (verbatim) dari dokumen FAQ resmi RevoU per program. Otomatis menandai poin yang perlu konfirmasi tim admission.",
+    template: "Tulis pertanyaan prospek (boleh 1 program atau perbandingan 2 program)",
+    placeholder: "Contoh: Bedanya tools di BINUS Applied AI vs ITS Smart Operations? atau Campus day di ITS wajib hadir?",
+    examples: [
+      "Bingung pilih ITS atau ITB, bedanya apa?",
+      "Tools apa aja yg dipakai di ITS Smart Operations?",
+      "Bedanya program UI Strategic Finance sama S2 / MBA / MFin?",
+      "Database kami on-premise bukan cloud, apakah bisa ikut ITB Applied Data Science?",
+      "Jadwalnya ITS hari apa, jam berapa?",
+      "Kalo dikantor gabisa pake Claude, cuma pake Copilot gimana? (BINUS)",
+    ],
+  },
 };
 
 const availableModels = [
@@ -139,9 +203,12 @@ const availableModels = [
   },
 ];
 
+// Module-level guard so staggered entrance animations run only on first page load
+let hasPlayedHomeEntrance = false;
+
 export default function DashboardPage() {
   const router = useRouter();
-  const [isAuthChecking, setIsAuthChecking] = useState<boolean>(true);
+  const shouldAnimateEntrance = useRef(!hasPlayedHomeEntrance).current;
   const [mode, setMode] = useState<ModeKey>("pitch");
   const [selectedModel, setSelectedModel] = useState<string>(() => {
     const defaultEnv = process.env.NEXT_PUBLIC_DEFAULT_MODEL;
@@ -161,6 +228,56 @@ export default function DashboardPage() {
   // ── Real-Time Streaming State (SSE) ──
   const [streamStatus, setStreamStatus] = useState<string>("");
   const [streamDeltaText, setStreamDeltaText] = useState<string>("");
+  const isMountedRef = useRef<boolean>(true);
+  const pendingDeltaRef = useRef<string>("");
+  const streamRafIdRef = useRef<number | null>(null);
+
+  const cancelStreamRaf = () => {
+    if (streamRafIdRef.current !== null && typeof window !== "undefined") {
+      window.cancelAnimationFrame(streamRafIdRef.current);
+      streamRafIdRef.current = null;
+    }
+  };
+
+  const flushPendingStreamDelta = () => {
+    cancelStreamRaf();
+    const chunk = pendingDeltaRef.current;
+    if (chunk) {
+      pendingDeltaRef.current = "";
+      if (isMountedRef.current) {
+        setStreamDeltaText((prev) => prev + chunk);
+      }
+    }
+  };
+
+  const queueStreamDelta = (delta: string) => {
+    if (!delta) return;
+    pendingDeltaRef.current += delta;
+    if (streamRafIdRef.current === null && typeof window !== "undefined") {
+      streamRafIdRef.current = window.requestAnimationFrame(() => {
+        streamRafIdRef.current = null;
+        const chunk = pendingDeltaRef.current;
+        if (chunk) {
+          pendingDeltaRef.current = "";
+          if (isMountedRef.current) {
+            setStreamDeltaText((prev) => prev + chunk);
+          }
+        }
+      });
+    }
+  };
+
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+      if (streamRafIdRef.current !== null && typeof window !== "undefined") {
+        window.cancelAnimationFrame(streamRafIdRef.current);
+        streamRafIdRef.current = null;
+      }
+      pendingDeltaRef.current = "";
+    };
+  }, []);
 
   // History & Favorites State
   const [historyList, setHistoryList] = useState<HistoryItem[]>([]);
@@ -185,7 +302,52 @@ export default function DashboardPage() {
 
   // Load verified server session, history & API keys from localStorage
   useEffect(() => {
+    hasPlayedHomeEntrance = true;
     let active = true;
+
+    try {
+      const cachedSession = localStorage.getItem("revou_admission_user_session_v1");
+      if (cachedSession) {
+        const parsedSession = JSON.parse(cachedSession);
+        if (parsedSession?.name && parsedSession?.role) {
+          setUserSession(parsedSession);
+        }
+      }
+    } catch (e) { }
+
+    try {
+      const savedHistory = localStorage.getItem("revou_admission_history_v1");
+      if (savedHistory) {
+        const parsed = JSON.parse(savedHistory);
+        if (Array.isArray(parsed)) {
+          setHistoryList(parsed);
+        }
+      }
+    } catch (e) {
+      console.error("Failed to load history from localStorage:", e);
+    }
+
+    try {
+      const savedKeys = localStorage.getItem("revou_admission_custom_api_keys_v2");
+      if (savedKeys) {
+        const parsedKeys = JSON.parse(savedKeys);
+        if (Array.isArray(parsedKeys)) {
+          // Jika key tersimpan di browser adalah key lama Google Gemini (AQ. / AIza), bersihkan otomatis
+          const hasLegacyKeys = parsedKeys.some(
+            (k: string) => typeof k === "string" && (k.startsWith("AQ.") || k.startsWith("AIza"))
+          );
+          if (hasLegacyKeys) {
+            localStorage.removeItem("revou_admission_custom_api_keys_v2");
+            setCustomApiKeys(["", "", "", "", ""]);
+          } else {
+            const normalized = [...parsedKeys, "", "", "", "", ""].slice(0, 5);
+            setCustomApiKeys(normalized);
+          }
+        }
+      }
+    } catch (e) {
+      console.error("Failed to load custom keys from localStorage:", e);
+    }
 
     const initSessionAndApp = async () => {
       try {
@@ -220,7 +382,6 @@ export default function DashboardPage() {
 
         if (!active) return;
         setUserSession(verifiedSession);
-        setIsAuthChecking(false);
 
         try {
           if (sessionStorage.getItem("revou_just_logged_in")) {
@@ -238,40 +399,6 @@ export default function DashboardPage() {
       } catch (e) {
         if (active) router.replace("/login");
         return;
-      }
-
-      try {
-        const savedHistory = localStorage.getItem("revou_admission_history_v1");
-        if (savedHistory && active) {
-          const parsed = JSON.parse(savedHistory);
-          if (Array.isArray(parsed)) {
-            setHistoryList(parsed);
-          }
-        }
-      } catch (e) {
-        console.error("Failed to load history from localStorage:", e);
-      }
-
-      try {
-        const savedKeys = localStorage.getItem("revou_admission_custom_api_keys_v2");
-        if (savedKeys && active) {
-          const parsedKeys = JSON.parse(savedKeys);
-          if (Array.isArray(parsedKeys)) {
-            // Jika key tersimpan di browser adalah key lama Google Gemini (AQ. / AIza), bersihkan otomatis
-            const hasLegacyKeys = parsedKeys.some(
-              (k: string) => typeof k === "string" && (k.startsWith("AQ.") || k.startsWith("AIza"))
-            );
-            if (hasLegacyKeys) {
-              localStorage.removeItem("revou_admission_custom_api_keys_v2");
-              setCustomApiKeys(["", "", "", "", ""]);
-            } else {
-              const normalized = [...parsedKeys, "", "", "", "", ""].slice(0, 5);
-              setCustomApiKeys(normalized);
-            }
-          }
-        }
-      } catch (e) {
-        console.error("Failed to load custom keys from localStorage:", e);
       }
     };
 
@@ -549,6 +676,16 @@ export default function DashboardPage() {
     const userPrompt = (text || "").toLowerCase().trim();
     const programMatchHint = (resultData?.program_match || "").toLowerCase().trim();
 
+    if (activeMode === "faq") {
+      if (/\bits\b|smart\s*operations?|surabaya|simt\b/i.test(userPrompt)) return "FAQ RevoU x ITS (Smart Operations)";
+      if (/\b(revou\s*x\s*ui|universitas\s+indonesia|strategic\s+finance|program\s+ui|finance)\b/.test(userPrompt)) return "FAQ RevoU x UI (Strategic Finance)";
+      if (/\b(applied\s+data\s+science|microcredential|on[\s-]?premise)\b/.test(userPrompt)) return "FAQ RevoU x ITB (Applied Data Science)";
+      if (/\b(itb|decision\s+making)\b/.test(userPrompt)) return "FAQ RevoU x ITB (AI & Leaders)";
+      if (/\b(binus|applied\s+ai|\ba4\b)\b/.test(userPrompt)) return "FAQ RevoU x BINUS (Applied AI)";
+      if (/\b(fsda|fsdm|fsse|full\s*stack|career\s*track|virtual\s*internship)\b/.test(userPrompt)) return "FAQ Full Stack (DM / DA / SE)";
+      return "FAQ Umum Admission";
+    }
+
     if (activeMode === "comparison") {
       if (/\bpurwadhika\b/.test(userPrompt)) return "Komparasi vs Purwadhika";
       if (/\bdibimbing\b/.test(userPrompt)) return "Komparasi vs Dibimbing";
@@ -639,6 +776,8 @@ export default function DashboardPage() {
   const handleGenerate = async () => {
     if (!inputText.trim()) return;
     const generateStartMs = Date.now();
+    cancelStreamRaf();
+    pendingDeltaRef.current = "";
     setIsLoading(true);
     setResponseResult(null);
     setErrorMessage(null);
@@ -705,39 +844,45 @@ export default function DashboardPage() {
               const payload = JSON.parse(dataStr);
 
               if (eventType === "status") {
-                if (payload.message) setStreamStatus(payload.message);
-                if (payload.rateLimited && payload.activeKeyIndex) {
+                if (payload.message && isMountedRef.current) setStreamStatus(payload.message);
+                if (payload.rateLimited && payload.activeKeyIndex && isMountedRef.current) {
                   setQuotaAlertBanner(
                     `Rotasi Kuota: API Key #${payload.activeKeyIndex} mencapai limit kuota (429). Otomatis dialihkan ke key berikutnya.`
                   );
                 }
               } else if (eventType === "key_info") {
-                if (payload.poolStatus) setApiPoolStatus(payload.poolStatus);
+                if (payload.poolStatus && isMountedRef.current) setApiPoolStatus(payload.poolStatus);
               } else if (eventType === "token") {
                 if (payload.delta) {
-                  setStreamDeltaText((prev) => prev + payload.delta);
+                  queueStreamDelta(payload.delta);
                 }
               } else if (eventType === "result") {
+                flushPendingStreamDelta();
                 finalResultData = payload;
-                setResponseResult(payload);
+                if (isMountedRef.current) {
+                  setResponseResult(payload);
 
-                if (payload.apiKeyInfo) {
-                  if (payload.apiKeyInfo.poolStatus) {
-                    setApiPoolStatus(payload.apiKeyInfo.poolStatus);
-                  }
-                  if (
-                    Array.isArray(payload.apiKeyInfo.quotaNotifications) &&
-                    payload.apiKeyInfo.quotaNotifications.length > 0
-                  ) {
-                    setQuotaAlertBanner(payload.apiKeyInfo.quotaNotifications.join(" • "));
-                  } else if (payload.apiKeyInfo.wasRotatedDueToQuota) {
-                    setQuotaAlertBanner(
-                      `Rotasi Kuota: API Key berhasil dialihkan ke Key #${payload.apiKeyInfo.activeKeyIndex} via Round Robin.`
-                    );
+                  if (payload.apiKeyInfo) {
+                    if (payload.apiKeyInfo.poolStatus) {
+                      setApiPoolStatus(payload.apiKeyInfo.poolStatus);
+                    }
+                    if (
+                      Array.isArray(payload.apiKeyInfo.quotaNotifications) &&
+                      payload.apiKeyInfo.quotaNotifications.length > 0
+                    ) {
+                      setQuotaAlertBanner(payload.apiKeyInfo.quotaNotifications.join(" • "));
+                    } else if (payload.apiKeyInfo.wasRotatedDueToQuota) {
+                      setQuotaAlertBanner(
+                        `Rotasi Kuota: API Key berhasil dialihkan ke Key #${payload.apiKeyInfo.activeKeyIndex} via Round Robin.`
+                      );
+                    }
                   }
                 }
               } else if (eventType === "error") {
-                setErrorMessage(payload.message || payload.error || "Terjadi kesalahan saat streaming.");
+                flushPendingStreamDelta();
+                if (isMountedRef.current) {
+                  setErrorMessage(payload.message || payload.error || "Terjadi kesalahan saat streaming.");
+                }
               }
             } catch (jsonErr) {
               // Non-JSON or keepalive SSE line
@@ -745,6 +890,9 @@ export default function DashboardPage() {
           }
         }
       }
+
+      // Flush any remaining queued tokens when stream finishes
+      flushPendingStreamDelta();
 
       // Check remaining buffer
       if (streamBuffer.trim()) {
@@ -759,12 +907,14 @@ export default function DashboardPage() {
           if (dataStr && eventType === "result") {
             const payload = JSON.parse(dataStr);
             finalResultData = payload;
-            setResponseResult(payload);
+            if (isMountedRef.current) {
+              setResponseResult(payload);
+            }
           }
         } catch (e) { }
       }
 
-      if (finalResultData) {
+      if (finalResultData && isMountedRef.current) {
         // Log generate activity to Analytics with clean topic & real response latency
         const durationMs = Date.now() - generateStartMs;
         const topicExtracted = extractCleanTopic(inputText, finalResultData, mode);
@@ -813,12 +963,18 @@ export default function DashboardPage() {
         });
       }
     } catch (err: any) {
+      flushPendingStreamDelta();
       console.error("Generate error:", err);
-      setErrorMessage(err.message || "Gagal memanggil AI. Silakan coba kembali.");
+      if (isMountedRef.current) {
+        setErrorMessage(err.message || "Gagal memanggil AI. Silakan coba kembali.");
+      }
     } finally {
-      setIsLoading(false);
-      setStreamStatus("");
-      setStreamDeltaText("");
+      flushPendingStreamDelta();
+      if (isMountedRef.current) {
+        setIsLoading(false);
+        setStreamStatus("");
+        setStreamDeltaText("");
+      }
     }
   };
 
@@ -1121,7 +1277,7 @@ INSTRUKSI PENTING:
     setActiveScriptTab(0);
     setCurrentSessionId(item.id);
     setIsHistoryDrawerOpen(false);
-    showToast(`Sesi "${item.mode === "pitch" ? "Pitch" : item.mode === "alumni" ? "Alumni" : "Comparison"}" berhasil dimuat!`);
+    showToast(`Sesi "${item.mode === "pitch" ? "Pitch" : item.mode === "alumni" ? "Alumni" : item.mode === "faq" ? "FAQ" : "Comparison"}" berhasil dimuat!`);
   };
 
   const handleDeleteItem = (itemId: string, e?: React.MouseEvent) => {
@@ -1145,7 +1301,11 @@ INSTRUKSI PENTING:
   const handleQuickCopyHistory = (item: HistoryItem, e: React.MouseEvent) => {
     e.stopPropagation();
     let textToCopy = "";
-    if (item.responseResult?.scripts && item.responseResult.scripts.length > 0) {
+    if (item.responseResult?.faq_result?.items && item.responseResult.faq_result.items.length > 0) {
+      textToCopy = item.responseResult.faq_result.items
+        .map((f: any) => `[${f.program_label}] ${f.question}\n${f.answer_verbatim}`)
+        .join("\n\n---\n\n");
+    } else if (item.responseResult?.scripts && item.responseResult.scripts.length > 0) {
       textToCopy = item.responseResult.scripts
         .map((s: any) => `${s.badge}\n${s.text}`)
         .join("\n\n---\n\n");
@@ -1170,20 +1330,6 @@ INSTRUKSI PENTING:
 
   const favoritesCount = historyList.filter((i) => i.isFavorite).length;
 
-  if (isAuthChecking) {
-    return (
-      <div className="min-h-screen bg-[#FBFBFA] flex items-center justify-center p-4">
-        <div className="flex flex-col items-center gap-3 text-center">
-          <div className="w-10 h-10 rounded-xl border border-[#E8E8E4] bg-white p-1 flex items-center justify-center shadow-xs">
-            <img src="/revou-logo.png" alt="RevoU Logo" className="w-full h-full object-contain" />
-          </div>
-          <div className="w-6 h-6 border-2 border-[#FFD84D] border-t-[#141412] rounded-full animate-spin mt-1" />
-          <p className="text-xs font-mono text-[#7A7A74]">Memverifikasi sesi login...</p>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-[#FFFFFF] text-[#141412] font-sans antialiased px-4 sm:px-6 py-6 sm:py-10">
       <div className="max-w-[820px] mx-auto">
@@ -1191,7 +1337,7 @@ INSTRUKSI PENTING:
         {/* 1. TOPBAR & EDITORIAL MASTHEAD                            */}
         {/* ========================================================= */}
         <motion.header
-          initial={{ opacity: 0, y: -8 }}
+          initial={shouldAnimateEntrance ? { opacity: 0, y: -8 } : false}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
           className="mb-6"
@@ -1227,7 +1373,7 @@ INSTRUKSI PENTING:
               {userSession?.role === "Owner" && (
                 <Link
                   href="/analytics"
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#FFD84D] bg-[#FFD84D] hover:bg-[#F5CD3D] text-xs font-black text-[#141412] transition-all cursor-pointer shadow-2xs hover:shadow-xs active:scale-95 select-none"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#FFD84D] bg-[#FFD84D] hover:bg-[#F5CD3D] text-xs font-black text-[#141412] transition-[background-color,box-shadow,transform] cursor-pointer shadow-2xs hover:shadow-xs active:scale-95 select-none"
                   title="Buka Traffic & Activity Analytics Dashboard"
                 >
                   <BarChart3 className="w-3.5 h-3.5 text-[#141412]" />
@@ -1266,7 +1412,7 @@ INSTRUKSI PENTING:
               <button
                 type="button"
                 onClick={() => setIsAccountModalOpen(true)}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#D9D9D4] bg-white hover:bg-[#F5F5F2] hover:border-[#141412] text-xs font-bold text-[#141412] transition-all cursor-pointer shadow-2xs hover:shadow-xs active:scale-95 select-none"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#D9D9D4] bg-white hover:bg-[#F5F5F2] hover:border-[#141412] text-xs font-bold text-[#141412] transition-[background-color,border-color,box-shadow,transform] cursor-pointer shadow-2xs hover:shadow-xs active:scale-95 select-none"
                 title="Profil Akun (Ganti Email & Password)"
               >
                 <User className="w-3.5 h-3.5 text-[#D97706]" />
@@ -1277,7 +1423,7 @@ INSTRUKSI PENTING:
               <button
                 type="button"
                 onClick={() => setIsLogoutModalOpen(true)}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-[#E8E8E4] bg-white hover:bg-[#FFF1F1] hover:border-[#FFD0D0] text-xs font-bold text-[#7A7A74] hover:text-[#DA1E28] transition-all cursor-pointer shadow-2xs hover:shadow-xs active:scale-95 select-none"
+                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-[#E8E8E4] bg-white hover:bg-[#FFF1F1] hover:border-[#FFD0D0] text-xs font-bold text-[#7A7A74] hover:text-[#DA1E28] transition-[color,background-color,border-color,box-shadow,transform] cursor-pointer shadow-2xs hover:shadow-xs active:scale-95 select-none"
                 title="Keluar / Ganti Akun"
               >
                 <LogOut className="w-3.5 h-3.5" />
@@ -1288,7 +1434,7 @@ INSTRUKSI PENTING:
 
           {/* Editorial Headline */}
           <motion.h1
-            initial={{ opacity: 0, y: 8 }}
+            initial={shouldAnimateEntrance ? { opacity: 0, y: 8 } : false}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.24, delay: 0.03, ease: [0.16, 1, 0.3, 1] }}
             className="font-display font-extrabold text-2xl sm:text-3xl md:text-[34px] tracking-tight leading-[1.18] text-[#141412] mb-2"
@@ -1300,7 +1446,7 @@ INSTRUKSI PENTING:
             .
           </motion.h1>
           <motion.p
-            initial={{ opacity: 0, y: 6 }}
+            initial={shouldAnimateEntrance ? { opacity: 0, y: 6 } : false}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.24, delay: 0.06, ease: [0.16, 1, 0.3, 1] }}
             className="text-[#4B4B46] text-sm sm:text-[15px] leading-relaxed max-w-[68ch]"
@@ -1338,7 +1484,7 @@ INSTRUKSI PENTING:
         {/* 2. MAIN CARD WORKSPACE (.card.work)                       */}
         {/* ========================================================= */}
         <motion.section
-          initial={{ opacity: 0, y: 8 }}
+          initial={shouldAnimateEntrance ? { opacity: 0, y: 8 } : false}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.24, delay: 0.09, ease: [0.16, 1, 0.3, 1] }}
           className="bg-white border border-[#E8E8E4] rounded-2xl p-5 sm:p-6 shadow-xs space-y-6"
@@ -1349,7 +1495,8 @@ INSTRUKSI PENTING:
               {[
                 { key: "pitch", label: "Create a Pitch", icon: Sparkles },
                 { key: "alumni", label: "Checking Alumni", icon: UserCheck },
-                { key: "comparison", label: "Comparison Table", icon: Scale }
+                { key: "comparison", label: "Comparison Table", icon: Scale },
+                { key: "faq", label: "FAQ", icon: HelpCircle }
               ].map((tab) => {
                 const Icon = tab.icon;
                 const isActive = mode === tab.key;
@@ -1357,8 +1504,14 @@ INSTRUKSI PENTING:
                   <button
                     key={tab.key}
                     type="button"
+                    onMouseEnter={() => {
+                      if (tab.key === "comparison") prefetchComparisonView();
+                    }}
+                    onFocus={() => {
+                      if (tab.key === "comparison") prefetchComparisonView();
+                    }}
                     onClick={() => handleModeChange(tab.key as ModeKey)}
-                    className={`relative px-3.5 py-2 text-xs sm:text-[13px] font-bold rounded-lg transition-all active:scale-95 duration-150 cursor-pointer select-none flex items-center gap-1.5 shrink-0 ${isActive ? "text-[#141412]" : "text-[#7A7A74] hover:text-[#141412]"
+                    className={`relative px-3.5 py-2 text-xs sm:text-[13px] font-bold rounded-lg transition-[color,transform] active:scale-95 duration-150 cursor-pointer select-none flex items-center gap-1.5 shrink-0 ${isActive ? "text-[#141412]" : "text-[#7A7A74] hover:text-[#141412]"
                       }`}
                   >
                     {isActive && (
@@ -1416,9 +1569,37 @@ INSTRUKSI PENTING:
               {mode === "comparison" && (
                 <div className="pt-1">
                   <ComparisonView
-                    onTrackActivity={(actionType, topic, snippet, meta) =>
-                      trackActivity(actionType, "comparison", snippet, topic, meta)
-                    }
+                    onTrackActivity={(actionType, topic, snippet, meta) => {
+                      trackActivity(actionType, "comparison", snippet, topic, meta);
+                      if (actionType === "view_comparison" && meta?.competitor) {
+                        const competitorName = String(meta.competitor);
+                        const competitorProgram = String(meta.competitorProgram || "");
+                        const revouProgram = String(meta.revouProgram || "");
+                        const summaryInput =
+                          snippet ||
+                          `RevoU ${revouProgram} vs ${competitorName}${competitorProgram ? ` — ${competitorProgram}` : ""}`;
+                        saveGenerateHistory({
+                          clientSessionId: `comp-${Date.now()}-${meta.programId || "view"}`,
+                          mode: "comparison",
+                          topic: topic || `Komparasi vs ${competitorName}`,
+                          inputText: summaryInput,
+                          modelUsed: "comparison-table",
+                          resultJson: {
+                            comparison_summary: {
+                              competitor: competitorName,
+                              competitor_program: competitorProgram || "-",
+                              revou_program: revouProgram || "-",
+                              revou_badge: meta.revouBadge || null,
+                            },
+                            comparison_points: [
+                              `Lembaga Kompetitor: ${competitorName}`,
+                              `Program Kompetitor: ${competitorProgram || "-"}`,
+                              `Program RevoU: ${revouProgram || "-"}`,
+                            ],
+                          },
+                        });
+                      }
+                    }}
                   />
                 </div>
               )}
@@ -1435,11 +1616,13 @@ INSTRUKSI PENTING:
                       >
                         {mode === "pitch"
                           ? "Describe your situation"
-                          : "Cari data alumni / latar belakang leads"}
+                          : mode === "faq"
+                            ? "Tanyakan pertanyaan prospek ke dokumen FAQ"
+                            : "Cari data alumni / latar belakang leads"}
                       </label>
 
                       {/* Model Selector Pill */}
-                      <div className="dropdown-wrapper group inline-flex items-center gap-1.5 bg-[#F5F5F2] hover:bg-white px-3 py-1 rounded-full border border-[#E8E8E4] hover:border-[#FFD84D] transition-all self-start sm:self-auto shadow-2xs hover:shadow-xs">
+                      <div className="dropdown-wrapper group inline-flex items-center gap-1.5 bg-[#F5F5F2] hover:bg-white px-3 py-1 rounded-full border border-[#E8E8E4] hover:border-[#FFD84D] transition-[background-color,border-color,box-shadow] self-start sm:self-auto shadow-2xs hover:shadow-xs">
                         <Cpu className="w-3.5 h-3.5 text-[#8A8A84] group-hover:text-[#A15C00] transition-colors" />
                         <select
                           value={selectedModel}
@@ -1479,7 +1662,7 @@ INSTRUKSI PENTING:
                           }
                         }}
                         placeholder={curConfig.placeholder}
-                        className="w-full text-[14.5px] text-[#141412] bg-white border border-[#D9D9D4] rounded-xl p-3.5 focus:outline-none focus:border-[#141412] focus:ring-2 focus:ring-[#FFD84D]/40 transition-all resize-y min-h-[120px] leading-relaxed placeholder:text-[#8A8A84]"
+                        className="w-full text-[14.5px] text-[#141412] bg-white border border-[#D9D9D4] rounded-xl p-3.5 focus:outline-none focus:border-[#141412] focus:ring-2 focus:ring-[#FFD84D]/40 transition-[border-color,box-shadow] duration-150 resize-y min-h-[120px] leading-relaxed placeholder:text-[#8A8A84]"
                       />
                       {inputText.length > 0 && (
                         <span className="absolute bottom-2.5 right-3 font-mono text-[11px] text-[#8A8A84] bg-white/90 px-1.5 py-0.5 rounded border border-[#E8E8E4]">
@@ -1499,7 +1682,7 @@ INSTRUKSI PENTING:
                       onClick={handleGenerate}
                       whileHover={!isLoading && inputText.trim() ? { y: -1 } : {}}
                       whileTap={!isLoading && inputText.trim() ? { scale: 0.98 } : {}}
-                      className={`inline-flex items-center gap-2 font-display font-bold text-sm sm:text-base px-6 py-3 rounded-xl select-none transition-all duration-150 ${!inputText.trim() || isLoading
+                      className={`inline-flex items-center gap-2 font-display font-bold text-sm sm:text-base px-6 py-3 rounded-xl select-none transition-colors duration-150 ${!inputText.trim() || isLoading
                         ? "bg-[#E8E8E4] text-[#8A8A84] cursor-not-allowed border border-[#D9D9D4]"
                         : "bg-[#FFD84D] hover:bg-[#FFCC1A] text-[#141412] border border-[#E5B500] shadow-xs cursor-pointer active:bg-[#E5B500]"
                         }`}
@@ -1511,8 +1694,12 @@ INSTRUKSI PENTING:
                         </>
                       ) : (
                         <span className="flex items-center gap-2">
-                          <Sparkles className="w-4 h-4 text-[#141412]" />
-                          <span>Generate Rekomendasi Script</span>
+                          {mode === "faq" ? (
+                            <Search className="w-4 h-4 text-[#141412]" />
+                          ) : (
+                            <Sparkles className="w-4 h-4 text-[#141412]" />
+                          )}
+                          <span>{mode === "faq" ? "Cari di FAQ" : "Generate Rekomendasi Script"}</span>
                           <ChevronRight className="w-4 h-4" />
                         </span>
                       )}
@@ -1521,7 +1708,7 @@ INSTRUKSI PENTING:
                     <button
                       type="button"
                       onClick={handleClear}
-                      className="inline-flex items-center font-display font-semibold text-sm px-4 py-3 rounded-xl border border-[#D9D9D4] bg-white text-[#4B4B46] hover:text-[#141412] hover:bg-[#F5F5F2] hover:border-[#8A8A84] transition-all cursor-pointer shadow-2xs active:scale-98"
+                      className="inline-flex items-center font-display font-semibold text-sm px-4 py-3 rounded-xl border border-[#D9D9D4] bg-white text-[#4B4B46] hover:text-[#141412] hover:bg-[#F5F5F2] hover:border-[#8A8A84] transition-[color,background-color,border-color,transform] cursor-pointer shadow-2xs active:scale-98"
                     >
                       Clear
                     </button>
@@ -1546,7 +1733,7 @@ INSTRUKSI PENTING:
                       <button
                         type="button"
                         onClick={() => setIsKeyModalOpen(true)}
-                        className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#E8E8E4] bg-[#F5F5F2] hover:bg-white hover:border-[#141412] text-[11px] font-bold text-[#141412] transition-all cursor-pointer shadow-2xs hover:shadow-xs active:scale-95 select-none"
+                        className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#E8E8E4] bg-[#F5F5F2] hover:bg-white hover:border-[#141412] text-[11px] font-bold text-[#141412] transition-[background-color,border-color,box-shadow,transform] cursor-pointer shadow-2xs hover:shadow-xs active:scale-95 select-none"
                         title="Kelola 5 API Keys & Pantau Status Kuota (Round Robin)"
                       >
                         <Key className="w-3 h-3 text-[#0E62FE]" />
@@ -1661,7 +1848,7 @@ INSTRUKSI PENTING:
                           <button
                             type="button"
                             onClick={toggleCurrentSessionFavorite}
-                            className={`font-sans text-xs font-semibold px-3 py-1.5 rounded-lg border transition-all cursor-pointer flex items-center gap-1.5 select-none active:scale-95 ${isCurrentFavorite
+                            className={`font-sans text-xs font-semibold px-3 py-1.5 rounded-lg border transition-[color,background-color,border-color,box-shadow,transform] cursor-pointer flex items-center gap-1.5 select-none active:scale-95 ${isCurrentFavorite
                               ? "bg-[#FFF6D1] text-[#A15C00] border-[#FFD84D] shadow-2xs font-bold"
                               : "bg-white text-[#141412] border-[#D9D9D4] hover:bg-[#F5F5F2]"
                               }`}
@@ -1678,7 +1865,7 @@ INSTRUKSI PENTING:
                             <button
                               type="button"
                               onClick={handleCopyAll}
-                              className="font-sans text-xs font-semibold px-3 py-1.5 rounded-lg border border-[#D9D9D4] bg-white hover:bg-[#F5F5F2] text-[#141412] transition-all cursor-pointer"
+                              className="font-sans text-xs font-semibold px-3 py-1.5 rounded-lg border border-[#D9D9D4] bg-white hover:bg-[#F5F5F2] text-[#141412] transition-colors cursor-pointer"
                             >
                               {copiedAll ? "Tersalin ✓" : "Salin semua script"}
                             </button>
@@ -1687,7 +1874,7 @@ INSTRUKSI PENTING:
                           <button
                             type="button"
                             onClick={handleGenerate}
-                            className="font-sans text-xs font-semibold px-3 py-1.5 rounded-lg border border-[#D9D9D4] bg-white hover:bg-[#F5F5F2] text-[#141412] transition-all cursor-pointer"
+                            className="font-sans text-xs font-semibold px-3 py-1.5 rounded-lg border border-[#D9D9D4] bg-white hover:bg-[#F5F5F2] text-[#141412] transition-colors cursor-pointer"
                           >
                             Buat ulang
                           </button>
@@ -1700,6 +1887,31 @@ INSTRUKSI PENTING:
 
                       {/* SECTION: OUTPUT CONTENT */}
                       <div className="space-y-4">
+
+                        {/* FAQ VERBATIM SCRIPT SHEET (Hanya untuk menu faq) */}
+                        {mode === "faq" && responseResult.faq_result && (
+                          <FaqResultCard
+                            faqResult={responseResult.faq_result}
+                            onCopyAnswer={(text, item, hasCaution) => {
+                              trackActivity("copy_script", "faq", text, extractCleanTopic(inputText, responseResult, "faq"), {
+                                type: "copy_faq",
+                                faqId: item.id,
+                                unconfirmed: item.unconfirmed,
+                                sessionId: currentSessionId,
+                              });
+                              if (hasCaution) {
+                                showToast("Skrip tersalin — cek bagian yang ditandai sebelum kirim ke prospek");
+                              } else {
+                                showToast("Skrip FAQ tersalin ke clipboard");
+                              }
+                            }}
+                            onSwitchToPitch={() => {
+                              const prevQuestion = inputText;
+                              handleModeChange("pitch");
+                              setInputText(prevQuestion);
+                            }}
+                          />
+                        )}
 
                         {/* ALUMNI MATCHES CARDS GRID (Hanya untuk menu alumni) */}
                         {mode === "alumni" && responseResult.alumni_matches && responseResult.alumni_matches.length > 0 && (
@@ -1734,6 +1946,7 @@ INSTRUKSI PENTING:
                       {/* ===================================================== */}
                       {/* Revision / Clarification Section (.chat)             */}
                       {/* ===================================================== */}
+                      {mode !== "faq" && (
                       <div className="border-t border-[#E8E8E4] pt-5 mt-6 space-y-4">
                         <div className="flex flex-wrap items-center justify-between gap-2">
                           <div>
@@ -2082,6 +2295,7 @@ INSTRUKSI PENTING:
                           </div>
                         )}
                       </div>
+                      )}
                     </motion.div>
                   )}
                 </>

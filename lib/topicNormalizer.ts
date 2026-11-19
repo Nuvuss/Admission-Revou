@@ -1,15 +1,32 @@
-﻿export function normalizeTopic(rawTopic?: string | null, snippet?: string | null, mode?: string | null): string | null {
+export function normalizeTopic(rawTopic?: string | null, snippet?: string | null, mode?: string | null): string | null {
   const userSnippet = (snippet || "").toLowerCase().trim();
   const fallbackTopic = (rawTopic || "").toLowerCase().trim();
   const primaryText = userSnippet || fallbackTopic;
 
   if (!primaryText && mode !== "comparison") return null;
 
+  if (mode === "faq") {
+    if (/\b(strategic\s+hr|hrbp|human\s+resource)\b/.test(primaryText)) return "FAQ RevoU Strategic HR with AI";
+    if (/\bits\b|smart\s*operations?|surabaya|simt\b/.test(primaryText)) return "FAQ RevoU x ITS (Smart Operations)";
+    if (/\b(revou\s*x\s*ui|universitas\s+indonesia|strategic\s+finance|program\s+ui|finance)\b/.test(primaryText)) return "FAQ RevoU x UI (Strategic Finance)";
+    if (/\b(applied\s+data\s+science|microcredential|on[\s-]?premise)\b/.test(primaryText)) return "FAQ RevoU x ITB (Applied Data Science)";
+    if (/\b(itb|decision\s+making)\b/.test(primaryText)) return "FAQ RevoU x ITB (AI & Leaders)";
+    if (/\b(cyber\s*security|cybersecurity|ethical\s*hacking|blue\s*team)\b/.test(primaryText)) return "FAQ RevoU x BINUS (Cybersecurity)";
+    if (/\b(binus|applied\s+ai|\ba4\b)\b/.test(primaryText)) return "FAQ RevoU x BINUS (Applied AI)";
+    if (/\b(fsda|fsdm|fsse|full\s*stack|career\s*track|virtual\s*internship)\b/.test(primaryText)) return "FAQ Full Stack (DM / DA / SE)";
+    return "FAQ Umum Admission";
+  }
+
   if (mode === "comparison") {
     if (/\bpurwadhika\b/.test(primaryText)) return "Komparasi vs Purwadhika";
     if (/\bdibimbing\b/.test(primaryText)) return "Komparasi vs Dibimbing";
     if (/\b(dqlab|it\s*lab)\b/.test(primaryText)) return "Komparasi vs DQLab";
     if (/\bhacktiv8\b/.test(primaryText)) return "Komparasi vs Hacktiv8";
+    if (/\brework(\s+academy)?\b/.test(primaryText)) return "Komparasi vs Rework Academy";
+    if (/\btempat\s*belajar\b/.test(primaryText)) return "Komparasi vs TempatBelajar";
+    if (/\bdicoding\b/.test(primaryText)) return "Komparasi vs Dicoding";
+    if (/\bmyskill\b/.test(primaryText)) return "Komparasi vs MySkill";
+    if (/\bfull\s*stack\s*bangalore\b/.test(primaryText)) return "Komparasi vs Full Stack Bangalore";
     return "Komparasi Kompetitor";
   }
 

@@ -4037,7 +4037,7 @@ function AnimatedSelect({
         aria-labelledby={labelId}
         onClick={() => setIsOpen((prev) => !prev)}
         onKeyDown={handleTriggerKeyDown}
-        className={cn("w-full min-w-0 flex items-center justify-between text-left transition-all duration-200 cursor-pointer select-none", buttonClassName, isOpen && "ring-2 ring-[#FFD84D]/60 border-[#FFD84D] shadow-sm"
+        className={cn("w-full min-w-0 flex items-center justify-between text-left transition-[color,background-color,border-color,box-shadow] duration-200 cursor-pointer select-none", buttonClassName, isOpen && "ring-2 ring-[#FFD84D]/60 border-[#FFD84D] shadow-sm"
           )}
         title={selectedOption ? selectedOption.label : placeholder}
       >
@@ -4476,11 +4476,13 @@ export default function ComparisonView({ onTrackActivity }: ComparisonViewProps 
       onTrackActivity(
         "view_comparison",
         `Komparasi vs ${detail.competitorName}`,
-        `RevoU ${detail.revouMatchProgram} vs ${detail.competitorName} ${detail.programTitle}`,
+        `RevoU ${detail.revouMatchProgram} vs ${detail.competitorName} — ${detail.programTitle}`,
         {
           competitor: detail.competitorName,
+          competitorProgram: detail.programTitle,
           programId: detail.id,
           revouProgram: detail.revouMatchProgram,
+          revouBadge: detail.revouMatchBadge,
         }
       );
     }
@@ -4695,7 +4697,7 @@ export default function ComparisonView({ onTrackActivity }: ComparisonViewProps 
           aria-selected={activeTab === "bootcamp"}
           aria-controls="tabpanel-bootcamp"
           onClick={() => setActiveTab("bootcamp")}
-          className={cn("group flex items-center justify-center gap-1.5 sm:gap-2 px-2 sm:px-3 md:px-4 py-2.5 sm:py-3 text-[11.5px] sm:text-xs md:text-sm font-bold rounded-t-xl transition-all active:scale-97 border-b-[3px] cursor-pointer select-none min-w-0", activeTab === "bootcamp"
+          className={cn("group flex items-center justify-center gap-1.5 sm:gap-2 px-2 sm:px-3 md:px-4 py-2.5 sm:py-3 text-[11.5px] sm:text-xs md:text-sm font-bold rounded-t-xl transition-[color,background-color,border-color,transform] active:scale-97 border-b-[3px] cursor-pointer select-none min-w-0", activeTab === "bootcamp"
             ? "bg-[#F5F5F0] text-[#141412] border-[#FFD84D]"
             : "bg-transparent text-[#60605B] border-transparent hover:text-[#141412] hover:bg-[#F5F5F0]/60"
             )}
@@ -4712,7 +4714,7 @@ export default function ComparisonView({ onTrackActivity }: ComparisonViewProps 
             aria-selected={activeTab === "general"}
             aria-controls="tabpanel-general"
             onClick={() => setActiveTab("general")}
-            className={cn("group flex items-center justify-center gap-1.5 sm:gap-2 px-2 sm:px-3 md:px-4 py-2.5 sm:py-3 text-[11.5px] sm:text-xs md:text-sm font-bold rounded-t-xl transition-all active:scale-97 border-b-[3px] cursor-pointer select-none min-w-0", activeTab === "general"
+            className={cn("group flex items-center justify-center gap-1.5 sm:gap-2 px-2 sm:px-3 md:px-4 py-2.5 sm:py-3 text-[11.5px] sm:text-xs md:text-sm font-bold rounded-t-xl transition-[color,background-color,border-color,transform] active:scale-97 border-b-[3px] cursor-pointer select-none min-w-0", activeTab === "general"
               ? "bg-[#F5F5F0] text-[#141412] border-[#1F7A4D]"
               : "bg-transparent text-[#60605B] border-transparent hover:text-[#141412] hover:bg-[#F5F5F0]/60"
               )}
@@ -4729,7 +4731,7 @@ export default function ComparisonView({ onTrackActivity }: ComparisonViewProps 
           aria-selected={activeTab === "battlecards"}
           aria-controls="tabpanel-battlecards"
           onClick={() => setActiveTab("battlecards")}
-          className={cn("group flex items-center justify-center gap-1.5 sm:gap-2 px-2 sm:px-3 md:px-4 py-2.5 sm:py-3 text-[11.5px] sm:text-xs md:text-sm font-bold rounded-t-xl transition-all active:scale-97 border-b-[3px] cursor-pointer select-none min-w-0", activeTab === "battlecards"
+          className={cn("group flex items-center justify-center gap-1.5 sm:gap-2 px-2 sm:px-3 md:px-4 py-2.5 sm:py-3 text-[11.5px] sm:text-xs md:text-sm font-bold rounded-t-xl transition-[color,background-color,border-color,transform] active:scale-97 border-b-[3px] cursor-pointer select-none min-w-0", activeTab === "battlecards"
             ? "bg-[#F5F5F0] text-[#141412] border-[#B76E00]"
             : "bg-transparent text-[#60605B] border-transparent hover:text-[#141412] hover:bg-[#F5F5F0]/60"
             )}

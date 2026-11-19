@@ -64,7 +64,7 @@ const ZSET_KEY = "presence:v2:sessions";
 const sessionKey = (id: string) => `presence:v2:session:${id}`;
 
 const ALLOWED_ROLES = ["Owner", "AC", "BM"];
-const ALLOWED_MODES = ["pitch", "alumni", "comparison"];
+const ALLOWED_MODES = ["pitch", "alumni", "comparison", "faq"];
 const ALLOWED_PAGES = ["assistant", "analytics"];
 
 // ---------- In-memory fallback (survive hot reload di development) ----------

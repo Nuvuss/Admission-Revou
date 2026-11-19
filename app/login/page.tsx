@@ -63,6 +63,11 @@ function MinimalLoginForm() {
 
       const data = await res.json();
 
+      if (data.maintenance) {
+        router.replace("/maintenance");
+        return;
+      }
+
       if (!res.ok || !data.success) {
         setErrorMessage(data.message || "Email atau password salah.");
         setIsLoading(false);
